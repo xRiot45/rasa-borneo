@@ -20,6 +20,13 @@ class Customer extends Model
         'gender',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'birthdate' => 'datetime',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

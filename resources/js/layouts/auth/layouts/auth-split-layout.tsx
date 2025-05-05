@@ -40,7 +40,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
                     {/* Logo on small screens */}
                     <div className="flex justify-center">
                         <Link href={route('home')} className="flex items-center">
-                            <AppLogoIcon className="h-10 fill-current text-black sm:h-12" />
+                            <AppLogoIcon className="h-10 fill-current text-black sm:h-12 dark:text-white" />
                         </Link>
                     </div>
                     <div className="mb-10 space-y-4 text-center">
