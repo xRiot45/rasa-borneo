@@ -20,28 +20,28 @@ class RegisteredUserController extends Controller
         return Inertia::render('auth/register/index');
     }
 
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'phone_number' => 'required|string|max:255',
-        ]);
+    // public function store(Request $request): RedirectResponse
+    // {
+    //     $request->validate([
+    //         'full_name' => 'required|string|max:255',
+    //         'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+    //         'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    //         'phone_number' => 'required|string|max:255',
+    //     ]);
 
-        $user = User::create([
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
-        ]);
+    //     $user = User::create([
+    //         'full_name' => $request->full_name,
+    //         'email' => $request->email,
+    //         'password' => Hash::make($request->password),
+    //         'phone_number' => $request->phone_number,
+    //     ]);
 
-        $user->assignRole('customer');
+    //     $user->assignRole('customer');
 
-        event(new Registered($user));
+    //     event(new Registered($user));
 
-        Auth::login($user);
+    //     Auth::login($user);
 
-        return to_route('dashboard');
-    }
+    //     return to_route('dashboard');
+    // }
 }

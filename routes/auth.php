@@ -2,21 +2,27 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\CustomerRegisterController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\MerchantRegisterController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
     // Register Route Start
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::get('/register/customer', fn() => Inertia::render('auth/register/register-customer'))->name('register.customer');
-    Route::get('/register/merchant', fn() => Inertia::render('auth/register/register-merchant'))->name('register.merchant');
-    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    // Register as customer
+    Route::get('/register/customer', [CustomerRegisterController::class, 'create'])->name('register.customer');
+    Route::post('/register/customer', [CustomerRegisterController::class, 'store']);
+
+    // Register as merchant
+    Route::get('/register/merchant', [MerchantRegisterController::class, 'create'])->name('register.merchant');
+    Route::post('/register/merchant', [MerchantRegisterController::class, 'store']);
     // Register Route End
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');

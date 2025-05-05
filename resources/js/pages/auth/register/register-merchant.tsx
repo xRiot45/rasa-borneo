@@ -33,7 +33,7 @@ export default function RegisterMerchantPage() {
     };
 
     return (
-        <AuthLayout title="Create an account" description="Enter your details below to create your account">
+        <AuthLayout title="Daftar Sebagai Penjual" description="Silahkan isi data usaha anda untuk melanjutkan dan menjual produk anda secara online">
             <Head title="Register" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
@@ -50,6 +50,7 @@ export default function RegisterMerchantPage() {
                             onChange={(e) => setData('full_name', e.target.value)}
                             disabled={processing}
                             placeholder="Masukkan nama lengkap anda"
+                            className="rounded-xl px-4 py-6"
                         />
                         <InputError message={errors.full_name} className="mt-2" />
                     </div>
@@ -66,6 +67,7 @@ export default function RegisterMerchantPage() {
                             onChange={(e) => setData('email', e.target.value)}
                             disabled={processing}
                             placeholder="email@example.com"
+                            className="rounded-xl px-4 py-6"
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -82,6 +84,7 @@ export default function RegisterMerchantPage() {
                             onChange={(e) => setData('phone_number', e.target.value)}
                             disabled={processing}
                             placeholder="Masukkan nomor telepon anda"
+                            className="rounded-xl px-4 py-6"
                         />
                         <InputError message={errors.phone_number} />
                     </div>
@@ -98,6 +101,7 @@ export default function RegisterMerchantPage() {
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
                             placeholder="Password"
+                            className="rounded-xl px-4 py-6"
                         />
                         <InputError message={errors.password} />
                     </div>
@@ -114,11 +118,12 @@ export default function RegisterMerchantPage() {
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
                             placeholder="Confirm password"
+                            className="rounded-xl px-4 py-6"
                         />
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    <Button type="submit" className="cursor-pointer bg-black py-6 transition-all" tabIndex={5} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Register
                     </Button>
