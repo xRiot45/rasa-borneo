@@ -50,7 +50,7 @@ export default function RegisterPage() {
                             <Icon icon={option.icon} className="h-6 w-6" />
                             <div className="space-y-1">
                                 <h1 className="font-bold">{option.label}</h1>
-                                <p className="text-sm font-normal capitalize">{option.description}</p>
+                                <p className="text-sm font-normal capitalize opacity-80">{option.description}</p>
                             </div>
                         </Card>
                     ))}
