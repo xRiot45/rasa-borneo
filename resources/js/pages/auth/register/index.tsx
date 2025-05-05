@@ -44,7 +44,7 @@ export default function RegisterPage() {
                                 key={option.value}
                                 className={`flex h-22 w-full cursor-pointer flex-row items-center gap-4 border p-6 shadow-none transition-colors ${
                                     isSelected
-                                        ? ' bg-black text-white dark:bg-gray-100 dark:text-gray-900'
+                                        ? 'bg-black text-white dark:bg-gray-100 dark:text-gray-900'
                                         : 'bg-white text-gray-900 dark:bg-zinc-900 dark:text-white'
                                 }`}
                                 onClick={() => setSelectedRole(option.value)}
