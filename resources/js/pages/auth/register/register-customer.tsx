@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth/auth-layout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 
 type RegisterForm = {
     full_name: string;
@@ -17,7 +18,7 @@ type RegisterForm = {
 };
 
 export default function RegisterCustomerPage() {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
+    const { data, setData, processing, errors, reset } = useForm<Required<RegisterForm>>({
         full_name: '',
         email: '',
         phone_number: '',
@@ -25,10 +26,28 @@ export default function RegisterCustomerPage() {
         password_confirmation: '',
     });
 
-    const submit: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+        router.post(route('register.customer.store'), data, {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Register Berhasil!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                reset();
+            },
+            onError: () => {
+                toast.error('Error', {
+                    description: 'Register Gagal!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
         });
     };
 
@@ -38,7 +57,7 @@ export default function RegisterCustomerPage() {
             description="Silakan isi data diri Anda untuk melanjutkan dan menikmati layanan pemesanan makanan secara online"
         >
             <Head title="Register" />
-            <form className="flex flex-col gap-6" onSubmit={submit}>
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="full_name">Nama Lengkap</Label>

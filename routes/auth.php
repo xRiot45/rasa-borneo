@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function () {
 
     // Register as customer
     Route::get('/register/customer', [CustomerRegisterController::class, 'create'])->name('register.customer');
-    Route::post('/register/customer', [CustomerRegisterController::class, 'store']);
+    Route::post('/register/customer', [CustomerRegisterController::class, 'store'])->name('register.customer.store');
 
     // Register as merchant
     Route::get('/register/merchant', [MerchantRegisterController::class, 'create'])->name('register.merchant');
