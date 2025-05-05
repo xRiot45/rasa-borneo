@@ -5,9 +5,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth/auth-layout';
-import { Head, useForm } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
+import { Icon } from '@iconify/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
+import { toast } from 'sonner';
 
 type LoginForm = {
     email: string;
@@ -20,25 +23,50 @@ interface LoginProps {
     canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
+export default function LoginPage({ status, canResetPassword }: LoginProps) {
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const { data, setData, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
         password: '',
         remember: false,
     });
 
-    const submit: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        router.post(
+            route('login'),
+            { ...data },
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Login Berhasil!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                    reset();
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title="Log In Ke Akun Anda" description="Masukkan email dan password anda untuk melanjutkan login ke akun anda">
             <Head title="Log in" />
 
-            <form className="flex flex-col gap-6" onSubmit={submit}>
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="email">Alamat Email</Label>
@@ -51,7 +79,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             autoComplete="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
+                            placeholder="Masukkan email anda"
+                            className={cn('mt-1 rounded-xl px-4 py-6', errors.email && 'border border-red-500')}
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -65,16 +94,28 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 </TextLink>
                             )}
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            required
-                            tabIndex={2}
-                            autoComplete="current-password"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            placeholder="Password"
-                        />
+                        <div className="relative">
+                            <Input
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
+                                required
+                                tabIndex={3}
+                                autoComplete="password"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                disabled={processing}
+                                placeholder="Masukkan password anda"
+                                className={cn('mt-1 rounded-xl px-4 py-6 pr-12', errors.password && 'border border-red-500')}
+                            />
+                            <Button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer"
+                                tabIndex={-1}
+                            >
+                                <Icon icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'} className="h-5 w-5" />
+                            </Button>
+                        </div>
                         <InputError message={errors.password} />
                     </div>
 
@@ -89,7 +130,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <Label htmlFor="remember">Ingatkan saya</Label>
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
+                    <Button
+                        type="submit"
+                        className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
+                        tabIndex={4}
+                        disabled={processing}
+                    >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Log in
                     </Button>
