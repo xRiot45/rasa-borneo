@@ -35,11 +35,17 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
             </div>
 
             {/* Right Side */}
-            <div className="w-full lg:p-8">
-                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[500px]">
+            <div className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 md:px-8">
+                <div className="w-full max-w-md space-y-6">
+                    {/* Logo on small screens */}
+                    <div className="flex justify-center">
+                        <Link href={route('home')} className="flex items-center">
+                            <AppLogoIcon className="h-10 fill-current text-black sm:h-12 dark:text-white" />
+                        </Link>
+                    </div>
                     <div className="mb-10 space-y-4 text-center">
-                        <h1 className="text-2xl font-semibold break-words">{title}</h1>
-                        <p className="text-muted-foreground text-sm break-words">{description}</p>
+                        <h1 className="text-2xl font-semibold">{title}</h1>
+                        <p className="text-muted-foreground text-sm">{description}</p>
                     </div>
                     {children}
                 </div>
