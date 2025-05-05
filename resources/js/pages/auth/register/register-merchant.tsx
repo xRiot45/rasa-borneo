@@ -16,7 +16,7 @@ type RegisterForm = {
     password_confirmation: string;
 };
 
-export default function Register() {
+export default function RegisterMerchantPage() {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         full_name: '',
         email: '',
