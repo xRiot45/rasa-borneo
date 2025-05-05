@@ -36,27 +36,30 @@ export default function RegisterPage() {
         <AuthLayout title="Daftar Akun Baru" description="Silakan pilih peran Anda terlebih dahulu sebelum melanjutkan proses pendaftaran akun">
             <Head title="Register" />
             <div className="flex flex-col gap-6">
-                <RadioGroup value={selectedRole} onValueChange={setSelectedRole} className="flex flex-col gap-4 bg-white">
-                    {roleOptions.map((option) => (
-                        <Card
-                            key={option.value}
-                            className={`flex h-22 w-full cursor-pointer flex-row items-center gap-4 border p-8 shadow-none transition-colors ${
-                                selectedRole === option.value
-                                    ? 'bg-black text-white dark:bg-white dark:text-black'
-                                    : 'bg-white text-black dark:bg-black dark:text-white'
-                            }`}
-                            onClick={() => setSelectedRole(option.value)}
-                        >
-                            <Icon icon={option.icon} className="h-6 w-6" />
-                            <div className="space-y-1">
-                                <h1 className="font-bold">{option.label}</h1>
-                                <p className="text-sm font-normal capitalize opacity-80">{option.description}</p>
-                            </div>
-                        </Card>
-                    ))}
+                <RadioGroup value={selectedRole} onValueChange={setSelectedRole} className="flex flex-col gap-4">
+                    {roleOptions.map((option) => {
+                        const isSelected = selectedRole === option.value;
+                        return (
+                            <Card
+                                key={option.value}
+                                className={`flex h-22 w-full cursor-pointer flex-row items-center gap-4 border p-6 shadow-none transition-colors ${
+                                    isSelected
+                                        ? ' bg-black text-white dark:bg-gray-100 dark:text-gray-900'
+                                        : 'bg-white text-gray-900 dark:bg-zinc-900 dark:text-white'
+                                }`}
+                                onClick={() => setSelectedRole(option.value)}
+                            >
+                                <Icon icon={option.icon} className="h-6 w-6" />
+                                <div className="space-y-1">
+                                    <h1 className="font-bold">{option.label}</h1>
+                                    <p className="text-sm font-normal capitalize opacity-80">{option.description}</p>
+                                </div>
+                            </Card>
+                        );
+                    })}
                 </RadioGroup>
 
-                <Button onClick={handleSubmit} disabled={!selectedRole} className="cursor-pointer bg-black py-6 transition-all">
+                <Button onClick={handleSubmit} disabled={!selectedRole} className="cursor-pointer bg-black py-6 transition-all dark:bg-white">
                     Lanjutkan
                 </Button>
             </div>

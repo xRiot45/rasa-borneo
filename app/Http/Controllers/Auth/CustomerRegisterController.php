@@ -22,7 +22,8 @@ class CustomerRegisterController extends Controller
 
     public function store(CustomerRegisterRequest $request): RedirectResponse
     {
-        $user = User::create($request->validated());
+        $validated = $request->validated();
+        $user = User::create($validated);
 
         $user->assignRole('customer');
 

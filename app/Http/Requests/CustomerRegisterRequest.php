@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\GenderEnum;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 
 class CustomerRegisterRequest extends FormRequest
@@ -20,6 +22,9 @@ class CustomerRegisterRequest extends FormRequest
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'phone_number' => 'required|string|min:12|max:255',
+            'birthplace' => 'nullable|string|max:255',
+            'birthdate' => 'nullable|date',
+            'gender' => ['nullable', Rule::in(GenderEnum::values())],
         ];
     }
 
@@ -45,6 +50,13 @@ class CustomerRegisterRequest extends FormRequest
             'phone_number.string' => 'Nomor telepon harus berupa teks.',
             'phone_number.min' => 'Nomor telepon harus memiliki minimal 12 karakter.',
             'phone_number.max' => 'Nomor telepon tidak boleh lebih dari 255 karakter.',
+
+            'birthplace.string' => 'Tempat lahir harus berupa teks.',
+            'birthplace.max' => 'Tempat lahir tidak boleh lebih dari 255 karakter.',
+
+            'birthdate.date' => 'Tanggal lahir harus berupa tanggal.',
+
+            'gender.in' => 'Jenis kelamin tidak valid.',
         ];
     }
 }
