@@ -9,8 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AuthLayout from '@/layouts/auth/auth-layout';
+import { cn } from '@/lib/utils';
 import { Bank } from '@/models/bank';
 import { BusinessCategory } from '@/models/business-category';
+import { Icon } from '@iconify/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
@@ -50,7 +52,10 @@ type RegisterFormStep5 = {
 export default function RegisterMerchantPage() {
     const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
     const { banks } = usePage<{ banks: Bank[] }>().props;
+
     const [step, setStep] = useState<number>(1);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState<boolean>(false);
 
     const { data, setData, post, processing, errors, reset } = useForm<
         RegisterFormStep1 &
@@ -259,42 +264,57 @@ export default function RegisterMerchantPage() {
 
                             {/* Password */}
                             <div className="grid gap-2">
-                                <Label htmlFor="password">
-                                    Password <strong className="text-red-500">*</strong>
-                                </Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    required
-                                    tabIndex={3}
-                                    autoComplete="new-password"
-                                    value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
-                                    disabled={processing}
-                                    placeholder="Password"
-                                    className="rounded-xl px-4 py-6"
-                                />
+                                <Label htmlFor="password">Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        required
+                                        tabIndex={3}
+                                        autoComplete="password"
+                                        value={data.password}
+                                        onChange={(e) => setData('password', e.target.value)}
+                                        disabled={processing}
+                                        placeholder="Masukkan password anda"
+                                        className={cn('mt-1 rounded-xl px-4 py-6 pr-12', errors.password && 'border border-red-500')}
+                                    />
+                                    <Button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer"
+                                        tabIndex={-1}
+                                    >
+                                        <Icon icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'} className="h-5 w-5" />
+                                    </Button>
+                                </div>
                                 <InputError message={errors.password} />
                             </div>
 
                             {/* Konfirmasi Password */}
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">
-                                    Konfirmasi Password <strong className="text-red-500">*</strong>
-                                </Label>
-                                <Input
-                                    id="password_confirmation"
-                                    type="password"
-                                    required
-                                    tabIndex={4}
-                                    autoComplete="new-password"
-                                    value={data.password_confirmation}
-                                    onChange={(e) => setData('password_confirmation', e.target.value)}
-                                    disabled={processing}
-                                    placeholder="Konfirmasi password"
-                                    className="rounded-xl px-4 py-6"
-                                />
-                                <InputError message={errors.password_confirmation} />
+                                <Label htmlFor="password_confirmation">Konfirmasi Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="password_confirmation"
+                                        type={showPasswordConfirmation ? 'text' : 'password'}
+                                        required
+                                        tabIndex={3}
+                                        autoComplete="password_confirmation"
+                                        value={data.password_confirmation}
+                                        onChange={(e) => setData('password_confirmation', e.target.value)}
+                                        disabled={processing}
+                                        placeholder="Konfirmasi Password anda"
+                                        className={cn('mt-1 rounded-xl px-4 py-6 pr-12', errors.password_confirmation && 'border border-red-500')}
+                                    />
+                                    <Button
+                                        type="button"
+                                        onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer"
+                                        tabIndex={-1}
+                                    >
+                                        <Icon icon={showPasswordConfirmation ? 'mdi:eye-off' : 'mdi:eye'} className="h-5 w-5" />
+                                    </Button>
+                                </div>
                             </div>
 
                             {/* Button */}
