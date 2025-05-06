@@ -78,6 +78,35 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
         });
     };
 
+    const handleRestoreData = (id: number) => {
+        router.patch(
+            route('admin.business-category.restore', { id }),
+            {},
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Kategori Bisnis Berhasil Direstore!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
+    };
+
     return (
         <>
             <DropdownMenu>
@@ -119,7 +148,38 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                                             onClick={() => handleSoftDelete(row.original.id)}
                                             className="cursor-pointer bg-amber-600 transition-all"
                                         >
-                                            Hapus
+                                            Hapus Sementara
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            <DropdownMenuSeparator />
+                        </>
+                    )}
+
+                    {deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                        Pulihkan Data
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:delete'} className="!text-blue-500" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Pulihkan Data</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Memulihkan Data ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleRestoreData(row.original.id)}
+                                            className="cursor-pointer bg-blue-600 transition-all"
+                                        >
+                                            Pulihkan
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -148,7 +208,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                                     onClick={() => handleForceDelete(row.original.id)}
                                     className="cursor-pointer bg-red-600 transition-all"
                                 >
-                                    Hapus
+                                    Hapus Permanen
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
