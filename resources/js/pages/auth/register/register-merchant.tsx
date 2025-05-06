@@ -12,6 +12,7 @@ import { BusinessCategory } from '@/models/business-category';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
+import { toast } from 'sonner';
 
 type RegisterFormStep1 = {
     full_name: string;
@@ -21,32 +22,131 @@ type RegisterFormStep1 = {
     password_confirmation: string;
 };
 
-// type RegisterFormStep2 = {};
+type RegisterFormStep2 = {
+    id_card_photo: string | File | null;
+};
 
-// type RegisterFormStep3 = {};
+type RegisterFormStep3 = {
+    business_name: string;
+    business_phone: string;
+    business_email: string;
+    postal_code: string;
+    business_description: string;
+    business_address: string;
+    business_category_id: number;
+};
 
-// type RegisterFormStep4 = {};
+type RegisterFormStep4 = {
+    bank_code: string;
+    bank_account_number: string;
+    bank_account_name: string;
+};
+
+type RegisterFormStep5 = {
+    tax_identification_number: string;
+};
 
 export default function RegisterMerchantPage() {
     const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
     const { banks } = usePage<{ banks: Bank[] }>().props;
     const [step, setStep] = useState<number>(1);
 
-    const { data, setData, post, processing, errors, reset } = useForm<RegisterFormStep1>({
+    const { data, setData, post, processing, errors, reset } = useForm<
+        RegisterFormStep1 & RegisterFormStep2 & RegisterFormStep3 & RegisterFormStep4 & RegisterFormStep5
+    >({
+        // Step 1
         full_name: '',
         email: '',
         phone_number: '',
         password: '',
         password_confirmation: '',
+
+        // Step 2
+        id_card_photo: null,
+
+        // Step 3
+        business_name: '',
+        business_phone: '',
+        business_email: '',
+        postal_code: '',
+        business_description: '',
+        business_address: '',
+        business_category_id: 0,
+
+        // Step 4
+        bank_code: '',
+        bank_account_number: '',
+        bank_account_name: '',
+
+        // Step 5
+        tax_identification_number: '',
     });
 
     const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-    const submit: FormEventHandler = (e) => {
+    const handleFileChange = (file: File | null) => {
+        setData('id_card_photo', file);
+    };
+
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('register'), {
+
+        const formData = new FormData();
+        // Step 1
+        formData.append('full_name', data.full_name);
+        formData.append('email', data.email);
+        formData.append('phone_number', data.phone_number);
+        formData.append('password', data.password);
+        formData.append('password_confirmation', data.password_confirmation);
+
+        // Step2
+        if (data.id_card_photo) {
+            formData.append('id_card_photo', data.id_card_photo);
+        }
+
+        // Step 3
+        formData.append('business_name', data.business_name);
+        formData.append('business_phone', data.business_phone);
+        formData.append('business_email', data.business_email);
+        formData.append('postal_code', data.postal_code);
+        formData.append('business_description', data.business_description);
+        formData.append('business_address', data.business_address);
+        formData.append('business_category_id', data.business_category_id.toString());
+
+        // Step 4
+        formData.append('bank_code', data.bank_code);
+        formData.append('bank_account_number', data.bank_account_number);
+        formData.append('bank_account_name', data.bank_account_name);
+
+        // Step 5
+        formData.append('tax_identification_number', data.tax_identification_number);
+
+        post(route('register.merchant.store'), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Register Berhasil!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                reset();
+            },
             onFinish: () => reset('password', 'password_confirmation'),
+
+            onError: (error) => {
+                console.log(error);
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
         });
     };
 
@@ -79,7 +179,7 @@ export default function RegisterMerchantPage() {
                 ))}
             </div>
 
-            <form className="flex flex-col gap-6" onSubmit={submit}>
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                 {/* Step 1 => Informasi Akun */}
                 {step === 1 && (
                     <>
@@ -195,25 +295,29 @@ export default function RegisterMerchantPage() {
                 {/* Step 2 => Informasi Pribadi Lainnya */}
                 {step === 2 && (
                     <>
-                        <div id="image_url">
-                            <Label htmlFor="image_url">
-                                Foto KTP <strong className="text-red-500">*</strong>
-                            </Label>
-                            <FileDropzone onFileChange={() => {}} error={''} />
-                            <InputError message={''} className="mt-2" />
-                        </div>
-                        <div className="flex flex-col items-center justify-between gap-3">
-                            <Button
-                                type="button"
-                                onClick={nextStep}
-                                disabled={processing}
-                                className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
-                            >
-                                Lanjut
-                            </Button>
-                            <Button type="button" onClick={prevStep} variant="outline" className="w-full cursor-pointer py-6">
-                                Kembali ke langkah sebelumnya
-                            </Button>
+                        <div className="grid gap-6">
+                            {/* Foto KTP */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="id_card_photo">
+                                    Foto KTP <strong className="text-red-500">*</strong>
+                                </Label>
+                                <FileDropzone onFileChange={handleFileChange} error={errors.id_card_photo} />
+                                <InputError message={errors.id_card_photo} className="mt-2" />
+                            </div>
+
+                            <div className="flex flex-col items-center justify-between gap-3">
+                                <Button
+                                    type="button"
+                                    onClick={nextStep}
+                                    disabled={processing}
+                                    className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
+                                >
+                                    Lanjut
+                                </Button>
+                                <Button type="button" onClick={prevStep} variant="outline" className="w-full cursor-pointer py-6">
+                                    Kembali ke langkah sebelumnya
+                                </Button>
+                            </div>
                         </div>
                     </>
                 )}
@@ -222,26 +326,28 @@ export default function RegisterMerchantPage() {
                 {step === 3 && (
                     <>
                         <div className="grid gap-6">
+                            {/* Business Name */}
                             <div className="grid gap-2">
                                 <Label htmlFor="business_name">
                                     Nama Bisnis <strong className="text-red-500">*</strong>
                                 </Label>
                                 <Input
-                                    id="full_name"
+                                    id="business_name"
                                     type="text"
                                     required
                                     autoFocus
                                     tabIndex={1}
-                                    autoComplete="full_name"
-                                    value={data.full_name}
-                                    onChange={(e) => setData('full_name', e.target.value)}
+                                    autoComplete="business_name"
+                                    value={data.business_name}
+                                    onChange={(e) => setData('business_name', e.target.value)}
                                     disabled={processing}
                                     placeholder="Cth : Rumah Makan Domoro"
                                     className="rounded-xl px-4 py-6"
                                 />
-                                <InputError message={errors.full_name} className="mt-2" />
+                                <InputError message={errors.business_name} className="mt-2" />
                             </div>
 
+                            {/* Business Phone */}
                             <div className="grid gap-2">
                                 <Label htmlFor="business_phone">
                                     Nomor Telepon Bisnis <strong className="text-red-500">*</strong>
@@ -252,57 +358,62 @@ export default function RegisterMerchantPage() {
                                     required
                                     tabIndex={2}
                                     autoComplete="business_phone"
-                                    value={data.phone_number}
-                                    onChange={(e) => setData('phone_number', e.target.value)}
+                                    value={data.business_phone}
+                                    onChange={(e) => setData('business_phone', e.target.value)}
                                     disabled={processing}
-                                    placeholder="Masukkan nomor telepon anda"
+                                    placeholder="Masukkan nomor telepon bisnis (Jika tidak ada, isi dengan nomor telepon pribadi)"
                                     className="rounded-xl px-4 py-6"
                                 />
-                                <InputError message={errors.phone_number} />
+                                <InputError message={errors.business_phone} />
                             </div>
 
+                            {/* Business Email */}
                             <div className="grid gap-2">
-                                <Label htmlFor="email">
+                                <Label htmlFor="business_email">
                                     Email Bisnis <strong className="text-red-500">*</strong>
                                 </Label>
                                 <Input
-                                    id="email"
+                                    id="business_email"
                                     type="email"
                                     required
                                     tabIndex={2}
-                                    autoComplete="email"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
+                                    autoComplete="business_email"
+                                    value={data.business_email}
+                                    onChange={(e) => setData('business_email', e.target.value)}
                                     disabled={processing}
-                                    placeholder="email@example.com"
+                                    placeholder="Masukkan email bisnis (Jika tidak ada, isi dengan email pribadi)"
                                     className="rounded-xl px-4 py-6"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
+                            {/* Business Address */}
                             <div className="grid gap-2">
-                                <Label htmlFor="business_name">
+                                <Label htmlFor="business_address">
                                     Alamat Bisnis <strong className="text-red-500">*</strong>
                                 </Label>
                                 <Input
-                                    id="full_name"
+                                    id="business_address"
                                     type="text"
                                     required
                                     autoFocus
                                     tabIndex={1}
-                                    autoComplete="full_name"
-                                    value={data.full_name}
-                                    onChange={(e) => setData('full_name', e.target.value)}
+                                    autoComplete="business_address"
+                                    value={data.business_address}
+                                    onChange={(e) => setData('business_address', e.target.value)}
                                     disabled={processing}
                                     placeholder="Cth : Jl. A.Yani"
                                     className="rounded-xl px-4 py-6"
                                 />
-                                <InputError message={errors.full_name} className="mt-2" />
+                                <InputError message={errors.business_address} className="mt-2" />
                             </div>
 
+                            {/* Business Category */}
                             <div className="grid gap-2">
-                                <Label htmlFor="menu_category_id">Kategori Bisnis</Label>
-                                <Select onValueChange={() => {}}>
+                                <Label htmlFor="business_category_id">
+                                    Kategori Bisnis <strong className="text-red-500">*</strong>
+                                </Label>
+                                <Select onValueChange={(e) => setData('business_category_id', Number(e))}>
                                     <SelectTrigger className="mt-2 w-full py-6">
                                         <SelectValue placeholder="Pilih Kategori Bisnis" />
                                     </SelectTrigger>
@@ -314,23 +425,45 @@ export default function RegisterMerchantPage() {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <InputError message={''} className="mt-2" />
+                                <InputError message={errors.business_category_id} className="mt-2" />
                             </div>
 
+                            {/* Postal Code */}
                             <div className="grid gap-2">
-                                <Label htmlFor="email">
+                                <Label htmlFor="postal_code">
+                                    Kode Pos <strong className="text-red-500">*</strong>
+                                </Label>
+                                <Input
+                                    id="postal_code"
+                                    type="number"
+                                    required
+                                    tabIndex={2}
+                                    autoComplete="postal_code"
+                                    value={data.postal_code}
+                                    onChange={(e) => setData('postal_code', e.target.value)}
+                                    disabled={processing}
+                                    placeholder="Masukkan Kode Pos"
+                                    className="rounded-xl px-4 py-6"
+                                />
+                                <InputError message={errors.postal_code} />
+                            </div>
+
+                            {/* Business Description */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="business_desciption">
                                     Deskripsi Bisnis <strong className="text-red-500">*</strong>
                                 </Label>
 
                                 <Textarea
-                                    id="description"
-                                    value={''}
-                                    onChange={() => {}}
+                                    id="business_desciption"
+                                    value={data?.business_description}
+                                    onChange={(e) => setData('business_description', e.target.value)}
                                     placeholder="Deskripsi Bisnis anda"
                                     className="min-h-[100px]"
                                 />
                             </div>
 
+                            {/* Button */}
                             <div className="flex flex-col items-center justify-between gap-3">
                                 <Button
                                     type="button"
@@ -351,15 +484,22 @@ export default function RegisterMerchantPage() {
                 {/* Step 4 => Informasi Rekening Bank */}
                 {step === 4 && (
                     <>
+                        {/* Bank Code */}
                         <div className="grid gap-2">
-                            <Label htmlFor="menu_category_id">Pilih Bank</Label>
-                            <Select onValueChange={() => {}}>
+                            <Label htmlFor="bank_code">
+                                Pilih Bank <strong className="text-red-500">*</strong>
+                            </Label>
+                            <Select onValueChange={(e) => setData('bank_code', e)}>
                                 <SelectTrigger className="mt-2 w-full py-6">
                                     <SelectValue placeholder="Pilih Bank Anda" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {banks.map((item: Bank) => (
-                                        <SelectItem key={item.id} value={String(item.id)} className="cursor-pointer gap-10">
+                                        <SelectItem
+                                            key={item.id}
+                                            value={String(item.sandi_bank + '-' + item.nama_bank)}
+                                            className="cursor-pointer gap-10"
+                                        >
                                             {item.sandi_bank} - {item.nama_bank}
                                         </SelectItem>
                                     ))}
@@ -368,45 +508,48 @@ export default function RegisterMerchantPage() {
                             <InputError message={''} className="mt-2" />
                         </div>
 
+                        {/* Bank Account Number */}
                         <div className="grid gap-2">
-                            <Label htmlFor="phone_number">
+                            <Label htmlFor="bank_account_number">
                                 Nomor Rekening <strong className="text-red-500">*</strong>
                             </Label>
                             <Input
-                                id="phone_number"
+                                id="bank_account_number"
                                 type="number"
                                 required
                                 tabIndex={2}
-                                autoComplete="phone_number"
-                                value={data.phone_number}
-                                onChange={(e) => setData('phone_number', e.target.value)}
+                                autoComplete="bank_account_number"
+                                value={data.bank_account_number}
+                                onChange={(e) => setData('bank_account_number', e.target.value)}
                                 disabled={processing}
                                 placeholder="Masukkan nomor rekening anda"
                                 className="rounded-xl px-4 py-6"
                             />
-                            <InputError message={errors.phone_number} />
+                            <InputError message={errors.bank_account_number} />
                         </div>
 
+                        {/* Bank Account Name */}
                         <div className="grid gap-2">
-                            <Label htmlFor="full_name">
+                            <Label htmlFor="bank_account_name">
                                 Nama Pemilik Rekening <strong className="text-red-500">*</strong>
                             </Label>
                             <Input
-                                id="full_name"
+                                id="bank_account_name"
                                 type="text"
                                 required
                                 autoFocus
                                 tabIndex={1}
-                                autoComplete="full_name"
-                                value={data.full_name}
-                                onChange={(e) => setData('full_name', e.target.value)}
+                                autoComplete="bank_account_name"
+                                value={data.bank_account_name}
+                                onChange={(e) => setData('bank_account_name', e.target.value)}
                                 disabled={processing}
                                 placeholder="Masukkan nama pemilik rekening"
                                 className="rounded-xl px-4 py-6"
                             />
-                            <InputError message={errors.full_name} className="mt-2" />
+                            <InputError message={errors.bank_account_name} className="mt-2" />
                         </div>
 
+                        {/* Button */}
                         <div className="flex flex-col items-center justify-between gap-3">
                             <Button
                                 type="button"
@@ -426,25 +569,27 @@ export default function RegisterMerchantPage() {
                 {/* Step 5 => Informasi Perpajakan */}
                 {step === 5 && (
                     <>
+                        {/* Tax Identification Number */}
                         <div className="grid gap-2">
-                            <Label htmlFor="phone_number">
+                            <Label htmlFor="tax_identification_number">
                                 NPWP <strong className="text-muted-foreground italic">(Opsional)</strong>
                             </Label>
                             <Input
-                                id="phone_number"
+                                id="tax_identification_number"
                                 type="number"
                                 required
                                 tabIndex={2}
-                                autoComplete="phone_number"
-                                value={data.phone_number}
-                                onChange={(e) => setData('phone_number', e.target.value)}
+                                autoComplete="tax_identification_number"
+                                value={data.tax_identification_number}
+                                onChange={(e) => setData('tax_identification_number', e.target.value)}
                                 disabled={processing}
-                                placeholder="Masukkan nomor NPWP anda"
+                                placeholder="Isi 0 jika tidak memiliki NPWP"
                                 className="rounded-xl px-4 py-6"
                             />
-                            <InputError message={errors.phone_number} />
+                            <InputError message={errors.tax_identification_number} />
                         </div>
 
+                        {/* Button */}
                         <div className="flex flex-col items-center justify-between gap-3">
                             <Button type="submit" className="w-full cursor-pointer bg-black py-6 transition-all" tabIndex={5} disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}

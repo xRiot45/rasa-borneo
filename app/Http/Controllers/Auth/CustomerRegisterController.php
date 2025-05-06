@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CustomerRegisterRequest;
+use App\Http\Requests\Auth\CustomerRegisterRequest;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;

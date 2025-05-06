@@ -22,7 +22,7 @@ Route::middleware('guest')->group(function () {
 
     // Register as merchant
     Route::get('/register/merchant', [MerchantRegisterController::class, 'create'])->name('register.merchant');
-    Route::post('/register/merchant', [MerchantRegisterController::class, 'store']);
+    Route::post('/register/merchant', [MerchantRegisterController::class, 'store'])->name('register.merchant.store');
     // Register Route End
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');

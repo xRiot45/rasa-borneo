@@ -13,7 +13,35 @@ class Merchant extends Model
 
     protected $table = 'merchants';
 
-    protected $fillable = ['user_id', 'id_card_photo', 'business_address', 'business_details', 'tax_identification_number', 'bank_account_number', 'bank_account_name', 'bank_code', 'bank_name', 'bank_passbook_photo', 'payout_status', 'payout_verified_at'];
+    protected $fillable = [
+        // Informasi Pribadi
+        'user_id',
+        'id_card_photo',
+
+        // Informasi Bisnis
+        'business_name',
+        'business_phone',
+        'business_email',
+        'postal_code',
+        'business_description',
+        'business_address',
+        'business_category_id',
+
+        // Informasi Rekening Bank
+        'bank_code',
+        'bank_account_number',
+        'bank_account_name',
+
+        // Informasi Payout
+        'payout_status',
+        'payout_verified_at',
+
+        // Informasi Perpajakan
+        'tax_identification_number',
+
+        // Informasi Verifikasi
+        'is_verified',
+    ];
 
     protected $dates = ['deleted_at'];
 

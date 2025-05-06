@@ -8,10 +8,9 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-
     public function run(): void
     {
-        $roles = ['admin', 'cashier', 'customer', 'chef', 'courier', 'merchant'];
+        $roles = ['admin', 'customer', 'merchant'];
         foreach ($roles as $roleName) {
             Role::create(['name' => $roleName, 'guard_name' => 'web']);
         }
