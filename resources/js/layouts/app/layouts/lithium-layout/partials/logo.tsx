@@ -7,7 +7,7 @@ export default function Logo() {
                 <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-none font-semibold">Domoro</span>
+                <span className="mb-0.5 truncate leading-none font-semibold">Rasa Borneo</span>
             </div>
         </>
     );
