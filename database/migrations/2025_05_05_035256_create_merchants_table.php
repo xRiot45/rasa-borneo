@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->string('bank_passbook_photo'); // Foto buku tabungan
             $table->enum('payout_status', PayoutStatusEnum::values())->nullable();
             $table->timestamp('payout_verified_at')->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->foreignId('business_category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

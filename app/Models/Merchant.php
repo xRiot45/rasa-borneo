@@ -25,4 +25,9 @@ class Merchant extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function businessCategory(): BelongsTo
+    {
+        return $this->belongsTo(BusinessCategory::class);
+    }
 }
