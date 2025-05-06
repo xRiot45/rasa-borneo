@@ -196,6 +196,7 @@ export default function RegisterMerchantPage() {
                 {step === 1 && (
                     <>
                         <div className="grid gap-6">
+                            {/* Nama Lengkap */}
                             <div className="grid gap-2">
                                 <Label htmlFor="full_name">
                                     Nama Lengkap <strong className="text-red-500">*</strong>
@@ -216,6 +217,7 @@ export default function RegisterMerchantPage() {
                                 <InputError message={errors.full_name} className="mt-2" />
                             </div>
 
+                            {/* Email */}
                             <div className="grid gap-2">
                                 <Label htmlFor="email">
                                     Alamat Email <strong className="text-red-500">*</strong>
@@ -235,6 +237,7 @@ export default function RegisterMerchantPage() {
                                 <InputError message={errors.email} />
                             </div>
 
+                            {/* Nomor Telepon */}
                             <div className="grid gap-2">
                                 <Label htmlFor="phone_number">
                                     Nomor Telepon <strong className="text-red-500">*</strong>
@@ -254,6 +257,7 @@ export default function RegisterMerchantPage() {
                                 <InputError message={errors.phone_number} />
                             </div>
 
+                            {/* Password */}
                             <div className="grid gap-2">
                                 <Label htmlFor="password">
                                     Password <strong className="text-red-500">*</strong>
@@ -273,6 +277,7 @@ export default function RegisterMerchantPage() {
                                 <InputError message={errors.password} />
                             </div>
 
+                            {/* Konfirmasi Password */}
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
                                     Konfirmasi Password <strong className="text-red-500">*</strong>
@@ -286,12 +291,13 @@ export default function RegisterMerchantPage() {
                                     value={data.password_confirmation}
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
                                     disabled={processing}
-                                    placeholder="Confirm password"
+                                    placeholder="Konfirmasi password"
                                     className="rounded-xl px-4 py-6"
                                 />
                                 <InputError message={errors.password_confirmation} />
                             </div>
 
+                            {/* Button */}
                             <Button
                                 type="button"
                                 onClick={nextStep}
