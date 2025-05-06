@@ -61,6 +61,17 @@ class BusinessCategoryController extends Controller
             ]);
     }
 
+    public function forceDelete(int $businessCategoryId): RedirectResponse
+    {
+        $businessCategory = BusinessCategory::withTrashed()->findOrFail($businessCategoryId);
+        $businessCategory->forceDelete();
+        return redirect()
+            ->route('admin.business-category.index')
+            ->with([
+                'success' => 'Force delete business category successfully',
+            ]);
+    }
+
     public function restore(int $businessCategoryId): RedirectResponse
     {
         $businessCategory = BusinessCategory::withTrashed()->findOrFail($businessCategoryId);

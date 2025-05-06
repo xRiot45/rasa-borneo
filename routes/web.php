@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('admin.business-category.edit');
                 Route::put('/edit/{id}', 'update')->name('admin.business-category.update');
                 Route::delete('/soft-delete/{id}', 'softDelete')->name('admin.business-category.softDelete');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('admin.business-category.forceDelete');
                 Route::patch('/restore/{id}', 'restore')->name('admin.business-category.restore');
             });
     });

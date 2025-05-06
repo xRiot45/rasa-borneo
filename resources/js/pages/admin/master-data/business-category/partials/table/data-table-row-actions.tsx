@@ -31,8 +31,8 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
     const handleSoftDelete = (id: number) => {
         router.delete(route('admin.business-category.softDelete', { id }), {
             onSuccess: () => {
-                toast('Success', {
-                    description: 'Kategori Bisnis Berhasil Dihapus!',
+                toast.success('Success', {
+                    description: 'Kategori Bisnis Berhasil Dihapus Sementara!',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
@@ -53,11 +53,11 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
         });
     };
 
-    const handleHardDelete = (id: number) => {
-        router.delete(route('admin.business-category.destroy', { id }), {
+    const handleForceDelete = (id: number) => {
+        router.delete(route('admin.business-category.forceDelete', { id }), {
             onSuccess: () => {
-                toast('Success', {
-                    description: 'Kategori Bisnis Berhasil Dihapus!',
+                toast.success('Success', {
+                    description: 'Kategori Bisnis Berhasil Dihapus Permanen!',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
@@ -145,7 +145,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                             <AlertDialogFooter>
                                 <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
                                 <AlertDialogAction
-                                    onClick={() => handleHardDelete(row.original.id)}
+                                    onClick={() => handleForceDelete(row.original.id)}
                                     className="cursor-pointer bg-red-600 transition-all"
                                 >
                                     Hapus
