@@ -31,4 +31,45 @@ class BusinessCategoryController extends Controller
             ->route('admin.business-category.index')
             ->with(['success' => 'Kategori bisnis berhasil ditambahkan']);
     }
+
+    public function edit(int $businessCategoryId): Response
+    {
+        $businesCategory = BusinessCategory::findOrFail($businessCategoryId);
+        return Inertia::render('admin/master-data/business-category/pages/edit', [
+            'data' => $businesCategory
+        ]);
+    }
+
+    public function update(BusinessCategoryRequest $request, int $businessCategoryId): RedirectResponse
+    {
+        $businessCategory = BusinessCategory::findOrFail($businessCategoryId);
+        $businessCategory->update($request->validated());
+        return redirect()
+            ->route('admin.business-category.index')
+            ->with([
+                'success' => 'Update business category successfully',
+            ]);
+    }
+
+    public function softDelete(int $businessCategoryId): RedirectResponse
+    {
+        $businessCategory = BusinessCategory::findOrFail($businessCategoryId);
+        $businessCategory->delete();
+        return redirect()
+            ->route('admin.business-category.index')
+            ->with([
+                'success' => 'Delete business category successfully',
+            ]);
+    }
+
+    public function restore(int $businessCategoryId): RedirectResponse
+    {
+        $businessCategory = BusinessCategory::withTrashed()->findOrFail($businessCategoryId);
+        $businessCategory->restore();
+        return redirect()
+            ->route('admin.business-category.index')
+            ->with([
+                'success' => 'Restore business category successfully',
+            ]);
+    }
 }
