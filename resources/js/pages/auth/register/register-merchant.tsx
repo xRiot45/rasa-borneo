@@ -1,3 +1,4 @@
+import ConfirmDialog from '@/components/confirm-dialog';
 import FileDropzone from '@/components/file-dropzone';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -10,7 +11,6 @@ import AuthLayout from '@/layouts/auth/auth-layout';
 import { Bank } from '@/models/bank';
 import { BusinessCategory } from '@/models/business-category';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -591,10 +591,22 @@ export default function RegisterMerchantPage() {
 
                         {/* Button */}
                         <div className="flex flex-col items-center justify-between gap-3">
-                            <Button type="submit" className="w-full cursor-pointer bg-black py-6 transition-all" tabIndex={5} disabled={processing}>
-                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Register
-                            </Button>
+                            <ConfirmDialog
+                                title="Apakah Semua Data Sudah Benar?"
+                                description="Periksa kembali data yang anda masukkan dan tekan 'Register Akun' untuk melanjutkan. Akun Anda akan diverifikasi oleh admin dalam 1×24 jam."
+                                confirmText="Register Akun"
+                                onConfirm={(e) => handleSubmit(e)}
+                            >
+                                <Button
+                                    type="button"
+                                    className="w-full cursor-pointer bg-black py-6 transition-all"
+                                    tabIndex={5}
+                                    disabled={processing}
+                                >
+                                    Selesaikan Pendaftaran
+                                </Button>
+                            </ConfirmDialog>
+
                             <Button type="button" onClick={prevStep} variant="outline" className="w-full cursor-pointer py-6">
                                 Kembali ke langkah sebelumnya
                             </Button>
