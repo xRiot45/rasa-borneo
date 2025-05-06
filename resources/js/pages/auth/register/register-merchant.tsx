@@ -3,6 +3,7 @@ import FileDropzone from '@/components/file-dropzone';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -52,7 +53,14 @@ export default function RegisterMerchantPage() {
     const [step, setStep] = useState<number>(1);
 
     const { data, setData, post, processing, errors, reset } = useForm<
-        RegisterFormStep1 & RegisterFormStep2 & RegisterFormStep3 & RegisterFormStep4 & RegisterFormStep5
+        RegisterFormStep1 &
+            RegisterFormStep2 &
+            RegisterFormStep3 &
+            RegisterFormStep4 &
+            RegisterFormStep5 & {
+                use_same_phone: boolean;
+                use_same_email: boolean;
+            }
     >({
         // Step 1
         full_name: '',
@@ -80,6 +88,10 @@ export default function RegisterMerchantPage() {
 
         // Step 5
         tax_identification_number: '',
+
+        // New state properties for checkboxes
+        use_same_phone: false,
+        use_same_email: false,
     });
 
     const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
@@ -365,6 +377,22 @@ export default function RegisterMerchantPage() {
                                     className="rounded-xl px-4 py-6"
                                 />
                                 <InputError message={errors.business_phone} />
+
+                                <div className="mt-2 flex items-center space-x-2">
+                                    <Checkbox
+                                        id="use_same_phone"
+                                        checked={data.use_same_phone}
+                                        onCheckedChange={(checked) => {
+                                            const isChecked = Boolean(checked);
+                                            setData('use_same_phone', isChecked);
+                                            setData('business_phone', isChecked ? data.phone_number : '');
+                                        }}
+                                        disabled={processing}
+                                    />
+                                    <Label htmlFor="use_same_phone" className="text-[13px]">
+                                        Gunakan nomor telepon yang sama dengan nomor telepon akun
+                                    </Label>
+                                </div>
                             </div>
 
                             {/* Business Email */}
@@ -385,6 +413,22 @@ export default function RegisterMerchantPage() {
                                     className="rounded-xl px-4 py-6"
                                 />
                                 <InputError message={errors.email} />
+
+                                <div className="mt-2 flex items-center space-x-2">
+                                    <Checkbox
+                                        id="use_same_email"
+                                        checked={data.use_same_email}
+                                        onCheckedChange={(checked) => {
+                                            const isChecked = Boolean(checked);
+                                            setData('use_same_email', isChecked);
+                                            setData('business_email', isChecked ? data.email : '');
+                                        }}
+                                        disabled={processing}
+                                    />
+                                    <Label htmlFor="use_same_email" className="text-[13px]">
+                                        Gunakan email yang sama dengan email akun
+                                    </Label>
+                                </div>
                             </div>
 
                             {/* Business Address */}
