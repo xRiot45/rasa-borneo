@@ -24,9 +24,9 @@ return new class extends Migration {
             $table->foreignId('business_category_id')->constrained()->onDelete('cascade');
 
             // Informasi Rekening Bank
+            $table->string('bank_code'); // Kode bank (contoh: 014 untuk BCA)
             $table->string('bank_account_number'); // Nomor rekening
             $table->string('bank_account_name'); // Nama pemilik rekening
-            $table->string('bank_code'); // Kode bank (contoh: 014 untuk BCA)
             $table->string('tax_identification_number')->nullable(); // NPWP (opsional)
 
             // Informasi Payout (Pengambilan Dana (Jika menerapkan fitur payout))
