@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BusinessCategoryRequest;
 use App\Models\BusinessCategory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -13,7 +12,7 @@ class BusinessCategoryController extends Controller
 {
     public function index(): Response
     {
-        $businessCategory = BusinessCategory::all();
+        $businessCategory = BusinessCategory::withTrashed()->get();
         return Inertia::render('admin/master-data/business-category/index', [
             'data' => $businessCategory
         ]);
