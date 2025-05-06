@@ -7,8 +7,10 @@ interface AppLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
-    <HydrogenLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        {children}
-    </HydrogenLayoutTemplate>
-);
+export default function AdminLayout({ children, breadcrumbs, ...props }: AppLayoutProps) {
+    return (
+        <HydrogenLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
+            {children}
+        </HydrogenLayoutTemplate>
+    );
+}

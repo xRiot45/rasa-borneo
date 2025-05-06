@@ -12,6 +12,16 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
+        group: 'MASTER DATA',
+        items: [
+            {
+                title: 'Kategori Bisnis',
+                href: '/admin/master-data/business-categories',
+                icon: 'material-symbols:category',
+            },
+        ],
+    },
+    {
         group: 'MANAJEMEN KONTROL AKSES',
         items: [
             {

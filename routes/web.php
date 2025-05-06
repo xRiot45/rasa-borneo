@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\PermissionController;
@@ -57,6 +58,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/create', 'store')->name('admin.manage-role-permission.store');
                 Route::get('/edit/{id}', 'edit')->name('admin.manage-role-permission.edit');
                 Route::put('/edit/{id}', 'update')->name('admin.manage-role-permission.update');
+            });
+    });
+
+    Route::prefix('/admin/master-data')->group(function () {
+        // Business Category
+        Route::prefix('/business-categories')
+            ->controller(BusinessCategoryController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('admin.business-category.index');
+                Route::get('/create', 'create')->name('admin.business-category.create');
+                Route::post('/create', 'store')->name('admin.business-category.store');
+                Route::get('/edit/{id}', 'edit')->name('admin.business-category.edit');
+                Route::put('/edit/{id}', 'update')->name('admin.business-category.update');
+                Route::delete('/delete/{id}', 'destroy')->name('admin.business-category.destroy');
             });
     });
 
