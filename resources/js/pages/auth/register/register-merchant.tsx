@@ -10,44 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import AuthLayout from '@/layouts/auth/auth-layout';
 import { cn } from '@/lib/utils';
+import { RegisterFormStep1, RegisterFormStep2, RegisterFormStep3, RegisterFormStep4, RegisterFormStep5 } from '@/models/auth/register-merchant';
 import { Bank } from '@/models/bank';
 import { BusinessCategory } from '@/models/business-category';
 import { Icon } from '@iconify/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
-
-type RegisterFormStep1 = {
-    full_name: string;
-    email: string;
-    phone_number: string;
-    password: string;
-    password_confirmation: string;
-};
-
-type RegisterFormStep2 = {
-    id_card_photo: string | File | null;
-};
-
-type RegisterFormStep3 = {
-    business_name: string;
-    business_phone: string;
-    business_email: string;
-    postal_code: string;
-    business_description: string;
-    business_address: string;
-    business_category_id: number;
-};
-
-type RegisterFormStep4 = {
-    bank_code: string;
-    bank_account_number: string;
-    bank_account_name: string;
-};
-
-type RegisterFormStep5 = {
-    tax_identification_number: string;
-};
 
 export default function RegisterMerchantPage() {
     const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
@@ -105,6 +74,32 @@ export default function RegisterMerchantPage() {
     const handleFileChange = (file: File | null) => {
         setData('id_card_photo', file);
     };
+
+    const isStep1Valid =
+        data.full_name.trim() !== '' &&
+        data.email.trim() !== '' &&
+        data.phone_number.trim() !== '' &&
+        data.password.trim() !== '' &&
+        data.password_confirmation.trim() !== '';
+
+    const isStep2Valid =
+        data.id_card_photo !== null &&
+        data.id_card_photo instanceof File &&
+        data.id_card_photo.size > 0 &&
+        data.id_card_photo.type.startsWith('image/');
+
+    const isStep3Valid =
+        data.business_name.trim() !== '' &&
+        data.business_phone.trim() !== '' &&
+        data.business_email.trim() !== '' &&
+        data.postal_code.trim() !== '' &&
+        data.business_description.trim() !== '' &&
+        data.business_address.trim() !== '' &&
+        data.business_category_id !== 0;
+
+    const isStep4Valid = data.bank_code.trim() !== '' && data.bank_account_number.trim() !== '' && data.bank_account_name.trim() !== '';
+
+    const isStep5Valid = data.tax_identification_number.trim() !== '';
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -321,7 +316,7 @@ export default function RegisterMerchantPage() {
                             <Button
                                 type="button"
                                 onClick={nextStep}
-                                disabled={processing}
+                                disabled={processing || !isStep1Valid}
                                 className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                             >
                                 Lanjut
@@ -347,7 +342,7 @@ export default function RegisterMerchantPage() {
                                 <Button
                                     type="button"
                                     onClick={nextStep}
-                                    disabled={processing}
+                                    disabled={processing || !isStep2Valid}
                                     className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                                 >
                                     Lanjut
@@ -538,7 +533,7 @@ export default function RegisterMerchantPage() {
                                 <Button
                                     type="button"
                                     onClick={nextStep}
-                                    disabled={processing}
+                                    disabled={processing || !isStep3Valid}
                                     className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                                 >
                                     Lanjut
@@ -624,7 +619,7 @@ export default function RegisterMerchantPage() {
                             <Button
                                 type="button"
                                 onClick={nextStep}
-                                disabled={processing}
+                                disabled={processing || !isStep4Valid}
                                 className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                             >
                                 Lanjut
@@ -671,7 +666,7 @@ export default function RegisterMerchantPage() {
                                     type="button"
                                     className="w-full cursor-pointer bg-black py-6 transition-all"
                                     tabIndex={5}
-                                    disabled={processing}
+                                    disabled={processing || !isStep5Valid}
                                 >
                                     Selesaikan Pendaftaran
                                 </Button>
