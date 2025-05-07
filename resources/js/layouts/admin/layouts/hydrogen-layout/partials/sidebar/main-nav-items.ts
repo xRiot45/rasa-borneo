@@ -29,16 +29,16 @@ const mainNavItems: NavGroup[] = [
                 href: '/admin/manajemen-kontrol-akses/roles',
                 icon: 'eos-icons:role-binding',
             },
-            {
-                title: 'Permissions / Izin',
-                href: '/admin/manajemen-kontrol-akses/permissions',
-                icon: 'material-symbols:security',
-            },
-            {
-                title: 'Kelola Izin Peran',
-                href: '/admin/manajemen-kontrol-akses/manage-role-permissions',
-                icon: 'material-symbols:manage-accounts-outline-rounded',
-            },
+            // {
+            //     title: 'Permissions / Izin',
+            //     href: '/admin/manajemen-kontrol-akses/permissions',
+            //     icon: 'material-symbols:security',
+            // },
+            // {
+            //     title: 'Kelola Izin Peran',
+            //     href: '/admin/manajemen-kontrol-akses/manage-role-permissions',
+            //     icon: 'material-symbols:manage-accounts-outline-rounded',
+            // },
         ],
     },
     {
@@ -58,6 +58,61 @@ const mainNavItems: NavGroup[] = [
                 title: 'Merchant',
                 href: '/admin/users-management/merchants',
                 icon: 'material-symbols:storefront',
+            },
+        ],
+    },
+    {
+        group: 'LAPORAN & ANALITIK',
+        items: [
+            {
+                title: 'Laporan & Analitik',
+                href: '/admin/reports',
+                icon: 'mdi:chart-line',
+            },
+        ],
+    },
+    {
+        group: 'PENGATURAN',
+        items: [
+            {
+                title: 'Pengaturan Sistem',
+                href: '/admin/system-settings',
+                icon: 'mdi:settings',
+            },
+            {
+                title: 'Pengaturan Pembayaran',
+                href: '/admin/payment-settings',
+                icon: 'mdi:credit-card-check',
+            },
+            {
+                title: 'Keamanan & Privasi',
+                href: '/admin/security-privacy',
+                icon: 'mdi:shield-lock',
+            },
+            {
+                title: 'Pengaturan Notifikasi & Email',
+                href: '/admin/notification-settings',
+                icon: 'mdi:bell-ring',
+            },
+            {
+                title: 'Manajemen Konten',
+                href: '/admin/content-management',
+                icon: 'mdi:folder-edit',
+            },
+            {
+                title: 'Pengaturan Tarif & Diskon',
+                href: '/admin/discount-settings',
+                icon: 'mdi:tag-multiple',
+            },
+            {
+                title: 'Log Aktivitas',
+                href: '/admin/activity-log',
+                icon: 'mdi:history',
+            },
+            {
+                title: 'Backup & Pemulihan Data',
+                href: '/admin/data-backup',
+                icon: 'mdi:database-refresh',
             },
         ],
     },
