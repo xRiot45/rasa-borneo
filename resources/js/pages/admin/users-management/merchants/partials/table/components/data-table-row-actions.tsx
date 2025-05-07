@@ -68,7 +68,7 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[250px]">
-                    <Link href={route('admin.all-users.edit', { id: row.original.id })} className="cursor-po">
+                    <Link href={route('admin.merchants.show', { id: row.original.id })} className="cursor-po">
                         <DropdownMenuItem className="cursor-pointer">
                             Lihat Detail Merchant
                             <DropdownMenuShortcut>

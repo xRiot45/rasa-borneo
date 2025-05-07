@@ -8,6 +8,7 @@ interface User {
     password: string;
     password_confirmation: string;
     roles: Role[];
+    email_verified_at?: string;
 }
 
 interface UserForm {

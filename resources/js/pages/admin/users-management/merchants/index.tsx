@@ -22,7 +22,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function MerchantsPage({ data }: MerchantPageProps) {
-    console.log(data);
     return (
         <>
             <AdminLayout breadcrumbs={breadcrumbs}>

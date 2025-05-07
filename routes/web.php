@@ -97,6 +97,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(MerchantController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('admin.merchants.index');
+                Route::get('/show/{merchant}', 'show')->name('admin.merchants.show');
                 Route::put('/verify/{merchant}', 'verifyMerchant')->name('admin.merchants.verify');
             });
     });
