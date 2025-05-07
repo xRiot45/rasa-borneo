@@ -3,6 +3,7 @@
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
+use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+// Admin
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index_admin'])->name('admin.dashboard');
 
@@ -88,6 +90,18 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('admin.all-users.edit');
                 Route::put('/edit/{id}', 'update')->name('admin.all-users.update');
                 Route::delete('/delete/{id}', 'destroy')->name('admin.all-users.destroy');
+            });
+
+        // Merchant
+        Route::prefix('/merchants')
+            ->controller(MerchantController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('admin.merchants.index');
+                // Route::get('/create', 'create')->name('admin.merchants.create');
+                // Route::post('/create', 'store')->name('admin.merchants.store');
+                // Route::get('/edit/{id}', 'edit')->name('admin.merchants.edit');
+                // Route::put('/edit/{id}', 'update')->name('admin.merchants.update');
+                // Route::delete('/delete/{id}', 'destroy')->name('admin.merchants.destroy');
             });
     });
 });

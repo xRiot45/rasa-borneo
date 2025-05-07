@@ -51,23 +51,13 @@ const mainNavItems: NavGroup[] = [
             },
             {
                 title: 'Customer',
-                href: '/admin/users-management/customer',
+                href: '/admin/users-management/customers',
                 icon: 'carbon:customer',
             },
             {
-                title: 'Admin',
-                href: '/admin/users-management/admin',
-                icon: 'ri:admin-line',
-            },
-            {
-                title: 'Chef',
-                href: '/admin/users-management/chef',
-                icon: 'hugeicons:chef',
-            },
-            {
-                title: 'Cashier',
-                href: '/admin/users-management/cashier',
-                icon: 'hugeicons:cashier',
+                title: 'Merchant',
+                href: '/admin/users-management/merchants',
+                icon: 'material-symbols:storefront',
             },
         ],
     },
