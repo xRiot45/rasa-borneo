@@ -52,4 +52,15 @@ class MerchantController extends Controller
             ->back()
             ->with(['success' => 'Usaha berhasil diverifikasi']);
     }
+
+    public function softDelete(Merchant $merchant): RedirectResponse
+    {
+        $user = $merchant->user()->first();
+
+        $user->delete();
+        $merchant->delete();
+        return redirect()
+            ->back()
+            ->with(['success' => 'Merchant berhasil dihapus sementara']);
+    }
 }

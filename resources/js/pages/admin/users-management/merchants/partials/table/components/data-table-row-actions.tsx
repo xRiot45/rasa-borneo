@@ -58,6 +58,31 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
         );
     };
 
+    const handleSoftDelete = (id: number) => {
+        router.delete(route('admin.merchants.softDelete', { id }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Merchant Berhasil Dihapus Sementara!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     return (
         <>
             <DropdownMenu>
@@ -112,6 +137,33 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                             </AlertDialog>
                         </>
                     )}
+
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                Hapus Data Sementara
+                                <DropdownMenuShortcut>
+                                    <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
+                                </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Hapus Data Sementara</AlertDialogTitle>
+                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={() => handleSoftDelete(row.original.id)}
+                                    className="cursor-pointer bg-amber-600 transition-all"
+                                >
+                                    Hapus Sementara
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    <DropdownMenuSeparator />
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
