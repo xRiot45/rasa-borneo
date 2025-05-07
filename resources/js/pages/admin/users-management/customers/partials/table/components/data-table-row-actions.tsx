@@ -20,11 +20,39 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Customer } from '@/models/customer';
 import { Icon } from '@iconify/react';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
+import { toast } from 'sonner';
 
 export function DataTableRowActions({ row }: { row: Row<Customer> }) {
+    const deletedAtAlreadyExist = row.original.deleted_at !== null;
+
+    const handleSoftDelete = (id: number) => {
+        router.delete(route('admin.customers.softDelete', { id }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Customer Berhasil Dihapus Sementara!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     return (
         <>
             <DropdownMenu>
@@ -44,27 +72,35 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                         </DropdownMenuItem>
                     </Link>
                     <DropdownMenuSeparator />
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
-                                Hapus Data
-                                <DropdownMenuShortcut>
-                                    <Icon icon={'material-symbols:delete'} className="!text-red-500" />
-                                </DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Hapus Data</AlertDialogTitle>
-                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
-                            </AlertDialogHeader>
-
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                <AlertDialogAction className="cursor-pointer bg-red-600 transition-all">Hapus Customer</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    {!deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                        Hapus Data Sementara
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Hapus Data Sementara</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini Sementara?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleSoftDelete(row.original.id)}
+                                            className="cursor-pointer bg-amber-600 transition-all"
+                                        >
+                                            Hapus Sementara
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

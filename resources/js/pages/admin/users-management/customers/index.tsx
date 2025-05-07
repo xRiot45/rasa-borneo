@@ -21,6 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CustomersPage({ data }: CustomersPageProps) {
+    console.log(data);
     return (
         <AdminLayout breadcrumbs={breadcrumbs}>
             <div className="mb-2 flex flex-wrap justify-between space-y-2 p-4">
