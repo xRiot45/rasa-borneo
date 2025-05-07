@@ -56,17 +56,20 @@ class MerchantController extends Controller
             ->with(['success' => 'Merchant berhasil dihapus sementara']);
     }
 
-    public function forceDelete(Merchant $merchant): RedirectResponse
+    public function forceDelete(int $id): RedirectResponse
     {
-        $user = $merchant->user()->first();
-        $user->forceDelete();
+        $merchant = Merchant::onlyTrashed()->with('user')->findOrFail($id);
+        if ($merchant->user()->withTrashed()->exists()) {
+            $merchant->user()->withTrashed()->first()->forceDelete();
+        }
+
         $merchant->forceDelete();
         return redirect()
             ->back()
             ->with(['success' => 'Merchant berhasil dihapus permanen']);
     }
 
-    public function restore($id): RedirectResponse
+    public function restore(int $id): RedirectResponse
     {
         $merchant = Merchant::onlyTrashed()->with('user')->findOrFail($id);
         if ($merchant->user()->withTrashed()->exists()) {

@@ -84,6 +84,31 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
         });
     };
 
+    const handleForceDelete = (id: number) => {
+        router.delete(route('admin.merchants.forceDelete', { id }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Merchant Berhasil Dihapus Permanen!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     const handleRestoreData = (id: number) => {
         router.patch(
             route('admin.merchants.restore', { id }),
@@ -195,7 +220,6 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                            <DropdownMenuSeparator />
                         </>
                     )}
 
@@ -206,7 +230,7 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                                     <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
                                         Pulihkan Data
                                         <DropdownMenuShortcut>
-                                            <Icon icon={'material-symbols:delete'} className="!text-blue-500" />
+                                            <Icon icon={'fa-solid:trash-restore-alt'} className="!text-blue-500" />
                                         </DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                 </AlertDialogTrigger>
@@ -227,6 +251,36 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                                 </AlertDialogContent>
                             </AlertDialog>
                             <DropdownMenuSeparator />
+                        </>
+                    )}
+
+                    {deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
+                                        Hapus Data Permanen
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:delete'} className="!text-red-500" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Hapus Data Permanen</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleForceDelete(row.original.id)}
+                                            className="cursor-pointer bg-red-600 transition-all"
+                                        >
+                                            Hapus Permanen
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </>
                     )}
                 </DropdownMenuContent>
