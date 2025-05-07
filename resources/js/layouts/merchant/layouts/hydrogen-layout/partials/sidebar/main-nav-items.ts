@@ -6,7 +6,7 @@ const mainNavItems: NavGroup[] = [
         items: [
             {
                 title: 'Dashboard',
-                href: '/chef/dashboard',
+                href: '/merchant/dashboard',
                 icon: 'material-symbols:dashboard',
             },
         ],

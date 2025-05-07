@@ -1,7 +1,17 @@
+import MerchantLayout from '@/layouts/merchant/layout';
+import { BreadcrumbItem } from '@/types';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+];
+
 export default function DashboardPage() {
     return (
         <>
-            <h1>Merchant</h1>
+            <MerchantLayout breadcrumbs={breadcrumbs}>Merchant</MerchantLayout>
         </>
     );
 }
