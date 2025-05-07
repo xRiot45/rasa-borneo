@@ -18,45 +18,42 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { Merchant } from '@/models/merchant';
-import { UserDeleteForm } from '@/models/user';
 import { Icon } from '@iconify/react';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
-    const { data, setData, processing, reset } = useForm<Required<UserDeleteForm>>({
-        password: '',
-    });
-
-    const handleDelete = (userId: number) => {
-        router.delete(route('admin.all-users.destroy', { id: userId }), {
-            data: { password: data.password },
-            onSuccess: () => {
-                toast.success('Success', {
-                    description: 'Pengguna Berhasil Dihapus!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-                reset();
+    const handleVerifyMerchant = (id: number) => {
+        router.put(
+            route('admin.merchants.verify', { id }),
+            {},
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Merchant Berhasil Diverifikasi!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
             },
-            onError: (error) => {
-                reset();
-                toast.error('Error', {
-                    description: error.message || 'Pengguna Gagal Dihapus!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-        });
+        );
     };
 
     return (
@@ -68,41 +65,42 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                         <span className="sr-only">Open menu</span>
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[160px]">
+                <DropdownMenuContent align="end" className="w-[250px]">
                     <Link href={route('admin.all-users.edit', { id: row.original.id })} className="cursor-po">
                         <DropdownMenuItem className="cursor-pointer">
-                            Edit Data
+                            Lihat Detail Merchant
                             <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:edit'} />
+                                <Icon icon={'material-symbols:storefront'} />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
                     <DropdownMenuSeparator />
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
-                                Hapus Data
+                            <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                Verifikasi Merchant
                                 <DropdownMenuShortcut>
-                                    <Icon icon={'material-symbols:delete'} className="!text-red-500" />
+                                    <Icon icon={'material-symbols:verified'} className="!text-blue-500" />
                                 </DropdownMenuShortcut>
                             </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Hapus Data</AlertDialogTitle>
-                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                                <AlertDialogTitle>Verifikasi Merchant</AlertDialogTitle>
+                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Memverifikasi Data Merchant Ini?</AlertDialogDescription>
                             </AlertDialogHeader>
-                            <Input
-                                type="password"
-                                placeholder="Password"
-                                value={data?.password}
-                                onChange={(e) => setData('password', e.target.value)}
-                            />
                             <AlertDialogFooter>
                                 <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(row.original.id)} className="cursor-pointer bg-red-600 transition-all">
-                                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    Hapus Pengguna
+                                <AlertDialogAction
+                                    onClick={() => handleVerifyMerchant(row.original.id)}
+                                    className="cursor-pointer bg-blue-600 transition-all"
+                                >
+                                    {row.original.is_verified ? 'Tidak Verifikasi' : 'Verifikasi'}
+                                    {row.original.is_verified ? (
+                                        <LoaderCircle className="animate-spin" />
+                                    ) : (
+                                        <Icon icon={'material-symbols:verified'} />
+                                    )}
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>

@@ -17,7 +17,7 @@ export const columns: ColumnDef<Merchant>[] = [
     },
     {
         id: 'business_name',
-        accessorKey: 'merchant.business_name',
+        accessorKey: 'business_name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Usaha" />,
         cell: ({ row }) => <span>{row.original?.business_name || '-'}</span>,
         meta: {
@@ -27,19 +27,8 @@ export const columns: ColumnDef<Merchant>[] = [
         enableSorting: false,
     },
     {
-        id: 'business_phone',
-        accessorKey: 'merchant.business_phone',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Nomor Telepon Usaha" />,
-        cell: ({ row }) => <span>{row.original?.business_phone || '-'}</span>,
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableHiding: false,
-        enableSorting: false,
-    },
-    {
         id: 'business_email',
-        accessorKey: 'merchant.business_email',
+        accessorKey: 'business_email',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Email Usaha" />,
         cell: ({ row }) => <span className="max-w-36">{row.original?.business_email || '-'}</span>,
         meta: {
@@ -49,8 +38,19 @@ export const columns: ColumnDef<Merchant>[] = [
         enableSorting: false,
     },
     {
+        id: 'business_phone',
+        accessorKey: 'business_phone',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Nomor Telepon Usaha" />,
+        cell: ({ row }) => <span>{row.original?.business_phone || '-'}</span>,
+        meta: {
+            className: cn('pe-22'),
+        },
+        enableHiding: false,
+        enableSorting: false,
+    },
+    {
         id: 'business_address',
-        accessorKey: 'merchant.business_address',
+        accessorKey: 'business_address',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Alamat Usaha" />,
         cell: ({ row }) => <span className="max-w-36">{row.original?.business_address || '-'}</span>,
         meta: {
@@ -61,11 +61,17 @@ export const columns: ColumnDef<Merchant>[] = [
     },
     {
         id: 'business_category',
-        accessorKey: 'merchant.business_category',
+        accessorKey: 'business_category',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Kategori Usaha" />,
         cell: ({ row }) => <span className="max-w-36">{row.original?.business_category?.name || '-'}</span>,
         meta: {
             className: cn('pe-22'),
+        },
+        accessorFn: (row) => {
+            return row?.business_category?.name || '';
+        },
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id));
         },
         enableHiding: false,
         enableSorting: false,

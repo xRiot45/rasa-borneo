@@ -97,11 +97,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(MerchantController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('admin.merchants.index');
-                // Route::get('/create', 'create')->name('admin.merchants.create');
-                // Route::post('/create', 'store')->name('admin.merchants.store');
-                // Route::get('/edit/{id}', 'edit')->name('admin.merchants.edit');
-                // Route::put('/edit/{id}', 'update')->name('admin.merchants.update');
-                // Route::delete('/delete/{id}', 'destroy')->name('admin.merchants.destroy');
+                Route::put('/verify/{merchant}', 'verifyMerchant')->name('admin.merchants.verify');
             });
     });
 });
