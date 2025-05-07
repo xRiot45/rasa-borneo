@@ -190,11 +190,13 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
+                            <DropdownMenuSeparator />
                         </>
                     )}
 
                     {!deletedAtAlreadyExist && (
                         <>
+                            <DropdownMenuSeparator />
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
@@ -225,6 +227,7 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
 
                     {deletedAtAlreadyExist && (
                         <>
+                            <DropdownMenuSeparator />
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>

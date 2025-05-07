@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Merchant;
 use App\Notifications\MerchantVerifiedNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -61,6 +62,14 @@ class MerchantController extends Controller
         $merchant = Merchant::onlyTrashed()->with('user')->findOrFail($id);
         if ($merchant->user()->withTrashed()->exists()) {
             $merchant->user()->withTrashed()->first()->forceDelete();
+        }
+
+        if ($merchant->id_card_photo) {
+            $path = str_replace('/storage/', '', $merchant->id_card_photo);
+
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
         }
 
         $merchant->forceDelete();
