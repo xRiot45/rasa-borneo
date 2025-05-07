@@ -31,14 +31,23 @@ class AuthenticatedSessionController extends Controller
         $user = User::find(Auth::user()->id);
         if ($user->hasRole('admin')) {
             return redirect()->intended(route('admin.dashboard', absolute: false));
-        } else if ($user->hasRole('courier')) {
-            return redirect()->intended(route('courier.dashboard', absolute: false));
-        } else if ($user->hasRole('customer')) {
+        }
+
+        if ($user->hasRole('merchant')) {
+            $merchant = $user->merchant;
+
+            if (!$merchant || !$merchant->is_verified) {
+                Auth::logout();
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Akun merchant Anda belum diverifikasi.',
+                ]);
+            }
+
+            return redirect()->intended(route('merchant.dashboard', absolute: false));
+        }
+
+        if ($user->hasRole('customer')) {
             return redirect()->intended(route('home', absolute: false));
-        } else if ($user->hasRole('cashier')) {
-            return redirect()->intended(route('cashier.dashboard', absolute: false));
-        } else if ($user->hasRole('chef')) {
-            return redirect()->intended(route('chef.dashboard', absolute: false));
         }
 
         return redirect()->intended(route('admin.dashboard', absolute: false));
