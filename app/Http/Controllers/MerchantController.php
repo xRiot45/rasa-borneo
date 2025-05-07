@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Merchant;
 use App\Models\User;
+use App\Notifications\MerchantVerifiedNotification;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,6 +36,7 @@ class MerchantController extends Controller
     public function verifyMerchant(Merchant $merchant): RedirectResponse
     {
         $merchant->update(['is_verified' => true]);
+        $merchant->user->notify(new MerchantVerifiedNotification($merchant));
         return redirect()->back()->with(['success' => 'Usaha berhasil diverifikasi']);
     }
 }
