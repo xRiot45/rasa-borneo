@@ -7,4 +7,8 @@ export interface Customer {
     birthdate: Date;
     gender: GenderEnum.MALE | GenderEnum.FEMALE;
     user: User;
+
+    created_at?: string;
+    updated_at?: string;
+    deleted_at?: string;
 }

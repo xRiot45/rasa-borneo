@@ -34,12 +34,12 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                         <span className="sr-only">Open menu</span>
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[160px]">
-                    <Link href={route('admin.all-users.edit', { id: row.original.id })} className="cursor-po">
+                <DropdownMenuContent align="end" className="w-[260px]">
+                    <Link href={route('admin.customers.show', { id: row.original.id })} className="cursor-pointer">
                         <DropdownMenuItem className="cursor-pointer">
-                            Edit Data
+                            Lihat Detail Customer
                             <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:edit'} />
+                                <Icon icon={'material-symbols:storefront'} />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
