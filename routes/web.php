@@ -106,16 +106,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'verified', 'role:chef'])->group(function () {
-    Route::get('/chef/dashboard', [DashboardController::class, 'index_chef'])->name('chef.dashboard');
-});
-
-Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
-    Route::get('/courier/dashboard', [DashboardController::class, 'index_courier'])->name('courier.dashboard');
-});
-
-Route::middleware(['auth', 'verified', 'role:cashier'])->group(function () {
-    Route::get('/cashier/dashboard', [DashboardController::class, 'index_cashier'])->name('cashier.dashboard');
+Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
+    Route::get('/merchant/dashboard', [DashboardController::class, 'index_merchant'])->name('merchant.dashboard');
 });
 
 require __DIR__ . '/settings.php';

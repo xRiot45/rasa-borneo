@@ -28,13 +28,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-
-    protected function merchant(): HasOne
+    public function merchant(): HasOne
     {
         return $this->hasOne(Merchant::class);
     }
 
-    protected function customer(): HasOne
+    public function customer(): HasOne
     {
         return $this->hasOne(Customer::class);
     }

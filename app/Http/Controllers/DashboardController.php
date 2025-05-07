@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -13,18 +12,8 @@ class DashboardController extends Controller
         return Inertia::render('admin/dashboard');
     }
 
-    public function index_courier(): Response
+    public function index_merchant(): Response
     {
-        return Inertia::render('courier/dashboard');
-    }
-
-    public function index_cashier(): Response
-    {
-        return Inertia::render('cashier/dashboard');
-    }
-
-    public function index_chef(): Response
-    {
-        return Inertia::render('chef/dashboard');
+        return Inertia::render('merchant/dashboard');
     }
 }
