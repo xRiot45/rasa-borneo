@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BusinessCategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MerchantController;
@@ -90,6 +91,17 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('admin.all-users.edit');
                 Route::put('/edit/{id}', 'update')->name('admin.all-users.update');
                 Route::delete('/delete/{id}', 'destroy')->name('admin.all-users.destroy');
+            });
+
+        // Customer
+        Route::prefix('/customers')
+            ->controller(CustomerController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('admin.customers.index');
+                Route::get('/show/{customer}', 'show')->name('admin.customers.show');
+                // Route::delete('/soft-delete/{customer}', 'softDelete')->name('admin.customers.softDelete');
+                // Route::delete('/force-delete/{customer}', 'forceDelete')->name('admin.customers.forceDelete');
+                // Route::patch('/restore/{customer}', 'restore')->name('admin.customers.restore');
             });
 
         // Merchant
