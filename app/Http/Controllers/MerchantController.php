@@ -28,6 +28,7 @@ class MerchantController extends Controller
 
     public function show(Merchant $merchant): Response
     {
+        $merchant->load('businessCategory', 'user');
         return Inertia::render('admin/users-management/merchants/pages/show', [
             'data' => $merchant,
         ]);
@@ -36,7 +37,19 @@ class MerchantController extends Controller
     public function verifyMerchant(Merchant $merchant): RedirectResponse
     {
         $merchant->update(['is_verified' => true]);
+
+        $user = $merchant->user()->first();
+
         $merchant->user->notify(new MerchantVerifiedNotification($merchant));
-        return redirect()->back()->with(['success' => 'Usaha berhasil diverifikasi']);
+
+        $user
+            ->forceFill([
+                'email_verified_at' => now(),
+            ])
+            ->save();
+
+        return redirect()
+            ->back()
+            ->with(['success' => 'Usaha berhasil diverifikasi']);
     }
 }
