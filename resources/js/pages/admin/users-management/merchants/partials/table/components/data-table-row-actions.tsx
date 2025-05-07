@@ -27,6 +27,8 @@ import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
+    const merchantIsVerified = row.original.is_verified;
+
     const handleVerifyMerchant = (id: number) => {
         router.put(
             route('admin.merchants.verify', { id }),
@@ -74,37 +76,42 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
-                    <DropdownMenuSeparator />
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
-                                Verifikasi Merchant
-                                <DropdownMenuShortcut>
-                                    <Icon icon={'material-symbols:verified'} className="!text-blue-500" />
-                                </DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Verifikasi Merchant</AlertDialogTitle>
-                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Memverifikasi Data Merchant Ini?</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                <AlertDialogAction
-                                    onClick={() => handleVerifyMerchant(row.original.id)}
-                                    className="cursor-pointer bg-blue-600 transition-all"
-                                >
-                                    {row.original.is_verified ? 'Tidak Verifikasi' : 'Verifikasi'}
-                                    {row.original.is_verified ? (
-                                        <LoaderCircle className="animate-spin" />
-                                    ) : (
-                                        <Icon icon={'material-symbols:verified'} />
-                                    )}
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+
+                    {!merchantIsVerified && (
+                        <>
+                            <DropdownMenuSeparator />
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                        Verifikasi Merchant
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:verified'} className="!text-blue-500" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Verifikasi Merchant</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Memverifikasi Data Merchant Ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleVerifyMerchant(row.original.id)}
+                                            className="cursor-pointer bg-blue-600 transition-all"
+                                        >
+                                            {row.original.is_verified ? 'Tidak Verifikasi' : 'Verifikasi'}
+                                            {row.original.is_verified ? (
+                                                <LoaderCircle className="animate-spin" />
+                                            ) : (
+                                                <Icon icon={'material-symbols:verified'} />
+                                            )}
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

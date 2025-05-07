@@ -5,6 +5,7 @@ import { DataTableToolbarProps } from '@/types/tanstack';
 import { Icon } from '@iconify/react';
 import { usePage } from '@inertiajs/react';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
+import { MerchantStatusFilter } from './data-table-status-filter';
 import { DataTableViewOptions } from './data-table-view-options';
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
@@ -46,6 +47,12 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                             }))}
                         />
                     )}
+                </div>
+
+                <div className="flex gap-x-2">
+                    <div className="flex gap-x-2">
+                        {table.getColumn('merchant_status') && <MerchantStatusFilter column={table.getColumn('merchant_status')} />}
+                    </div>
                 </div>
 
                 {isFiltered && (

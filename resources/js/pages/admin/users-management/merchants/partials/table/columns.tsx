@@ -78,13 +78,22 @@ export const columns: ColumnDef<Merchant>[] = [
     },
     {
         id: 'merchant_status',
+
         header: ({ column }) => <DataTableColumnHeader column={column} title="Status Verifikasi" />,
         cell: ({ row }) => {
-            const isVerified = row.original?.is_verified;
-            return <Badge className={isVerified ? 'bg-green-600' : 'bg-red-600'}>{isVerified ? 'Terverifikasi' : 'Belum Diverifikasi'}</Badge>;
+            const isVerified = row.original.is_verified === 1;
+            return (
+                <Badge className={isVerified ? 'bg-blue-600 text-white' : 'bg-red-600 text-white'}>
+                    {isVerified ? 'Terverifikasi' : 'Belum Diverifikasi'}
+                </Badge>
+            );
         },
         meta: {
             className: cn('pe-22'),
+        },
+        accessorFn: (row) => row.is_verified,
+        filterFn: (row, id, value) => {
+            return value.includes(row.original.is_verified);
         },
         enableHiding: false,
         enableSorting: false,

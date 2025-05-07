@@ -31,7 +31,7 @@ export interface Merchant {
     tax_identification_number: string;
 
     // Informasi Verifikasi
-    is_verified: boolean;
+    is_verified: number;
 
     // Timestamps (optional, jika kamu pakai di frontend)
     created_at?: string;
