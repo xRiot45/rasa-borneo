@@ -5,3 +5,7 @@ export interface MenuCategory {
     updated_at?: string;
     deleted_at?: string;
 }
+
+export interface MenuCategoryForm {
+    name: string;
+}
