@@ -15,7 +15,10 @@ class MenuCategoryController extends Controller
 {
     public function index_merchant(): Response
     {
-        $menuCategories = MenuCategory::withTrashed()->get();
+        $user = Auth::user();
+        $merchantId = $user->merchant->id;
+
+        $menuCategories = MenuCategory::withTrashed()->where('merchant_id', $merchantId)->get();
         return Inertia::render('merchant/menu-management/menu-categories/index', [
             'data' => $menuCategories,
         ]);
