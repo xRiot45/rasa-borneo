@@ -19,11 +19,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Kategori menu',
-        href: '/admin/menu-management/menu-categories',
+        href: '/merchant/menu-management/menu-categories',
     },
     {
         title: 'Edit Kategori Menu',
-        href: '/admin/menu-management/menu-categories/edit',
+        href: '/merchant/menu-management/menu-categories/edit',
     },
 ];
 
