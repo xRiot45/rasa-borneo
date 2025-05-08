@@ -46,12 +46,22 @@ const mainNavItems: NavGroup[] = [
         items: [
             {
                 title: 'Profil Toko',
-                href: '/merchant/store-profile',
+                href: '/merchant/store-management/store-profile',
                 icon: 'mdi:store-settings',
             },
             {
+                title: 'Galeri Toko',
+                href: '/merchant/store-management/store-gallery',
+                icon: 'mdi:image-multiple',
+            },
+            {
+                title: 'Jam Operasi Toko',
+                href: '/merchant/store-management/store-operating-hours',
+                icon: 'mdi:clock',
+            },
+            {
                 title: 'Promo & Diskon',
-                href: '/merchant/promotions',
+                href: '/merchant/store-management/store-promotions',
                 icon: 'mdi:tag-multiple',
             },
             // {
