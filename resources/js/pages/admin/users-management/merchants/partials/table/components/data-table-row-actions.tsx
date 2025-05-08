@@ -148,21 +148,23 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[250px]">
-                    <Link href={route('admin.merchants.show', { id: row.original.id })} className="cursor-po">
-                        <DropdownMenuItem className="cursor-pointer">
-                            Lihat Detail Merchant
-                            <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:storefront'} />
-                            </DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                    </Link>
+                    {!deletedAtAlreadyExist && (
+                        <Link href={route('admin.merchants.show', { id: row.original.id })} className="cursor-po">
+                            <DropdownMenuItem className="cursor-pointer p-3">
+                                Lihat Detail Merchant
+                                <DropdownMenuShortcut>
+                                    <Icon icon={'material-symbols:storefront'} />
+                                </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                        </Link>
+                    )}
 
+                    {/* Verify Merchant */}
                     {!merchantIsVerified && (
                         <>
-                            <DropdownMenuSeparator />
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-blue-500" onSelect={(e) => e.preventDefault()}>
                                         Verifikasi Merchant
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:verified'} className="!text-blue-500" />
@@ -194,12 +196,12 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                         </>
                     )}
 
+                    {/* Soft Delete */}
                     {!deletedAtAlreadyExist && (
                         <>
-                            <DropdownMenuSeparator />
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-amber-600" onSelect={(e) => e.preventDefault()}>
                                         Hapus Data Sementara
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
@@ -225,12 +227,12 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                         </>
                     )}
 
+                    {/* Restore Data */}
                     {deletedAtAlreadyExist && (
                         <>
-                            <DropdownMenuSeparator />
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-blue-500" onSelect={(e) => e.preventDefault()}>
                                         Pulihkan Data
                                         <DropdownMenuShortcut>
                                             <Icon icon={'fa-solid:trash-restore-alt'} className="!text-blue-500" />
@@ -257,11 +259,12 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                         </>
                     )}
 
+                    {/* Hard Delete */}
                     {deletedAtAlreadyExist && (
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-red-500" onSelect={(e) => e.preventDefault()}>
                                         Hapus Data Permanen
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:delete'} className="!text-red-500" />

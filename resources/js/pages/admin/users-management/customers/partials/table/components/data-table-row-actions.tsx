@@ -10,14 +10,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Customer } from '@/models/customer';
 import { Icon } from '@iconify/react';
 import { Link, router } from '@inertiajs/react';
@@ -117,22 +110,23 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('admin.customers.show', { id: row.original.id })} className="cursor-pointer">
-                        <DropdownMenuItem className="cursor-pointer">
-                            Lihat Detail Customer
-                            <DropdownMenuShortcut>
-                                <Icon icon={'carbon:customer'} />
-                            </DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuSeparator />
+                    {!deletedAtAlreadyExist && (
+                        <Link href={route('admin.customers.show', { id: row.original.id })} className="cursor-pointer">
+                            <DropdownMenuItem className="cursor-pointer p-3">
+                                Lihat Detail Customer
+                                <DropdownMenuShortcut>
+                                    <Icon icon={'carbon:customer'} />
+                                </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                        </Link>
+                    )}
 
                     {/* Soft Delete */}
                     {!deletedAtAlreadyExist && (
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-amber-600" onSelect={(e) => e.preventDefault()}>
                                         Hapus Data Sementara
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
@@ -163,7 +157,7 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-blue-500" onSelect={(e) => e.preventDefault()}>
                                         Pulihkan Data
                                         <DropdownMenuShortcut>
                                             <Icon icon={'fa-solid:trash-restore-alt'} className="!text-blue-500" />
@@ -186,7 +180,6 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                            <DropdownMenuSeparator />
                         </>
                     )}
 
@@ -195,7 +188,7 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-red-500" onSelect={(e) => e.preventDefault()}>
                                         Hapus Data Permanen
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:delete'} className="!text-red-500" />
