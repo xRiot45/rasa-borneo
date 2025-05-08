@@ -28,6 +28,11 @@ class MenuCategory extends Model
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);

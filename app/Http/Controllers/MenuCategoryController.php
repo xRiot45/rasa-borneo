@@ -35,7 +35,7 @@ class MenuCategoryController extends Controller
 
         if ($menuCategoryAlreadyExist) {
             throw ValidationException::withMessages([
-                'name' => 'Kategori Menu sudah ada',
+                'name' => 'Kategori dengan nama tersebut sudah ada.',
             ]);
         }
 
@@ -45,5 +45,33 @@ class MenuCategoryController extends Controller
         ]);
 
         return redirect()->route('merchant.menu-categories.index')->with('success', 'Category created successfully');
+    }
+
+    public function edit(MenuCategory $menuCategory): Response
+    {
+        return Inertia::render('merchant/menu-management/menu-categories/pages/edit', [
+            'data' => $menuCategory,
+        ]);
+    }
+
+    public function update(MenuCategoryRequest $request, MenuCategory $menuCategory): RedirectResponse
+    {
+        $authenticatedUser = Auth::user();
+        $merchant = $authenticatedUser->merchant;
+
+        $menuCategoryAlreadyExist = MenuCategory::where('name', $request->name)->where('merchant_id', $merchant->id)->where('id', '!=', $menuCategory->id)->exists();
+
+        if ($menuCategoryAlreadyExist) {
+            throw ValidationException::withMessages([
+                'name' => 'Kategori dengan nama tersebut sudah ada.',
+            ]);
+        }
+
+        // Update jika valid
+        $menuCategory->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('merchant.menu-categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 }

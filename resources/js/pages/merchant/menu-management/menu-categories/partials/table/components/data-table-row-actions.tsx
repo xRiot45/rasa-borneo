@@ -18,14 +18,14 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BusinessCategory } from '@/models/business-category';
+import { MenuCategory } from '@/models/menu-category';
 import { Icon } from '@iconify/react';
 import { Link, router } from '@inertiajs/react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import { toast } from 'sonner';
 
-export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
+export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
     const deletedAtAlreadyExist = row.original.deleted_at !== null;
 
     const handleSoftDelete = (id: number) => {
@@ -117,7 +117,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('admin.business-category.edit', { id: row.original.id })} className="cursor-po">
+                    <Link href={route('merchant.menu-categories.edit', { menuCategory: row.original.slug })} className="cursor-pointer">
                         <DropdownMenuItem className="cursor-pointer">
                             Edit Data
                             <DropdownMenuShortcut>
