@@ -53,6 +53,31 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
         });
     };
 
+    const handleForceDelete = (id: number) => {
+        router.delete(route('admin.customers.forceDelete', { id }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Customer Berhasil Dihapus Permanen!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     return (
         <>
             <DropdownMenu>
@@ -67,11 +92,13 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                         <DropdownMenuItem className="cursor-pointer">
                             Lihat Detail Customer
                             <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:storefront'} />
+                                <Icon icon={'carbon:customer'} />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
                     <DropdownMenuSeparator />
+
+                    {/* Soft Delete */}
                     {!deletedAtAlreadyExist && (
                         <>
                             <AlertDialog>
@@ -95,6 +122,37 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                                             className="cursor-pointer bg-amber-600 transition-all"
                                         >
                                             Hapus Sementara
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
+                    )}
+
+                    {/* Hard Delete */}
+                    {deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
+                                        Hapus Data Permanen
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:delete'} className="!text-red-500" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Hapus Data Permanen</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleForceDelete(row.original.id)}
+                                            className="cursor-pointer bg-red-600 transition-all"
+                                        >
+                                            Hapus Permanen
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
