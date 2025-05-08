@@ -116,4 +116,18 @@ class MenuItemController extends Controller
         $menuItem->restore();
         return redirect()->route('merchant.menu-items.index')->with('success', 'Menu item berhasil dipulihkan');
     }
+
+    public function forceDelete(int $id): RedirectResponse
+    {
+        $menuItem = MenuItem::onlyTrashed()->findOrFail($id);
+        if ($menuItem->image_url) {
+            $oldImagePath = str_replace('/storage/', '', $menuItem->image_url);
+            if (Storage::disk('public')->exists($oldImagePath)) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
+        }
+
+        $menuItem->forceDelete();
+        return redirect()->route('merchant.menu-items.index')->with('success', 'Menu item berhasil dihapus permanen');
+    }
 }
