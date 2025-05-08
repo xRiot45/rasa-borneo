@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('price');
-            $table->json('image_url');
+            $table->text('image_url');
             $table->enum('status', MenuItemStatusEnum::values())->default(MenuItemStatusEnum::AVAILABLE->value);
             $table->text('short_description');
             $table->foreignId('menu_category_id')->constrained('menu_categories')->cascadeOnDelete();
