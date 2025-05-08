@@ -25,32 +25,7 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
         router.delete(route('merchant.menu-categories.softDelete', { menuCategory: row.original.slug }), {
             onSuccess: () => {
                 toast.success('Success', {
-                    description: 'Kategori Bisnis Berhasil Dihapus Sementara!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-            onError: (error) => {
-                Object.keys(error).forEach((key) => {
-                    toast.error('Error', {
-                        description: error[key],
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
-                    });
-                });
-            },
-        });
-    };
-
-    const handleForceDelete = () => {
-        router.delete(route('merchant.menu-categories.forceDelete', { menuCategory: row.original.slug }), {
-            onSuccess: () => {
-                toast.success('Success', {
-                    description: 'Kategori Bisnis Berhasil Dihapus Permanen!',
+                    description: 'Kategori Menu Berhasil Dihapus Sementara!',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
@@ -78,7 +53,7 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
             {
                 onSuccess: () => {
                     toast.success('Success', {
-                        description: 'Kategori Bisnis Berhasil Direstore!',
+                        description: 'Kategori Menu Berhasil Direstore!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
@@ -98,6 +73,31 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                 },
             },
         );
+    };
+
+    const handleForceDelete = (id: number) => {
+        router.delete(route('merchant.menu-categories.forceDelete', { id }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Kategori Menu Berhasil Dihapus Permanen!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
     };
 
     return (
@@ -196,7 +196,10 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleForceDelete()} className="cursor-pointer bg-red-600 transition-all">
+                                    <AlertDialogAction
+                                        onClick={() => handleForceDelete(row?.original?.id)}
+                                        className="cursor-pointer bg-red-600 transition-all"
+                                    >
                                         Hapus Permanen
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

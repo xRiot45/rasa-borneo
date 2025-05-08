@@ -88,4 +88,11 @@ class MenuCategoryController extends Controller
         $menuCategory->restore();
         return redirect()->route('merchant.menu-categories.index')->with('success', 'Kategori berhasil dipulihkan');
     }
+
+    public function forceDelete(int $id): RedirectResponse
+    {
+        $menuCategory = MenuCategory::onlyTrashed()->findOrFail($id);
+        $menuCategory->forceDelete();
+        return redirect()->route('merchant.menu-categories.index')->with('success', 'Kategori berhasil dihapus permanen');
+    }
 }
