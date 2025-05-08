@@ -1,9 +1,9 @@
 import { BusinessCategory } from '@/models/business-category';
+import { MenuCategory } from '@/models/menu-category';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
-import { MenuCategory } from '@/models/menu-category';
 
 export const columns: ColumnDef<BusinessCategory>[] = [
     {
