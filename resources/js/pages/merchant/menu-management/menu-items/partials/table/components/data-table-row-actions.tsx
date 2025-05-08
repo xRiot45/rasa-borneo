@@ -34,8 +34,8 @@ export function DataTableRowActions({ row }: { row: Row<MenuItem> }) {
                         <span className="sr-only">Open menu</span>
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[160px]">
-                    <Link href={route('merchant.menu-items.edit', { id: row.original.id })} className="cursor-po">
+                <DropdownMenuContent align="end" className="w-[260px]">
+                    <Link href={route('merchant.menu-items.edit', { menuItem: row.original.slug })} className="cursor-po">
                         <DropdownMenuItem className="cursor-pointer">
                             Edit Data
                             <DropdownMenuShortcut>

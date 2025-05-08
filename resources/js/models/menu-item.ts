@@ -11,8 +11,10 @@ export interface MenuItem {
     is_recommended: boolean;
     menu_category_id: number;
     menu_category: MenuCategory;
+    slug: string;
     created_at?: string;
     updated_at?: string;
+    deletet_at?: string;
 }
 
 export interface MenuItemForm {
