@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PayoutStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Merchant extends Model
@@ -57,5 +58,10 @@ class Merchant extends Model
     public function businessCategory(): BelongsTo
     {
         return $this->belongsTo(BusinessCategory::class);
+    }
+
+    public function menuCategories(): HasMany
+    {
+        return $this->hasMany(MenuCategory::class);
     }
 }
