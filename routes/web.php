@@ -4,6 +4,7 @@ use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
+use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -120,6 +121,22 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
     Route::get('/merchant/dashboard', [DashboardController::class, 'index_merchant'])->name('merchant.dashboard');
+
+    Route::prefix('/merchant/menu-management')->group(function () {
+        // Menu Category
+        Route::prefix('/menu-categories')
+            ->controller(MenuCategoryController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.menu-categories.index');
+                Route::get('/create', 'create')->name('merchant.menu-categories.create');
+                Route::post('/create', 'store')->name('merchant.menu-categories.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.menu-categories.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.menu-categories.update');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.menu-categories.softDelete');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-categories.forceDelete');
+                Route::patch('/restore/{id}', 'restore')->name('merchant.menu-categories.restore');
+            });
+    });
 });
 
 require __DIR__ . '/settings.php';

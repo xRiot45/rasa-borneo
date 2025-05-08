@@ -16,12 +16,12 @@ const mainNavItems: NavGroup[] = [
         items: [
             {
                 title: 'Kategori Menu',
-                href: '/merchant/menu-categories',
+                href: '/merchant/menu-management/menu-categories',
                 icon: 'material-symbols:category',
             },
             {
                 title: 'Menu',
-                href: '/merchant/menu-items',
+                href: '/merchant/menu-management/menu-items',
                 icon: 'ic:baseline-restaurant-menu',
             },
         ],
