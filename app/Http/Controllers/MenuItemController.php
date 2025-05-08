@@ -109,4 +109,11 @@ class MenuItemController extends Controller
             ->back()
             ->with(['success' => 'Menu item berhasil dihapus sementara']);
     }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $menuItem = MenuItem::onlyTrashed()->findOrFail($id);
+        $menuItem->restore();
+        return redirect()->route('merchant.menu-items.index')->with('success', 'Menu item berhasil dipulihkan');
+    }
 }
