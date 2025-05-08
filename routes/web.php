@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
+use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -135,6 +136,19 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::delete('/soft-delete/{menuCategory}', 'softDelete')->name('merchant.menu-categories.softDelete');
                 Route::patch('/restore/{id}', 'restore')->name('merchant.menu-categories.restore');
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-categories.forceDelete');
+            });
+
+        Route::prefix('/menu-items')
+            ->controller(MenuItemController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.menu-items.index');
+                Route::get('/create', 'create')->name('merchant.menu-items.create');
+                Route::post('/create', 'store')->name('merchant.menu-items.store');
+                Route::get('/edit/{menuItem}', 'edit')->name('merchant.menu-items.edit');
+                Route::put('/edit/{menuItem}', 'update')->name('merchant.menu-items.update');
+                Route::delete('/soft-delete/{menuItem}', 'softDelete')->name('merchant.menu-items.softDelete');
+                Route::patch('/restore/{id}', 'restore')->name('merchant.menu-items.restore');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-items.forceDelete');
             });
     });
 });

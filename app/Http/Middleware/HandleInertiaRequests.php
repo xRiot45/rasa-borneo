@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Bank;
 use App\Models\BusinessCategory;
+use App\Models\MenuCategory;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -33,11 +34,13 @@ class HandleInertiaRequests extends Middleware
             ],
             'ziggy' => fn(): array => [...(new Ziggy())->toArray(), 'location' => $request->url()],
 
+
             // Data
             'roles' => Role::all(),
             'permissions' => Permission::all(),
             'businessCategories' => BusinessCategory::all(),
             'banks' => Bank::all(),
+            'menuCategories' => MenuCategory::all(),
         ];
     }
 }
