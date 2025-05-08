@@ -10,14 +10,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { MenuCategory } from '@/models/menu-category';
 import { Icon } from '@iconify/react';
 import { Link, router } from '@inertiajs/react';
@@ -28,8 +21,8 @@ import { toast } from 'sonner';
 export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
     const deletedAtAlreadyExist = row.original.deleted_at !== null;
 
-    const handleSoftDelete = (id: number) => {
-        router.delete(route('admin.business-category.softDelete', { id }), {
+    const handleSoftDelete = () => {
+        router.delete(route('merchant.menu-categories.softDelete', { menuCategory: row.original.slug }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Kategori Bisnis Berhasil Dihapus Sementara!',
@@ -53,8 +46,8 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
         });
     };
 
-    const handleForceDelete = (id: number) => {
-        router.delete(route('admin.business-category.forceDelete', { id }), {
+    const handleForceDelete = () => {
+        router.delete(route('merchant.menu-categories.forceDelete', { menuCategory: row.original.slug }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Kategori Bisnis Berhasil Dihapus Permanen!',
@@ -78,9 +71,9 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
         });
     };
 
-    const handleRestoreData = (id: number) => {
+    const handleRestoreData = () => {
         router.patch(
-            route('admin.business-category.restore', { id }),
+            route('merchant.menu-categories.restore', { menuCategory: row.original.slug }),
             {},
             {
                 onSuccess: () => {
@@ -118,19 +111,20 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
                     <Link href={route('merchant.menu-categories.edit', { menuCategory: row.original.slug })} className="cursor-pointer">
-                        <DropdownMenuItem className="cursor-pointer">
+                        <DropdownMenuItem className="cursor-pointer p-3">
                             Edit Data
                             <DropdownMenuShortcut>
                                 <Icon icon={'material-symbols:edit'} />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
-                    <DropdownMenuSeparator />
+
+                    {/* Soft Delete */}
                     {!deletedAtAlreadyExist && (
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-amber-600" onSelect={(e) => e.preventDefault()}>
                                         Hapus Data Sementara
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
@@ -144,24 +138,21 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => handleSoftDelete(row.original.id)}
-                                            className="cursor-pointer bg-amber-600 transition-all"
-                                        >
+                                        <AlertDialogAction onClick={() => handleSoftDelete()} className="cursor-pointer bg-amber-600 transition-all">
                                             Hapus Sementara
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                            <DropdownMenuSeparator />
                         </>
                     )}
 
+                    {/* Restore Data */}
                     {deletedAtAlreadyExist && (
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-blue-500" onSelect={(e) => e.preventDefault()}>
                                         Pulihkan Data
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:delete'} className="!text-blue-500" />
@@ -175,44 +166,40 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => handleRestoreData(row.original.id)}
-                                            className="cursor-pointer bg-blue-600 transition-all"
-                                        >
+                                        <AlertDialogAction onClick={() => handleRestoreData()} className="cursor-pointer bg-blue-600 transition-all">
                                             Pulihkan
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                            <DropdownMenuSeparator />
                         </>
                     )}
 
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
-                                Hapus Data Permanen
-                                <DropdownMenuShortcut>
-                                    <Icon icon={'material-symbols:delete'} className="!text-red-500" />
-                                </DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Hapus Data Permanen</AlertDialogTitle>
-                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                <AlertDialogAction
-                                    onClick={() => handleForceDelete(row.original.id)}
-                                    className="cursor-pointer bg-red-600 transition-all"
-                                >
-                                    Hapus Permanen
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    {/* Hard Delete */}
+                    {deletedAtAlreadyExist && (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="cursor-pointer p-3 !text-red-500" onSelect={(e) => e.preventDefault()}>
+                                    Hapus Data Permanen
+                                    <DropdownMenuShortcut>
+                                        <Icon icon={'material-symbols:delete'} className="!text-red-500" />
+                                    </DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Hapus Data Permanen</AlertDialogTitle>
+                                    <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleForceDelete()} className="cursor-pointer bg-red-600 transition-all">
+                                        Hapus Permanen
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

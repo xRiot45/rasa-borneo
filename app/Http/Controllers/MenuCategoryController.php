@@ -67,11 +67,18 @@ class MenuCategoryController extends Controller
             ]);
         }
 
-        // Update jika valid
         $menuCategory->update([
             'name' => $request->name,
         ]);
 
         return redirect()->route('merchant.menu-categories.index')->with('success', 'Kategori berhasil diperbarui.');
+    }
+
+    public function softDelete(MenuCategory $menuCategory): RedirectResponse
+    {
+        $menuCategory->delete();
+        return redirect()
+            ->back()
+            ->with(['success' => 'Kategori berhasil dihapus sementara']);
     }
 }
