@@ -71,9 +71,9 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
         });
     };
 
-    const handleRestoreData = () => {
+    const handleRestoreData = (id: number) => {
         router.patch(
-            route('merchant.menu-categories.restore', { menuCategory: row.original.slug }),
+            route('merchant.menu-categories.restore', { id }),
             {},
             {
                 onSuccess: () => {
@@ -166,7 +166,10 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleRestoreData()} className="cursor-pointer bg-blue-600 transition-all">
+                                        <AlertDialogAction
+                                            onClick={() => handleRestoreData(row.original.id)}
+                                            className="cursor-pointer bg-blue-600 transition-all"
+                                        >
                                             Pulihkan
                                         </AlertDialogAction>
                                     </AlertDialogFooter>

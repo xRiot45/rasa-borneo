@@ -81,4 +81,11 @@ class MenuCategoryController extends Controller
             ->back()
             ->with(['success' => 'Kategori berhasil dihapus sementara']);
     }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $menuCategory = MenuCategory::onlyTrashed()->findOrFail($id);
+        $menuCategory->restore();
+        return redirect()->route('merchant.menu-categories.index')->with('success', 'Kategori berhasil dipulihkan');
+    }
 }
