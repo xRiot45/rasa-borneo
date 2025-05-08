@@ -101,4 +101,12 @@ class MenuItemController extends Controller
             ->route('merchant.menu-items.index')
             ->with(['success' => 'Menu item berhasil diperbarui']);
     }
+
+    public function softDelete(MenuItem $menuItem): RedirectResponse
+    {
+        $menuItem->delete();
+        return redirect()
+            ->back()
+            ->with(['success' => 'Menu item berhasil dihapus sementara']);
+    }
 }
