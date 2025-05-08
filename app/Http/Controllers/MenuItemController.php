@@ -16,7 +16,7 @@ class MenuItemController extends Controller
         $authenticatedUser = Auth::user();
         $merchantId = $authenticatedUser->merchant->id;
 
-        $menuItems = MenuItem::withTrashed()->where('merchant_id', $merchantId)->get();
+        $menuItems = MenuItem::withTrashed()->where('merchant_id', $merchantId)->with('menuCategory')->get();
         return Inertia::render('merchant/menu-management/menu-items/index', [
             'data' => $menuItems,
         ]);

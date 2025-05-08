@@ -1,0 +1,64 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { MenuItemStatusEnum } from '@/enums/menu-item-enum';
+import { MenuCategory } from '@/models/menu-category';
+import { DataTableToolbarProps } from '@/types/tanstack';
+import { Icon } from '@iconify/react';
+import { usePage } from '@inertiajs/react';
+import { DataTableFacetedFilter } from './data-table-faceted-filter';
+import { DataTableViewOptions } from './data-table-view-options';
+
+export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+    const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
+    const isFiltered = table.getState().columnFilters.length > 0;
+
+    return (
+        <div className="flex items-center justify-between">
+            <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
+                <Input
+                    placeholder="Cari nama menu..."
+                    value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+                    onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+                    className="h-8 w-[200px] lg:w-[300px]"
+                />
+
+                <div className="flex gap-x-2">
+                    {table.getColumn('menu_category') && (
+                        <DataTableFacetedFilter
+                            column={table.getColumn('menu_category')}
+                            title="Cari berdasarkan kategori"
+                            options={menuCategories.map((item) => ({
+                                label: item.name,
+                                value: item.name,
+                            }))}
+                        />
+                    )}
+                </div>
+
+                <div className="flex gap-x-2">
+                    {table.getColumn('status') && (
+                        <DataTableFacetedFilter
+                            column={table.getColumn('status')}
+                            title="Cari berdasarkan status"
+                            options={Object.values(MenuItemStatusEnum).map((status) => ({
+                                label: status,
+                                value: status,
+                            }))}
+                        />
+                    )}
+                </div>
+
+                {isFiltered && (
+                    <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 cursor-pointer px-2 lg:px-3">
+                        Reset
+                        <Icon icon={'material-symbols:close'} className="ml-2 h-4 w-4" />
+                    </Button>
+                )}
+            </div>
+
+            <div className="flex justify-between gap-2">
+                <DataTableViewOptions table={table} />
+            </div>
+        </div>
+    );
+}

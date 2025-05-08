@@ -3,6 +3,7 @@ import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
+import { MenuCategory } from '@/models/menu-category';
 
 export const columns: ColumnDef<BusinessCategory>[] = [
     {
@@ -52,7 +53,7 @@ export const columns: ColumnDef<BusinessCategory>[] = [
         id: 'actions',
         accessorKey: 'actions',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
-        cell: ({ row }) => <DataTableRowActions row={row as Row<BusinessCategory>} />,
+        cell: ({ row }) => <DataTableRowActions row={row as Row<MenuCategory>} />,
         enableHiding: false,
     },
 ];

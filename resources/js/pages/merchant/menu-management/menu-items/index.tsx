@@ -1,7 +1,14 @@
 import MerchantLayout from '@/layouts/merchant/layout';
+import { MenuItem } from '@/models/menu-item';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import ButtonPartials from './partials/buttons';
+import MenuItemTable from './partials/table';
+import { columns } from './partials/table/columns';
+
+interface MenuItemPageProps {
+    data: MenuItem[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,7 +21,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function MenuItemsPage() {
+export default function MenuItemsPage({ data }: MenuItemPageProps) {
+    console.log(data);
     return (
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>
@@ -25,6 +33,10 @@ export default function MenuItemsPage() {
                         <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua menu anda</p>
                     </div>
                     <ButtonPartials />
+                </div>
+
+                <div className="p-4">
+                    <MenuItemTable data={data} columns={columns} />
                 </div>
             </MerchantLayout>
         </>
