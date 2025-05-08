@@ -15,8 +15,8 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import { DataTablePagination } from './data-table-pagination';
-import { DataTableToolbar } from './data-table-toolbar';
+import { DataTablePagination } from './components/data-table-pagination';
+import { DataTableToolbar } from './components/data-table-toolbar';
 
 export default function AllUsersTable({ columns, data }: DataTableProps<User>) {
     const [rowSelection, setRowSelection] = useState({});

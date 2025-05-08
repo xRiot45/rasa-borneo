@@ -2,8 +2,8 @@ import { Badge } from '@/components/ui/badge';
 import { User } from '@/types';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
+import { DataTableColumnHeader } from './components/data-table-column-header';
+import { DataTableRowActions } from './components/data-table-row-actions';
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -45,18 +45,16 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             const roles: string[] = row.getValue('roles') || [];
             const roleColors: Record<string, string> = {
-                admin: 'bg-green-600',
-                customer: 'bg-blue-600',
-                cashier: 'bg-yellow-600',
-                chef: 'bg-red-600',
-                courier: 'bg-indigo-600',
+                admin: 'bg-green-500',
+                customer: 'bg-blue-500',
+                merchant: 'bg-cyan-500',
             };
 
             if (!Array.isArray(roles) || roles.length === 0) return <Badge className="bg-gray-500 shadow-none">-</Badge>;
             return (
                 <div className="flex gap-1">
                     {roles.map((role) => (
-                        <Badge key={role} className={`${roleColors[role] || 'bg-gray-500'} shadow-none`}>
+                        <Badge key={role} className={`capitalize ${roleColors[role] || 'bg-gray-500'} shadow-none`}>
                             {role}
                         </Badge>
                     ))}
