@@ -78,6 +78,35 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
         });
     };
 
+    const handleRestoreData = (id: number) => {
+        router.patch(
+            route('admin.customers.restore', { id }),
+            {},
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Merchant Berhasil Direstore!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
+    };
+
     return (
         <>
             <DropdownMenu>
@@ -126,6 +155,38 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
+                        </>
+                    )}
+
+                    {/* Restore Data */}
+                    {deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                        Pulihkan Data
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'fa-solid:trash-restore-alt'} className="!text-blue-500" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Pulihkan Data</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Memulihkan Data ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleRestoreData(row.original.id)}
+                                            className="cursor-pointer bg-blue-600 transition-all"
+                                        >
+                                            Pulihkan
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            <DropdownMenuSeparator />
                         </>
                     )}
 

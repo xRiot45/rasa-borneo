@@ -59,4 +59,18 @@ class CustomerController extends Controller
             ->back()
             ->with(['success' => 'Customer berhasil dihapus permanen']);
     }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $customer = Customer::onlyTrashed()->with('user')->findOrFail($id);
+        if ($customer->user()->withTrashed()->exists()) {
+            $customer->user()->withTrashed()->first()->restore();
+        }
+
+        $customer->restore();
+
+        return redirect()
+            ->back()
+            ->with(['success' => 'Customer berhasil direstore']);
+    }
 }

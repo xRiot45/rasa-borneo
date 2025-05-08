@@ -101,7 +101,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/show/{customer}', 'show')->name('admin.customers.show');
                 Route::delete('/soft-delete/{customer}', 'softDelete')->name('admin.customers.softDelete');
                 Route::delete('/force-delete/{customer}', 'forceDelete')->name('admin.customers.forceDelete');
-                // Route::patch('/restore/{customer}', 'restore')->name('admin.customers.restore');
+                Route::patch('/restore/{customer}', 'restore')->name('admin.customers.restore');
             });
 
         // Merchant
