@@ -58,6 +58,8 @@ export default function EditPage({ menuItem }: { menuItem: MenuItem }) {
             if (value !== originalValue) {
                 if (key === 'image_url' && value instanceof File) {
                     formData.append(key, value);
+                } else if (key === 'is_recommended') {
+                    formData.append(key, value ? '1' : '0');
                 } else {
                     formData.append(key, String(value));
                 }
