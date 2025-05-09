@@ -2,17 +2,13 @@ import FileDropzone from '@/components/file-dropzone';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import MerchantLayout from '@/layouts/merchant/layout';
-import { StoreGallery, StoreGalleryForm } from '@/models/store-management/store-gallery';
+import { StoreGalleryForm } from '@/models/store-management/store-gallery';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
-
-interface StoreGalleryFormPageProps {
-    storeGallery: StoreGallery;
-}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,11 +25,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function StoreGalleryFormPage({ storeGallery }: StoreGalleryFormPageProps) {
-    const isEdit = !!storeGallery?.id;
-
+export default function CreatePage() {
     const { data, setData, post, processing, errors } = useForm<Required<StoreGalleryForm>>({
-        image_url: storeGallery?.image_url ?? null,
+        image_url: null,
     });
 
     const handleFileChange = (file: File | null) => {
@@ -48,61 +42,35 @@ export default function StoreGalleryFormPage({ storeGallery }: StoreGalleryFormP
             formData.append('image_url', data.image_url);
         }
 
-        if (isEdit && storeGallery) {
-            router.put(route('merchant.store-gallery.update', storeGallery.id), formData, {
-                forceFormData: true,
-                onSuccess: () => {
-                    toast.success('Success', {
-                        description: 'Galeri Toko Berhasil Diubah!',
+        post(route('merchant.store-gallery.store'), {
+            forceFormData: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Galeri Toko Berhasil Ditambahkan!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
-                },
-                onError: (errors) => {
-                    Object.keys(errors).forEach((key) => {
-                        toast.error('Error', {
-                            description: errors[key],
-                            action: {
-                                label: 'Tutup',
-                                onClick: () => toast.dismiss(),
-                            },
-                        });
-                    });
-                },
-            });
-        } else {
-            post(route('merchant.store-gallery.store'), {
-                forceFormData: true,
-                onSuccess: () => {
-                    toast.success('Success', {
-                        description: 'Galeri Toko Berhasil Ditambahkan!',
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
-                    });
-                },
-                onError: (errors) => {
-                    Object.keys(errors).forEach((key) => {
-                        toast.error('Error', {
-                            description: errors[key],
-                            action: {
-                                label: 'Tutup',
-                                onClick: () => toast.dismiss(),
-                            },
-                        });
-                    });
-                },
-            });
-        }
+                });
+            },
+        });
     };
 
     return (
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>
-                <Head title={isEdit ? 'Edit Galeri Toko' : 'Tambah Galeri Toko'} />
+                <Head title="Tambah Galeri Toko" />
                 <form className="mb-12 space-y-4 p-4" encType="multipart/form-data" onSubmit={handleSubmit}>
                     <div className="grid gap-6">
                         <div className="grid gap-2">
@@ -125,8 +93,8 @@ export default function StoreGalleryFormPage({ storeGallery }: StoreGalleryFormP
                             </Link>
                             <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                {isEdit ? 'Simpan Perubahan' : 'Simpan'}
-                                <Icon icon={isEdit ? 'heroicons-outline:check' : 'heroicons-outline:plus'} />
+                                Simpan
+                                <Icon icon="heroicons-outline:check" />
                             </Button>
                         </div>
                     </div>

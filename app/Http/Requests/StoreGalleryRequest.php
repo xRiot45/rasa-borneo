@@ -14,7 +14,7 @@ class StoreGalleryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image_url' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 
