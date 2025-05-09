@@ -15,8 +15,9 @@ class StoreProfileRequest extends FormRequest
     {
         return [
             // Photos
-            'logo_photo' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'cover_photo' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'logo_photo' => 'sometimes|file|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'cover_photo' => 'sometimes|file|image|mimes:jpg,jpeg,png,webp|max:2048',
+
 
             // Media Social URL
             'website_url' => 'nullable|url',
@@ -35,6 +36,7 @@ class StoreProfileRequest extends FormRequest
             'number_of_employees' => 'sometimes|numeric',
         ];
     }
+
 
 
     public function messages(): array

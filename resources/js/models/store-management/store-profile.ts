@@ -2,8 +2,8 @@ import { Merchant } from '../merchant';
 
 export interface StoreProfile {
     id: number;
-    logo_photo: File | null;
-    cover_photo: File | null;
+    logo_photo: string | File | null;
+    cover_photo: string | File | null;
 
     // Media Social URL
     website_url: string;
@@ -14,8 +14,8 @@ export interface StoreProfile {
     whatsapp_url: string;
 
     // Store Location
-    latitude: number;
-    longitude: number;
+    latitude: string;
+    longitude: string;
 
     // Store Information
     founded_year: number;

@@ -68,9 +68,6 @@ class MenuItemController extends Controller
 
     public function update(MenuItemRequest $request, MenuItem $menuItem): RedirectResponse
     {
-        $authenticatedUser = Auth::user();
-        $merchantId = $authenticatedUser->merchant->id;
-
         $validated = $request->validated();
 
         if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {

@@ -8,7 +8,7 @@ import MerchantLayout from '@/layouts/merchant/layout';
 import { StoreProfile, StoreProfileForm } from '@/models/store-management/store-profile';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
@@ -36,8 +36,8 @@ export default function FormPage({ storeProfile }: Props) {
     const isEdit = !!storeProfile?.id;
 
     const { data, setData, post, processing, errors } = useForm<Required<StoreProfileForm>>({
-        logo_photo: null,
-        cover_photo: null,
+        logo_photo: storeProfile?.logo_photo ?? null,
+        cover_photo: storeProfile?.cover_photo ?? null,
         website_url: storeProfile?.website_url ?? '',
         instagram_url: storeProfile?.instagram_url ?? '',
         facebook_url: storeProfile?.facebook_url ?? '',
@@ -51,7 +51,11 @@ export default function FormPage({ storeProfile }: Props) {
     });
 
     const handleFileChange = (type: 'logo_photo' | 'cover_photo', file: File | null) => {
-        setData(type, file);
+        if (file) {
+            setData(type, file);
+        } else {
+            setData(type, storeProfile[type]);
+        }
     };
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
@@ -59,19 +63,28 @@ export default function FormPage({ storeProfile }: Props) {
 
         const formData = new FormData();
         Object.entries(data).forEach(([key, value]) => {
-            if (value !== null && value !== '') {
-                if (typeof value === 'string' || typeof value === 'number') {
+            if (key !== 'logo_photo' && key !== 'cover_photo') {
+                if (typeof value === 'number') {
                     formData.append(key, String(value));
-                } else if (value instanceof File) {
-                    formData.append(key, value);
+                } else {
+                    formData.append(key, value ?? '');
                 }
             }
         });
 
-        if (isEdit && storeProfile) {
-            formData.append('_method', 'PUT');
+        if (data.logo_photo instanceof File && data.logo_photo.size > 0) {
+            formData.append('logo_photo', data.logo_photo);
+        }
 
-            post(route('merchant.store-profile.update', storeProfile.id), {
+        if (data.cover_photo instanceof File && data.cover_photo.size > 0) {
+            formData.append('cover_photo', data.cover_photo);
+        }
+
+        if (isEdit && storeProfile) {
+            formData.append('_method', 'put');
+
+            router.post(route('merchant.store-profile.update', storeProfile.id), formData, {
+                forceFormData: true,
                 onSuccess: () => {
                     toast.success('Success', {
                         description: 'Profil Toko Berhasil Diubah!',
@@ -95,6 +108,7 @@ export default function FormPage({ storeProfile }: Props) {
             });
         } else {
             post(route('merchant.store-profile.store'), {
+                forceFormData: true,
                 onSuccess: () => {
                     toast.success('Success', {
                         description: 'Profil Toko Berhasil Ditambahkan!',
@@ -122,7 +136,7 @@ export default function FormPage({ storeProfile }: Props) {
     return (
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>
-                <Head title="Edit Profil Toko" />
+                <Head title={isEdit ? 'Edit Profile Toko' : 'Tambah Profile Toko'} />
                 <form className="mb-12 space-y-6 p-4" encType="multipart/form-data" onSubmit={handleSubmit}>
                     {/* Logo & Cover Photo */}
                     <Card className="grid gap-6 p-8 shadow-none">
@@ -157,7 +171,7 @@ export default function FormPage({ storeProfile }: Props) {
                     {/* Social Media URL */}
                     <Card className="grid gap-6 p-8 shadow-none">
                         <h1 className="text-xl font-black tracking-tight text-gray-700 dark:text-gray-200">Media Sosial Toko</h1>
-                        <div className="grid gap-4 lg:grid-cols-3">
+                        <div className="grid gap-8 lg:grid-cols-3">
                             {/* Website URL */}
                             <div className="grid gap-2">
                                 <Label htmlFor="website_url">Website</Label>
@@ -372,7 +386,7 @@ export default function FormPage({ storeProfile }: Props) {
                         </Link>
                         <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Tambah Profile Toko <Icon icon="heroicons:plus" />
+                            {isEdit ? 'Simpan Perubahan' : 'Simpan'} <Icon icon={isEdit ? 'heroicons-outline:check' : 'heroicons-outline:plus'} />
                         </Button>
                     </div>
                 </form>
