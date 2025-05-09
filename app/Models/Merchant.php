@@ -78,4 +78,10 @@ class Merchant extends Model
     {
         return $this->hasOne(StoreProfile::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN STORE_GALLERY
+    public function storeGalleries(): HasMany
+    {
+        return $this->hasMany(StoreGallery::class);
+    }
 }
