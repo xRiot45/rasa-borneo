@@ -1,5 +1,6 @@
 import FileDropzone from '@/components/file-dropzone';
 import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,8 +8,9 @@ import MerchantLayout from '@/layouts/merchant/layout';
 import { StoreProfile, StoreProfileForm } from '@/models/store-management/store-profile';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
-import { Head, useForm } from '@inertiajs/react';
-import { FormEvent } from 'react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
+import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -33,7 +35,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function FormPage({ storeProfile }: Props) {
     const isEdit = !!storeProfile?.id;
 
-    const { data, setData, post, put, errors } = useForm<Required<StoreProfileForm>>({
+    const { data, setData, post, processing, errors } = useForm<Required<StoreProfileForm>>({
         logo_photo: null,
         cover_photo: null,
         website_url: storeProfile?.website_url ?? '',
@@ -44,26 +46,32 @@ export default function FormPage({ storeProfile }: Props) {
         whatsapp_url: storeProfile?.whatsapp_url ?? '',
         latitude: storeProfile?.latitude?.toString() ?? '',
         longitude: storeProfile?.longitude?.toString() ?? '',
-        founded_year: storeProfile?.founded_year?.toString() ?? '',
-        number_of_employees: storeProfile?.number_of_employees?.toString() ?? '',
+        founded_year: storeProfile?.founded_year ?? 0,
+        number_of_employees: storeProfile?.number_of_employees ?? 0,
     });
 
     const handleFileChange = (type: 'logo_photo' | 'cover_photo', file: File | null) => {
         setData(type, file);
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
+
         const formData = new FormData();
         Object.entries(data).forEach(([key, value]) => {
             if (value !== null && value !== '') {
-                formData.append(key, value);
+                if (typeof value === 'string' || typeof value === 'number') {
+                    formData.append(key, String(value));
+                } else if (value instanceof File) {
+                    formData.append(key, value);
+                }
             }
         });
 
         if (isEdit && storeProfile) {
-            put(route('merchant.store-profile.update', storeProfile.id), {
-                forceFormData: true,
+            formData.append('_method', 'PUT');
+
+            post(route('merchant.store-profile.update', storeProfile.id), {
                 onSuccess: () => {
                     toast.success('Success', {
                         description: 'Profil Toko Berhasil Diubah!',
@@ -87,7 +95,6 @@ export default function FormPage({ storeProfile }: Props) {
             });
         } else {
             post(route('merchant.store-profile.store'), {
-                forceFormData: true,
                 onSuccess: () => {
                     toast.success('Success', {
                         description: 'Profil Toko Berhasil Ditambahkan!',
@@ -116,7 +123,7 @@ export default function FormPage({ storeProfile }: Props) {
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>
                 <Head title="Edit Profil Toko" />
-                <form className="mb-12 space-y-4 p-4" encType="multipart/form-data" onSubmit={handleSubmit}>
+                <form className="mb-12 space-y-6 p-4" encType="multipart/form-data" onSubmit={handleSubmit}>
                     {/* Logo & Cover Photo */}
                     <Card className="grid gap-6 p-8 shadow-none">
                         <h1 className="text-xl font-black tracking-tight text-gray-700 dark:text-gray-200">Logo & Cover Toko</h1>
@@ -130,7 +137,6 @@ export default function FormPage({ storeProfile }: Props) {
                                     initialImage={data.logo_photo instanceof File ? undefined : data.logo_photo}
                                     description="Drag & drop logo toko anda di sini, atau klik untuk memilih"
                                 />
-                                <InputError message={errors.logo_photo} className="mt-2" />
                             </div>
 
                             {/* Cover Photo Toko */}
@@ -144,7 +150,6 @@ export default function FormPage({ storeProfile }: Props) {
                                     initialImage={data.cover_photo instanceof File ? undefined : data.cover_photo}
                                     description="Drag & drop foto cover toko anda di sini, atau klik untuk memilih"
                                 />
-                                <InputError message={errors.cover_photo} className="mt-2" />
                             </div>
                         </div>
                     </Card>
@@ -161,7 +166,9 @@ export default function FormPage({ storeProfile }: Props) {
                                         id="website_url"
                                         type="text"
                                         placeholder="https://"
-                                        {...data}
+                                        value={data.website_url}
+                                        onChange={(e) => setData('website_url', e.target.value)}
+                                        disabled={processing}
                                         className="rounded-xl py-6 pl-10 shadow-none" // Add padding for the icon
                                     />
                                     <Icon icon="bi:globe" className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400" />
@@ -177,7 +184,8 @@ export default function FormPage({ storeProfile }: Props) {
                                         id="instagram_url"
                                         type="text"
                                         placeholder="https://"
-                                        {...data}
+                                        value={data.instagram_url}
+                                        onChange={(e) => setData('instagram_url', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none" // Add padding for the icon
                                     />
                                     <Icon
@@ -196,7 +204,8 @@ export default function FormPage({ storeProfile }: Props) {
                                         id="facebook_url"
                                         type="text"
                                         placeholder="https://"
-                                        {...data}
+                                        value={data.facebook_url}
+                                        onChange={(e) => setData('facebook_url', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none" // Add padding for the icon
                                     />
                                     <Icon icon="bi:facebook" className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400" />
@@ -212,7 +221,8 @@ export default function FormPage({ storeProfile }: Props) {
                                         id="twitter_url"
                                         type="text"
                                         placeholder="https://"
-                                        {...data}
+                                        value={data.twitter_url}
+                                        onChange={(e) => setData('twitter_url', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none" // Add padding for the icon
                                     />
                                     <Icon icon="bi:twitter" className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400" />
@@ -228,7 +238,8 @@ export default function FormPage({ storeProfile }: Props) {
                                         id="tiktok_url"
                                         type="text"
                                         placeholder="https://"
-                                        {...data}
+                                        value={data.tiktok_url}
+                                        onChange={(e) => setData('tiktok_url', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none"
                                     />
                                     <Icon icon="ic:baseline-tiktok" className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400" />
@@ -244,7 +255,8 @@ export default function FormPage({ storeProfile }: Props) {
                                         id="whatsapp_url"
                                         type="text"
                                         placeholder="https://"
-                                        {...data}
+                                        value={data.whatsapp_url}
+                                        onChange={(e) => setData('whatsapp_url', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none" // Add padding for the icon
                                     />
                                     <Icon icon="bi:whatsapp" className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400" />
@@ -253,6 +265,116 @@ export default function FormPage({ storeProfile }: Props) {
                             </div>
                         </div>
                     </Card>
+
+                    {/* Latitude & Longitude */}
+                    <Card className="grid gap-6 p-8 shadow-none">
+                        <h1 className="flex items-center justify-between text-xl font-black tracking-tight text-gray-700 dark:text-gray-200">
+                            Lokasi Toko
+                            <Link
+                                href="https://youtu.be/MZUl8h18z3s"
+                                className="text-xs text-blue-500 transition duration-300 ease-in-out hover:text-blue-700 focus:outline-none"
+                            >
+                                Tutorial Menentukan Kordinat Toko
+                            </Link>
+                        </h1>
+
+                        <div className="grid gap-4 lg:grid-cols-2">
+                            {/* Latitude */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="latitude">Latitude</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="latitude"
+                                        type="text"
+                                        placeholder="latitude"
+                                        value={data.latitude}
+                                        onChange={(e) => setData('latitude', e.target.value)}
+                                        className="rounded-xl py-6 pl-10 shadow-none"
+                                    />
+                                    <Icon
+                                        icon="heroicons-outline:location-marker"
+                                        className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"
+                                    />
+                                </div>
+                                <InputError message={errors.latitude} className="mt-2" />
+                            </div>
+
+                            {/* Longitude */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="longitude">Longitude</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="longitude"
+                                        type="text"
+                                        placeholder="Longitude"
+                                        value={data.longitude}
+                                        onChange={(e) => setData('longitude', e.target.value)}
+                                        className="rounded-xl py-6 pl-10 shadow-none"
+                                    />
+                                    <Icon
+                                        icon="heroicons-outline:location-marker"
+                                        className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"
+                                    />
+                                </div>
+                                <InputError message={errors.longitude} className="mt-2" />
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* Informasi Toko */}
+                    <Card className="grid gap-6 p-8 shadow-none">
+                        <h1 className="text-xl font-black tracking-tight text-gray-700 dark:text-gray-200">Informasi Toko</h1>
+
+                        <div className="grid gap-4 lg:grid-cols-2">
+                            {/* founded_year */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="founded_year">
+                                    Tahun Berdiri <strong className="text-red-500">*</strong>
+                                </Label>
+                                <div className="relative">
+                                    <Input
+                                        id="founded_year"
+                                        type="number"
+                                        placeholder="Masukkan Tahun Berdiri"
+                                        value={data.founded_year}
+                                        onChange={(e) => setData('founded_year', parseInt(e.target.value))}
+                                        className="rounded-xl py-6 shadow-none"
+                                    />
+                                </div>
+                                <InputError message={errors.founded_year} className="mt-2" />
+                            </div>
+
+                            {/* number_of_employees */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="number_of_employees">
+                                    Jumlah Karyawan <strong className="text-red-500">*</strong>
+                                </Label>
+                                <div className="relative">
+                                    <Input
+                                        id="number_of_employees"
+                                        type="number"
+                                        placeholder="Masukkan Jumlah Karyawan"
+                                        value={data.number_of_employees}
+                                        onChange={(e) => setData('number_of_employees', parseInt(e.target.value))}
+                                        className="rounded-xl py-6 shadow-none"
+                                    />
+                                </div>
+                                <InputError message={errors.number_of_employees} className="mt-2" />
+                            </div>
+                        </div>
+                    </Card>
+
+                    <div className="mt-4 flex justify-end space-x-3">
+                        <Link href={route('merchant.store-profile.index_merchant')} className="cursor-pointer">
+                            <Button variant="destructive">
+                                Batalkan <Icon icon="iconoir:cancel" />
+                            </Button>
+                        </Link>
+                        <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                            Tambah Profile Toko <Icon icon="heroicons:plus" />
+                        </Button>
+                    </div>
                 </form>
             </MerchantLayout>
         </>

@@ -34,20 +34,18 @@ class StoreProfileController extends Controller
 
         $validated = $request->validated();
 
-        // Upload logo_photo
-        if ($request->hasFile('logo_photo') && $request->file('logo_photo')->isValid()) {
-            $file = $request->file('logo_photo');
-            $filename = uniqid('logo_') . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('store_logo_photo', $filename, 'public');
-            $validated['logo_photo'] = '/storage/' . $path;
+        $logoPhoto = $request->file('logo_photo');
+        if ($logoPhoto && $logoPhoto->isValid()) {
+            $logoPhotoFilename = uniqid('logo_') . '.' . $logoPhoto->getClientOriginalExtension();
+            $logoPhotoPath = $logoPhoto->storeAs('store_logo_photo', $logoPhotoFilename, 'public');
+            $validated['logo_photo'] = '/storage/' . $logoPhotoPath;
         }
 
-        // Upload cover_photo
-        if ($request->hasFile('cover_photo') && $request->file('cover_photo')->isValid()) {
-            $file = $request->file('cover_photo');
-            $filename = uniqid('cover_') . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('store_cover_photo', $filename, 'public');
-            $validated['cover_photo'] = '/storage/' . $path;
+        $coverPhoto = $request->file('cover_photo');
+        if ($coverPhoto && $coverPhoto->isValid()) {
+            $coverPhotoFilename = uniqid('cover_') . '.' . $coverPhoto->getClientOriginalExtension();
+            $coverPhotoPath = $coverPhoto->storeAs('store_cover_photo', $coverPhotoFilename, 'public');
+            $validated['cover_photo'] = '/storage/' . $coverPhotoPath;
         }
 
         StoreProfile::create(

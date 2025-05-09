@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('twitter_url')->nullable();
             $table->string('tiktok_url')->nullable();
             $table->string('whatsapp_url')->nullable();
-            $table->decimal('latitude')->nullable();
-            $table->decimal('longitude')->nullable();
+            $table->decimal('latitude', 30, 20)->nullable();
+            $table->decimal('longitude', 30, 20)->nullable();
             $table->integer('founded_year');
             $table->integer('number_of_employees');
             $table->foreignId('merchant_id')->constrained('merchants')->cascadeOnDelete();

@@ -15,33 +15,36 @@ class StoreProfileRequest extends FormRequest
     {
         return [
             // Photos
-            'logo_photo' => ['nullable', 'string'],
-            'cover_photo' => ['required', 'string'],
+            'logo_photo' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'cover_photo' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
 
             // Media Social URL
-            'website_url' => ['nullable', 'url'],
-            'instagram_url' => ['nullable', 'url'],
-            'facebook_url' => ['nullable', 'url'],
-            'twitter_url' => ['nullable', 'url'],
-            'tiktok_url' => ['nullable', 'url'],
-            'whatsapp_url' => ['nullable', 'url'],
+            'website_url' => 'nullable|url',
+            'instagram_url' => 'nullable|url',
+            'facebook_url' => 'nullable|url',
+            'twitter_url' => 'nullable|url',
+            'tiktok_url' => 'nullable|url',
+            'whatsapp_url' => 'nullable|url',
 
             // Store Location
-            'latitude' => ['nullable', 'numeric'],
-            'longitude' => ['nullable', 'numeric'],
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
 
             // Store Information
-            'founded_year' => ['required', 'integer', 'digits:4', 'min:1900', 'max:' . now()->year],
-            'number_of_employees' => ['required', 'integer', 'min:1'],
-            'merchant_id' => ['required', 'exists:merchants,id'],
+            'founded_year' => 'sometimes|numeric',
+            'number_of_employees' => 'sometimes|numeric',
         ];
     }
+
 
     public function messages(): array
     {
         return [
             // Photos
-            'cover_photo.required' => 'Foto sampul toko wajib diisi.',
+            'cover_photo.required' => 'Foto cover toko wajib diisi.',
+            'cover_photo.image' => 'Foto cover toko harus berupa gambar.',
+            'cover_photo.mimes' => 'Format foto cover toko harus jpg, jpeg, png, atau webp.',
+            'cover_photo.max' => 'Ukuran foto cover toko tidak boleh lebih dari 2MB.',
 
             // URL fields
             '*.url' => 'Format URL pada :attribute tidak valid.',
@@ -60,9 +63,6 @@ class StoreProfileRequest extends FormRequest
             'number_of_employees.required' => 'Jumlah karyawan wajib diisi.',
             'number_of_employees.integer' => 'Jumlah karyawan harus berupa angka.',
             'number_of_employees.min' => 'Jumlah karyawan minimal 1 orang.',
-
-            'merchant_id.required' => 'Merchant ID wajib diisi.',
-            'merchant_id.exists' => 'Merchant tidak ditemukan.',
         ];
     }
 }

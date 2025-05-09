@@ -26,8 +26,8 @@ export interface StoreProfile {
 
 export interface StoreProfileForm {
     // File uploads
-    logo_photo: File | null;
-    cover_photo: File | null;
+    logo_photo: string | File | null;
+    cover_photo: string | File | null;
 
     // Media Sosial URL (nullable)
     website_url: string;
@@ -42,6 +42,6 @@ export interface StoreProfileForm {
     longitude: string;
 
     // Informasi Toko
-    founded_year: string;
-    number_of_employees: string;
+    founded_year: number;
+    number_of_employees: number;
 }
