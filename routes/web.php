@@ -9,6 +9,7 @@ use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -166,6 +167,20 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/create', 'store')->name('merchant.store-profile.store');
                 Route::get('/edit/{id}', 'edit')->name('merchant.store-profile.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.store-profile.update');
+            });
+
+        // Store Gallery
+        Route::prefix('/store-gallery')
+            ->controller(StoreGalleryController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.store-gallery.index_merchant');
+                Route::get('/create', 'create')->name('merchant.store-gallery.create');
+                Route::post('/create', 'store')->name('merchant.store-gallery.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.store-gallery.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.store-gallery.update');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.store-gallery.softDelete');
+                Route::patch('/restore/{id}', 'restore')->name('merchant.store-gallery.restore');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.store-gallery.forceDelete');
             });
     });
 });
