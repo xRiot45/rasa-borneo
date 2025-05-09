@@ -13,7 +13,13 @@ class StoreProfileController extends Controller
 {
     public function index_merchant(): Response
     {
-        return Inertia::render('merchant/store-management/store-profile/index');
+        $authenticatedUser = Auth::user();
+        $merchantId = $authenticatedUser->merchant->id;
+
+        $storeProfile = StoreProfile::where('merchant_id', $merchantId)->with('merchant')->first();
+        return Inertia::render('merchant/store-management/store-profile/index', [
+            'storeProfile' => $storeProfile,
+        ]);
     }
 
     public function create(): Response
