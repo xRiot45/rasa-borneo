@@ -1,7 +1,8 @@
+import EmptyImage from '@/assets/errors/empty.svg';
 import DefaultImage from '@/assets/images/default-image.png';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { StoreProfile as StoreProfileModel } from '@/models/store-management/store-profile';
 import { BreadcrumbItem } from '@/types';
@@ -126,23 +127,23 @@ export default function StoreProfile({ storeProfile }: StoreProfileProps) {
 
                                     {/* Info Kontak */}
                                     <div className="mt-4 flex flex-col gap-4 text-sm text-gray-600 sm:flex-row sm:flex-wrap sm:gap-6">
-                                        <span className="flex items-center">
+                                        <span className="flex items-center dark:text-white">
                                             <Icon icon="mdi:phone" className="mr-1 h-4 w-4" />
                                             {storeProfile.merchant.business_phone}
                                         </span>
-                                        <span className="flex items-center">
+                                        <span className="flex items-center dark:text-white">
                                             <Icon icon="mdi:email" className="mr-1 h-4 w-4" />
                                             {storeProfile.merchant.business_email}
                                         </span>
-                                        <span className="flex items-center">
+                                        <span className="flex items-center dark:text-white">
                                             <Icon icon="mdi:office-building" className="mr-1 h-4 w-4" />
                                             {storeProfile.merchant.business_address}
                                         </span>
-                                        <span className="flex items-center">
+                                        <span className="flex items-center dark:text-white">
                                             <Icon icon="mdi:calendar" className="mr-1 h-4 w-4" />
                                             Berdiri sejak Tahun {storeProfile.founded_year}
                                         </span>
-                                        <span className="flex items-center">
+                                        <span className="flex items-center dark:text-white">
                                             <Icon icon="mdi:account-group" className="mr-1 h-4 w-4" />
                                             {storeProfile.number_of_employees} karyawan
                                         </span>
@@ -158,6 +159,7 @@ export default function StoreProfile({ storeProfile }: StoreProfileProps) {
                                         <DialogContent className="sm:max-w-4xl">
                                             <DialogHeader className="text-start">
                                                 <DialogTitle>Lokasi Toko</DialogTitle>
+                                                <DialogDescription>{storeProfile.merchant.business_address}</DialogDescription>
                                             </DialogHeader>
 
                                             <div className="h-[500px] w-full">
@@ -175,7 +177,19 @@ export default function StoreProfile({ storeProfile }: StoreProfileProps) {
                         </CardContent>
                     </Card>
                 ) : (
-                    <h1>Data belum ada</h1>
+                    <div className="flex min-h-screen flex-col bg-white dark:bg-[#171717]">
+                        <div className="flex grow items-center px-6 xl:px-10">
+                            <div className="mx-auto text-center">
+                                <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
+                                <h1 className="text-gray-1000 text-[22px] leading-normal font-bold text-gray-700 lg:text-3xl dark:text-gray-100">
+                                    Profile Toko Anda Belum Diatur
+                                </h1>
+                                <p className="text-sm leading-loose text-gray-500 lg:text-base lg:leading-loose dark:text-gray-400">
+                                    Silahkan lakukan penambahan profile toko Anda terlebih dahulu, agar toko anda dapat dengan mudah ditemukan.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 )}
             </MerchantLayout>
         </>
