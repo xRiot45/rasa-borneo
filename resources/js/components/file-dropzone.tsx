@@ -9,9 +9,10 @@ interface FileDropzoneProps {
     onFileChange: (file: File | null) => void;
     error?: string;
     initialImage?: string | null;
+    description?: string;
 }
 
-export default function FileDropzone({ onFileChange, error, initialImage }: FileDropzoneProps) {
+export default function FileDropzone({ onFileChange, error, initialImage, description }: FileDropzoneProps) {
     const [preview, setPreview] = useState<string | null>(initialImage || null);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -37,13 +38,15 @@ export default function FileDropzone({ onFileChange, error, initialImage }: File
                 {preview ? (
                     <>
                         <img src={preview} alt="Preview" className="mt-2 max-h-40 rounded-lg shadow" />
-                        <p className="text-sm text-gray-500">Drag & drop gambar di sini, atau klik untuk memilih</p>
+                        <p className="text-sm text-gray-500">{!description ? 'Drag & drop gambar di sini, atau klik untuk memilih' : description}</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, atau JPEG (MAX: 2 MB)</p>
                     </>
                 ) : (
                     <>
                         <UploadCloud className="h-16 w-16 text-gray-500 dark:text-white" />
-                        <p className="text-sm text-gray-500 dark:text-white">Drag & drop gambar di sini, atau klik untuk memilih</p>
+                        <p className="text-sm text-gray-500 dark:text-white">
+                            {!description ? 'Drag & drop gambar di sini, atau klik untuk memilih' : description}
+                        </p>
                         <p className="text-xs font-semibold text-gray-500 dark:text-white">PNG, JPG, atau JPEG (MAX: 2 MB)</p>
                     </>
                 )}

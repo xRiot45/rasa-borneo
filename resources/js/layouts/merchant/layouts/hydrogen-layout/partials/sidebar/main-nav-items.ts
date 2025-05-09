@@ -45,7 +45,7 @@ const mainNavItems: NavGroup[] = [
         group: 'TOKO',
         items: [
             {
-                title: 'Profil Toko',
+                title: 'Profile Toko',
                 href: '/merchant/store-management/store-profile',
                 icon: 'mdi:store-settings',
             },

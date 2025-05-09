@@ -6,6 +6,7 @@ use App\Enums\PayoutStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Merchant extends Model
@@ -60,13 +61,21 @@ class Merchant extends Model
         return $this->belongsTo(BusinessCategory::class);
     }
 
+    // RELASI ONE-TO-MANY DENGAN MENU_CATEGORY
     public function menuCategories(): HasMany
     {
         return $this->hasMany(MenuCategory::class);
     }
 
+    // RELASI ONE-TO-MANY DENGAN MENU_ITEM
     public function menuItems(): HasMany
     {
         return $this->hasMany(MenuItem::class);
+    }
+
+    // RELASI ONE-TO-ONE DENGAN STORE_PROFILE
+    public function storeProfile(): HasOne
+    {
+        return $this->hasOne(StoreProfile::class);
     }
 }

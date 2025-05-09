@@ -9,6 +9,7 @@ use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -123,6 +124,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
     Route::get('/merchant/dashboard', [DashboardController::class, 'index_merchant'])->name('merchant.dashboard');
 
+    // Menu Management
     Route::prefix('/merchant/menu-management')->group(function () {
         // Menu Category
         Route::prefix('/menu-categories')
@@ -138,6 +140,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-categories.forceDelete');
             });
 
+        // Menu Item
         Route::prefix('/menu-items')
             ->controller(MenuItemController::class)
             ->group(function () {
@@ -149,6 +152,20 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::delete('/soft-delete/{menuItem}', 'softDelete')->name('merchant.menu-items.softDelete');
                 Route::patch('/restore/{id}', 'restore')->name('merchant.menu-items.restore');
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-items.forceDelete');
+            });
+    });
+
+    // Store Management
+    Route::prefix('/merchant/store-management')->group(function () {
+        // Store Profile
+        Route::prefix('/store-profile')
+            ->controller(StoreProfileController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.store-profile.index_merchant');
+                Route::get('/create', 'create')->name('merchant.store-profile.create');
+                Route::post('/create', 'store')->name('merchant.store-profile.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.store-profile.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.store-profile.update');
             });
     });
 });
