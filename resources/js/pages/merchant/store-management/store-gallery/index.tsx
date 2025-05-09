@@ -1,7 +1,14 @@
 import MerchantLayout from '@/layouts/merchant/layout';
+import { StoreGallery as StoreGalleryModel } from '@/models/store-management/store-gallery';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import ButtonPartials from './partials/buttons';
+import StoreGalleryTable from './partials/table';
+import { columns } from './partials/table/columns';
+
+interface StoreGalleryPageProps {
+    data: StoreGalleryModel[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,7 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function StoreGallery() {
+export default function StoreGallery({ data }: StoreGalleryPageProps) {
     return (
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>
@@ -26,6 +33,10 @@ export default function StoreGallery() {
                     </div>
 
                     <ButtonPartials />
+                </div>
+
+                <div className="p-4">
+                    <StoreGalleryTable data={data} columns={columns} />
                 </div>
             </MerchantLayout>
         </>
