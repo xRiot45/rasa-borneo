@@ -4,10 +4,10 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { DayEnum } from '@/enums/day-enum';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { StoreOperatingHour } from '@/models/store-management/store-operating-hour';
 import { BreadcrumbItem } from '@/types';
+import dayTranslations from '@/utils/day-translation';
 import days from '@/utils/days';
 import { Icon } from '@iconify/react';
 import { Head, Link, router } from '@inertiajs/react';
@@ -51,6 +51,12 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
     const handleToggle = (index: number) => {
         const newHours = [...hours];
         newHours[index].is_closed = !newHours[index].is_closed;
+
+        if (!newHours[index].is_closed) {
+            newHours[index].open_time = newHours[index].open_time || '08:00';
+            newHours[index].close_time = newHours[index].close_time || '17:00';
+        }
+
         setHours(newHours);
     };
 
@@ -107,7 +113,7 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
 
                 <main className="p-4">
                     <div className="space-y-4">
-                        {hours.map((hour, index) => {
+                        {hours.map((item, index) => {
                             return (
                                 <Card
                                     key={index}
@@ -115,7 +121,7 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
                                 >
                                     {/* Label Hari */}
                                     <div className="w-full md:w-1/4">
-                                        <Label className="block font-semibold capitalize">{DayEnum[hour.day as keyof typeof DayEnum]}</Label>
+                                        <Label className="text-md block font-semibold">{dayTranslations[item.day] || item.day}</Label>
                                     </div>
 
                                     {/* Waktu Buka & Tutup */}
@@ -126,8 +132,8 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
                                                 id={`open-${index}`}
                                                 type="time"
                                                 step="60"
-                                                value={hour.open_time}
-                                                disabled={hour.is_closed}
+                                                value={item.open_time}
+                                                disabled={item.is_closed}
                                                 onChange={(e) => {
                                                     const time = e.target.value.slice(0, 5);
                                                     handleTimeChange(index, 'open_time', time);
@@ -142,8 +148,8 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
                                                 id={`close-${index}`}
                                                 type="time"
                                                 step="60"
-                                                value={hour.close_time}
-                                                disabled={hour.is_closed}
+                                                value={item.close_time}
+                                                disabled={item.is_closed}
                                                 onChange={(e) => {
                                                     const time = e.target.value.slice(0, 5);
                                                     handleTimeChange(index, 'close_time', time);
@@ -156,7 +162,7 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
                                     {/* Switch Toko Tutup */}
                                     <div className="flex w-full flex-col items-start space-y-2 md:w-1/4 md:items-end">
                                         <Label htmlFor={`closed-${index}`}>Toko Tutup</Label>
-                                        <Switch id={`closed-${index}`} checked={hour.is_closed} onCheckedChange={() => handleToggle(index)} />
+                                        <Switch id={`closed-${index}`} checked={item.is_closed} onCheckedChange={() => handleToggle(index)} />
                                     </div>
                                 </Card>
                             );
@@ -167,8 +173,8 @@ export default function StoreOrUpdatePage({ data }: StoreOrUpdatePageProps) {
                         <div className="mt-6 flex items-center justify-end gap-3">
                             <Link href={route('merchant.store-operating-hour.index_merchant')}>
                                 <Button className="flex justify-end" variant="destructive">
-                                    <Icon icon="material-symbols:close" className="ml-2" />
                                     Batalkan
+                                    <Icon icon="material-symbols:close" className="ml-2" />
                                 </Button>
                             </Link>
                             <Button type="submit" className="cursor-pointer">
