@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { StoreGallery } from '@/models/store-management/store-gallery';
 import { Icon } from '@iconify/react';
-import { Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import { toast } from 'sonner';
@@ -110,15 +110,6 @@ export function DataTableRowActions({ row }: { row: Row<StoreGallery> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('merchant.store-gallery.edit', { id: row.original.id })} className="cursor-pointer">
-                        <DropdownMenuItem className="cursor-pointer p-3">
-                            Edit Data
-                            <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:edit'} />
-                            </DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                    </Link>
-
                     {/* Soft Delete */}
                     {!deletedAtAlreadyExist && (
                         <>

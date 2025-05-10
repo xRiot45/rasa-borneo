@@ -25,7 +25,7 @@ class StoreGalleryController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('merchant/store-management/store-gallery/pages/create');
+        return Inertia::render('merchant/store-management/store-gallery/pages/form');
     }
 
     public function store(StoreGalleryRequest $request): RedirectResponse
@@ -52,36 +52,7 @@ class StoreGalleryController extends Controller
         return redirect()->route('merchant.store-gallery.index_merchant')->with('success', 'Data berhasil ditambahkan.');
     }
 
-    public function edit(int $id): Response
-    {
-        $storeGallery = StoreGallery::findOrFail($id);
-        return Inertia::render('merchant/store-management/store-gallery/pages/edit', [
-            'storeGallery' => $storeGallery,
-        ]);
-    }
 
-    public function update(StoreGalleryRequest $request, StoreGallery $storeGallery): RedirectResponse
-    {
-        $data = $request->validated();
-
-        if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {
-            $oldImagePath = str_replace('/storage/', '', $storeGallery->image_url);
-
-            if (Storage::disk('public')->exists($oldImagePath)) {
-                Storage::disk('public')->delete($oldImagePath);
-            }
-
-            $image = $request->file('image_url');
-            $filename = uniqid('store_gallery_') . '.' . $image->getClientOriginalExtension();
-            $path = $image->storeAs('store_gallery', $filename, 'public');
-
-            $data['image_url'] = "/storage/{$path}";
-        }
-
-        $storeGallery->update($data);
-
-        return redirect()->route('merchant.store-gallery.index_merchant')->with('success', 'Data berhasil diubah.');
-    }
 
     public function softDelete(int $id): RedirectResponse
     {
