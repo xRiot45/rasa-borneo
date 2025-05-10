@@ -6,9 +6,9 @@ use App\Enums\DayEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StoreOperationHour extends Model
+class StoreOperatingHour extends Model
 {
-    protected $table = 'store_operation_hours';
+    protected $table = 'store_operating_hours';
 
     protected $fillable = [
         'merchant_id',

@@ -10,6 +10,7 @@ use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreGalleryController;
+use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -179,6 +180,13 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.store-gallery.softDelete');
                 Route::patch('/restore/{id}', 'restore')->name('merchant.store-gallery.restore');
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.store-gallery.forceDelete');
+            });
+
+        // Store Operating Hour
+        Route::prefix('/store-operating-hour')
+            ->controller(StoreOperatingHourController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.store-operating-hour.index_merchant');
             });
     });
 });

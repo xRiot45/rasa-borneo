@@ -85,9 +85,9 @@ class Merchant extends Model
         return $this->hasMany(StoreGallery::class);
     }
 
-    // RELASI ONE-TO-MANY DENGAN STORE_OPERATION_HOUR
-    public function storeOperationHours(): HasMany
+    // RELASI ONE-TO-MANY DENGAN STORE_OPERATING_HOUR
+    public function storeOperatingHours(): HasMany
     {
-        return $this->hasMany(StoreOperationHour::class);
+        return $this->hasMany(StoreOperatingHour::class);
     }
 }
