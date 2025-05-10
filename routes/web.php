@@ -187,6 +187,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->controller(StoreOperatingHourController::class)
             ->group(function () {
                 Route::get('/', 'index_merchant')->name('merchant.store-operating-hour.index_merchant');
+                Route::post('/store-or-update', 'storeOrUpdate')->name('merchant.store-operating-hour.storeOrUpdate');
             });
     });
 });
