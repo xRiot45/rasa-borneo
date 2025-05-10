@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/admin/store-management/store-gallery',
     },
     {
-        title: 'Tambah / Edit Galeri Toko',
+        title: 'Tambah Galeri Toko',
         href: '#',
     },
 ];
