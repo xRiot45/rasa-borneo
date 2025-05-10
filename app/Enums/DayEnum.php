@@ -4,19 +4,19 @@ namespace App\Enums;
 
 enum DayEnum: string
 {
-    case MONDAY = 'senin';
+    case MONDAY = 'MONDAY';
 
-    case TUESDAY = 'selasa';
+    case TUESDAY = 'TUESDAY';
 
-    case WEDNESDAY = 'rabu';
+    case WEDNESDAY = 'WEDNESDAY';
 
-    case THURSDAY = 'kamis';
+    case THURSDAY = 'THURSDAY';
 
-    case FRIDAY = 'jumat';
+    case FRIDAY = 'FRIDAY';
 
-    case SATURDAY = 'sabtu';
+    case SATURDAY = 'SATURDAY';
 
-    case SUNDAY = 'minggu';
+    case SUNDAY = 'SUNDAY';
 
     public static function values(): array
     {

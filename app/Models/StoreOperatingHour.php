@@ -12,14 +12,14 @@ class StoreOperatingHour extends Model
 
     protected $fillable = [
         'merchant_id',
-        'day_of_week',
+        'day',
         'open_time',
         'close_time',
         'is_closed'
     ];
 
     protected $casts = [
-        'day_of_week' => DayEnum::class,
+        'day' => DayEnum::class,
         'open_time' => 'datetime:H:i:s',
         'close_time' => 'datetime:H:i:s',
         'is_closed' => 'boolean'

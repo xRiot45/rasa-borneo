@@ -1,18 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { DayEnum } from '@/enums/day-enum';
 import MerchantLayout from '@/layouts/merchant/layout';
+import { StoreOperatingHour } from '@/models/store-management/store-operating-hour';
 import { BreadcrumbItem } from '@/types';
-import days from '@/utils/days';
+import dayTranslations from '@/utils/day-translation';
 import { Icon } from '@iconify/react';
-import { Head, router } from '@inertiajs/react';
-import { DialogDescription } from '@radix-ui/react-dialog';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { Head, Link } from '@inertiajs/react';
+
+interface StoreOperatingHourProps {
+    data: StoreOperatingHour[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,171 +23,86 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function StoreOperatingHour() {
-    const [showDialog, setShowDialog] = useState<boolean>(false);
-    const [hours, setHours] = useState(
-        days.map((day) => ({
-            day: day.key,
-            open_time: '08:00',
-            close_time: '17:00',
-            is_closed: false,
-        })),
-    );
-
-    const dayMappingInIndonesian = {
-        SUNDAY: 'minggu',
-        MONDAY: 'senin',
-        TUESDAY: 'selasa',
-        WEDNESDAY: 'rabu',
-        THURSDAY: 'kamis',
-        FRIDAY: 'jumat',
-        SATURDAY: 'sabtu',
-    };
-
-    const handleToggle = (index: number) => {
-        const newHours = [...hours];
-        newHours[index].is_closed = !newHours[index].is_closed;
-        setHours(newHours);
-    };
-
-    const handleTimeChange = (index: number, field: 'open_time' | 'close_time', value: string) => {
-        const newHours = [...hours];
-        newHours[index][field] = value;
-        setHours(newHours);
-    };
-
-    const hoursWithIndonesianDays = hours.map((hour) => ({
-        ...hour,
-        day: dayMappingInIndonesian[hour.day as keyof typeof dayMappingInIndonesian],
-    }));
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setShowDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setShowDialog(false);
-    };
-
-    const handleConfirmSubmit = () => {
-        router.post(
-            route('merchant.store-operating-hour.storeOrUpdate'),
-            { hours: hoursWithIndonesianDays },
-            {
-                onSuccess: () => {
-                    setShowDialog(false);
-                    toast.success('Success', {
-                        description: 'Jam Operasional Toko Berhasil Diperbarui!',
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
-                    });
-                },
-                onError: (error) => {
-                    Object.keys(error).forEach((key) => {
-                        setShowDialog(false);
-                        toast.error('Error', {
-                            description: error[key],
-                            action: {
-                                label: 'Tutup',
-                                onClick: () => toast.dismiss(),
-                            },
-                        });
-                    });
-                },
-            },
-        );
-    };
-
+export default function StoreOperatingHourPage({ data }: StoreOperatingHourProps) {
     return (
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>
                 <Head title="Jam Operasional Toko" />
-
                 <main className="p-4">
-                    <div className="space-y-4">
-                        {hours.map((hour, index) => {
+                    <div className="mb-2 flex flex-wrap justify-between space-y-2">
+                        <div>
+                            <h2 className="text-2xl font-black tracking-tight text-gray-700 dark:text-gray-200">Jam Operasional Toko</h2>
+                            <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola jam operasional toko anda di sini</p>
+                        </div>
+
+                        <Link href={route('merchant.store-operating-hour.create')}>
+                            <Button className="flex cursor-pointer justify-end">
+                                Perbarui Jam Operasional
+                                <Icon icon="material-symbols:edit" className="ml-2" />
+                            </Button>
+                        </Link>
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {data.map((item, index) => {
                             return (
                                 <Card
                                     key={index}
-                                    className={`flex flex-col gap-8 rounded-2xl border p-6 shadow-none md:flex-row md:items-center md:justify-between ${hour.is_closed ? 'bg-red-500 text-white' : ''}`}
+                                    className={`flex flex-col gap-6 rounded-2xl border p-6 shadow-none transition duration-300 ${
+                                        item.is_closed ? 'border-red-300 bg-red-50 text-red-900' : 'border-green-300 bg-green-50 text-green-900'
+                                    }`}
                                 >
-                                    {/* Label Hari */}
-                                    <div className="w-full md:w-1/4">
-                                        <Label className="block font-semibold capitalize">{DayEnum[hour.day as keyof typeof DayEnum]}</Label>
-                                        {hour.is_closed && (
-                                            <div className="rounded-full bg-red-700 p-2 text-center text-xl font-bold text-white">Toko Tutup</div>
+                                    <div className="flex items-center justify-between">
+                                        <Label className="block text-lg font-semibold">{dayTranslations[item.day] || item.day}</Label>
+
+                                        {item.is_closed ? (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-700 shadow">
+                                                <Icon icon="mdi:close-circle-outline" className="text-lg text-red-600" />
+                                                Toko Tutup
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700 shadow">
+                                                <Icon icon="mdi:check-circle-outline" className="text-lg text-green-600" />
+                                                Toko Buka
+                                            </span>
                                         )}
                                     </div>
 
-                                    {/* Waktu Buka & Tutup */}
-                                    <div className="flex w-full flex-col gap-6 md:w-2/4 md:flex-row md:items-center">
-                                        <div className="flex w-full flex-col space-y-2">
-                                            <Label htmlFor={`open-${index}`}>Waktu Buka</Label>
-                                            <Input
-                                                id={`open-${index}`}
-                                                type="time"
-                                                value={hour.open_time}
-                                                disabled={hour.is_closed}
-                                                onChange={(e) => handleTimeChange(index, 'open_time', e.target.value)}
-                                                className="rounded-xl py-6 shadow-none"
-                                            />
+                                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+                                        <div className="flex flex-col space-y-1">
+                                            <Label className="text-muted-foreground text-sm">Waktu Buka</Label>
+                                            <div className={`text-lg font-semibold ${item.is_closed ? 'text-gray-500' : 'text-green-800'}`}>
+                                                {item.is_closed ? '-' : item.open_time}
+                                            </div>
                                         </div>
-                                        <span className="mt-4 hidden md:inline">-</span>
-                                        <div className="flex w-full flex-col space-y-2">
-                                            <Label htmlFor={`close-${index}`}>Waktu Tutup</Label>
-                                            <Input
-                                                id={`close-${index}`}
-                                                type="time"
-                                                value={hour.close_time}
-                                                disabled={hour.is_closed}
-                                                onChange={(e) => handleTimeChange(index, 'close_time', e.target.value)}
-                                                className="flex rounded-xl py-6 pr-4 shadow-none"
-                                            />
+
+                                        <span className="hidden md:inline">—</span>
+
+                                        <div className="flex flex-col space-y-1">
+                                            <Label className="text-muted-foreground text-sm">Waktu Tutup</Label>
+                                            <div className={`text-lg font-semibold ${item.is_closed ? 'text-gray-500' : 'text-green-800'}`}>
+                                                {item.is_closed ? '-' : item.close_time}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Switch Toko Tutup */}
-                                    <div className="flex w-full flex-col items-start space-y-2 md:w-1/4 md:items-end">
-                                        <Label htmlFor={`closed-${index}`}>Toko Tutup</Label>
-                                        <Switch id={`closed-${index}`} checked={hour.is_closed} onCheckedChange={() => handleToggle(index)} />
-                                        {hour.is_closed && (
-                                            <span className="mt-2 inline-block rounded-md bg-red-500 px-2 py-1 text-white">Toko Tutup</span>
-                                        )}
-                                    </div>
+                                    {item.is_closed ? (
+                                        <div className="mt-2 flex items-center gap-2 text-sm text-red-600">
+                                            <Icon icon="material-symbols:info-outline-rounded" className="text-base" />
+                                            Toko tidak beroperasi pada hari ini.
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
+                                            <Icon icon="material-symbols:info-outline-rounded" className="text-base" />
+                                            Toko sedang beroperasi dengan jam normal.
+                                        </div>
+                                    )}
                                 </Card>
                             );
                         })}
                     </div>
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="mt-6 flex justify-end">
-                            <Button type="submit" className="cursor-pointer">
-                                Simpan Perubahan
-                                <Icon icon="material-symbols:save" className="ml-2" />
-                            </Button>
-                        </div>
-                    </form>
-
-                    <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                        <DialogTrigger asChild>{/* Dibiarkan kosong, karena kita mengontrol dialog secara manual */}</DialogTrigger>
-                        <DialogContent className="sm:max-w-xl">
-                            <DialogHeader className="text-lg font-bold">Konfirmasi Perubahan</DialogHeader>
-                            <DialogDescription className="text-muted-foreground">
-                                Apakah Anda yakin ingin menyimpan perubahan jam operasional toko?
-                            </DialogDescription>
-                            <DialogFooter>
-                                <Button onClick={handleCloseDialog} variant="outline" className="cursor-pointer">
-                                    Batal
-                                </Button>
-                                <Button onClick={handleConfirmSubmit} className="ml-2 cursor-pointer">
-                                    Ya, Simpan
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                    {/* Tombol untuk Memperbarui Data */}
                 </main>
             </MerchantLayout>
         </>

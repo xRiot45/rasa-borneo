@@ -17,11 +17,21 @@ class StoreOperatingHourController extends Controller
         $authenticatedUser = Auth::user();
         $merchantId = $authenticatedUser->merchant->id;
 
-        $hours = StoreOperatingHour::where('merchant_id', $merchantId)
-            ->get();
+        $hours = StoreOperatingHour::where('merchant_id', $merchantId)->get();
 
         return Inertia::render('merchant/store-management/store-operating-hour/index', [
-            'hours' => $hours,
+            'data' => $hours,
+        ]);
+    }
+
+    public function create(): Response
+    {
+        $authenticatedUser = Auth::user();
+        $merchantId = $authenticatedUser->merchant->id;
+
+        $hours = StoreOperatingHour::where('merchant_id', $merchantId)->get();
+        return Inertia::render('merchant/store-management/store-operating-hour/pages/store-or-update', [
+            'data' => $hours,
         ]);
     }
 
@@ -36,16 +46,15 @@ class StoreOperatingHourController extends Controller
             StoreOperatingHour::updateOrCreate(
                 [
                     'merchant_id' => $merchantId,
-                    'day_of_week' => $hour['day'],
+                    'day' => $hour['day'],
                 ],
                 [
                     'open_time' => $hour['is_closed'] ? '00:00:00' : $hour['open_time'],
                     'close_time' => $hour['is_closed'] ? '00:00:00' : $hour['close_time'],
                     'is_closed' => $hour['is_closed'],
-                ]
+                ],
             );
         }
-
 
         return redirect()->route('merchant.store-operating-hour.index_merchant')->with('success', 'Data berhasil ditambahkan.');
     }

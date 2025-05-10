@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\DayEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreOperatingHourRequest extends FormRequest
 {
@@ -16,22 +14,24 @@ class StoreOperatingHourRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'hours' => 'required|array',
-            'hours.*.day' => [
-                'required',
-                Rule::in(DayEnum::values()), // Validasi sesuai dengan nilai enum bahasa Indonesia
+            'hours' => ['required', 'array'],
+            'hours.*.day' => ['required', 'string'],
+            'hours.*.is_closed' => ['required', 'boolean'],
+            'hours.*.open_time' => [
+                'required_unless:hours.*.is_closed,true',
             ],
-            'hours.*.open_time' => 'required|date_format:H:i',
-            'hours.*.close_time' => 'required|date_format:H:i|after:open_time',
-            'hours.*.is_closed' => 'required|boolean',
+            'hours.*.close_time' => [
+                'required_unless:hours.*.is_closed,true',
+            ],
         ];
     }
+
 
     public function messages(): array
     {
         return [
-            'day_of_week.required' => 'Hari wajib diisi.',
-            'day_of_week.in' => 'Hari yang dipilih tidak valid.',
+            'day.required' => 'Hari wajib diisi.',
+            'day.in' => 'Hari yang dipilih tidak valid.',
 
             'open_time.required' => 'Waktu buka wajib diisi.',
             'open_time.date_format' => 'Format waktu buka harus HH:MM (contoh: 08:00).',

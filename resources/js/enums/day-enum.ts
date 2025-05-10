@@ -1,9 +1,9 @@
 export enum DayEnum {
-    SUNDAY = 'minggu',
-    MONDAY = 'senin',
-    TUESDAY = 'selasa',
-    WEDNESDAY = 'rabu',
-    THURSDAY = 'kamis',
-    FRIDAY = 'jumat',
-    SATURDAY = 'sabtu',
+    SUNDAY = 'SUNDAY',
+    MONDAY = 'MONDAY',
+    TUESDAY = 'TUESDAY',
+    WEDNESDAY = 'WEDNESDAY',
+    THURSDAY = 'THURSDAY',
+    FRIDAY = 'FRIDAY',
+    SATURDAY = 'SATURDAY',
 }
