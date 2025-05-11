@@ -9,7 +9,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Menu',
         href: '/menu',
-        icon: 'material-symbols:menu',
+        icon: 'ic:baseline-restaurant-menu',
     },
     {
         title: 'Penjual',

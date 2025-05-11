@@ -7,7 +7,7 @@ const bottomNavItems = [
     {
         title: 'Menu',
         href: '/menu',
-        icon: 'material-symbols:restaurant-menu',
+        icon: 'ic:baseline-restaurant-menu',
     },
     {
         title: 'Penjual',
