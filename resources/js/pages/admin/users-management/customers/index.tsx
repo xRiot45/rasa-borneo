@@ -22,7 +22,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CustomersPage({ data }: CustomersPageProps) {
-    console.log(data);
     return (
         <AdminLayout breadcrumbs={breadcrumbs}>
             <Head title="Customer / Pembeli" />

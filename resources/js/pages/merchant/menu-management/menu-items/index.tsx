@@ -22,7 +22,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function MenuItemsPage({ data }: MenuItemPageProps) {
-    console.log(data);
     return (
         <>
             <MerchantLayout breadcrumbs={breadcrumbs}>

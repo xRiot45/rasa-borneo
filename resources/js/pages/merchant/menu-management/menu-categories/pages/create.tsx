@@ -47,7 +47,6 @@ export default function CreatePage() {
                 reset();
             },
             onError: (error) => {
-                console.log(error);
                 Object.keys(error).forEach((key) => {
                     toast.error('Error', {
                         description: error[key],

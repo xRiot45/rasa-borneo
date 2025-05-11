@@ -148,7 +148,6 @@ export default function RegisterMerchantPage() {
             onFinish: () => reset('password', 'password_confirmation'),
 
             onError: (error) => {
-                console.log(error);
                 Object.keys(error).forEach((key) => {
                     toast.error('Error', {
                         description: error[key],
