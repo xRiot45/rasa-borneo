@@ -56,8 +56,6 @@ export default function HomePage() {
     const { menuItems } = usePage<{ menuItems: MenuItem[] }>().props;
     const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
-    console.log(menuItems);
-
     return (
         <>
             <CustomerLayout>
