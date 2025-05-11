@@ -19,6 +19,14 @@ class MerchantController extends Controller
         ]);
     }
 
+    public function index_customer(): Response
+    {
+        $merchants = Merchant::with('businessCategory', 'user', 'storeProfile')->where('is_verified', 1)->get();
+        return Inertia::render('customer/pages/merchant/index', [
+            'data' => $merchants,
+        ]);
+    }
+
     public function show(Merchant $merchant): Response
     {
         $merchant->load('businessCategory', 'user');

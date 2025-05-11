@@ -1,4 +1,6 @@
 import { BusinessCategory } from './business-category';
+import { StoreGallery } from './store-management/store-gallery';
+import { StoreOperatingHour } from './store-management/store-operating-hour';
 import { StoreProfile } from './store-management/store-profile';
 import { User } from './user';
 
@@ -40,4 +42,6 @@ export interface Merchant {
     deleted_at?: string | null;
 
     store_profile: StoreProfile;
+    store_gallery: StoreGallery[];
+    store_operating_hour: StoreOperatingHour[];
 }

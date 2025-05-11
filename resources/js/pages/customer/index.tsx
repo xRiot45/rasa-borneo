@@ -86,7 +86,7 @@ export default function HomePage() {
                             <Icon icon="icon-park-outline:right-c" />
                         </Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                         {menuCategories.slice(0, 6).map((category, index) => {
                             const CategoryIcon = getCategoryIcon(category.name);
 
@@ -118,9 +118,9 @@ export default function HomePage() {
                         </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                         {menuItems.slice(0, 6).map((item) => (
-                            <Card key={item.id} className="group relative cursor-pointer overflow-hidden rounded-2xl border shadow-none transition">
+                            <Card key={item.id} className="group relative cursor-pointer overflow-hidden rounded-xl border shadow-none transition">
                                 <div className="relative h-48 w-full">
                                     <img
                                         src={`${item.image_url}`}
@@ -160,9 +160,9 @@ export default function HomePage() {
                         </Button>
                     </div>
 
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                         {merchants.slice(0, 6).map((merchant) => (
-                            <Card key={merchant.id} className="group rounded-2xl border shadow-none transition">
+                            <Card key={merchant.id} className="group rounded-xl border shadow-none transition">
                                 <div className="w-full overflow-hidden rounded-t-2xl">
                                     <img
                                         src={`${merchant.store_profile?.cover_photo}`}

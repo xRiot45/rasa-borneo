@@ -24,6 +24,14 @@ class MenuItemController extends Controller
         ]);
     }
 
+    public function index_customer(): Response
+    {
+        $menuItems = MenuItem::with('menuCategory')->get();
+        return Inertia::render('customer/pages/menu/index', [
+            'data' => $menuItems,
+        ]);
+    }
+
     public function create(): Response
     {
         return Inertia::render('merchant/menu-management/menu-items/pages/create');

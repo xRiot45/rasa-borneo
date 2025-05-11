@@ -16,8 +16,6 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
@@ -29,6 +27,12 @@ Route::middleware([])->group(function () {
     Route::get('/', function () {
         return Inertia::render('customer/index');
     })->name('home');
+
+    // Menu
+    Route::get('/menu', [MenuItemController::class, 'index_customer'])->name('menu');
+
+    // Merchant
+    Route::get('/merchant', [MerchantController::class, 'index_customer'])->name('merchant');
 });
 
 // ADMIN ROUTES
