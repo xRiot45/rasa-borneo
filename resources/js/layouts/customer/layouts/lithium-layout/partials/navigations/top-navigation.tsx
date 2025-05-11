@@ -143,7 +143,7 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
                                         </Avatar>
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-64" align="end">
+                                <DropdownMenuContent className="w-72" align="end">
                                     <CustomerMenuContent user={auth.user} />
                                 </DropdownMenuContent>
                             </DropdownMenu>

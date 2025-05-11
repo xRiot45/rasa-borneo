@@ -4,7 +4,6 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Icon } from '@iconify/react';
 import { Link } from '@inertiajs/react';
-import { LogOut } from 'lucide-react';
 
 interface CustomerMenuContentProps {
     user: User;
@@ -16,7 +15,7 @@ export function CustomerMenuContent({ user }: CustomerMenuContentProps) {
     return (
         <>
             <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <div className="flex items-center gap-2 p-2 text-left text-sm">
                     <UserInfo user={user} showEmail={true} />
                 </div>
             </DropdownMenuLabel>
@@ -43,8 +42,8 @@ export function CustomerMenuContent({ user }: CustomerMenuContentProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                <Link className="block w-full" method="post" href={route('logout')} as="button" onClick={cleanup}>
-                    <LogOut className="mr-2" />
+                <Link className="block w-full text-red-500" method="post" href={route('logout')} as="button" onClick={cleanup}>
+                    <Icon icon="material-symbols:logout-rounded" className="mr-2 text-red-500" />
                     Log out
                 </Link>
             </DropdownMenuItem>
