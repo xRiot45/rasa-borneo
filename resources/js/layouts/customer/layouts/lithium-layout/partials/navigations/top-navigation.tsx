@@ -67,12 +67,14 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
                         <div className="ml-auto flex items-center space-x-2">
                             <Link href={route('login')}>
                                 <Button variant="default" className="cursor-pointer">
-                                    Login
+                                    Masuk
+                                    <Icon icon="material-symbols:login" className="ml-1" />
                                 </Button>
                             </Link>
                             <Link href={route('register')}>
                                 <Button variant="outline" className="cursor-pointer">
-                                    Register
+                                    Daftar
+                                    <Icon icon="mdi:register" className="ml-1" />
                                 </Button>
                             </Link>
                         </div>
