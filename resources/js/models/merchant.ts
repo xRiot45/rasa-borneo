@@ -40,5 +40,4 @@ export interface Merchant {
     deleted_at?: string | null;
 
     store_profile: StoreProfile;
-    
 }
