@@ -16,9 +16,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -26,7 +24,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-// Admin
+// CUSTOMER ROUTES
+Route::middleware([])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('customer/index');
+    })->name('home');
+});
+
+// ADMIN ROUTES
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index_admin'])->name('admin.dashboard');
 
@@ -123,6 +128,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     });
 });
 
+// MERCHANT ROUTES
 Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
     Route::get('/merchant/dashboard', [DashboardController::class, 'index_merchant'])->name('merchant.dashboard');
 

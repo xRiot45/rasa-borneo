@@ -1,3 +1,4 @@
+import { Customer } from '@/models/customer';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
@@ -34,10 +35,10 @@ export interface User {
     id: number;
     full_name: string;
     email: string;
-    phone_number: string;
-    avatar?: string;
     email_verified_at: string | null;
+    phone_number: string;
     created_at: string;
     updated_at: string;
+    customer?: Customer;
     [key: string]: unknown;
 }
