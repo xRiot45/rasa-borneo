@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BusinessCategoryController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -33,6 +35,12 @@ Route::middleware([])->group(function () {
 
     // Merchant
     Route::get('/merchant', [MerchantController::class, 'index_customer'])->name('merchant');
+
+    // Cart
+    Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
+
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
 });
 
 // ADMIN ROUTES
