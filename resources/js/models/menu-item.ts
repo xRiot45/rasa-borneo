@@ -8,7 +8,7 @@ export interface MenuItem {
     image_url: File | null;
     status: MenuItemStatusEnum;
     short_description: string;
-    is_recommended: boolean;
+    is_recommended: boolean | number;
     menu_category_id: number;
     menu_category: MenuCategory;
     slug: string;

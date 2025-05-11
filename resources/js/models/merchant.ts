@@ -1,4 +1,5 @@
 import { BusinessCategory } from './business-category';
+import { StoreProfile } from './store-management/store-profile';
 import { User } from './user';
 
 export interface Merchant {
@@ -37,4 +38,7 @@ export interface Merchant {
     created_at?: string;
     updated_at?: string;
     deleted_at?: string | null;
+
+    store_profile: StoreProfile;
+    
 }

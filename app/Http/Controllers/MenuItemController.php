@@ -7,6 +7,7 @@ use App\Models\MenuItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -82,6 +83,18 @@ class MenuItemController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('foto_menu', $filename, 'public');
             $validated['image_url'] = '/storage/' . $path;
+        }
+
+        if ($request->filled('name') && $request->name !== $menuItem->name) {
+            $slug = Str::slug($request->name);
+            $originalSlug = $slug;
+            $count = 1;
+
+            while (MenuItem::where('slug', $slug)->where('id', '!=', $menuItem->id)->exists()) {
+                $slug = $originalSlug . '-' . $count++;
+            }
+
+            $validated['slug'] = $slug;
         }
 
         $menuItem->update([
