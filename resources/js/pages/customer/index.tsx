@@ -60,7 +60,7 @@ export default function HomePage() {
         <>
             <CustomerLayout>
                 <Head title="Beranda" />
-                <Carousel className="mx-auto mt-12 w-full max-w-screen-xl" plugins={[plugin.current]}>
+                <Carousel className="mx-auto mt-22 w-full max-w-screen-xl" plugins={[plugin.current]}>
                     <CarouselContent>
                         {banners.map((banner, index) => (
                             <CarouselItem key={index} className="w-full sm:basis-1/2 lg:basis-1/3">
