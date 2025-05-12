@@ -40,7 +40,7 @@ const MerchantSection: React.FC<Props> = ({ merchants }) => {
                             <CardContent className="space-y-4 pb-5">
                                 {/* Logo dan Nama */}
                                 <div className="flex items-start gap-4">
-                                    <Avatar className="h-16 w-16 rounded-md">
+                                    <Avatar className="h-20 w-20 rounded-md">
                                         <AvatarImage
                                             src={`${merchant.store_profile?.logo_photo}`}
                                             alt={merchant.business_name}
@@ -49,15 +49,15 @@ const MerchantSection: React.FC<Props> = ({ merchants }) => {
                                     </Avatar>
 
                                     <div className="mb-4 flex-1 space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <h1 className="line-clamp-1 text-base font-semibold text-gray-900 dark:text-white">
-                                                {merchant.business_name}
-                                            </h1>
+                                        <div className="flex flex-col items-start justify-between">
                                             {merchant.business_category?.name && (
-                                                <Badge variant="default" className="rounded-sm">
+                                                <Badge variant="default" className="mb-1 rounded-sm">
                                                     {merchant.business_category.name}
                                                 </Badge>
                                             )}
+                                            <h1 className="line-clamp-1 text-base font-semibold text-gray-900 dark:text-white">
+                                                {merchant.business_name}
+                                            </h1>
                                         </div>
 
                                         <p className="text-sm text-gray-500 dark:text-gray-400">{merchant.business_phone}</p>
