@@ -126,7 +126,10 @@ const RecommendedMenuSection: React.FC<Props> = ({ menuItems }) => {
                                     </Tooltip>
                                 </TooltipProvider>
 
-                                <Button onClick={() => alert('Ditambahkan ke keranjang')} className="w-full cursor-pointer py-6">
+                                <Button
+                                    onClick={() => alert('Ditambahkan ke keranjang')}
+                                    className="w-full cursor-pointer border-none py-6 shadow-none"
+                                >
                                     <Icon icon="mdi:cart-outline" className="mr-1" />
                                     Tambah ke Keranjang
                                 </Button>
