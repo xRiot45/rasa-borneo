@@ -51,7 +51,7 @@ const gradients = [
 export default function HomePage() {
     const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
     const { merchants } = usePage<{ merchants: Merchant[] }>().props;
-    const { menuItems } = usePage<{ menuItems: MenuItem[] }>().props;
+    const { menuItemsRecommended } = usePage<{ menuItemsRecommended: MenuItem[] }>().props;
     const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
     return (
@@ -104,10 +104,10 @@ export default function HomePage() {
                 </section>
 
                 {/* Recommended Menu Items Section */}
-                <RecommendedMenuSection menuItems={menuItems} />
+                <RecommendedMenuSection data={menuItemsRecommended} />
 
                 {/* Merchant Section */}
-                <MerchantSection merchants={merchants} />
+                <MerchantSection data={merchants} />
             </CustomerLayout>
         </>
     );

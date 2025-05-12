@@ -7,10 +7,10 @@ import { Icon } from '@iconify/react';
 import { Link } from '@inertiajs/react';
 
 interface Props {
-    merchants: Merchant[];
+    data: Merchant[];
 }
 
-const MerchantSection: React.FC<Props> = ({ merchants }) => {
+const MerchantSection: React.FC<Props> = ({ data }) => {
     return (
         <>
             <section className="mx-auto mt-12 w-full max-w-screen-xl">
@@ -27,7 +27,7 @@ const MerchantSection: React.FC<Props> = ({ merchants }) => {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                    {merchants.slice(0, 6).map((merchant) => (
+                    {data.slice(0, 6).map((merchant) => (
                         <Card key={merchant.id} className="group rounded-xl border shadow-none transition">
                             <div className="w-full overflow-hidden rounded-t-2xl">
                                 <img
