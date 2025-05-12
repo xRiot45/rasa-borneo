@@ -9,6 +9,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import TabGalleryContent from './partials/tabs/tab-gallery';
 import TabMenuContent from './partials/tabs/tab-menu';
+import TabReviewContent from './partials/tabs/tab-review';
 
 interface Props {
     data: Merchant;
@@ -246,7 +247,7 @@ export default function MerchantDetailPage({ data }: Props) {
 
                                 {/* Tabs Review */}
                                 <TabsContent value="review">
-                                    <h1>Review & Ulasan</h1>
+                                    <TabReviewContent />
                                 </TabsContent>
                             </Tabs>
                         </div>
