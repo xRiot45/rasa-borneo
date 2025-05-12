@@ -43,7 +43,7 @@ export interface Merchant {
 
     store_profile: StoreProfile;
     store_galleries: StoreGallery[];
-    store_operating_hour: StoreOperatingHour[];
+    store_operating_hours: StoreOperatingHour[];
 
     menu_categories: MenuCategory[];
     menu_items: MenuItem[];

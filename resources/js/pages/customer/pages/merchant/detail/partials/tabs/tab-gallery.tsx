@@ -3,11 +3,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StoreGallery } from '@/models/store-management/store-gallery';
 
 interface Props {
-    galleries: StoreGallery[];
+    data: StoreGallery[];
 }
 
-const TabGalleryContent: React.FC<Props> = ({ galleries }) => {
-    const isLoading = !galleries;
+const TabGalleryContent: React.FC<Props> = ({ data }) => {
+    const isLoading = !data;
     return (
         <>
             <main>
@@ -21,9 +21,9 @@ const TabGalleryContent: React.FC<Props> = ({ galleries }) => {
                             <Skeleton key={index} className="h-48 w-full rounded-lg" />
                         ))}
                     </div>
-                ) : galleries.length > 0 ? (
+                ) : data.length > 0 ? (
                     <div className="columns-1 gap-3 space-y-3 sm:columns-2 md:columns-2 lg:columns-3">
-                        {galleries.map((item, index) => (
+                        {data.map((item, index) => (
                             <div key={index} className="group relative">
                                 <img
                                     src={`${item.image_url}`}

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import TabGalleryContent from './partials/tabs/tab-gallery';
 import TabMenuContent from './partials/tabs/tab-menu';
 import TabReviewContent from './partials/tabs/tab-review';
+import TabStoreOperatingHour from './partials/tabs/tab-store-operating-hour';
 
 interface Props {
     data: Merchant;
@@ -232,17 +233,17 @@ export default function MerchantDetailPage({ data }: Props) {
 
                                 {/* Tabs Menu */}
                                 <TabsContent value="menu" className="mt-10">
-                                    <TabMenuContent menuItems={data?.menu_items?.map((item) => item) || []} />
+                                    <TabMenuContent data={data?.menu_items?.map((item) => item) || []} />
                                 </TabsContent>
 
                                 {/* Tabs Gallery */}
                                 <TabsContent value="gallery" className="mt-10">
-                                    <TabGalleryContent galleries={data?.store_galleries?.map((item) => item) || []} />
+                                    <TabGalleryContent data={data?.store_galleries?.map((item) => item) || []} />
                                 </TabsContent>
 
                                 {/* Tabs Store Operating Hour */}
-                                <TabsContent value="store_operating_hour">
-                                    <h1>Jam Operasional</h1>
+                                <TabsContent value="store_operating_hour" className="mt-10">
+                                    <TabStoreOperatingHour data={data?.store_operating_hours?.map((item) => item) || []} />
                                 </TabsContent>
 
                                 {/* Tabs Review */}

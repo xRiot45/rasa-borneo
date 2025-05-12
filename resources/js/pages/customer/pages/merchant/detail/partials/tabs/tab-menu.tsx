@@ -13,10 +13,10 @@ import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
-    menuItems: MenuItem[];
+    data: MenuItem[];
 }
 
-const TabMenuContent: React.FC<Props> = ({ menuItems }) => {
+const TabMenuContent: React.FC<Props> = ({ data }) => {
     const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
     const [search, setSearch] = useState<string>('');
     const [category, setCategory] = useState<string>('');
@@ -35,7 +35,7 @@ const TabMenuContent: React.FC<Props> = ({ menuItems }) => {
         setSortOrder(tempSortOrder);
     };
 
-    const filteredItems = menuItems
+    const filteredItems = data
         .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
         .filter((item) => (category ? item.menu_category_id.toString() === category : true))
         .filter((item) => (recommendedOnly ? item.is_recommended === 1 : true))
