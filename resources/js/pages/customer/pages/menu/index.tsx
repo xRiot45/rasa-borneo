@@ -12,9 +12,9 @@ interface Props {
 export default function MenuPage({ data }: Props) {
     return (
         <>
+            <Head title="Menu" />
             <CustomerLayout>
-                <Head title="Menu" />
-                <section className="mx-auto mt-10 w-full max-w-screen-xl">
+                <section className="mx-auto mt-22 w-full max-w-screen-xl">
                     <div className="mb-5">
                         <h2 className="text-lg font-bold">Menu Tersedia</h2>
                         <p className="text-muted-foreground text-sm">Daftar menu yang tersedia</p>

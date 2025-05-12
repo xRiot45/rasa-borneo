@@ -37,7 +37,7 @@ export default function CartPage() {
         <>
             <Head title="Keranjang" />
             <CustomerLayout>
-                <div className="w-full py-10">
+                <div className="mt-22 w-full">
                     <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 lg:grid-cols-12">
                         {/* Cart Items */}
                         <div className="space-y-4 lg:col-span-8">

@@ -14,9 +14,9 @@ interface Props {
 export default function MerchantPage({ data }: Props) {
     return (
         <>
+            <Head title="Penjual" />
             <CustomerLayout>
-                <Head title="Penjual" />
-                <section className="mt-10">
+                <section className="mt-22">
                     <div className="mb-6">
                         <h2 className="text-lg font-bold">Merchant Terdaftar</h2>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Daftar mitra bisnis yang telah diverifikasi</p>
