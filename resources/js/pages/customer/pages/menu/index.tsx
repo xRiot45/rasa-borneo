@@ -127,7 +127,7 @@ export default function MenuPage({ data }: Props) {
                         </Dialog>
                     </div>
 
-                    <CardMenuItem menuItems={filteredItems} />
+                    <CardMenuItem data={filteredItems} />
                 </section>
             </CustomerLayout>
         </>

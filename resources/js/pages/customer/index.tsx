@@ -15,8 +15,8 @@ import { Icon } from '@iconify/react';
 import { Head, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
-import MerchantSection from './partials/merchant-section';
-import RecommendedMenuSection from './partials/recommended-menu-section';
+import CardMenuItem from './components/card-menu-items';
+import CardMerchant from './components/card-merchants';
 
 const banners = [
     {
@@ -104,10 +104,37 @@ export default function HomePage() {
                 </section>
 
                 {/* Recommended Menu Items Section */}
-                <RecommendedMenuSection data={menuItemsRecommended} />
+                <section className="mx-auto mt-12 w-full max-w-screen-xl">
+                    <div className="mb-5 flex items-center justify-between">
+                        <div>
+                            <h2 className="text-lg font-bold">Menu Direkomendasi</h2>
+                            <p className="text-muted-foreground text-sm">Daftar menu yang direkomendasikan</p>
+                        </div>
+                        <Button variant="link" className="text-sm font-medium">
+                            Lihat Semua Menu
+                            <Icon icon="icon-park-outline:right-c" className="ml-1" />
+                        </Button>
+                    </div>
+
+                    <CardMenuItem data={menuItemsRecommended} />
+                </section>
 
                 {/* Merchant Section */}
-                <MerchantSection data={merchants} />
+                <section className="mx-auto mt-12 w-full max-w-screen-xl">
+                    <div className="mb-6 flex items-center justify-between">
+                        <div>
+                            <h2 className="text-lg font-bold">Merchant Terdaftar</h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Daftar mitra bisnis yang telah diverifikasi</p>
+                        </div>
+
+                        <Button className="text-primary text-sm font-medium" variant="link">
+                            Lihat Semua Merchant
+                            <Icon icon="icon-park-outline:right-c" className="ml-1" />
+                        </Button>
+                    </div>
+
+                    <CardMerchant data={merchants} />
+                </section>
             </CustomerLayout>
         </>
     );

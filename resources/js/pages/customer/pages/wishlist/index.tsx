@@ -4,8 +4,8 @@ import { Head } from '@inertiajs/react';
 export default function WishlistPage() {
     return (
         <>
+            <Head title="Wishlist" />
             <CustomerLayout>
-                <Head title="Wishlist" />
                 <h1>Wishlist</h1>
             </CustomerLayout>
         </>

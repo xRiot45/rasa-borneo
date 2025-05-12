@@ -10,22 +10,10 @@ interface Props {
     data: Merchant[];
 }
 
-const MerchantSection: React.FC<Props> = ({ data }) => {
+const CardMerchant: React.FC<Props> = ({ data }) => {
     return (
         <>
-            <section className="mx-auto mt-12 w-full max-w-screen-xl">
-                <div className="mb-6 flex items-center justify-between">
-                    <div>
-                        <h2 className="text-lg font-bold">Merchant Terdaftar</h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Daftar mitra bisnis yang telah diverifikasi</p>
-                    </div>
-
-                    <Button className="text-primary text-sm font-medium" variant="link">
-                        Lihat Semua Merchant
-                        <Icon icon="icon-park-outline:right-c" className="ml-1" />
-                    </Button>
-                </div>
-
+            <main>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                     {data.slice(0, 6).map((merchant) => (
                         <Card key={merchant.id} className="group rounded-xl border shadow-none transition">
@@ -78,9 +66,9 @@ const MerchantSection: React.FC<Props> = ({ data }) => {
                         </Card>
                     ))}
                 </div>
-            </section>
+            </main>
         </>
     );
 };
 
-export default MerchantSection;
+export default CardMerchant;

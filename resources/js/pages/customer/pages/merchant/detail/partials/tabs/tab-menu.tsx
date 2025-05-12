@@ -127,7 +127,7 @@ const TabMenuContent: React.FC<Props> = ({ data }) => {
 
                 {filteredItems.length ? (
                     <>
-                        <CardMenuItem menuItems={filteredItems} />
+                        <CardMenuItem data={filteredItems} />
                     </>
                 ) : (
                     <div className="flex flex-col">

@@ -11,14 +11,14 @@ import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
-    menuItems: MenuItem[];
+    data: MenuItem[];
 }
 
-const CardMenuItem: React.FC<Props> = ({ menuItems }) => {
+const CardMenuItem: React.FC<Props> = ({ data }) => {
     const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-    const isLoading = menuItems?.length === 0;
+    const isLoading = data?.length === 0;
 
     const handleOpen = (item: MenuItem) => {
         setSelectedMenu(item);
@@ -44,7 +44,7 @@ const CardMenuItem: React.FC<Props> = ({ menuItems }) => {
                                   </CardContent>
                               </Card>
                           ))
-                        : menuItems.slice(0, 6).map((item) => (
+                        : data.slice(0, 6).map((item) => (
                               <Card
                                   key={item.id}
                                   onClick={() => handleOpen(item)}
