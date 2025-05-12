@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
+import { Link } from '@inertiajs/react';
 
 interface Props {
     merchants: Merchant[];
@@ -67,10 +68,12 @@ const MerchantSection: React.FC<Props> = ({ merchants }) => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full cursor-pointer py-5 text-sm font-medium">
-                                    Lihat Detail Merchant
-                                    <Icon icon="icon-park-outline:right-c" className="ml-2" />
-                                </Button>
+                                <Link href={route('merchant.show', { id: merchant.id })}>
+                                    <Button className="w-full cursor-pointer py-5 text-sm font-medium">
+                                        Lihat Detail Merchant
+                                        <Icon icon="icon-park-outline:right-c" className="ml-2" />
+                                    </Button>
+                                </Link>
                             </CardContent>
                         </Card>
                     ))}

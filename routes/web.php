@@ -35,6 +35,7 @@ Route::middleware([])->group(function () {
 
     // Merchant
     Route::get('/merchant', [MerchantController::class, 'index_customer'])->name('merchant');
+    Route::get('/merchant/{merchant}', [MerchantController::class, 'showForCustomer'])->name('merchant.show');
 
     // Cart
     Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');

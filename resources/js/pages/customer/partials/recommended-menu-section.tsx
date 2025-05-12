@@ -75,7 +75,18 @@ const RecommendedMenuSection: React.FC<Props> = ({ menuItems }) => {
                                 <DialogTitle>Detail {selectedMenu.name}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-2">
-                                <img src={`${selectedMenu.image_url}`} alt={selectedMenu.name} className="w-full rounded-lg object-cover" />
+                                <div className="relative w-full">
+                                    <img
+                                        src={`${selectedMenu.image_url}`}
+                                        alt={selectedMenu.name}
+                                        className="h-full w-full object-cover brightness-75 transition duration-300 group-hover:scale-105"
+                                    />
+                                    {selectedMenu.is_recommended === 1 && (
+                                        <span className="absolute top-4 left-2 rounded-full bg-blue-500 px-3 py-1 text-xs font-semibold text-white shadow">
+                                            Direkomendasikan
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="mt-4 space-y-2">
                                     <Badge className="rounded-sm border-none text-xs shadow-none">{selectedMenu.menu_category?.name}</Badge>
                                     <div className="mt-2 space-y-2">
