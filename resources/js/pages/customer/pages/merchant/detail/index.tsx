@@ -1,12 +1,13 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import CustomerLayout from '@/layouts/customer/layout';
 import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
 import { Head, Link } from '@inertiajs/react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import TabMenuContent from './partials/tab-menu';
 
 interface Props {
     data: Merchant;
@@ -30,11 +31,7 @@ export default function MerchantDetailPage({ data }: Props) {
                         <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
                             {/* Right Banner & Promo (moved to top on small screens) */}
                             <div className="relative col-span-1 overflow-hidden rounded-xl lg:col-span-2">
-                                <img
-                                    src={`${data?.store_profile?.cover_photo}`}
-                                    alt="Promo"
-                                    className="h-auto w-full rounded-xl object-cover brightness-75"
-                                />
+                                <img src={`${data?.store_profile?.cover_photo}`} alt="Promo" className="h-auto w-full rounded-xl object-cover" />
 
                                 <div className="absolute top-6 right-6 w-72 rounded-lg bg-gradient-to-r from-white to-orange-50 p-5 shadow-xl ring-1 ring-orange-100">
                                     <div className="flex items-center gap-2">
@@ -65,7 +62,7 @@ export default function MerchantDetailPage({ data }: Props) {
                             <div className="col-span-1 space-y-2 rounded-xl bg-white px-3 py-2 lg:col-span-1 dark:bg-black">
                                 {/* Business Info */}
                                 <div className="flex items-start gap-5">
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-200">
+                                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
                                         <img src={`${data?.store_profile?.logo_photo}`} alt="Business Logo" className="rounded-full" />
                                     </div>
                                     <div className="space-y-3">
@@ -202,17 +199,55 @@ export default function MerchantDetailPage({ data }: Props) {
                         </div>
 
                         {/* Tabs & Filter */}
-                        <div className="flex items-center justify-between">
-                            <Tabs defaultValue="recommended">
-                                <TabsList>
-                                    <TabsTrigger value="recommended">Recommend Products</TabsTrigger>
-                                    <TabsTrigger value="italian">Italian</TabsTrigger>
+                        <div className="mt-16">
+                            <Tabs defaultValue="menu">
+                                <TabsList className="border-muted grid grid-cols-4 border-b px-0">
+                                    <TabsTrigger
+                                        value="menu"
+                                        className="data-[state=active]:border-primary text-muted-foreground data-[state=active]:text-primary w-full cursor-pointer rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium data-[state=active]:border-b-2"
+                                    >
+                                        Menu
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="gallery"
+                                        className="data-[state=active]:border-primary text-muted-foreground data-[state=active]:text-primary w-full cursor-pointer rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium data-[state=active]:border-b-2"
+                                    >
+                                        Galeri
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="store_operating_hour"
+                                        className="data-[state=active]:border-primary text-muted-foreground data-[state=active]:text-primary w-full cursor-pointer rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium data-[state=active]:border-b-2"
+                                    >
+                                        Jam Operasional
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="review"
+                                        className="data-[state=active]:border-primary text-muted-foreground data-[state=active]:text-primary w-full cursor-pointer rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium data-[state=active]:border-b-2"
+                                    >
+                                        Review & Ulasan
+                                    </TabsTrigger>
                                 </TabsList>
-                            </Tabs>
 
-                            <Button variant="outline" className="border-orange-500 text-orange-600">
-                                Filter
-                            </Button>
+                                {/* Tabs Menu */}
+                                <TabsContent value="menu" className="mt-10">
+                                    <TabMenuContent menuItems={data?.menu_items?.map((item) => item) || []} />
+                                </TabsContent>
+
+                                {/* Tabs Gallery */}
+                                <TabsContent value="gallery">
+                                    <h1>Galeri</h1>
+                                </TabsContent>
+
+                                {/* Tabs Store Operating Hour */}
+                                <TabsContent value="store_operating_hour">
+                                    <h1>Jam Operasional</h1>
+                                </TabsContent>
+
+                                {/* Tabs Review */}
+                                <TabsContent value="review">
+                                    <h1>Review & Ulasan</h1>
+                                </TabsContent>
+                            </Tabs>
                         </div>
                     </div>
                 </main>

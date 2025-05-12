@@ -37,7 +37,7 @@ class MerchantController extends Controller
 
     public function showForCustomer(Merchant $merchant): Response
     {
-        $merchant->load('businessCategory', 'user', 'storeProfile', 'storeGalleries', 'storeOperatingHours', 'menuCategories', 'menuItems');
+        $merchant->load('businessCategory', 'user', 'storeProfile', 'storeGalleries', 'storeOperatingHours', 'menuCategories', 'menuItems.menuCategory');
         return Inertia::render('customer/pages/merchant/detail/index', [
             'data' => $merchant,
         ]);
