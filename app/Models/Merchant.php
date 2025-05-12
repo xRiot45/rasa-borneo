@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Merchant extends Model
 {
@@ -34,10 +35,6 @@ class Merchant extends Model
         'bank_account_number',
         'bank_account_name',
 
-        // Informasi Payout
-        'payout_status',
-        'payout_verified_at',
-
         // Informasi Perpajakan
         'tax_identification_number',
 
@@ -50,6 +47,15 @@ class Merchant extends Model
     protected $casts = [
         'payout_status' => PayoutStatusEnum::class,
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model): void {
+            $model->slug = Str::slug($model->business_name);
+        });
+    }
 
     public function user(): BelongsTo
     {

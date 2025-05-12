@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\PayoutStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -29,9 +28,7 @@ return new class extends Migration {
             $table->string('bank_account_name'); // Nama pemilik rekening
             $table->string('tax_identification_number')->nullable(); // NPWP (opsional)
 
-            // Informasi Payout (Pengambilan Dana (Jika menerapkan fitur payout))
-            $table->enum('payout_status', PayoutStatusEnum::values())->nullable();
-            $table->timestamp('payout_verified_at')->nullable();
+            $table->string('slug')->unique();
 
             // Informasi Verifikasi
             $table->boolean('is_verified')->default(false);

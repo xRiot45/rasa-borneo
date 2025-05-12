@@ -18,32 +18,6 @@ use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-});
-
-// CUSTOMER ROUTES
-Route::middleware([])->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('customer/index');
-    })->name('home');
-
-    // Menu
-    Route::get('/menu', [MenuItemController::class, 'index_customer'])->name('menu');
-
-    // Merchant
-    Route::get('/merchant', [MerchantController::class, 'index_customer'])->name('merchant');
-    Route::get('/merchant/{merchant}', [MerchantController::class, 'showForCustomer'])->name('merchant.show');
-
-    // Cart
-    Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
-
-    // Wishlist
-    Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
-});
-
 // ADMIN ROUTES
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index_admin'])->name('admin.dashboard');
@@ -210,6 +184,26 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/store-or-update', 'storeOrUpdate')->name('merchant.store-operating-hour.storeOrUpdate');
             });
     });
+});
+
+// CUSTOMER ROUTES
+Route::middleware([])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('customer/index');
+    })->name('home');
+
+    // Menu
+    Route::get('/menu', [MenuItemController::class, 'index_customer'])->name('menu');
+
+    // Merchant
+    Route::get('/merchant', [MerchantController::class, 'index_customer'])->name('merchant');
+    Route::get('/merchant/show/{merchant}', [MerchantController::class, 'showForCustomer'])->name('merchant.show');
+
+    // Cart
+    Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
+
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
 });
 
 require __DIR__ . '/settings.php';

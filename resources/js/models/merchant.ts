@@ -26,9 +26,7 @@ export interface Merchant {
     bank_account_number: string;
     bank_account_name: string;
 
-    // Informasi Payout
-    payout_status: string; // Sesuaikan jika ada enum di frontend
-    payout_verified_at: string | null; // ISO date string atau null
+    slug?: string;
 
     // Informasi Perpajakan
     tax_identification_number: string;
