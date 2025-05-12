@@ -31,7 +31,7 @@ export default function MerchantDetailPage({ data }: Props) {
                     <div className="mx-auto">
                         {/* Hero Section */}
                         <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-                            {/* Right Banner & Promo (moved to top on small screens) */}
+                            {/* Left Banner & Promo (moved to top on small screens) */}
                             <div className="relative col-span-1 overflow-hidden rounded-xl lg:col-span-2">
                                 <img src={`${data?.store_profile?.cover_photo}`} alt="Promo" className="h-auto w-full rounded-xl object-cover" />
 
@@ -60,8 +60,8 @@ export default function MerchantDetailPage({ data }: Props) {
                                 </div>
                             </div>
 
-                            {/* Left Info */}
-                            <div className="col-span-1 space-y-2 rounded-xl bg-white px-3 py-2 lg:col-span-1 dark:bg-black">
+                            {/* Right Info */}
+                            <div className="col-span-1 space-y-2 rounded-xl px-3 py-2 lg:col-span-1">
                                 {/* Business Info */}
                                 <div className="flex items-start gap-5">
                                     <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
