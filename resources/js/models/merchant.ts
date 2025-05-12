@@ -1,4 +1,6 @@
 import { BusinessCategory } from './business-category';
+import { MenuCategory } from './menu-category';
+import { MenuItem } from './menu-item';
 import { StoreGallery } from './store-management/store-gallery';
 import { StoreOperatingHour } from './store-management/store-operating-hour';
 import { StoreProfile } from './store-management/store-profile';
@@ -42,4 +44,7 @@ export interface Merchant {
     store_profile: StoreProfile;
     store_gallery: StoreGallery[];
     store_operating_hour: StoreOperatingHour[];
+
+    menu_categories: MenuCategory[];
+    menu_items: MenuItem[];
 }

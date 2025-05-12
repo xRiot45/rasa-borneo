@@ -29,7 +29,7 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
 
     return (
         <>
-            <div className="border-sidebar-border/80 fixed top-0 z-50 w-full border-b bg-white">
+            <div className="border-sidebar-border/80 fixed top-0 z-50 w-full border-b bg-white dark:bg-black">
                 <div className="mx-auto flex h-16 max-w-7xl items-center px-4 lg:px-0">
                     <Link href="/" prefetch className="flex items-center space-x-2">
                         <Logo />
