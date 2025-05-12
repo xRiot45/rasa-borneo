@@ -68,7 +68,7 @@ const MerchantSection: React.FC<Props> = ({ merchants }) => {
                                     </div>
                                 </div>
 
-                                <Link href={route('merchant.show', { id: merchant.id })}>
+                                <Link href={route('merchant.show', { merchant: merchant.slug })}>
                                     <Button className="w-full cursor-pointer py-5 text-sm font-medium">
                                         Lihat Detail Merchant
                                         <Icon icon="icon-park-outline:right-c" className="ml-2" />

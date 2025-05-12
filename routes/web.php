@@ -15,8 +15,17 @@ use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
+use App\Models\Merchant;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::bind('merchant', function ($slug) {
+    return Merchant::where('slug', $slug)->firstOrFail();
+});
+
+Route::get('/', function () {
+    return Inertia::render('customer/index');
+})->name('home');
 
 // ADMIN ROUTES
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
@@ -187,11 +196,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
 });
 
 // CUSTOMER ROUTES
-Route::middleware([])->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('customer/index');
-    })->name('home');
-
+Route::middleware(['verified'])->group(function () {
     // Menu
     Route::get('/menu', [MenuItemController::class, 'index_customer'])->name('menu');
 
