@@ -28,6 +28,12 @@ export function CustomerMenuContent({ user }: CustomerMenuContentProps) {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
+                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                        <Icon icon="entypo:address" className="mr-2" />
+                        Alamat Saya
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
                     <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
                         <Icon icon="material-symbols:receipt-long" className="mr-2" />
                         Pesanan Saya
