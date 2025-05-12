@@ -8,7 +8,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import CustomerLayout from '@/layouts/customer/layout';
 import { MenuCategory } from '@/models/menu-category';
 import { MenuItem } from '@/models/menu-item';
@@ -70,8 +70,8 @@ export default function HomePage() {
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    {/* <CarouselPrevious className="hidden sm:block" />
-                    <CarouselNext className="hidden sm:block" /> */}
+                    <CarouselPrevious className="hidden sm:flex" />
+                    <CarouselNext className="hidden sm:flex" />
                 </Carousel>
 
                 {/* Menu Categories */}
@@ -147,7 +147,7 @@ export default function HomePage() {
                 </section>
 
                 {/* Merchant */}
-                <section className="mt-12">
+                <section className="mx-auto mt-12 w-full max-w-screen-xl">
                     <div className="mb-6 flex items-center justify-between">
                         <div>
                             <h2 className="text-lg font-bold">Merchant Terdaftar</h2>
