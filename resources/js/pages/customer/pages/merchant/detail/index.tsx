@@ -7,7 +7,8 @@ import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
 import { Head, Link } from '@inertiajs/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
-import TabMenuContent from './partials/tab-menu';
+import TabGalleryContent from './partials/tabs/tab-gallery';
+import TabMenuContent from './partials/tabs/tab-menu';
 
 interface Props {
     data: Merchant;
@@ -206,13 +207,13 @@ export default function MerchantDetailPage({ data }: Props) {
                                         value="menu"
                                         className="data-[state=active]:border-primary text-muted-foreground data-[state=active]:text-primary w-full cursor-pointer rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium data-[state=active]:border-b-2"
                                     >
-                                        Menu
+                                        Menu Tersedia
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="gallery"
                                         className="data-[state=active]:border-primary text-muted-foreground data-[state=active]:text-primary w-full cursor-pointer rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium data-[state=active]:border-b-2"
                                     >
-                                        Galeri
+                                        Galeri Toko
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="store_operating_hour"
@@ -234,8 +235,8 @@ export default function MerchantDetailPage({ data }: Props) {
                                 </TabsContent>
 
                                 {/* Tabs Gallery */}
-                                <TabsContent value="gallery">
-                                    <h1>Galeri</h1>
+                                <TabsContent value="gallery" className="mt-10">
+                                    <TabGalleryContent galleries={data?.store_galleries?.map((item) => item) || []} />
                                 </TabsContent>
 
                                 {/* Tabs Store Operating Hour */}

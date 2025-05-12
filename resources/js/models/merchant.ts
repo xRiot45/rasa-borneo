@@ -42,7 +42,7 @@ export interface Merchant {
     deleted_at?: string | null;
 
     store_profile: StoreProfile;
-    store_gallery: StoreGallery[];
+    store_galleries: StoreGallery[];
     store_operating_hour: StoreOperatingHour[];
 
     menu_categories: MenuCategory[];
