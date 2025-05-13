@@ -31,7 +31,7 @@ class MenuItemController extends Controller
         $menuCategorySlug = $request->query('category');
         $isRecommended = (bool)$request->query('recommended');
 
-        $menuItemsQuery = MenuItem::with('menuCategory');
+        $menuItemsQuery = MenuItem::with('menuCategory', 'merchant');
 
         if ($menuCategorySlug) {
             $menuCategory = MenuCategory::where('slug', $menuCategorySlug)->first();
