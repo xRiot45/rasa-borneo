@@ -18,7 +18,6 @@ interface Props {
 }
 
 export default function MenuPage({ data }: Props) {
-    const noData = data.length === 0;
     const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
     const [search, setSearch] = useState<string>('');
     const [category, setCategory] = useState<string>('');
@@ -42,6 +41,8 @@ export default function MenuPage({ data }: Props) {
         .filter((item) => (category ? item.menu_category_id.toString() === category : true))
         .filter((item) => (recommendedOnly ? item.is_recommended === 1 : true))
         .sort((a, b) => (sortOrder === 'asc' ? a.price - b.price : b.price - a.price));
+
+    const noFilteredItems = filteredItems.length === 0;
 
     return (
         <>
@@ -129,7 +130,7 @@ export default function MenuPage({ data }: Props) {
                         </Dialog>
                     </div>
 
-                    {noData ? (
+                    {noFilteredItems ? (
                         <div className="flex flex-col">
                             <div className="flex grow items-center px-6 xl:px-10">
                                 <div className="mx-auto text-center">

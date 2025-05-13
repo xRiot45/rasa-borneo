@@ -138,8 +138,8 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                         onClick={() => alert('Ditambahkan ke keranjang')}
                                         className="w-full cursor-pointer border-none py-6 shadow-none"
                                     >
-                                        <Icon icon="mdi:cart-outline" className="mr-1" />
                                         Tambah ke Keranjang
+                                        <Icon icon="mdi:cart-outline" className="mr-1" />
                                     </Button>
                                 </DialogFooter>
                             </>
