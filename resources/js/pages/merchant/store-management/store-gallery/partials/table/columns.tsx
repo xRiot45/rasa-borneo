@@ -21,9 +21,7 @@ export const columns: ColumnDef<StoreGallery>[] = [
         id: 'image_url',
         accessorKey: 'image_url',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Galeri Toko" />,
-        cell: ({ row }) => (
-            <img src={`${row.getValue('image_url')}`} alt="Galeri Toko" className="h-auto w-full max-w-[260px] rounded object-cover" />
-        ),
+        cell: ({ row }) => <img src={`${row.getValue('image_url')}`} alt="Galeri Toko" className="- h-auto max-w-[200px] rounded object-cover" />,
         enableSorting: false,
         enableHiding: false,
     },
