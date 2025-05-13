@@ -78,7 +78,7 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                   </CardContent>
                               </Card>
                           ))
-                        : data.slice(0, 6).map((item) => (
+                        : data?.map((item) => (
                               <Card
                                   key={item.id}
                                   onClick={() => handleOpen(item)}

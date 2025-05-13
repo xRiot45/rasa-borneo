@@ -1,3 +1,4 @@
+import EmptyImage from '@/assets/errors/empty.svg';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -9,6 +10,7 @@ import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     carts: CartGroup[];
@@ -17,6 +19,15 @@ interface Props {
 export default function CartPage({ carts }: Props) {
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [selectedMerchants, setSelectedMerchants] = useState<Set<number>>(new Set());
+
+    const selectedTotal = carts.reduce((acc, group) => {
+        return (
+            acc +
+            group.items.reduce((sum, item) => {
+                return selectedItems.has(item.id) ? sum + item.unit_price * item.quantity : sum;
+            }, 0)
+        );
+    }, 0);
 
     const toggleItem = (itemId: number) => {
         setSelectedItems((prev) => {
@@ -49,21 +60,35 @@ export default function CartPage({ carts }: Props) {
         });
     };
 
-    const selectedTotal = carts.reduce((acc, group) => {
-        return (
-            acc +
-            group.items.reduce((sum, item) => {
-                return selectedItems.has(item.id) ? sum + item.unit_price * item.quantity : sum;
-            }, 0)
-        );
-    }, 0);
-
     const handleUpdateQuantity = (cartId: number, increment: boolean) => {
         router.put(route('cart.updateQuantity', { id: cartId }), { increment });
     };
 
-    const handleRemove = (id: number) => {
-        console.log('Remove', id);
+    const handleDeleteItemFromCart = (cartId: number) => {
+        router.delete(route('cart.destroy', { id: cartId }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Menu Berhasil Dihapus Dari Keranjang!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -79,84 +104,105 @@ export default function CartPage({ carts }: Props) {
                                 <p className="text-muted-foreground text-sm">Daftar menu yang ada di dalam keranjang anda</p>
                             </div>
 
-                            {carts.map((group) => (
-                                <Card key={group.merchant_id} className="border-border mb-4 rounded-xl border shadow-none">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 px-6 pt-6">
-                                        <div className="flex items-center gap-4">
-                                            <Checkbox
-                                                checked={selectedMerchants.has(group.merchant_id)}
-                                                onCheckedChange={() =>
-                                                    toggleMerchant(
-                                                        group.merchant_id,
-                                                        group.items.map((item) => item.id),
-                                                    )
-                                                }
-                                            />
+                            {carts.length > 0 ? (
+                                <>
+                                    {carts.map((group) => (
+                                        <Card key={group.merchant_id} className="border-border mb-4 rounded-xl border shadow-none">
+                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 px-6 pt-6">
+                                                <div className="flex items-center gap-4">
+                                                    <Checkbox
+                                                        checked={selectedMerchants.has(group.merchant_id)}
+                                                        onCheckedChange={() =>
+                                                            toggleMerchant(
+                                                                group.merchant_id,
+                                                                group.items.map((item) => item.id),
+                                                            )
+                                                        }
+                                                    />
 
-                                            <img
-                                                src={group?.merchant_logo_photo}
-                                                alt="Logo Merchant"
-                                                className="h-14 w-14 rounded-lg border object-cover"
-                                            />
-                                            <div>
-                                                <h3 className="text-lg font-bold">{group?.merchant_name}</h3>
-                                                <p className="text-muted-foreground text-sm">{group?.merchant_category}</p>
-                                            </div>
-                                        </div>
-                                        <span className="text-muted-foreground text-sm">{group.items.length} menu</span>
-                                    </CardHeader>
-
-                                    <CardContent className="space-y-5 px-6 pb-6">
-                                        {group.items.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                className="flex flex-col justify-between gap-4 border-t pt-4 sm:flex-row sm:items-center"
-                                            >
-                                                <div className="flex items-start gap-4 sm:items-center sm:gap-6">
-                                                    <Checkbox checked={selectedItems.has(item.id)} onCheckedChange={() => toggleItem(item.id)} />
                                                     <img
-                                                        src={`${item.menu_item.image_url}`}
-                                                        alt={item.menu_item.name}
-                                                        className="h-20 w-20 rounded-lg object-cover"
+                                                        src={group?.merchant_logo_photo}
+                                                        alt="Logo Merchant"
+                                                        className="h-14 w-14 rounded-lg border object-cover"
                                                     />
                                                     <div>
-                                                        <h4 className="text-muted-foreground text-sm font-medium">{item?.menu_item?.category}</h4>
-                                                        <h1 className="font-semibold">{item.menu_item.name}</h1>
-                                                        <div className="mt-2 flex items-center gap-4">
-                                                            <Button
-                                                                variant="outline"
-                                                                size="icon"
-                                                                className="h-8 w-8 cursor-pointer shadow-none"
-                                                                onClick={() => handleUpdateQuantity(item?.id, false)}
-                                                            >
-                                                                <Minus className="h-4 w-4" />
-                                                            </Button>
-                                                            <span className="text-sm font-semibold">{item.quantity}</span>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="icon"
-                                                                className="h-8 w-8 cursor-pointer shadow-none"
-                                                                onClick={() => handleUpdateQuantity(item?.id, true)}
-                                                            >
-                                                                <Plus className="h-4 w-4" />
+                                                        <h3 className="text-lg font-bold">{group?.merchant_name}</h3>
+                                                        <p className="text-muted-foreground text-sm">{group?.merchant_category}</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-muted-foreground text-sm">{group.items.length} menu</span>
+                                            </CardHeader>
+
+                                            <CardContent className="space-y-5 px-6 pb-6">
+                                                {group.items.map((item) => (
+                                                    <div
+                                                        key={item.id}
+                                                        className="flex flex-col justify-between gap-4 border-t pt-4 sm:flex-row sm:items-center"
+                                                    >
+                                                        <div className="flex items-start gap-4 sm:items-center sm:gap-6">
+                                                            <Checkbox
+                                                                checked={selectedItems.has(item.id)}
+                                                                onCheckedChange={() => toggleItem(item.id)}
+                                                            />
+                                                            <img
+                                                                src={`${item.menu_item.image_url}`}
+                                                                alt={item.menu_item.name}
+                                                                className="h-20 w-20 rounded-lg object-cover"
+                                                            />
+                                                            <div>
+                                                                <h4 className="text-muted-foreground text-sm font-medium">
+                                                                    {item?.menu_item?.category}
+                                                                </h4>
+                                                                <h1 className="font-semibold">{item.menu_item.name}</h1>
+                                                                <div className="mt-2 flex items-center gap-4">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        className="h-8 w-8 cursor-pointer shadow-none"
+                                                                        onClick={() => handleUpdateQuantity(item?.id, false)}
+                                                                    >
+                                                                        <Minus className="h-4 w-4" />
+                                                                    </Button>
+                                                                    <span className="text-sm font-semibold">{item.quantity}</span>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        className="h-8 w-8 cursor-pointer shadow-none"
+                                                                        onClick={() => handleUpdateQuantity(item?.id, true)}
+                                                                    >
+                                                                        <Plus className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-end gap-4 text-start">
+                                                            <p className="text-primary text-sm font-semibold">
+                                                                {formatCurrency(item.unit_price * item.quantity)}
+                                                            </p>
+                                                            <Button variant="ghost" size="icon" onClick={() => handleDeleteItemFromCart(item.id)}>
+                                                                <Trash2 className="h-5 w-5 text-red-500" />
                                                             </Button>
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div className="flex items-center justify-end gap-4 text-start">
-                                                    <p className="text-primary text-sm font-semibold">
-                                                        {formatCurrency(item.unit_price * item.quantity)}
-                                                    </p>
-                                                    <Button variant="ghost" size="icon" onClick={() => handleRemove(item.id)}>
-                                                        <Trash2 className="h-5 w-5 text-red-500" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </CardContent>
-                                </Card>
-                            ))}
+                                                ))}
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </>
+                            ) : (
+                                <div className="flex flex-col">
+                                    <div className="flex grow items-center px-6 xl:px-10">
+                                        <div className="mx-auto text-center">
+                                            <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
+                                            <h1 className="mb-1 text-[22px] font-bold text-gray-700 dark:text-gray-100">Tidak Ada Menu</h1>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                Menu tidak ada di keranjang, silahkan kembali beberapa saat lagi.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Checkout Summary */}
@@ -175,7 +221,7 @@ export default function CartPage({ carts }: Props) {
                                         <h1 className="text-md">Total Harga</h1>
                                         <span className="text-primary">{formatCurrency(selectedTotal)}</span>
                                     </div>
-                                    <Button className="mt-4 w-full py-6 text-sm">
+                                    <Button className="mt-4 w-full cursor-pointer py-6 text-sm">
                                         Lanjut Ke Pembayaran
                                         <Icon icon={'heroicons:arrow-right'} className="text-background" />
                                     </Button>

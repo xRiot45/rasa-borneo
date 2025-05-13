@@ -135,4 +135,11 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Jumlah menu berhasil diubah.');
     }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $cart = Cart::findOrFail($id);
+        $cart->delete();
+        return redirect()->back()->with('success', 'Menu berhasil dihapus dari keranjang.');
+    }
 }

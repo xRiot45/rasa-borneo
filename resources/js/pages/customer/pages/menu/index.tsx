@@ -18,6 +18,7 @@ interface Props {
 }
 
 export default function MenuPage({ data }: Props) {
+    console.log(data);
     const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
     const [search, setSearch] = useState<string>('');
     const [category, setCategory] = useState<string>('');
