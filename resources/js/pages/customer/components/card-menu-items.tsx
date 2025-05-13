@@ -7,8 +7,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { MenuItem } from '@/models/menu-item';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     data: MenuItem[];
@@ -22,6 +23,40 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
     const handleOpen = (item: MenuItem) => {
         setSelectedMenu(item);
         setOpenDialog(true);
+    };
+
+    const addMenuToCart = (item: MenuItem) => {
+        const cartItem = {
+            menu_item_id: item?.id,
+            quantity: 1,
+            unit_price: item?.price,
+        };
+
+        router.post(route('cart.store'), cartItem, {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Menu berhasil ditambahkan ke keranjang',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                setOpenDialog(false);
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -134,7 +169,7 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                     </TooltipProvider>
 
                                     <Button
-                                        onClick={() => alert('Ditambahkan ke keranjang')}
+                                        onClick={() => addMenuToCart(selectedMenu)}
                                         className="w-full cursor-pointer border-none py-6 shadow-none"
                                     >
                                         Tambah ke Keranjang

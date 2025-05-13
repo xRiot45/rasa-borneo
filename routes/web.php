@@ -209,6 +209,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Cart
     Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
