@@ -142,4 +142,20 @@ class CartController extends Controller
         $cart->delete();
         return redirect()->back()->with('success', 'Menu berhasil dihapus dari keranjang.');
     }
+
+    public function destroyByMerchant(int $merchantId): RedirectResponse
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+
+        if ($customer) {
+            Cart::where('customer_id', $customer->id)
+                ->whereHas('menuItem', function ($query) use ($merchantId) {
+                    $query->where('merchant_id', $merchantId);
+                })
+                ->delete();
+        }
+
+        return redirect()->back()->with('success', 'Menu berhasil dihapus dari keranjang.');
+    }
 }

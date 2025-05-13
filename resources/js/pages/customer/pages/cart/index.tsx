@@ -91,6 +91,31 @@ export default function CartPage({ carts }: Props) {
         });
     };
 
+    const handleDeleteAllItemFromCartByMerchant = (merchantId: number) => {
+        router.delete(route('cart.destroyByMerchant', { merchantId }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Berhasil Menghapus Semua Menu Dari Keranjang',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     return (
         <>
             <Head title="Keranjang" />
@@ -108,8 +133,8 @@ export default function CartPage({ carts }: Props) {
                                 <>
                                     {carts.map((group) => (
                                         <Card key={group.merchant_id} className="border-border mb-4 rounded-xl border shadow-none">
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 px-6 pt-6">
-                                                <div className="flex items-center gap-4">
+                                            <CardHeader className="flex flex-col gap-4 px-6 pt-6 md:flex-row md:items-center md:justify-between">
+                                                <div className="flex flex-row items-start gap-4 sm:flex-row sm:items-center">
                                                     <Checkbox
                                                         checked={selectedMerchants.has(group.merchant_id)}
                                                         onCheckedChange={() =>
@@ -123,14 +148,27 @@ export default function CartPage({ carts }: Props) {
                                                     <img
                                                         src={group?.merchant_logo_photo}
                                                         alt="Logo Merchant"
-                                                        className="h-14 w-14 rounded-lg border object-cover"
+                                                        className="h-20 w-20 rounded-lg border object-cover"
                                                     />
                                                     <div>
+                                                        <span className="text-muted-foreground text-sm">{group?.items.length} menu</span>
                                                         <h3 className="text-lg font-bold">{group?.merchant_name}</h3>
                                                         <p className="text-muted-foreground text-sm">{group?.merchant_category}</p>
                                                     </div>
                                                 </div>
-                                                <span className="text-muted-foreground text-sm">{group.items.length} menu</span>
+
+                                                {selectedMerchants.has(group?.merchant_id) && (
+                                                    <div className="w-full md:w-auto">
+                                                        <Button
+                                                            variant="destructive"
+                                                            className="w-full md:w-auto"
+                                                            onClick={() => handleDeleteAllItemFromCartByMerchant(group?.merchant_id)}
+                                                        >
+                                                            <Trash2 className="mr-2 h-4 w-4" />
+                                                            Hapus Semua Menu
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </CardHeader>
 
                                             <CardContent className="space-y-5 px-6 pb-6">
