@@ -6,16 +6,15 @@ import Ads5 from '@/assets/images/ads/ads-5.png';
 import Ads6 from '@/assets/images/ads/ads-6.png';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import gradients from '@/constants/gradient-colors';
 import CustomerLayout from '@/layouts/customer/layout';
 import { MenuCategory } from '@/models/menu-category';
 import { MenuItem } from '@/models/menu-item';
 import { Merchant } from '@/models/merchant';
-import { getCategoryIcon } from '@/utils/category-icons';
 import { Icon } from '@iconify/react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
+import CardMenuCategories from './components/card-menu-categories';
 import CardMenuItem from './components/card-menu-items';
 import CardMerchant from './components/card-merchants';
 
@@ -78,24 +77,8 @@ export default function HomePage() {
                             </Button>
                         </Link>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                        {menuCategories.slice(0, 6).map((category, index) => {
-                            const CategoryIcon = getCategoryIcon(category.name);
 
-                            return (
-                                <Link key={category.id} href={route('menu', { category: category.slug })}>
-                                    <div
-                                        className={`flex cursor-pointer flex-col items-center justify-center rounded-xl bg-gradient-to-br p-4 text-white transition-all ${gradients[index % gradients.length]} space-y-4 hover:scale-[1.04]`}
-                                    >
-                                        <div className="mb-3">
-                                            <CategoryIcon className="h-6 w-6 text-white" />
-                                        </div>
-                                        <span className="text-center text-sm font-bold">{category.name}</span>
-                                    </div>
-                                </Link>
-                            );
-                        })}
-                    </div>
+                    <CardMenuCategories data={menuCategories.slice(0, 6)} />
                 </section>
 
                 {/* Recommended Menu Items Section */}
@@ -124,10 +107,12 @@ export default function HomePage() {
                             <p className="text-sm text-gray-500 dark:text-gray-400">Daftar mitra bisnis yang telah diverifikasi</p>
                         </div>
 
-                        <Button className="text-primary text-sm font-medium" variant="link">
-                            Lihat Semua Merchant
-                            <Icon icon="icon-park-outline:right-c" className="ml-1" />
-                        </Button>
+                        <Link href={route('merchant')}>
+                            <Button className="text-primary text-sm font-medium" variant="link">
+                                Lihat Semua Merchant
+                                <Icon icon="icon-park-outline:right-c" className="ml-1" />
+                            </Button>
+                        </Link>
                     </div>
 
                     <CardMerchant data={merchants.slice(0, 6)} />

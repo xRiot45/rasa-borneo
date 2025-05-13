@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function MenuCategoriesPage({ data }: Props) {
+    console.log(data);
     return (
         <>
             <Head title="Kategori Menu" />
@@ -20,7 +21,7 @@ export default function MenuCategoriesPage({ data }: Props) {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                        {data.slice(0, 6).map((category, index) => {
+                        {data?.map((category, index) => {
                             const CategoryIcon = getCategoryIcon(category.name);
 
                             return (

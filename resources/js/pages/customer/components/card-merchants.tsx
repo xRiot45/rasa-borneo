@@ -44,7 +44,7 @@ const CardMerchant: React.FC<Props> = ({ data }) => {
                                       <img
                                           src={`${merchant.store_profile?.cover_photo}`}
                                           alt={merchant.business_name}
-                                          className="h-full w-full object-cover transition duration-300 group-hover:brightness-50"
+                                          className="h-full w-full object-cover transition duration-300"
                                       />
                                   </div>
 
