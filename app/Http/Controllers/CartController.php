@@ -119,4 +119,20 @@ class CartController extends Controller
 
         return back()->with(['success' => 'Item berhasil ditambahkan ke keranjang.']);
     }
+
+    public function updateQuantity(Request $request, int $id): RedirectResponse
+    {
+        $cart = Cart::findOrFail($id);
+        $increment = $request->input('increment', true);
+
+        if ($increment) {
+            $cart->increment('quantity');
+        } elseif ($cart->quantity > 1) {
+            $cart->decrement('quantity');
+        } else {
+            $cart->delete();
+        }
+
+        return redirect()->back()->with('success', 'Jumlah menu berhasil diubah.');
+    }
 }

@@ -6,7 +6,7 @@ import CustomerLayout from '@/layouts/customer/layout';
 import { CartGroup } from '@/models/cart';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -15,7 +15,6 @@ interface Props {
 }
 
 export default function CartPage({ carts }: Props) {
-    console.log(carts);
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [selectedMerchants, setSelectedMerchants] = useState<Set<number>>(new Set());
 
@@ -59,12 +58,8 @@ export default function CartPage({ carts }: Props) {
         );
     }, 0);
 
-    const handleIncrease = (id: number) => {
-        console.log('Increase', id);
-    };
-
-    const handleDecrease = (id: number) => {
-        console.log('Decrease', id);
+    const handleUpdateQuantity = (cartId: number, increment: boolean) => {
+        router.put(route('cart.updateQuantity', { id: cartId }), { increment });
     };
 
     const handleRemove = (id: number) => {
@@ -132,7 +127,7 @@ export default function CartPage({ carts }: Props) {
                                                                 variant="outline"
                                                                 size="icon"
                                                                 className="h-8 w-8 cursor-pointer shadow-none"
-                                                                onClick={() => handleDecrease(item.id)}
+                                                                onClick={() => handleUpdateQuantity(item?.id, false)}
                                                             >
                                                                 <Minus className="h-4 w-4" />
                                                             </Button>
@@ -141,7 +136,7 @@ export default function CartPage({ carts }: Props) {
                                                                 variant="outline"
                                                                 size="icon"
                                                                 className="h-8 w-8 cursor-pointer shadow-none"
-                                                                onClick={() => handleIncrease(item.id)}
+                                                                onClick={() => handleUpdateQuantity(item?.id, true)}
                                                             >
                                                                 <Plus className="h-4 w-4" />
                                                             </Button>
