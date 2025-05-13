@@ -1,8 +1,8 @@
-import gradients from '@/constants/gradient-colors';
+import EmptyImage from '@/assets/errors/empty.svg';
 import CustomerLayout from '@/layouts/customer/layout';
 import { MenuCategory } from '@/models/menu-category';
-import { getCategoryIcon } from '@/utils/category-icons';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import CardMenuCategories from '../../components/card-menu-categories';
 
 interface Props {
     data: MenuCategory[];
@@ -19,24 +19,21 @@ export default function MenuCategoriesPage({ data }: Props) {
                         <p className="text-sm text-gray-500 dark:text-gray-400">Daftar kategori menu yang tersedia</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                        {data?.map((category, index) => {
-                            const CategoryIcon = getCategoryIcon(category.name);
-
-                            return (
-                                <Link key={category.id} href={route('menu', { category: category.slug })}>
-                                    <div
-                                        className={`flex cursor-pointer flex-col items-center justify-center rounded-xl bg-gradient-to-br p-4 text-white transition-all ${gradients[index % gradients.length]} space-y-4 hover:scale-[1.04]`}
-                                    >
-                                        <div className="mb-3">
-                                            <CategoryIcon className="h-6 w-6 text-white" />
-                                        </div>
-                                        <span className="text-center text-sm font-bold">{category.name}</span>
-                                    </div>
-                                </Link>
-                            );
-                        })}
-                    </div>
+                    {!data ? (
+                        <div className="flex flex-col">
+                            <div className="flex grow items-center px-6 xl:px-10">
+                                <div className="mx-auto text-center">
+                                    <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
+                                    <h1 className="text-[22px] font-bold text-gray-700 dark:text-gray-100">Tidak Ada Menu</h1>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        Menu tidak tersedia untuk saat ini, silahkan kembali beberapa saat lagi.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <CardMenuCategories data={data} />
+                    )}
                 </main>
             </CustomerLayout>
         </>

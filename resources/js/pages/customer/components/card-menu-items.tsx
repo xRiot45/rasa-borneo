@@ -15,17 +15,14 @@ interface Props {
 }
 
 const CardMenuItem: React.FC<Props> = ({ data }) => {
+    const isLoading = !data;
     const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-    const isLoading = data?.length === 0;
 
     const handleOpen = (item: MenuItem) => {
         setSelectedMenu(item);
         setOpenDialog(true);
     };
-
-    console.log(selectedMenu);
 
     return (
         <>
