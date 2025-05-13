@@ -1,12 +1,15 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import CustomerLayout from '@/layouts/customer/layout';
 import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
 import { Head, Link } from '@inertiajs/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import { Copy } from 'lucide-react';
+import { toast } from 'sonner';
 import TabGalleryContent from './partials/tabs/tab-gallery';
 import TabMenuContent from './partials/tabs/tab-menu';
 import TabReviewContent from './partials/tabs/tab-review';
@@ -17,6 +20,13 @@ interface Props {
 }
 
 export default function MerchantDetailPage({ data }: Props) {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(shareUrl);
+        toast.success('Tautan berhasil disalin');
+    };
+
     const latitude = data?.store_profile?.latitude ? parseFloat(data?.store_profile?.latitude) : 0;
     const longitude = data?.store_profile?.longitude ? parseFloat(data?.store_profile?.longitude) : 0;
 
@@ -117,13 +127,14 @@ export default function MerchantDetailPage({ data }: Props) {
                                     </span>
                                 </div>
 
-                                {/* Wishlist & Button see google map */}
+                                {/* Wishlist, Share & Button see google map */}
                                 <div className="mt-6 flex w-full items-center gap-4">
                                     <div className="flex gap-2">
+                                        {/* Wishlist */}
                                         <TooltipProvider delayDuration={0}>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <div className="mx-auto flex aspect-square h-12 w-12 items-center justify-center rounded-full border p-4">
+                                                    <div className="mx-auto flex aspect-square h-12 w-12 cursor-pointer items-center justify-center rounded-full border p-4">
                                                         <Icon icon="icon-park-outline:like" className="h-4 w-4 text-xl" />
                                                     </div>
                                                 </TooltipTrigger>
@@ -132,15 +143,120 @@ export default function MerchantDetailPage({ data }: Props) {
                                                 </TooltipContent>
                                             </Tooltip>
 
+                                            {/* Share Button inside Dialog */}
                                             <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <div className="mx-auto flex aspect-square h-12 w-12 items-center justify-center rounded-full border p-4">
-                                                        <Icon icon="material-symbols:share" className="h-4 w-4 text-xl" />
-                                                    </div>
-                                                </TooltipTrigger>
-                                                <TooltipContent side="top" className="rounded-md px-3 py-1 text-xs">
-                                                    <p>Share Ke Sosial Media</p>
-                                                </TooltipContent>
+                                                <Dialog>
+                                                    <DialogTrigger>
+                                                        <div className="mx-auto flex aspect-square h-12 w-12 cursor-pointer items-center justify-center rounded-full border p-4">
+                                                            <Icon icon="material-symbols:share" className="h-4 w-4 text-xl" />
+                                                        </div>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-w-full p-6 sm:max-w-md md:max-w-lg lg:max-w-2xl">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Bagikan Halaman Ini</DialogTitle>
+                                                        </DialogHeader>
+
+                                                        <div className="flex w-full items-center gap-2">
+                                                            <Input
+                                                                type="text"
+                                                                value={shareUrl}
+                                                                readOnly
+                                                                className="flex-1 rounded-lg border px-3 py-6 text-sm shadow-none"
+                                                            />
+                                                            <Button type="button" onClick={handleCopy} className="cursor-pointer p-6">
+                                                                <Copy className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+
+                                                        {/* Share To Media Social */}
+                                                        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                                                            {/* WhatsApp */}
+                                                            <a
+                                                                href={`https://wa.me/?text=${encodeURIComponent('Cek halaman ini! ' + shareUrl)}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="flex w-full cursor-pointer items-center gap-2 rounded-md shadow-none"
+                                                                >
+                                                                    <Icon icon="ic:baseline-whatsapp" className="h-5 w-5 text-green-500" /> WhatsApp
+                                                                </Button>
+                                                            </a>
+
+                                                            {/* Twitter */}
+                                                            <a
+                                                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent('Cek halaman ini!')}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="flex w-full cursor-pointer items-center gap-2 rounded-md shadow-none"
+                                                                >
+                                                                    <Icon icon="mdi:twitter" className="h-5 w-5 text-blue-500" /> Twitter
+                                                                </Button>
+                                                            </a>
+
+                                                            {/* Facebook */}
+                                                            <a
+                                                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="flex w-full cursor-pointer items-center gap-2 rounded-md shadow-none"
+                                                                >
+                                                                    <Icon icon="uiw:facebook" className="h-5 w-5 text-blue-600" /> Facebook
+                                                                </Button>
+                                                            </a>
+
+                                                            {/* LinkedIn */}
+                                                            <a
+                                                                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent('Cek halaman ini!')}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="flex w-full cursor-pointer items-center gap-2 rounded-md shadow-none"
+                                                                >
+                                                                    <Icon icon="mdi:linkedin" className="h-5 w-5 text-blue-600" /> LinkedIn
+                                                                </Button>
+                                                            </a>
+
+                                                            {/* Instagram */}
+                                                            <a
+                                                                href={`https://www.instagram.com/?url=${encodeURIComponent(shareUrl)}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="flex w-full cursor-pointer items-center gap-2 rounded-md shadow-none"
+                                                                >
+                                                                    <Icon icon="icon-park-outline:instagram" className="h-5 w-5 text-pink-500" />{' '}
+                                                                    Instagram
+                                                                </Button>
+                                                            </a>
+
+                                                            {/* TikTok */}
+                                                            <a
+                                                                href={`https://www.tiktok.com/share?url=${encodeURIComponent(shareUrl)}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="flex w-full cursor-pointer items-center gap-2 rounded-md shadow-none"
+                                                                >
+                                                                    <Icon icon="ic:baseline-tiktok" className="h-5 w-5 text-black" /> TikTok
+                                                                </Button>
+                                                            </a>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
                                             </Tooltip>
                                         </TooltipProvider>
                                     </div>
