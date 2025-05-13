@@ -25,6 +25,8 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
         setOpenDialog(true);
     };
 
+    console.log(selectedMenu);
+
     return (
         <>
             <main>
@@ -122,7 +124,7 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Link
-                                                    href="/merchant"
+                                                    href={route('merchant.show', selectedMenu?.merchant?.slug)}
                                                     className="mx-auto flex aspect-square w-12 items-center justify-center rounded-full border p-4"
                                                 >
                                                     <Icon icon="material-symbols:storefront" className="h-4 w-4 text-xl" />

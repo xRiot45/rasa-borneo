@@ -1,5 +1,6 @@
 import { MenuItemStatusEnum } from '@/enums/menu-item-enum';
 import { MenuCategory } from './menu-category';
+import { Merchant } from './merchant';
 
 export interface MenuItem {
     id: number;
@@ -15,6 +16,7 @@ export interface MenuItem {
     created_at?: string;
     updated_at?: string;
     deleted_at?: string;
+    merchant: Merchant;
 }
 
 export interface MenuItemForm {
