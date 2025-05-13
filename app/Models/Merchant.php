@@ -96,4 +96,10 @@ class Merchant extends Model
     {
         return $this->hasMany(StoreOperatingHour::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN CART
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
 }
