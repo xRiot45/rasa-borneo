@@ -1,10 +1,15 @@
-import { MenuItem } from './menu-item';
-
 export interface CartItem {
     id: number;
     quantity: number;
     unit_price: number;
-    menu_item: MenuItem;
+    menu_item: {
+        id: number;
+        name: string;
+        image_url: string;
+        price: number;
+        short_description: string;
+        category: string;
+    };
 }
 
 export interface CartGroup {

@@ -15,6 +15,7 @@ interface Props {
 }
 
 export default function CartPage({ carts }: Props) {
+    console.log(carts);
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [selectedMerchants, setSelectedMerchants] = useState<Set<number>>(new Set());
 
@@ -110,7 +111,7 @@ export default function CartPage({ carts }: Props) {
                                         <span className="text-muted-foreground text-sm">{group.items.length} menu</span>
                                     </CardHeader>
 
-                                    <CardContent className="space-y-4 px-6 pb-6">
+                                    <CardContent className="space-y-5 px-6 pb-6">
                                         {group.items.map((item) => (
                                             <div
                                                 key={item.id}
@@ -121,9 +122,10 @@ export default function CartPage({ carts }: Props) {
                                                     <img
                                                         src={`${item.menu_item.image_url}`}
                                                         alt={item.menu_item.name}
-                                                        className="h-16 w-16 rounded-md border object-cover"
+                                                        className="h-20 w-20 rounded-lg object-cover"
                                                     />
                                                     <div>
+                                                        <h4 className="text-muted-foreground text-sm font-medium">{item?.menu_item?.category}</h4>
                                                         <h1 className="font-semibold">{item.menu_item.name}</h1>
                                                         <div className="mt-2 flex items-center gap-4">
                                                             <Button
@@ -170,8 +172,8 @@ export default function CartPage({ carts }: Props) {
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="text-muted-foreground flex justify-between text-sm">
-                                        <span>Total Produk</span>
-                                        <span>{selectedItems.size} item</span>
+                                        <span>Total Menu</span>
+                                        <span>{selectedItems.size} Menu dipilih</span>
                                     </div>
                                     <Separator />
                                     <div className="flex justify-between text-lg font-semibold">
@@ -188,9 +190,9 @@ export default function CartPage({ carts }: Props) {
 
                         <div className="fixed bottom-0 left-0 z-50 mb-21 w-full border-t bg-white px-4 py-4 shadow-md md:hidden">
                             <div className="flex items-center justify-between">
-                                <div>
+                                <div className="space-y-1">
                                     <p className="text-muted-foreground text-sm dark:text-black">{selectedItems.size} Menu dipilih</p>
-                                    <p className="text-lg font-semibold dark:text-black">{formatCurrency(selectedTotal)}</p>
+                                    <h1 className="text-lg font-semibold dark:text-black">{formatCurrency(selectedTotal)}</h1>
                                 </div>
                                 <Button className="cursor-pointer px-6 py-5 text-sm shadow-none dark:bg-black dark:text-white">
                                     Lanjut Ke Pembayaran
