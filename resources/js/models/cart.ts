@@ -1,18 +1,18 @@
-import { Customer } from './customer';
 import { MenuItem } from './menu-item';
-import { Merchant } from './merchant';
 
-export interface Carts {
+export interface CartItem {
     id: number;
-    merchant_id?: number | null;
-    customer_id?: number | null;
-    menu_item: MenuItem[];
-    menu_item_id: number;
     quantity: number;
     unit_price: number;
-    created_at?: string;
-    updated_at?: string;
+    menu_item: MenuItem;
+}
 
-    customer: Customer;
-    merchant: Merchant;
+export interface CartGroup {
+    merchant_id: number;
+    merchant_name: string;
+    merchant_slug: string;
+    merchant_phone: string;
+    merchant_logo_photo: string;
+    merchant_category: string;
+    items: CartItem[];
 }

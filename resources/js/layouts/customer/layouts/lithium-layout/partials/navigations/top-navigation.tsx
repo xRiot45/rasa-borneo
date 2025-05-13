@@ -37,7 +37,7 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
 
                     {/* Desktop Navigation - Tampilkan hanya jika bukan mobile */}
                     {!isMobile && (
-                        <div className="mx-auto ml-6 hidden h-full items-center justify-center space-x-6 lg:flex">
+                        <div className="mx-auto ml-6 hidden h-full items-center justify-center space-x-6 md:flex">
                             <NavigationMenu className="flex h-full items-stretch">
                                 <NavigationMenuList className="flex h-full items-stretch space-x-2">
                                     {mainNavItems.map((item, index) => (

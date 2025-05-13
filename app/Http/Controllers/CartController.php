@@ -15,34 +15,11 @@ use Inertia\Response;
 
 class CartController extends Controller
 {
-    // private function getCartItems(): array|RedirectResponse
-    // {
-    //     $user = Auth::user();
-
-    //     $merchant = Merchant::where('user_id', $user->id)->first();
-    //     $customer = Customer::where('user_id', $user->id)->first();
-
-    //     if (!$merchant && !$customer) {
-    //         return redirect()->back()->withErrors('Anda bukan merchant atau customer.');
-    //     }
-
-    //     $menuItems = MenuItem::with('menuCategory')->get();
-    //     $carts = Cart::with(['menuItem', 'menuItem.menuCategory', 'menuItem.merchant',  'customer', 'merchant'])
-    //         ->when($merchant?->id, fn($query, $id) => $query->where('merchant_id', $id))
-    //         ->when($customer?->id, fn($query, $id) => $query->where('customer_id', $id))
-    //         ->get();
-
-    //     return [
-    //         'menuItems' => $menuItems,
-    //         'carts' => $carts,
-    //     ];
-    // }
-
     private function getCartItems(): array|RedirectResponse
     {
         $user = Auth::user();
 
-        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchant = Merchant::where('user_id', $user->id)->with('storeProfile')->first();
         $customer = Customer::where('user_id', $user->id)->first();
 
         if (!$merchant && !$customer) {
@@ -69,6 +46,8 @@ class CartController extends Controller
                     'merchant_name' => $merchant->business_name ?? 'Merchant tidak diketahui',
                     'merchant_slug' => $merchant->slug ?? null,
                     'merchant_phone' => $merchant->business_phone ?? null,
+                    'merchant_logo_photo' => $merchant->storeProfile->logo_photo ?? null,
+                    'merchant_category' => $merchant->businessCategory->name ?? null,
                     'items' => $items
                         ->map(function ($cart) {
                             return [
@@ -104,7 +83,7 @@ class CartController extends Controller
         }
 
         return Inertia::render('customer/pages/cart/index', [
-            'carts' => $data
+            'carts' => $data,
             // 'customer' => $customer
         ]);
     }

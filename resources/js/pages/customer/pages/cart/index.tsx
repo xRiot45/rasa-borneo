@@ -1,126 +1,182 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import CustomerLayout from '@/layouts/customer/layout';
-import { Carts } from '@/models/cart';
+import { CartGroup } from '@/models/cart';
+import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface Props {
-    carts: Carts[];
+    carts: CartGroup[];
 }
 
-const mockCart = [
-    {
-        merchant: 'Domoro',
-        items: [
-            { id: 1, name: 'Nasi Goreng Spesial', price: 25000, quantity: 1 },
-            { id: 2, name: 'Teh Manis', price: 5000, quantity: 2 },
-        ],
-    },
-    {
-        merchant: 'Ayam Bakar Madu',
-        items: [{ id: 3, name: 'Ayam Bakar + Nasi', price: 30000, quantity: 1 }],
-    },
-];
-
 export default function CartPage({ carts }: Props) {
-    console.log(carts);
-    const total = carts.reduce((acc, cart) => acc + cart.unit_price * cart.quantity, 0);
+    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+    const [selectedMerchants, setSelectedMerchants] = useState<Set<number>>(new Set());
 
-    // const handleIncrease = (id: number) => {
-    //     console.log(id);
-    // };
-    // const handleDecrease = (id: number) => {
-    //     console.log(id);
-    // };
-    // const handleRemove = (id: number) => {
-    //     console.log(id);
-    // };
+    const toggleItem = (itemId: number) => {
+        setSelectedItems((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(itemId)) {
+                newSet.delete(itemId);
+            } else {
+                newSet.add(itemId);
+            }
+
+            return newSet;
+        });
+    };
+
+    const toggleMerchant = (merchantId: number, itemIds: number[]) => {
+        setSelectedMerchants((prev) => {
+            const newMerchantSet = new Set(prev);
+            const newItemSet = new Set(selectedItems);
+
+            if (newMerchantSet.has(merchantId)) {
+                newMerchantSet.delete(merchantId);
+                itemIds.forEach((id) => newItemSet.delete(id));
+            } else {
+                newMerchantSet.add(merchantId);
+                itemIds.forEach((id) => newItemSet.add(id));
+            }
+
+            setSelectedItems(newItemSet);
+            return newMerchantSet;
+        });
+    };
+
+    const selectedTotal = carts.reduce((acc, group) => {
+        return (
+            acc +
+            group.items.reduce((sum, item) => {
+                return selectedItems.has(item.id) ? sum + item.unit_price * item.quantity : sum;
+            }, 0)
+        );
+    }, 0);
+
+    const handleIncrease = (id: number) => {
+        console.log('Increase', id);
+    };
+
+    const handleDecrease = (id: number) => {
+        console.log('Decrease', id);
+    };
+
+    const handleRemove = (id: number) => {
+        console.log('Remove', id);
+    };
 
     return (
         <>
             <Head title="Keranjang" />
             <CustomerLayout>
                 <div className="mt-22 w-full">
-                    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 lg:grid-cols-12">
+                    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-0 lg:grid-cols-12 lg:gap-4">
                         {/* Cart Items */}
-                        <div className="space-y-4 lg:col-span-8">
+                        <div className="space-y-6 lg:col-span-8">
                             <div className="mb-5">
                                 <h2 className="text-lg font-bold">Keranjang</h2>
-                                <p className="text-muted-foreground text-sm">Daftar menu yang ada di dalam keranjang</p>
+                                <p className="text-muted-foreground text-sm">Daftar menu yang ada di dalam keranjang anda</p>
                             </div>
 
-                            {/* {carts.map((group) => (
-                                <div key={group?.merchant?.id} className="space-y-4 rounded-xl border bg-white px-6 py-5">
-                                    <div className="flex items-center justify-between">
-                                        <h1 className="text-lg font-bold text-gray-800">{group?.merchant?.business_name}</h1>
-                                        <span className="text-muted-foreground text-sm">{group?.menu_items?.length} produk</span>
-                                    </div>
-                                    <div className="grid gap-6">
-                                        {group?.menu_items.map((item) => (
-                                            <Card key={item.id} className="rounded-xl border-none shadow-none">
-                                                <Separator />
-                                                <CardContent className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                                                    <div className="flex items-start gap-4 sm:items-center sm:gap-6">
-                                                        <img
-                                                            src={`https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`}
-                                                            alt={item.name}
-                                                            className="h-16 w-16 rounded-lg object-cover"
-                                                        />
-                                                        <div>
-                                                            <p className="text-base font-medium text-gray-900">{item.name}</p>
-                                                            <div className="mt-2 flex items-center gap-2">
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => handleDecrease(item.id)}
-                                                                >
-                                                                    <Minus className="h-4 w-4" />
-                                                                </Button>
-                                                                <span className="min-w-[24px] text-center text-sm font-medium">{10}</span>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => handleIncrease(item.id)}
-                                                                >
-                                                                    <Plus className="h-4 w-4" />
-                                                                </Button>
-                                                            </div>
+                            {carts.map((group) => (
+                                <Card key={group.merchant_id} className="border-border mb-4 rounded-xl border shadow-none">
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 px-6 pt-6">
+                                        <div className="flex items-center gap-4">
+                                            <Checkbox
+                                                checked={selectedMerchants.has(group.merchant_id)}
+                                                onCheckedChange={() =>
+                                                    toggleMerchant(
+                                                        group.merchant_id,
+                                                        group.items.map((item) => item.id),
+                                                    )
+                                                }
+                                            />
+
+                                            <img
+                                                src={group?.merchant_logo_photo}
+                                                alt="Logo Merchant"
+                                                className="h-14 w-14 rounded-lg border object-cover"
+                                            />
+                                            <div>
+                                                <h3 className="text-lg font-bold">{group?.merchant_name}</h3>
+                                                <p className="text-muted-foreground text-sm">{group?.merchant_category}</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-muted-foreground text-sm">{group.items.length} menu</span>
+                                    </CardHeader>
+
+                                    <CardContent className="space-y-4 px-6 pb-6">
+                                        {group.items.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="flex flex-col justify-between gap-4 border-t pt-4 sm:flex-row sm:items-center"
+                                            >
+                                                <div className="flex items-start gap-4 sm:items-center sm:gap-6">
+                                                    <Checkbox checked={selectedItems.has(item.id)} onCheckedChange={() => toggleItem(item.id)} />
+                                                    <img
+                                                        src={`${item.menu_item.image_url}`}
+                                                        alt={item.menu_item.name}
+                                                        className="h-16 w-16 rounded-md border object-cover"
+                                                    />
+                                                    <div>
+                                                        <h1 className="font-semibold">{item.menu_item.name}</h1>
+                                                        <div className="mt-2 flex items-center gap-4">
+                                                            <Button
+                                                                variant="outline"
+                                                                size="icon"
+                                                                className="h-8 w-8 cursor-pointer shadow-none"
+                                                                onClick={() => handleDecrease(item.id)}
+                                                            >
+                                                                <Minus className="h-4 w-4" />
+                                                            </Button>
+                                                            <span className="text-sm font-semibold">{item.quantity}</span>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="icon"
+                                                                className="h-8 w-8 cursor-pointer shadow-none"
+                                                                onClick={() => handleIncrease(item.id)}
+                                                            >
+                                                                <Plus className="h-4 w-4" />
+                                                            </Button>
                                                         </div>
                                                     </div>
+                                                </div>
 
-                                                    <div className="flex items-center justify-between gap-4">
-                                                        <p className="text-primary text-lg font-bold">Rp{(item.price * 10).toLocaleString()}</p>
-                                                        <Button variant="ghost" size="icon" onClick={() => handleRemove(item.id)}>
-                                                            <Trash2 className="h-5 w-5 text-red-500" />
-                                                        </Button>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
+                                                <div className="flex items-center justify-end gap-4 text-start">
+                                                    <p className="text-primary text-sm font-semibold">
+                                                        {formatCurrency(item.unit_price * item.quantity)}
+                                                    </p>
+                                                    <Button variant="ghost" size="icon" onClick={() => handleRemove(item.id)}>
+                                                        <Trash2 className="h-5 w-5 text-red-500" />
+                                                    </Button>
+                                                </div>
+                                            </div>
                                         ))}
-                                    </div>
-                                </div>
-                            ))} */}
+                                    </CardContent>
+                                </Card>
+                            ))}
                         </div>
 
                         {/* Checkout Summary */}
-                        <div className="lg:col-span-4 lg:mt-16.5">
-                            <Card className="sticky top-1 rounded-xl py-8 shadow-none">
+                        <div className="hidden md:block lg:col-span-4 lg:mt-16.5">
+                            <Card className="sticky top-20 rounded-xl py-8 shadow-none">
                                 <CardHeader>
                                     <CardTitle className="text-lg font-bold">Ringkasan Belanja</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="text-muted-foreground flex justify-between text-sm">
                                         <span>Total Produk</span>
-                                        <span>{mockCart.flatMap((g) => g.items).length} item</span>
+                                        <span>{selectedItems.size} item</span>
                                     </div>
                                     <Separator />
                                     <div className="flex justify-between text-lg font-semibold">
-                                        <span>Total</span>
-                                        <span className="text-primary">Rp{total.toLocaleString()}</span>
+                                        <h1 className="text-md">Total Harga</h1>
+                                        <span className="text-primary">{formatCurrency(selectedTotal)}</span>
                                     </div>
                                     <Button className="mt-4 w-full py-6 text-sm">
                                         Lanjut Ke Pembayaran
@@ -128,6 +184,19 @@ export default function CartPage({ carts }: Props) {
                                     </Button>
                                 </CardContent>
                             </Card>
+                        </div>
+
+                        <div className="fixed bottom-0 left-0 z-50 mb-21 w-full border-t bg-white px-4 py-4 shadow-md md:hidden">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-muted-foreground text-sm dark:text-black">{selectedItems.size} Menu dipilih</p>
+                                    <p className="text-lg font-semibold dark:text-black">{formatCurrency(selectedTotal)}</p>
+                                </div>
+                                <Button className="cursor-pointer px-6 py-5 text-sm shadow-none dark:bg-black dark:text-white">
+                                    Lanjut Ke Pembayaran
+                                    <Icon icon={'heroicons:arrow-right'} className="dark:text-white" />
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>

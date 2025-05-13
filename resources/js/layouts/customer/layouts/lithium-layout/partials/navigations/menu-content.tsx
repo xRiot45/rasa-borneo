@@ -21,18 +21,21 @@ export function CustomerMenuContent({ user }: CustomerMenuContentProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link
-                        className="block w-full"
-                        href={route(user?.roles[0] === 'merchant' ? 'merchant.dashboard' : 'admin.dashboard')}
-                        as="button"
-                        prefetch
-                        onClick={cleanup}
-                    >
-                        <Icon icon="material-symbols:dashboard" className="mr-2" />
-                        {user?.roles[0] === 'merchant' ? 'Merchant Dashboard' : 'Admin Dashboard'}
-                    </Link>
-                </DropdownMenuItem>
+                {(user?.roles[0] === 'merchant' || user?.roles[0] === 'admin') && (
+                    <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
+                        <Link
+                            className="block w-full"
+                            href={route(user?.roles[0] === 'merchant' ? 'merchant.dashboard' : 'admin.dashboard')}
+                            as="button"
+                            prefetch
+                            onClick={cleanup}
+                        >
+                            <Icon icon="material-symbols:dashboard" className="mr-2" />
+                            {user?.roles[0] === 'merchant' ? 'Merchant Dashboard' : 'Admin Dashboard'}
+                        </Link>
+                    </DropdownMenuItem>
+                )}
+
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
                     <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
                         <Icon icon="lets-icons:setting-fill" className="mr-2" />
