@@ -38,7 +38,7 @@ const CardMerchant: React.FC<Props> = ({ data }) => {
                                   </CardContent>
                               </Card>
                           ))
-                        : data.slice(0, 6).map((merchant) => (
+                        : data?.map((merchant) => (
                               <Card key={merchant.id} className="group rounded-xl border shadow-none transition">
                                   <div className="w-full overflow-hidden rounded-t-2xl">
                                       <img

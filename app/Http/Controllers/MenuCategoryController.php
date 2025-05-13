@@ -24,6 +24,14 @@ class MenuCategoryController extends Controller
         ]);
     }
 
+    public function index_customer(): Response
+    {
+        $menuCategories = MenuCategory::all();
+        return Inertia::render('customer/pages/menu-categories/index', [
+            'data' => $menuCategories,
+        ]);
+    }
+
     public function create(): Response
     {
         return Inertia::render('merchant/menu-management/menu-categories/pages/create');

@@ -6,13 +6,14 @@ import Ads5 from '@/assets/images/ads/ads-5.png';
 import Ads6 from '@/assets/images/ads/ads-6.png';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import gradients from '@/constants/gradient-colors';
 import CustomerLayout from '@/layouts/customer/layout';
 import { MenuCategory } from '@/models/menu-category';
 import { MenuItem } from '@/models/menu-item';
 import { Merchant } from '@/models/merchant';
 import { getCategoryIcon } from '@/utils/category-icons';
 import { Icon } from '@iconify/react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
 import CardMenuItem from './components/card-menu-items';
@@ -37,15 +38,6 @@ const banners = [
     {
         image: Ads6,
     },
-];
-
-const gradients = [
-    'from-pink-500 to-rose-400',
-    'from-blue-500 to-indigo-400',
-    'from-emerald-500 to-green-400',
-    'from-yellow-500 to-orange-400',
-    'from-purple-500 to-violet-400',
-    'from-teal-500 to-cyan-400',
 ];
 
 export default function HomePage() {
@@ -79,25 +71,28 @@ export default function HomePage() {
                             <h2 className="text-lg font-black">Kategori Menu</h2>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Daftar kategori menu yang tersedia</p>
                         </div>
-                        <Button className="cursor-pointer text-sm font-medium" variant="link">
-                            Lihat Semua Kategori
-                            <Icon icon="icon-park-outline:right-c" />
-                        </Button>
+                        <Link href={route('menu-categories')}>
+                            <Button className="cursor-pointer text-sm font-medium" variant="link">
+                                Lihat Semua Kategori
+                                <Icon icon="icon-park-outline:right-c" />
+                            </Button>
+                        </Link>
                     </div>
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                         {menuCategories.slice(0, 6).map((category, index) => {
                             const CategoryIcon = getCategoryIcon(category.name);
 
                             return (
-                                <div
-                                    key={category.id}
-                                    className={`flex cursor-pointer flex-col items-center justify-center rounded-xl bg-gradient-to-br p-4 text-white transition-all ${gradients[index % gradients.length]} space-y-4 hover:scale-[1.04]`}
-                                >
-                                    <div className="mb-3">
-                                        <CategoryIcon className="h-6 w-6 text-white" />
+                                <Link key={category.id} href={route('menu', { category: category.slug })}>
+                                    <div
+                                        className={`flex cursor-pointer flex-col items-center justify-center rounded-xl bg-gradient-to-br p-4 text-white transition-all ${gradients[index % gradients.length]} space-y-4 hover:scale-[1.04]`}
+                                    >
+                                        <div className="mb-3">
+                                            <CategoryIcon className="h-6 w-6 text-white" />
+                                        </div>
+                                        <span className="text-center text-sm font-bold">{category.name}</span>
                                     </div>
-                                    <span className="text-center text-sm font-bold">{category.name}</span>
-                                </div>
+                                </Link>
                             );
                         })}
                     </div>
@@ -116,7 +111,7 @@ export default function HomePage() {
                         </Button>
                     </div>
 
-                    <CardMenuItem data={menuItemsRecommended} />
+                    <CardMenuItem data={menuItemsRecommended.slice(0, 6)} />
                 </section>
 
                 {/* Merchant Section */}
@@ -133,7 +128,7 @@ export default function HomePage() {
                         </Button>
                     </div>
 
-                    <CardMerchant data={merchants} />
+                    <CardMerchant data={merchants.slice(0, 6)} />
                 </section>
             </CustomerLayout>
         </>

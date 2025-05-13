@@ -200,6 +200,9 @@ Route::middleware(['verified'])->group(function () {
     // Menu
     Route::get('/menu', [MenuItemController::class, 'index_customer'])->name('menu');
 
+    // Menu Categories
+    Route::get('/menu/categories', [MenuCategoryController::class, 'index_customer'])->name('menu-categories');
+
     // Merchant
     Route::get('/merchant', [MerchantController::class, 'index_customer'])->name('merchant');
     Route::get('/merchant/show/{merchant}', [MerchantController::class, 'showForCustomer'])->name('merchant.show');

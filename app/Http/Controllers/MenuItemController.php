@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MenuItemRequest;
+use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -24,11 +26,25 @@ class MenuItemController extends Controller
         ]);
     }
 
-    public function index_customer(): Response
+    public function index_customer(Request $request): Response
     {
-        $menuItems = MenuItem::with('menuCategory')->get();
+        $categorySlug = $request->query('category');
+
+        if ($categorySlug) {
+            $category = MenuCategory::where('slug', $categorySlug)->first();
+
+            if (!$category) {
+                abort(404, 'Kategori tidak ditemukan');
+            }
+
+            $menuItems = MenuItem::with('menuCategory')->where('menu_category_id', $category->id)->get();
+        } else {
+            $menuItems = MenuItem::with('menuCategory')->get();
+        }
+
         return Inertia::render('customer/pages/menu/index', [
             'data' => $menuItems,
+            'selectedCategory' => $categorySlug,
         ]);
     }
 
