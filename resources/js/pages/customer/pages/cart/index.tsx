@@ -17,6 +17,7 @@ interface Props {
 }
 
 export default function CartPage({ carts }: Props) {
+    const isCartEmpty = carts.length === 0;
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [selectedMerchants, setSelectedMerchants] = useState<Set<number>>(new Set());
 
@@ -123,13 +124,13 @@ export default function CartPage({ carts }: Props) {
                 <div className="mt-22 w-full">
                     <div className="mx-auto grid max-w-7xl grid-cols-1 gap-0 lg:grid-cols-12 lg:gap-4">
                         {/* Cart Items */}
-                        <div className="space-y-6 lg:col-span-8">
+                        <div className={`${isCartEmpty ? 'col-span-12' : 'col-span-8'} space-y-6`}>
                             <div className="mb-5">
                                 <h2 className="text-lg font-bold">Keranjang</h2>
                                 <p className="text-muted-foreground text-sm">Daftar menu yang ada di dalam keranjang anda</p>
                             </div>
 
-                            {carts.length > 0 ? (
+                            {!isCartEmpty ? (
                                 <>
                                     {carts.map((group) => (
                                         <Card key={group.merchant_id} className="border-border mb-4 rounded-xl border shadow-none">
@@ -235,7 +236,7 @@ export default function CartPage({ carts }: Props) {
                                             <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
                                             <h1 className="mb-1 text-[22px] font-bold text-gray-700 dark:text-gray-100">Tidak Ada Menu</h1>
                                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                Menu tidak ada di keranjang, silahkan kembali beberapa saat lagi.
+                                                Menu tidak ada di keranjang anda saat ini, silahkan <br /> tambahkan menu ke keranjang.
                                             </p>
                                         </div>
                                     </div>
@@ -243,42 +244,47 @@ export default function CartPage({ carts }: Props) {
                             )}
                         </div>
 
-                        {/* Checkout Summary */}
-                        <div className="hidden md:block lg:col-span-4 lg:mt-16.5">
-                            <Card className="sticky top-20 rounded-xl py-8 shadow-none">
-                                <CardHeader>
-                                    <CardTitle className="text-lg font-bold">Ringkasan Belanja</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="text-muted-foreground flex justify-between text-sm">
-                                        <span>Total Menu</span>
-                                        <span>{selectedItems.size} Menu dipilih</span>
-                                    </div>
-                                    <Separator />
-                                    <div className="flex justify-between text-lg font-semibold">
-                                        <h1 className="text-md">Total Harga</h1>
-                                        <span className="text-primary">{formatCurrency(selectedTotal)}</span>
-                                    </div>
-                                    <Button className="mt-4 w-full cursor-pointer py-6 text-sm">
-                                        Lanjut Ke Pembayaran
-                                        <Icon icon={'heroicons:arrow-right'} className="text-background" />
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        <div className="fixed bottom-0 left-0 z-50 mb-21 w-full border-t bg-white px-4 py-4 shadow-md md:hidden">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm dark:text-black">{selectedItems.size} Menu dipilih</p>
-                                    <h1 className="text-lg font-semibold dark:text-black">{formatCurrency(selectedTotal)}</h1>
-                                </div>
-                                <Button className="cursor-pointer px-6 py-5 text-sm shadow-none dark:bg-black dark:text-white">
-                                    Lanjut Ke Pembayaran
-                                    <Icon icon={'heroicons:arrow-right'} className="dark:text-white" />
-                                </Button>
+                        {/* Checkout Summary Desktop */}
+                        {!isCartEmpty && (
+                            <div className="hidden md:block lg:col-span-4 lg:mt-16.5">
+                                <Card className="sticky top-20 rounded-xl py-8 shadow-none">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg font-bold">Ringkasan Belanja</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="text-muted-foreground flex justify-between text-sm">
+                                            <span>Total Menu</span>
+                                            <span>{selectedItems.size} Menu dipilih</span>
+                                        </div>
+                                        <Separator />
+                                        <div className="flex justify-between text-lg font-semibold">
+                                            <h1 className="text-md">Total Harga</h1>
+                                            <span className="text-primary">{formatCurrency(selectedTotal)}</span>
+                                        </div>
+                                        <Button className="mt-4 w-full cursor-pointer py-6 text-sm">
+                                            Lanjut Ke Pembayaran
+                                            <Icon icon={'heroicons:arrow-right'} className="text-background" />
+                                        </Button>
+                                    </CardContent>
+                                </Card>
                             </div>
-                        </div>
+                        )}
+
+                        {/* Checkout Summary Mobile */}
+                        {!isCartEmpty && (
+                            <div className="fixed bottom-0 left-0 z-50 mb-21 w-full border-t bg-white px-4 py-4 shadow-md md:hidden">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <p className="text-muted-foreground text-sm dark:text-black">{selectedItems.size} Menu dipilih</p>
+                                        <h1 className="text-lg font-semibold dark:text-black">{formatCurrency(selectedTotal)}</h1>
+                                    </div>
+                                    <Button className="cursor-pointer px-6 py-5 text-sm shadow-none dark:bg-black dark:text-white">
+                                        Lanjut Ke Pembayaran
+                                        <Icon icon={'heroicons:arrow-right'} className="dark:text-white" />
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </CustomerLayout>
