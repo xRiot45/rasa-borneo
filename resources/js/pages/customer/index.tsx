@@ -7,14 +7,12 @@ import Ads6 from '@/assets/images/ads/ads-6.png';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import CustomerLayout from '@/layouts/customer/layout';
-import { MenuCategory } from '@/models/menu-category';
 import { MenuItem } from '@/models/menu-item';
 import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
-import CardMenuCategories from './components/card-menu-categories';
 import CardMenuItem from './components/card-menu-items';
 import CardMerchant from './components/card-merchants';
 
@@ -40,7 +38,7 @@ const banners = [
 ];
 
 export default function HomePage() {
-    const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
+    // const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
     const { merchants } = usePage<{ merchants: Merchant[] }>().props;
     const { menuItemsRecommended } = usePage<{ menuItemsRecommended: MenuItem[] }>().props;
     const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
@@ -64,7 +62,7 @@ export default function HomePage() {
                 </Carousel>
 
                 {/* Menu Categories */}
-                <section className="mx-auto mt-12 w-full max-w-screen-xl">
+                {/* <section className="mx-auto mt-12 w-full max-w-screen-xl">
                     <div className="mb-5 flex items-center justify-between">
                         <div>
                             <h2 className="text-lg font-black">Kategori Menu</h2>
@@ -79,7 +77,7 @@ export default function HomePage() {
                     </div>
 
                     <CardMenuCategories data={menuCategories.slice(0, 6)} />
-                </section>
+                </section> */}
 
                 {/* Recommended Menu Items Section */}
                 <section className="mx-auto mt-12 w-full max-w-screen-xl">
