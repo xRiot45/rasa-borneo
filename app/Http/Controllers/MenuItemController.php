@@ -28,25 +28,32 @@ class MenuItemController extends Controller
 
     public function index_customer(Request $request): Response
     {
-        $categorySlug = $request->query('category');
+        $menuCategorySlug = $request->query('category');
+        $isRecommended = (bool)$request->query('recommended');
 
-        if ($categorySlug) {
-            $category = MenuCategory::where('slug', $categorySlug)->first();
+        $menuItemsQuery = MenuItem::with('menuCategory');
 
-            if (!$category) {
-                abort(404, 'Kategori tidak ditemukan');
+        if ($menuCategorySlug) {
+            $menuCategory = MenuCategory::where('slug', $menuCategorySlug)->first();
+
+            if (!$menuCategory) {
+                abort(404, 'Kategori menu tidak ditemukan');
             }
 
-            $menuItems = MenuItem::with('menuCategory')->where('menu_category_id', $category->id)->get();
-        } else {
-            $menuItems = MenuItem::with('menuCategory')->get();
+            $menuItemsQuery->where('menu_category_id', $menuCategory->id);
         }
+
+        if ($isRecommended) {
+            $menuItemsQuery->where('is_recommended', true);
+        }
+
+        $menuItems = $menuItemsQuery->get();
 
         return Inertia::render('customer/pages/menu/index', [
             'data' => $menuItems,
-            'selectedCategory' => $categorySlug,
         ]);
     }
+
 
     public function create(): Response
     {

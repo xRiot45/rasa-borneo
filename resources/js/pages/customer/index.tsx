@@ -105,10 +105,12 @@ export default function HomePage() {
                             <h2 className="text-lg font-bold">Menu Direkomendasi</h2>
                             <p className="text-muted-foreground text-sm">Daftar menu yang direkomendasikan</p>
                         </div>
-                        <Button variant="link" className="text-sm font-medium">
-                            Lihat Semua Menu
-                            <Icon icon="icon-park-outline:right-c" className="ml-1" />
-                        </Button>
+                        <Link href={route('menu', { recommended: true })}>
+                            <Button variant="link" className="text-sm font-medium">
+                                Lihat Semua Menu
+                                <Icon icon="icon-park-outline:right-c" className="ml-1" />
+                            </Button>
+                        </Link>
                     </div>
 
                     <CardMenuItem data={menuItemsRecommended.slice(0, 6)} />
