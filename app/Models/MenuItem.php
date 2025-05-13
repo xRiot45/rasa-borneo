@@ -40,6 +40,13 @@ class MenuItem extends Model
 
         static::creating(function ($model) {
             $model->slug = Str::slug($model->name);
+
+            $model->slug = $model->slug . '-' . $model->merchant_id;
+
+            $count = MenuCategory::where('slug', $model->slug)->count();
+            if ($count > 0) {
+                $model->slug = $model->slug . '-' . ($count + 1);
+            }
         });
     }
 

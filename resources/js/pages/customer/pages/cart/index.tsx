@@ -2,9 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import CustomerLayout from '@/layouts/customer/layout';
+import { Carts } from '@/models/cart';
 import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+
+interface Props {
+    carts: Carts[];
+}
 
 const mockCart = [
     {
@@ -20,18 +24,19 @@ const mockCart = [
     },
 ];
 
-export default function CartPage() {
-    const total = mockCart.flatMap((group) => group.items).reduce((acc, item) => acc + item.price * item.quantity, 0);
+export default function CartPage({ carts }: Props) {
+    console.log(carts);
+    const total = carts.reduce((acc, cart) => acc + cart.unit_price * cart.quantity, 0);
 
-    const handleIncrease = (id: number) => {
-        console.log(id);
-    };
-    const handleDecrease = (id: number) => {
-        console.log(id);
-    };
-    const handleRemove = (id: number) => {
-        console.log(id);
-    };
+    // const handleIncrease = (id: number) => {
+    //     console.log(id);
+    // };
+    // const handleDecrease = (id: number) => {
+    //     console.log(id);
+    // };
+    // const handleRemove = (id: number) => {
+    //     console.log(id);
+    // };
 
     return (
         <>
@@ -46,15 +51,14 @@ export default function CartPage() {
                                 <p className="text-muted-foreground text-sm">Daftar menu yang ada di dalam keranjang</p>
                             </div>
 
-                            {mockCart.map((group) => (
-                                <div key={group.merchant} className="space-y-4 rounded-xl border bg-white px-6 py-5">
+                            {/* {carts.map((group) => (
+                                <div key={group?.merchant?.id} className="space-y-4 rounded-xl border bg-white px-6 py-5">
                                     <div className="flex items-center justify-between">
-                                        <h1 className="text-lg font-bold text-gray-800">{group.merchant}</h1>
-                                        <span className="text-muted-foreground text-sm">{group.items.length} produk</span>
+                                        <h1 className="text-lg font-bold text-gray-800">{group?.merchant?.business_name}</h1>
+                                        <span className="text-muted-foreground text-sm">{group?.menu_items?.length} produk</span>
                                     </div>
-                                    {/* <Separator /> */}
                                     <div className="grid gap-6">
-                                        {group.items.map((item) => (
+                                        {group?.menu_items.map((item) => (
                                             <Card key={item.id} className="rounded-xl border-none shadow-none">
                                                 <Separator />
                                                 <CardContent className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -75,7 +79,7 @@ export default function CartPage() {
                                                                 >
                                                                     <Minus className="h-4 w-4" />
                                                                 </Button>
-                                                                <span className="min-w-[24px] text-center text-sm font-medium">{item.quantity}</span>
+                                                                <span className="min-w-[24px] text-center text-sm font-medium">{10}</span>
                                                                 <Button
                                                                     variant="outline"
                                                                     size="icon"
@@ -89,9 +93,7 @@ export default function CartPage() {
                                                     </div>
 
                                                     <div className="flex items-center justify-between gap-4">
-                                                        <p className="text-primary text-lg font-bold">
-                                                            Rp{(item.price * item.quantity).toLocaleString()}
-                                                        </p>
+                                                        <p className="text-primary text-lg font-bold">Rp{(item.price * 10).toLocaleString()}</p>
                                                         <Button variant="ghost" size="icon" onClick={() => handleRemove(item.id)}>
                                                             <Trash2 className="h-5 w-5 text-red-500" />
                                                         </Button>
@@ -101,7 +103,7 @@ export default function CartPage() {
                                         ))}
                                     </div>
                                 </div>
-                            ))}
+                            ))} */}
                         </div>
 
                         {/* Checkout Summary */}

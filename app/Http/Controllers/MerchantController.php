@@ -27,9 +27,11 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function show(Merchant $merchant): Response
+    public function show(int $id): Response
     {
-        $merchant->load('businessCategory', 'user', 'storeProfile', 'storeGallery', 'storeOperatingHour');
+        $merchant = Merchant::withTrashed()->findOrFail($id);
+
+        $merchant->load('businessCategory', 'user');
         return Inertia::render('admin/users-management/merchants/pages/show', [
             'data' => $merchant,
         ]);
@@ -43,8 +45,10 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function verifyMerchant(Merchant $merchant): RedirectResponse
+    public function verifyMerchant(int $int): RedirectResponse
     {
+        $merchant = Merchant::withTrashed()->findOrFail($int);
+
         $merchant->update(['is_verified' => true]);
 
         $user = $merchant->user()->first();
@@ -57,9 +61,7 @@ class MerchantController extends Controller
             ])
             ->save();
 
-        return redirect()
-            ->back()
-            ->with(['success' => 'Usaha berhasil diverifikasi']);
+        return redirect()->back(303)->with('success', 'Usaha berhasil diverifikasi');
     }
 
     public function softDelete(Merchant $merchant): RedirectResponse

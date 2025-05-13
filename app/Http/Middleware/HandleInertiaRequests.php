@@ -47,6 +47,9 @@ class HandleInertiaRequests extends Middleware
             'businessCategories' => BusinessCategory::all(),
             'banks' => Bank::all(),
             'menuCategories' => MenuCategory::all(),
+            'menuCategoriesMerchant' => $request->user()?->merchant
+                ? MenuCategory::where('merchant_id', $request->user()->merchant->id)->get()
+                : [],
             'menuItemsRecommended' => MenuItem::with('menuCategory', 'merchant')->where('status', 'tersedia')->where('is_recommended', 1)->get(),
             'merchants' => Merchant::with('businessCategory', 'user', 'storeProfile')->where('is_verified', 1)->get(),
         ];

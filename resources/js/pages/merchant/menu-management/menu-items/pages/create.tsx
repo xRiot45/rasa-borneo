@@ -34,7 +34,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CreatePage() {
-    const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
+    const { menuCategoriesMerchant } = usePage<{ menuCategoriesMerchant: MenuCategory[] }>().props;
     const { data, setData, post, processing, errors, reset } = useForm<Required<MenuItemForm>>({
         name: '',
         price: 0,
@@ -154,7 +154,7 @@ export default function CreatePage() {
                                     <SelectValue placeholder="Pilih Kategori Menu" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {menuCategories.map((item: MenuCategory) => (
+                                    {menuCategoriesMerchant.map((item: MenuCategory) => (
                                         <SelectItem key={item.id} value={String(item.id)}>
                                             {item.name}
                                         </SelectItem>

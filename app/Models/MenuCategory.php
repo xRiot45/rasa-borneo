@@ -17,17 +17,26 @@ class MenuCategory extends Model
     // Fillable merupakan atribut yang dapat diisi secara manual
     protected $fillable = [
         'name',
+        'slug',
         'merchant_id',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
         static::creating(function ($model) {
             $model->slug = Str::slug($model->name);
+
+            $model->slug = $model->slug . '-' . $model->merchant_id;
+
+            $count = MenuCategory::where('slug', $model->slug)->count();
+            if ($count > 0) {
+                $model->slug = $model->slug . '-' . ($count + 1);
+            }
         });
     }
+
 
     public function getRouteKeyName(): string
     {
