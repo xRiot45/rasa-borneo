@@ -40,5 +40,6 @@ export interface User {
     created_at: string;
     updated_at: string;
     customer?: Customer;
+    roles: string[];
     [key: string]: unknown;
 }

@@ -9,7 +9,6 @@ interface Props {
 }
 
 export default function MenuCategoriesPage({ data }: Props) {
-    console.log(data);
     return (
         <>
             <Head title="Kategori Menu" />

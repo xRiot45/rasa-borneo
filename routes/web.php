@@ -196,7 +196,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
 });
 
 // CUSTOMER ROUTES
-Route::middleware(['verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Menu
     Route::get('/menu', [MenuItemController::class, 'index_customer'])->name('menu');
 
