@@ -21,7 +21,7 @@ interface Props {
 export default function FormPage({ customerAddress }: Props) {
     const isEdit = !!customerAddress?.id;
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<CustomerAddressForm>>({
-        address_label: isEdit ? customerAddress.address_label : AddressLabelEnum.HOME,
+        address_label: isEdit ? customerAddress.address_label : null,
         complete_address: isEdit ? customerAddress.complete_address : '',
         note_to_courier: isEdit ? customerAddress.note_to_courier : '',
         recipient_name: isEdit ? customerAddress.recipient_name : '',
@@ -106,7 +106,10 @@ export default function FormPage({ customerAddress }: Props) {
                                 <Label htmlFor="address_label">
                                     Label Alamat <strong className="text-red-500">*</strong>{' '}
                                 </Label>
-                                <Select value={data?.address_label} onValueChange={(value) => setData('address_label', value as AddressLabelEnum)}>
+                                <Select
+                                    value={data?.address_label ?? undefined}
+                                    onValueChange={(value) => setData('address_label', value as AddressLabelEnum)}
+                                >
                                     <SelectTrigger className="w-full px-4 py-6">
                                         <SelectValue placeholder="Pilih Label Alamat" />
                                     </SelectTrigger>
