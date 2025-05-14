@@ -42,7 +42,7 @@ export default function EditPage({ menuItem }: { menuItem: MenuItem }) {
         menu_category_id: menuItem?.menu_category_id,
         status: menuItem?.status,
         short_description: menuItem?.short_description,
-        is_recommended: menuItem?.is_recommended,
+        is_recommended: Boolean(menuItem?.is_recommended),
     });
 
     const handleFileChange = (file: File | null) => {
