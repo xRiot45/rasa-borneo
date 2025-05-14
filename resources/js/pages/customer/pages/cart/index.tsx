@@ -1,4 +1,5 @@
 import EmptyImage from '@/assets/errors/empty.svg';
+import DefaultPhotoProfile from '@/assets/images/default-image.png';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -147,9 +148,9 @@ export default function CartPage({ carts }: Props) {
                                                     />
 
                                                     <img
-                                                        src={group?.merchant_logo_photo}
+                                                        src={`${group?.merchant_logo_photo ? group?.merchant_logo_photo : DefaultPhotoProfile}`}
                                                         alt="Logo Merchant"
-                                                        className="h-20 w-20 rounded-lg border object-cover"
+                                                        className="h-18 w-18 rounded-lg border object-cover"
                                                     />
                                                     <div>
                                                         <span className="text-muted-foreground text-sm">{group?.items.length} menu</span>
@@ -220,7 +221,7 @@ export default function CartPage({ carts }: Props) {
                                                                 {formatCurrency(item.unit_price * item.quantity)}
                                                             </p>
                                                             <Button variant="ghost" size="icon" onClick={() => handleDeleteItemFromCart(item.id)}>
-                                                                <Trash2 className="h-5 w-5 text-red-500" />
+                                                                <Trash2 className="h-5 w-5 cursor-pointer text-red-500" />
                                                             </Button>
                                                         </div>
                                                     </div>
