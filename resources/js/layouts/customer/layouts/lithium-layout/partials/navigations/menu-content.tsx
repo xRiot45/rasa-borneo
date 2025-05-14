@@ -5,11 +5,11 @@ import { type User } from '@/types';
 import { Icon } from '@iconify/react';
 import { Link } from '@inertiajs/react';
 
-interface CustomerMenuContentProps {
+interface Props {
     user: User;
 }
 
-export function CustomerMenuContent({ user }: CustomerMenuContentProps) {
+export function CustomerMenuContent({ user }: Props) {
     const cleanup = useMobileNavigation();
 
     return (
@@ -42,18 +42,22 @@ export function CustomerMenuContent({ user }: CustomerMenuContentProps) {
                         Pengaturan
                     </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
-                        <Icon icon="entypo:address" className="mr-2" />
-                        Alamat Saya
-                    </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
-                        <Icon icon="material-symbols:receipt-long" className="mr-2" />
-                        Pesanan Saya
-                    </Link>
-                </DropdownMenuItem>
+                {user?.roles[0] === 'customer' && (
+                    <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
+                        <Link className="block w-full" href={route('address-list')} as="button" prefetch onClick={cleanup}>
+                            <Icon icon="entypo:address" className="mr-2" />
+                            Daftar Alamat Saya
+                        </Link>
+                    </DropdownMenuItem>
+                )}
+                {user?.roles[0] === 'customer' && (
+                    <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
+                        <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
+                            <Icon icon="material-symbols:receipt-long" className="mr-2" />
+                            Pesanan Saya
+                        </Link>
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
                     <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
                         <Icon icon="mdi:chat-question-outline" className="mr-2" />

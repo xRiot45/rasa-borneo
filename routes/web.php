@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageRolePermissionController;
@@ -216,6 +217,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
+
+    // Address
+    Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list');
+    Route::get('/address-list/create', [CustomerAddressController::class, 'create'])->name('address-list.create');
+    Route::get('/address-list/edit/{id}', [CustomerAddressController::class, 'edit'])->name('address-list.edit');
 });
 
 require __DIR__ . '/settings.php';
