@@ -57,4 +57,11 @@ class CouponController extends Controller
         $coupon->update($request->validated());
         return redirect()->route('merchant.coupon.index_merchant')->with('success', 'Kupon berhasil diperbarui.');
     }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $coupon = Coupon::findOrFail($id);
+        $coupon->delete();
+        return redirect()->route('merchant.coupon.index_merchant')->with('success', 'Kupon berhasil dihapus.');
+    }
 }

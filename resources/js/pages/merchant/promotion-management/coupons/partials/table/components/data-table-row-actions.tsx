@@ -20,13 +20,36 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Coupon } from '@/models/coupon';
 import { Icon } from '@iconify/react';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
+import { toast } from 'sonner';
 
 export function DataTableRowActions({ row }: { row: Row<Coupon> }) {
     const handleDelete = (id: number) => {
-        console.log(id);
+        router.delete(route('merchant.coupon.destroy', id), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Kupon berhasil dihapus',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                router.reload();
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
     };
 
     return (
@@ -52,7 +75,7 @@ export function DataTableRowActions({ row }: { row: Row<Coupon> }) {
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <DropdownMenuItem className="cursor-pointer p-3 !text-red-500" onSelect={(e) => e.preventDefault()}>
-                                Hapus Data
+                                Hapus Kupon
                                 <DropdownMenuShortcut>
                                     <Icon icon={'material-symbols:delete'} className="!text-red-500" />
                                 </DropdownMenuShortcut>

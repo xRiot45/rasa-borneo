@@ -207,6 +207,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/create', 'store')->name('merchant.coupon.store');
                 Route::get('/edit/{id}', 'edit')->name('merchant.coupon.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.coupon.update');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.coupon.destroy');
             });
     });
 });
