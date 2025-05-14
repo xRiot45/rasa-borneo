@@ -3,12 +3,17 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AddressLabelEnum } from '@/enums/address-label';
 import CustomerLayout from '@/layouts/customer/layout';
 import { CustomerAddress } from '@/models/customer-address';
 import { Icon } from '@iconify/react';
 import { Head, Link, router } from '@inertiajs/react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { MapPin } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -16,6 +21,21 @@ interface Props {
 }
 
 export default function AddressListPage({ data }: Props) {
+    const [filters, setFilters] = useState({ complete_address: '', label: '' });
+    const [tempFilters, setTempFilters] = useState({ complete_address: '', label: '' });
+
+    const applyFilters = () => setFilters(tempFilters);
+
+    const resetFilters = () => setFilters({ complete_address: '', label: '' });
+
+    const handleTempChange = (field: 'complete_address' | 'label', value: string) => {
+        setTempFilters((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const filteredItems = data
+        .filter((item) => item.complete_address?.toLowerCase().includes(filters.complete_address.toLowerCase()))
+        .filter((item) => item.address_label?.toLowerCase().includes(filters.label.toLowerCase()));
+
     const handleDelete = (id: number) => {
         router.delete(route('address-list.destroy', id), {
             onSuccess: () => {
@@ -60,16 +80,67 @@ export default function AddressListPage({ data }: Props) {
                                 </Button>
                             </Link>
 
-                            <Button variant="outline" className="w-full cursor-pointer rounded-sm shadow-none">
-                                Filter
-                                <Icon icon="mage:filter" />
-                            </Button>
+                            {/* Filter */}
+                            <Dialog>
+                                <DialogTrigger>
+                                    <Button variant="outline" className="w-full cursor-pointer rounded-sm shadow-none">
+                                        Filter Alamat
+                                        <Icon icon="mage:filter" className="ml-2" />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Filter Alamat</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="grid gap-6 py-4">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="search">Nama Alamat</Label>
+                                            <Input
+                                                placeholder="Cari nama alamat ..."
+                                                className="rounded-lg py-6 shadow-none"
+                                                value={tempFilters.complete_address}
+                                                onChange={(e) => handleTempChange('complete_address', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="category">Kategori</Label>
+                                            <Select value={tempFilters.label} onValueChange={(value) => handleTempChange('label', value)}>
+                                                <SelectTrigger className="rounded-lg py-6 shadow-none">
+                                                    <SelectValue placeholder="Pilih Kategori" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.values(AddressLabelEnum).map((label) => (
+                                                        <SelectItem key={label} value={label} className="p-4 capitalize hover:bg-gray-200">
+                                                            {label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                    <DialogFooter className="flex w-full items-center">
+                                        <DialogTrigger asChild className="w-full">
+                                            <Button type="button" variant="outline" onClick={resetFilters} className="w-full cursor-pointer py-6">
+                                                Reset Filter
+                                                <Icon icon="bx:reset" className="ml-2" />
+                                            </Button>
+                                        </DialogTrigger>
+
+                                        <DialogTrigger asChild className="w-full">
+                                            <Button type="button" onClick={applyFilters} className="w-full cursor-pointer py-6">
+                                                Terapkan Filter
+                                                <Icon icon="material-symbols:check" className="ml-2" />
+                                            </Button>
+                                        </DialogTrigger>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
 
-                    {data.length > 0 ? (
+                    {filteredItems.length > 0 ? (
                         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {data?.map((item, index) => (
+                            {filteredItems?.map((item, index) => (
                                 <Card
                                     key={index}
                                     className={`relative rounded-2xl border shadow-none transition-all duration-300 ${
@@ -112,13 +183,7 @@ export default function AddressListPage({ data }: Props) {
                                                 Ubah Alamat
                                                 <Icon icon="ic:baseline-edit" />
                                             </Button>
-                                            {/* <Button
-                                                variant="destructive"
-                                                className="w-full cursor-pointer bg-red-600 py-5 font-semibold text-white shadow-none hover:bg-red-700"
-                                            >
-                                                Hapus Alamat
-                                                <Icon icon="ic:baseline-delete" />
-                                            </Button> */}
+
                                             <Dialog>
                                                 <DialogTrigger>
                                                     <Button
