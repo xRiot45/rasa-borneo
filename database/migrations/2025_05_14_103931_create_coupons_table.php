@@ -10,7 +10,7 @@ return new class extends Migration {
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('merchant_id')->constrained()->onDelete('cascade'); // kupon dibuat oleh merchant tertentu
+            $table->foreignId('merchant_id')->constrained('merchants')->onDelete('cascade'); // kupon dibuat oleh merchant tertentu
             $table->string('code')->unique(); // Contoh: HEMAT20
             $table->enum('type', CouponTypeEnum::values()); // Jenis diskon
             $table->decimal('value', 10, 2); // Nilai diskon (misal 20% atau 20000)
