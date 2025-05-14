@@ -2,17 +2,45 @@ import EmptyImage from '@/assets/errors/empty.svg';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import CustomerLayout from '@/layouts/customer/layout';
 import { CustomerAddress } from '@/models/customer-address';
 import { Icon } from '@iconify/react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import { DialogClose } from '@radix-ui/react-dialog';
 import { MapPin } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Props {
     data: CustomerAddress[];
 }
 
 export default function AddressListPage({ data }: Props) {
+    const handleDelete = (id: number) => {
+        router.delete(route('address-list.destroy', id), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Alamat Berhasil Dihapus',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     return (
         <>
             <Head title="Daftar Alamat Saya" />
@@ -84,13 +112,45 @@ export default function AddressListPage({ data }: Props) {
                                                 Ubah Alamat
                                                 <Icon icon="ic:baseline-edit" />
                                             </Button>
-                                            <Button
+                                            {/* <Button
                                                 variant="destructive"
                                                 className="w-full cursor-pointer bg-red-600 py-5 font-semibold text-white shadow-none hover:bg-red-700"
                                             >
                                                 Hapus Alamat
                                                 <Icon icon="ic:baseline-delete" />
-                                            </Button>
+                                            </Button> */}
+                                            <Dialog>
+                                                <DialogTrigger>
+                                                    <Button
+                                                        variant="destructive"
+                                                        className="w-full cursor-pointer bg-red-600 py-5 font-semibold text-white shadow-none hover:bg-red-700"
+                                                    >
+                                                        Hapus Alamat
+                                                        <Icon icon="ic:baseline-delete" />
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-lg">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Hapus Alamat</DialogTitle>
+                                                        <DialogDescription>Apakah anda yakin ingin menghapus alamat ini?</DialogDescription>
+                                                    </DialogHeader>
+                                                    <DialogFooter className="mt-6">
+                                                        <DialogClose>
+                                                            <Button variant="outline" className="cursor-pointer">
+                                                                Batalkan
+                                                            </Button>
+                                                        </DialogClose>
+                                                        <Button
+                                                            type="submit"
+                                                            variant="destructive"
+                                                            className="cursor-pointer"
+                                                            onClick={() => handleDelete(item.id)}
+                                                        >
+                                                            Hapus Alamat
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
                                         </div>
                                     </CardContent>
                                 </Card>

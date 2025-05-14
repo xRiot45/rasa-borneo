@@ -80,4 +80,11 @@ class CustomerAddressController extends Controller
         $customerAddress->update($validated);
         return redirect()->route('address-list.index')->with('success', 'Alamat berhasil diubah.');
     }
+
+    public function destroy(int $customerAddressId): RedirectResponse
+    {
+        $customerAddress = CustomerAddress::where('id', $customerAddressId)->first();
+        $customerAddress->delete();
+        return redirect()->route('address-list.index')->with('success', 'Alamat berhasil dihapus.');
+    }
 }
