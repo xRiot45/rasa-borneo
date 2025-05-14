@@ -15,8 +15,15 @@ class CouponRequest extends FormRequest
 
     public function rules(): array
     {
+        $couponId = $this->route('id');
+
         return [
-            'code' => ['required', 'string', 'max:50', 'unique:coupons,code'],
+            'code' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('coupons', 'code')->ignore($couponId),
+            ],
             'type' => ['required', Rule::in(CouponTypeEnum::values())],
             'discount' => ['required', 'numeric', 'min:0'],
             'minimum_purchase' => ['nullable', 'numeric', 'min:0'],
@@ -25,6 +32,7 @@ class CouponRequest extends FormRequest
             'is_active' => ['required', 'boolean'],
         ];
     }
+
 
     public function messages(): array
     {
