@@ -15,7 +15,14 @@ class CouponController extends Controller
 {
     public function index_merchant(): InertiaResponse
     {
-        return Inertia::render('merchant/promotion-management/coupons/index');
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $coupons = Coupon::where('merchant_id', $merchantId)->get();
+        return Inertia::render('merchant/promotion-management/coupons/index', [
+            'data' => $coupons,
+        ]);
     }
 
     public function create(): InertiaResponse

@@ -1,7 +1,14 @@
 import MerchantLayout from '@/layouts/merchant/layout';
+import { Coupon } from '@/models/coupon';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import ButtonPartials from './partials/buttons';
+import CouponTable from './partials/table';
+import { columns } from './partials/table/columns';
+
+interface Props {
+    data: Coupon[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,7 +21,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function CouponPage() {
+export default function CouponPage({ data }: Props) {
+    console.log(data);
+
     return (
         <>
             <Head title="Kupon" />
@@ -26,6 +35,10 @@ export default function CouponPage() {
                     </div>
 
                     <ButtonPartials />
+                </div>
+
+                <div className="p-4">
+                    <CouponTable data={data} columns={columns} />
                 </div>
             </MerchantLayout>
         </>
