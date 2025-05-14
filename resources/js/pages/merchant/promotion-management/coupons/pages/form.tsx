@@ -11,6 +11,7 @@ import MerchantLayout from '@/layouts/merchant/layout';
 import { cn } from '@/lib/utils';
 import { Coupon, CouponForm } from '@/models/coupon';
 import { BreadcrumbItem } from '@/types';
+import { generateRandomCode } from '@/utils/random-code';
 import { Icon } from '@iconify/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CalendarIcon, LoaderCircle } from 'lucide-react';
@@ -136,9 +137,18 @@ export default function FormPage({ coupon }: Props) {
                     <div className="grid gap-4 lg:grid-cols-3">
                         {/* Kode Kupon */}
                         <div className="grid gap-1">
-                            <Label htmlFor="code">
-                                Kode Kupon <strong className="text-xs text-red-500">(Max: 6 Karakter)</strong>
-                            </Label>
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="code">
+                                    Kode Kupon <strong className="text-xs text-red-500">(Max: 6 Karakter)</strong>
+                                </Label>
+                                <button
+                                    type="button"
+                                    onClick={() => setData('code', generateRandomCode())}
+                                    className="text-xs text-black hover:underline"
+                                >
+                                    Generate Otomatis
+                                </button>
+                            </div>
                             <Input
                                 id="code"
                                 type="text"
@@ -149,8 +159,9 @@ export default function FormPage({ coupon }: Props) {
                                 onChange={(e) => setData('code', e.target.value)}
                                 placeholder="Masukkan kode kupon"
                                 className={cn('mt-1 rounded-xl py-6', errors.code && 'border border-red-500')}
+                                maxLength={6}
                             />
-                            <InputError message={errors.code} className="mt-2" />
+                            <InputError message={errors.code} />
                         </div>
 
                         {/* Tipe Kupon */}
