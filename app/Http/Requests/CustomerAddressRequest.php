@@ -13,7 +13,6 @@ class CustomerAddressRequest extends FormRequest
         return true;
     }
 
-
     public function rules(): array
     {
         return [
@@ -21,8 +20,8 @@ class CustomerAddressRequest extends FormRequest
             'complete_address' => 'required|string|max:255',
             'note_to_courier' => 'nullable|string|max:255',
             'recipient_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customer_addresses,email',
-            'phone_number' => 'required|string|unique:customer_addresses,phone_number',
+            'email' => 'required|email',
+            'phone_number' => 'required|string',
             'is_primary' => 'nullable|boolean',
         ];
     }
@@ -45,11 +44,9 @@ class CustomerAddressRequest extends FormRequest
 
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah digunakan pada alamat lain.',
 
             'phone_number.required' => 'Nomor telepon wajib diisi.',
             'phone_number.string' => 'Nomor telepon harus berupa teks.',
-            'phone_number.unique' => 'Nomor telepon sudah digunakan pada alamat lain.',
 
             'is_primary.boolean' => 'Format nilai untuk alamat utama tidak valid.',
         ];

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('complete_address');
             $table->string('note_to_courier')->nullable();
             $table->string('recipient_name');
-            $table->string('email')->unique();
-            $table->string('phone_number')->unique();
+            $table->string('email');
+            $table->string('phone_number');
             $table->boolean('is_primary')->default(false);
             $table->timestamps();
         });
