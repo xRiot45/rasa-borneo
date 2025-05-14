@@ -44,7 +44,7 @@ export function CustomerMenuContent({ user }: Props) {
                 </DropdownMenuItem>
                 {user?.roles[0] === 'customer' && (
                     <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                        <Link className="block w-full" href={route('address-list')} as="button" prefetch onClick={cleanup}>
+                        <Link className="block w-full" href={route('address-list.index')} as="button" prefetch onClick={cleanup}>
                             <Icon icon="entypo:address" className="mr-2" />
                             Daftar Alamat Saya
                         </Link>

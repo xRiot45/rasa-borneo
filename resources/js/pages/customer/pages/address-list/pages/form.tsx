@@ -20,7 +20,6 @@ interface Props {
 
 export default function FormPage({ customerAddress }: Props) {
     const isEdit = !!customerAddress?.id;
-
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<CustomerAddressForm>>({
         address_label: isEdit ? customerAddress.address_label : AddressLabelEnum.HOME,
         complete_address: isEdit ? customerAddress.complete_address : '',
@@ -45,7 +44,7 @@ export default function FormPage({ customerAddress }: Props) {
                         },
                     });
 
-                    reset();
+                    // reset();
                 },
                 onError: (errors) => {
                     Object.keys(errors).forEach((key) => {
@@ -107,7 +106,7 @@ export default function FormPage({ customerAddress }: Props) {
                                 <Label htmlFor="address_label">
                                     Label Alamat <strong className="text-red-500">*</strong>{' '}
                                 </Label>
-                                <Select onValueChange={(value) => setData('address_label', value as AddressLabelEnum)}>
+                                <Select value={data?.address_label} onValueChange={(value) => setData('address_label', value as AddressLabelEnum)}>
                                     <SelectTrigger className="w-full px-4 py-6">
                                         <SelectValue placeholder="Pilih Label Alamat" />
                                     </SelectTrigger>
@@ -216,7 +215,7 @@ export default function FormPage({ customerAddress }: Props) {
                                 value={data?.note_to_courier}
                                 onChange={(e) => setData('note_to_courier', e.target.value)}
                                 placeholder="Cth : Rumah warna biru di depan toko baju serba murah"
-                                className="min-h-[100px] rounded-lg"
+                                className="min-h-[100px] rounded-lg p-3"
                             />
                         </div>
 
