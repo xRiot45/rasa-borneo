@@ -1,3 +1,5 @@
+import DefaultBannerImage from '@/assets/images/banner-default.png';
+import DefaultProfilePhoto from '@/assets/images/default-image.png';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -44,7 +46,11 @@ export default function MerchantDetailPage({ data }: Props) {
                         <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
                             {/* Left Banner & Promo (moved to top on small screens) */}
                             <div className="relative col-span-1 overflow-hidden rounded-xl lg:col-span-2">
-                                <img src={`${data?.store_profile?.cover_photo}`} alt="Promo" className="h-auto w-full rounded-xl object-cover" />
+                                <img
+                                    src={`${data?.store_profile?.cover_photo ? data?.store_profile?.cover_photo : DefaultBannerImage}`}
+                                    alt="Promo"
+                                    className="h-auto w-full rounded-xl object-cover"
+                                />
 
                                 <div className="absolute top-6 right-6 w-72 rounded-lg bg-gradient-to-r from-white to-orange-50 p-5 shadow-xl ring-1 ring-orange-100">
                                     <div className="flex items-center gap-2">
@@ -76,7 +82,11 @@ export default function MerchantDetailPage({ data }: Props) {
                                 {/* Business Info */}
                                 <div className="flex items-start gap-5">
                                     <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
-                                        <img src={`${data?.store_profile?.logo_photo}`} alt="Business Logo" className="rounded-full" />
+                                        <img
+                                            src={`${data?.store_profile?.logo_photo ? data?.store_profile?.logo_photo : DefaultProfilePhoto}`}
+                                            alt="Business Logo"
+                                            className="rounded-full"
+                                        />
                                     </div>
                                     <div className="space-y-3">
                                         <div>

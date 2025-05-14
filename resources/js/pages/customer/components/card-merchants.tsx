@@ -1,3 +1,5 @@
+import DefaultBannerImage from '@/assets/images/banner-default.png';
+import DefaultProfilePhoto from '@/assets/images/default-image.png';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,9 +44,9 @@ const CardMerchant: React.FC<Props> = ({ data }) => {
                               <Card key={merchant.id} className="group rounded-xl border shadow-none transition">
                                   <div className="w-full overflow-hidden rounded-t-2xl">
                                       <img
-                                          src={`${merchant.store_profile?.cover_photo}`}
+                                          src={`${merchant.store_profile?.cover_photo ? merchant.store_profile?.cover_photo : DefaultBannerImage}`}
                                           alt={merchant.business_name}
-                                          className="h-full w-full object-cover transition duration-300"
+                                          className="h-auto w-full object-cover transition duration-300"
                                       />
                                   </div>
 
@@ -52,7 +54,7 @@ const CardMerchant: React.FC<Props> = ({ data }) => {
                                       <div className="flex items-start gap-4">
                                           <Avatar className="h-20 w-20 rounded-md">
                                               <AvatarImage
-                                                  src={`${merchant.store_profile?.logo_photo}`}
+                                                  src={`${merchant.store_profile?.logo_photo ? merchant.store_profile?.logo_photo : DefaultProfilePhoto}`}
                                                   alt={merchant.business_name}
                                                   className="object-cover"
                                               />
