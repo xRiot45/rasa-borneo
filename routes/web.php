@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
@@ -192,6 +193,23 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'index_merchant')->name('merchant.store-operating-hour.index_merchant');
                 Route::get('/create', 'create')->name('merchant.store-operating-hour.create');
                 Route::post('/store-or-update', 'storeOrUpdate')->name('merchant.store-operating-hour.storeOrUpdate');
+            });
+    });
+
+    // Promotion Management
+    Route::prefix('/merchant/promotion-management')->group(function () {
+        // Kupon
+        Route::prefix('/coupons')
+            ->controller(CouponController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.kupon.index_merchant');
+                Route::get('/create', 'create')->name('merchant.kupon.create');
+                Route::post('/create', 'store')->name('merchant.kupon.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.kupon.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.kupon.update');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.kupon.softDelete');
+                Route::patch('/restore/{id}', 'restore')->name('merchant.kupon.restore');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.kupon.forceDelete');
             });
     });
 });

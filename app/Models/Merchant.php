@@ -102,4 +102,10 @@ class Merchant extends Model
     {
         return $this->hasMany(Cart::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN COUPON
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
 }

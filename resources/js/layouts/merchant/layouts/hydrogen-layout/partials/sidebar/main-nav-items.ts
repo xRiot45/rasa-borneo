@@ -59,16 +59,26 @@ const mainNavItems: NavGroup[] = [
                 href: '/merchant/store-management/store-operating-hour',
                 icon: 'mdi:clock',
             },
-            {
-                title: 'Promo & Diskon',
-                href: '/merchant/store-management/store-promotions',
-                icon: 'mdi:tag-multiple',
-            },
+            // {
+            //     title: 'Promo & Diskon',
+            //     href: '/merchant/store-management/store-promotions',
+            //     icon: 'mdi:tag-multiple',
+            // },
             // {
             //     title: 'Pengaturan Pengiriman',
             //     href: '/merchant/delivery-settings',
             //     icon: 'mdi:truck-delivery',
             // },
+        ],
+    },
+    {
+        group: 'PROMOSI',
+        items: [
+            {
+                title: 'Kupon',
+                href: '/merchant/promotion-management/coupons',
+                icon: 'mdi:ticket-percent',
+            },
         ],
     },
     {
