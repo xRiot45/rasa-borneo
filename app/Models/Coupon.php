@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CouponTypeEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -27,6 +28,16 @@ class Coupon extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = Carbon::parse($value)->setTime(23, 0, 0);
+    }
+
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = Carbon::parse($value)->setTime(23, 0, 0);
+    }
 
     public function merchant(): BelongsTo
     {
