@@ -223,6 +223,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/address-list/create', [CustomerAddressController::class, 'create'])->name('address-list.create');
     Route::post('/address-list', [CustomerAddressController::class, 'store'])->name('address-list.store');
     Route::get('/address-list/edit/{id}', [CustomerAddressController::class, 'edit'])->name('address-list.edit');
+    Route::put('/address-list/edit/{id}', [CustomerAddressController::class, 'update'])->name('address-list.update');
 });
 
 require __DIR__ . '/settings.php';

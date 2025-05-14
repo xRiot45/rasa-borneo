@@ -34,7 +34,7 @@ export default function FormPage({ customerAddress }: Props) {
         e.preventDefault();
 
         if (isEdit && customerAddress) {
-            put(route('customer.address.update', customerAddress.id), {
+            put(route('address-list.update', customerAddress.id), {
                 onSuccess: () => {
                     toast.success('Success', {
                         description: 'Alamat Berhasil Diubah',
@@ -43,8 +43,6 @@ export default function FormPage({ customerAddress }: Props) {
                             onClick: () => toast.dismiss(),
                         },
                     });
-
-                    // reset();
                 },
                 onError: (errors) => {
                     Object.keys(errors).forEach((key) => {

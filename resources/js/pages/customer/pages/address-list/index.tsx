@@ -79,14 +79,14 @@ export default function AddressListPage({ data }: Props) {
                                             <Button
                                                 onClick={() => (window.location.href = route('address-list.edit', item.id))}
                                                 variant="outline"
-                                                className="font-semi w-full cursor-pointer border-zinc-300 py-3 text-black shadow-none hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-800"
+                                                className="font-semi w-full cursor-pointer border-zinc-300 py-5 text-black shadow-none hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-800"
                                             >
                                                 Ubah Alamat
                                                 <Icon icon="ic:baseline-edit" />
                                             </Button>
                                             <Button
                                                 variant="destructive"
-                                                className="w-full cursor-pointer bg-red-600 py-3 font-semibold text-white shadow-none hover:bg-red-700"
+                                                className="w-full cursor-pointer bg-red-600 py-5 font-semibold text-white shadow-none hover:bg-red-700"
                                             >
                                                 Hapus Alamat
                                                 <Icon icon="ic:baseline-delete" />

@@ -56,15 +56,28 @@ class CustomerAddressController extends Controller
 
     public function edit(int $customerAddressId): InertiaResponse
     {
-        // $user = Auth::user();
-        // $customer = Customer::where('user_id', $user->id)->first();
-
-        // $customerId = $customer->id;
-        // $customerAddress = CustomerAddress::where('customer_id', $customerId)->get();
-
         $customerAddress = CustomerAddress::where('id', $customerAddressId)->first();
         return Inertia::render('customer/pages/address-list/pages/form', [
             'customerAddress' => $customerAddress,
         ]);
+    }
+
+    public function update(int $customerAddressId, CustomerAddressRequest $request): RedirectResponse
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $customerId = $customer->id;
+
+        $validated = $request->validated();
+        $customerAddress = CustomerAddress::where('id', $customerAddressId)->first();
+
+        if (!empty($validated['is_primary']) && $validated['is_primary']) {
+            CustomerAddress::where('customer_id', $customerId)
+                ->where('is_primary', 1)
+                ->update(['is_primary' => 0]);
+        }
+
+        $customerAddress->update($validated);
+        return redirect()->route('address-list.index')->with('success', 'Alamat berhasil diubah.');
     }
 }
