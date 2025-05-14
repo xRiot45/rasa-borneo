@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('coupon_menu_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
-            $table->foreignId('menu_item_id')->constrained()->onDelete('cascade');
+            $table->foreignId('coupon_id')->constrained('coupons')->onDelete('cascade');
+            $table->foreignId('menu_item_id')->constrained('menu_items')->onDelete('cascade');
         });
     }
 
