@@ -318,7 +318,8 @@ export default function FormPage({ coupon }: Props) {
                         </Link>
                         <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Buat Kupon <Icon icon="heroicons:plus" />
+                            {isEdit ? 'Perbarui Kupon' : 'Buat Kupon'}
+                            <Icon icon={isEdit ? 'material-symbols:edit' : 'heroicons:plus'} />
                         </Button>
                     </div>
                 </form>

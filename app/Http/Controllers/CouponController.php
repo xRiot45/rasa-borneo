@@ -50,4 +50,11 @@ class CouponController extends Controller
             'coupon' => $coupon,
         ]);
     }
+
+    public function update(CouponRequest $request, int $id): RedirectResponse
+    {
+        $coupon = Coupon::findOrFail($id);
+        $coupon->update($request->validated());
+        return redirect()->route('merchant.coupon.index_merchant')->with('success', 'Kupon berhasil diperbarui.');
+    }
 }
