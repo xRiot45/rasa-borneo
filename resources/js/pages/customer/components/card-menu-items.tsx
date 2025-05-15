@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { MenuItem } from '@/models/menu-item';
@@ -18,11 +18,15 @@ interface Props {
 const CardMenuItem: React.FC<Props> = ({ data }) => {
     const isLoading = !data;
     const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
-    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const [openMenuItemDialog, setOpenMenuItemDialog] = useState<boolean>(false);
+
+    // Dialog untuk konfirmasi merchant conflict
+    const [merchantConflictOpen, setMerchantConflictOpen] = useState(false);
+    const [pendingMenuToAdd, setPendingMenuToAdd] = useState<MenuItem | null>(null);
 
     const handleOpen = (item: MenuItem) => {
         setSelectedMenu(item);
-        setOpenDialog(true);
+        setOpenMenuItemDialog(true);
     };
 
     const addMenuToCart = (item: MenuItem) => {
@@ -41,22 +45,49 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                         onClick: () => toast.dismiss(),
                     },
                 });
-                setOpenDialog(false);
+                setOpenMenuItemDialog(false);
             },
             onError: (errors) => {
-                Object.keys(errors).forEach((key) => {
-                    toast.error('Error', {
-                        description: errors[key],
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
+                if (errors.merchant_conflict) {
+                    setPendingMenuToAdd(item);
+                    setMerchantConflictOpen(true);
+                    setOpenMenuItemDialog(false);
+                } else {
+                    Object.keys(errors).forEach((key) => {
+                        toast.error('Error', {
+                            description: errors[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
                     });
-                });
+                }
             },
 
             preserveScroll: true,
         });
+    };
+
+    const handleConfirmReplaceCart = () => {
+        setMerchantConflictOpen(false);
+        if (!pendingMenuToAdd) return;
+
+        // Clear cart via API
+        router.post(
+            route('cart.clearCart'),
+            {},
+            {
+                onSuccess: () => {
+                    addMenuToCart(pendingMenuToAdd);
+                    setPendingMenuToAdd(null);
+                },
+                onError: () => {
+                    toast.error('Gagal mengosongkan keranjang.');
+                    setPendingMenuToAdd(null);
+                },
+            },
+        );
     };
 
     return (
@@ -109,7 +140,7 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                 </div>
 
                 {/* Dialog */}
-                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <Dialog open={openMenuItemDialog} onOpenChange={setOpenMenuItemDialog}>
                     <DialogContent className="sm:max-w-xl">
                         {selectedMenu && (
                             <>
@@ -155,12 +186,14 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
 
                                         <Tooltip>
                                             <TooltipTrigger asChild>
-                                                <Link
-                                                    href={route('merchant.show', selectedMenu?.merchant?.slug)}
-                                                    className="mx-auto flex aspect-square w-12 items-center justify-center rounded-full border p-4"
-                                                >
-                                                    <Icon icon="material-symbols:storefront" className="h-4 w-4 text-xl" />
-                                                </Link>
+                                                {selectedMenu?.merchant?.slug && (
+                                                    <Link
+                                                        href={route('merchant.show', selectedMenu.merchant.slug)}
+                                                        className="mx-auto flex aspect-square w-12 items-center justify-center rounded-full border p-4"
+                                                    >
+                                                        <Icon icon="material-symbols:storefront" className="h-4 w-4 text-xl" />
+                                                    </Link>
+                                                )}
                                             </TooltipTrigger>
                                             <TooltipContent side="top" className="rounded-md px-3 py-1 text-xs">
                                                 <p>Lihat Merchant</p>
@@ -178,6 +211,27 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                 </DialogFooter>
                             </>
                         )}
+                    </DialogContent>
+                </Dialog>
+
+                {/* Dialog konfirmasi merchant conflict */}
+                <Dialog open={merchantConflictOpen} onOpenChange={setMerchantConflictOpen}>
+                    <DialogContent className="sm:max-w-xl">
+                        <DialogHeader>
+                            <DialogTitle>Keranjang Berisi Merchant Lain</DialogTitle>
+                            <DialogDescription>
+                                Keranjang Anda sudah berisi menu dari merchant lain. Apakah Anda ingin mengosongkan keranjang dan menambahkan menu
+                                baru ini?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter className="mt-4 flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => setMerchantConflictOpen(false)} className="cursor-pointer">
+                                Batal
+                            </Button>
+                            <Button onClick={handleConfirmReplaceCart} className="cursor-pointer">
+                                Ya, Kosongkan dan Tambah
+                            </Button>
+                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
             </main>

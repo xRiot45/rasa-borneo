@@ -227,6 +227,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Cart
     Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clearCart');
     Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
     Route::delete('/cart/merchant/{merchantId}', [CartController::class, 'destroyByMerchant'])->name('cart.destroyByMerchant');

@@ -12,7 +12,8 @@ export interface CartItem {
     };
 }
 
-export interface CartGroup {
+export interface Cart {
+    length: number;
     merchant_id: number;
     merchant_name: string;
     merchant_slug: string;

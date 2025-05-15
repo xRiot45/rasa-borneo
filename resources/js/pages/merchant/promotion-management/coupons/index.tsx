@@ -22,8 +22,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CouponPage({ data }: Props) {
-    console.log(data);
-
     return (
         <>
             <Head title="Kupon" />
