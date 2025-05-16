@@ -199,102 +199,124 @@ export default function CartPage({ carts }: Props) {
 
                                         <CardContent className="space-y-5 px-6 pb-6">
                                             {carts.items.map((item) => (
-                                                <div
-                                                    key={item.id}
-                                                    className="flex flex-col justify-between gap-4 border-t pt-4 sm:flex-row sm:items-center"
-                                                >
-                                                    <div className="flex items-start gap-4 sm:items-center sm:gap-6">
-                                                        <Checkbox checked={selectedItems.has(item.id)} onCheckedChange={() => toggleItem(item.id)} />
-                                                        <img
-                                                            src={`${item.menu_item.image_url}`}
-                                                            alt={item.menu_item.name}
-                                                            className="h-20 w-20 rounded-lg object-cover"
-                                                        />
+                                                <div>
+                                                    <div
+                                                        key={item.id}
+                                                        className="flex flex-col justify-between gap-4 border-t pt-4 sm:flex-row sm:items-center"
+                                                    >
                                                         <div>
-                                                            <h4 className="text-muted-foreground text-sm font-medium">{item?.menu_item?.category}</h4>
-                                                            <h1 className="font-semibold">{item.menu_item.name}</h1>
-                                                            <div className="mt-2 flex items-center justify-between">
-                                                                <div className="flex items-center gap-4">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        size="icon"
-                                                                        className="h-8 w-8 cursor-pointer shadow-none"
-                                                                        onClick={() => handleUpdateQuantity(item.id, false)}
-                                                                    >
-                                                                        <Minus className="h-4 w-4" />
-                                                                    </Button>
-                                                                    <span className="text-sm font-semibold">{item.quantity}</span>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        size="icon"
-                                                                        className="h-8 w-8 cursor-pointer shadow-none"
-                                                                        onClick={() => handleUpdateQuantity(item.id, true)}
-                                                                    >
-                                                                        <Plus className="h-4 w-4" />
-                                                                    </Button>
+                                                            <div className="flex items-start gap-4 sm:items-center sm:gap-6">
+                                                                <Checkbox
+                                                                    checked={selectedItems.has(item.id)}
+                                                                    onCheckedChange={() => toggleItem(item.id)}
+                                                                />
+                                                                <img
+                                                                    src={`${item.menu_item.image_url}`}
+                                                                    alt={item.menu_item.name}
+                                                                    className="h-20 w-20 rounded-lg object-cover"
+                                                                />
+                                                                <div>
+                                                                    <h4 className="text-muted-foreground text-sm font-medium">
+                                                                        {item?.menu_item?.category}
+                                                                    </h4>
+                                                                    <h1 className="font-semibold">{item.menu_item.name}</h1>
+                                                                    <div className="mt-2 flex items-center justify-between">
+                                                                        <div className="flex items-center gap-4">
+                                                                            <Button
+                                                                                variant="outline"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 cursor-pointer shadow-none"
+                                                                                onClick={() => handleUpdateQuantity(item.id, false)}
+                                                                            >
+                                                                                <Minus className="h-4 w-4" />
+                                                                            </Button>
+                                                                            <span className="text-sm font-semibold">{item.quantity}</span>
+                                                                            <Button
+                                                                                variant="outline"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 cursor-pointer shadow-none"
+                                                                                onClick={() => handleUpdateQuantity(item.id, true)}
+                                                                            >
+                                                                                <Plus className="h-4 w-4" />
+                                                                            </Button>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between gap-4 text-start lg:flex-row">
+                                                            {/* Note */}
+                                                            <div>
+                                                                <Dialog open={openDialogNote} onOpenChange={setOpenDialogNote}>
+                                                                    <DialogTrigger asChild>
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            className="cursor-pointer text-sm"
+                                                                            onClick={() => {
+                                                                                setSelectedItemId(item.id);
+                                                                                setFormData({ note: item.note || '' }); // Set isi awal textarea
+                                                                                setOpenDialogNote(true); // Buka dialog
+                                                                            }}
+                                                                        >
+                                                                            <StickyNote className="mr-2 h-4 w-4" />
+                                                                            {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                        </Button>
+                                                                    </DialogTrigger>
+                                                                    <DialogContent className="sm:max-w-xl">
+                                                                        <DialogHeader>
+                                                                            <DialogTitle>
+                                                                                {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                            </DialogTitle>
+                                                                        </DialogHeader>
+
+                                                                        <div className="space-y-4">
+                                                                            <Label htmlFor="note">Catatan</Label>
+                                                                            <Textarea
+                                                                                id="note"
+                                                                                value={formData.note}
+                                                                                onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                                                                                placeholder="Masukkan catatan (opsional)"
+                                                                                className="mt-2 min-h-[200px]"
+                                                                            />
+
+                                                                            <Button
+                                                                                className="w-full cursor-pointer py-6"
+                                                                                type="submit"
+                                                                                onClick={() => {
+                                                                                    if (selectedItemId !== null) {
+                                                                                        addedNote(selectedItemId);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                                <Check className="ml-2 h-4 w-4" />
+                                                                            </Button>
+                                                                        </div>
+                                                                    </DialogContent>
+                                                                </Dialog>
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                <p className="text-primary text-sm font-semibold">
+                                                                    {formatCurrency(item.unit_price * item.quantity)}
+                                                                </p>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => handleDeleteItemFromCart(item?.id)}
+                                                                >
+                                                                    <Trash2 className="h-5 w-5 cursor-pointer text-red-500" />
+                                                                </Button>
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex items-center justify-between gap-4 text-start lg:flex-row">
-                                                        {/* Note */}
-                                                        <div>
-                                                            <Dialog open={openDialogNote} onOpenChange={setOpenDialogNote}>
-                                                                <DialogTrigger asChild>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        className="cursor-pointer text-sm"
-                                                                        onClick={() => {
-                                                                            setSelectedItemId(item.id);
-                                                                            setFormData({ note: item.note || '' }); // Set isi awal textarea
-                                                                            setOpenDialogNote(true); // Buka dialog
-                                                                        }}
-                                                                    >
-                                                                        <StickyNote className="mr-2 h-4 w-4" />
-                                                                        {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
-                                                                    </Button>
-                                                                </DialogTrigger>
-                                                                <DialogContent className="sm:max-w-xl">
-                                                                    <DialogHeader>
-                                                                        <DialogTitle>{item?.note ? 'Edit Catatan' : 'Tambah Catatan'}</DialogTitle>
-                                                                    </DialogHeader>
-
-                                                                    <div className="space-y-4">
-                                                                        <Label htmlFor="note">Catatan</Label>
-                                                                        <Textarea
-                                                                            id="note"
-                                                                            value={formData.note}
-                                                                            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                                                                            placeholder="Masukkan catatan (opsional)"
-                                                                            className="mt-2 min-h-[200px]"
-                                                                        />
-
-                                                                        <Button
-                                                                            className="w-full cursor-pointer py-6"
-                                                                            type="submit"
-                                                                            onClick={() => {
-                                                                                if (selectedItemId !== null) {
-                                                                                    addedNote(selectedItemId);
-                                                                                }
-                                                                            }}
-                                                                        >
-                                                                            {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
-                                                                            <Check className="ml-2 h-4 w-4" />
-                                                                        </Button>
-                                                                    </div>
-                                                                </DialogContent>
-                                                            </Dialog>
+                                                    {item?.note && (
+                                                        <div className="mt-4 w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 p-4 text-sm text-yellow-800 dark:bg-yellow-950 dark:text-yellow-100">
+                                                            <p className="font-semibold">Catatan :</p>
+                                                            <p className="mt-1">{item?.note || 'Tidak ada catatan'}</p>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <p className="text-primary text-sm font-semibold">
-                                                                {formatCurrency(item.unit_price * item.quantity)}
-                                                            </p>
-                                                            <Button variant="ghost" size="icon" onClick={() => handleDeleteItemFromCart(item?.id)}>
-                                                                <Trash2 className="h-5 w-5 cursor-pointer text-red-500" />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
+                                                    )}
                                                 </div>
                                             ))}
                                         </CardContent>
