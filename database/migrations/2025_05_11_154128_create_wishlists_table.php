@@ -6,20 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('wishlists', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->foreignId('menu_item_id')->constrained('menu_items')->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('wishlists');
