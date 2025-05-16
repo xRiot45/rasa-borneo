@@ -7,8 +7,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { MenuItem } from '@/models/menu-item';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -16,20 +16,27 @@ interface Props {
 }
 
 const CardMenuItem: React.FC<Props> = ({ data }) => {
+    const { wishlist } = usePage<{ wishlist: number[] }>().props;
+
     const isLoading = !data;
     const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
     const [openMenuItemDialog, setOpenMenuItemDialog] = useState<boolean>(false);
 
-    // Dialog untuk konfirmasi merchant conflict
     const [merchantConflictOpen, setMerchantConflictOpen] = useState(false);
     const [pendingMenuToAdd, setPendingMenuToAdd] = useState<MenuItem | null>(null);
+
+    const [wishlistItems, setWishlistItems] = useState<number[]>(wishlist || []);
+
+    useEffect(() => {
+        setWishlistItems(wishlist || []);
+    }, [wishlist]);
 
     const handleOpen = (item: MenuItem) => {
         setSelectedMenu(item);
         setOpenMenuItemDialog(true);
     };
 
-    const addMenuToCart = (item: MenuItem) => {
+    const handleAddMenuToCart = (item: MenuItem) => {
         const cartItem = {
             menu_item_id: item?.id,
             quantity: 1,
@@ -69,17 +76,49 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
         });
     };
 
+    const handleAddMenuToWishlist = async (menuItemId: number) => {
+        router.post(
+            route('wishlist.toggle'),
+            { menu_item_id: menuItemId },
+            {
+                onSuccess: (response) => {
+                    const status = (response.props.flash as { status: boolean | null })?.status;
+                    setWishlistItems((prev) => (status ? [...prev, menuItemId] : prev.filter((id) => id !== menuItemId)));
+                    toast.success('Success', {
+                        description: status ? 'Menu berhasil ditambahkan ke wishlist' : 'Menu dihapus dari wishlist',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+
+                    setOpenMenuItemDialog(false);
+                },
+                onError: (errors) => {
+                    toast.error('Failed', {
+                        description: errors.message || 'Terjadi kesalahan',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+
+                preserveScroll: true,
+            },
+        );
+    };
+
     const handleConfirmReplaceCart = () => {
         setMerchantConflictOpen(false);
         if (!pendingMenuToAdd) return;
 
-        // Clear cart via API
         router.post(
             route('cart.clearCart'),
             {},
             {
                 onSuccess: () => {
-                    addMenuToCart(pendingMenuToAdd);
+                    handleAddMenuToCart(pendingMenuToAdd);
                     setPendingMenuToAdd(null);
                 },
                 onError: () => {
@@ -174,13 +213,20 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                 <DialogFooter className="mt-4 flex flex-row gap-2 sm:justify-end">
                                     <TooltipProvider delayDuration={0}>
                                         <Tooltip>
-                                            <TooltipTrigger asChild>
+                                            <TooltipTrigger
+                                                asChild
+                                                onClick={() => handleAddMenuToWishlist(selectedMenu?.id)}
+                                                className="cursor-pointer"
+                                            >
                                                 <div className="mx-auto flex aspect-square w-12 items-center justify-center rounded-full border p-4">
-                                                    <Icon icon="icon-park-outline:like" className="h-4 w-4 text-xl" />
+                                                    <Icon
+                                                        icon={wishlistItems.includes(selectedMenu.id) ? 'mdi:heart' : 'mdi:heart-outline'}
+                                                        className={`h-4 w-4 text-xl ${wishlistItems.includes(selectedMenu.id) ? 'text-red-500' : ''}`}
+                                                    />
                                                 </div>
                                             </TooltipTrigger>
                                             <TooltipContent side="top" className="rounded-md px-3 py-1 text-xs">
-                                                <p>Tambahkan ke Wishlist</p>
+                                                {wishlistItems.includes(selectedMenu.id) ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}
                                             </TooltipContent>
                                         </Tooltip>
 
@@ -196,13 +242,13 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                                 )}
                                             </TooltipTrigger>
                                             <TooltipContent side="top" className="rounded-md px-3 py-1 text-xs">
-                                                <p>Lihat Merchant</p>
+                                                Lihat Merchant
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
 
                                     <Button
-                                        onClick={() => addMenuToCart(selectedMenu)}
+                                        onClick={() => handleAddMenuToCart(selectedMenu)}
                                         className="w-full cursor-pointer border-none py-6 shadow-none"
                                     >
                                         Tambah ke Keranjang

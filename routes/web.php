@@ -248,6 +248,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
+    Route::post('/wishlist', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
     // Address List
     Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list.index');

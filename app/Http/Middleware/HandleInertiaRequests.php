@@ -7,6 +7,7 @@ use App\Models\BusinessCategory;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use App\Models\Merchant;
+use App\Models\Wishlist;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -41,17 +42,21 @@ class HandleInertiaRequests extends Middleware
 
             'ziggy' => fn(): array => [...(new Ziggy())->toArray(), 'location' => $request->url()],
 
+            'flash' => [
+                'status' => session('status'),
+                'snap_token' => fn() => $request->session()->get('snap_token'),
+            ],
+
             // Data
             'roles' => Role::all(),
             'permissions' => Permission::all(),
             'businessCategories' => BusinessCategory::all(),
             'banks' => Bank::all(),
             'menuCategories' => MenuCategory::all(),
-            'menuCategoriesMerchant' => $request->user()?->merchant
-                ? MenuCategory::where('merchant_id', $request->user()->merchant->id)->get()
-                : [],
+            'menuCategoriesMerchant' => $request->user()?->merchant ? MenuCategory::where('merchant_id', $request->user()->merchant->id)->get() : [],
             'menuItemsRecommended' => MenuItem::with('menuCategory', 'merchant')->where('status', 'tersedia')->where('is_recommended', 1)->get(),
             'merchants' => Merchant::with('businessCategory', 'user', 'storeProfile')->where('is_verified', 1)->get(),
+            'wishlist' => $request->user() ? Wishlist::where('customer_id', $request->user()->customer->id)->pluck('menu_item_id') : [],
         ];
     }
 }
