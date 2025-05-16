@@ -205,9 +205,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/create', 'store')->name('merchant.table.store');
                 Route::get('/edit/{id}', 'edit')->name('merchant.table.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.table.update');
-                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.table.softDelete');
-                Route::patch('/restore/{id}', 'restore')->name('merchant.table.restore');
-                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.table.forceDelete');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.table.destroy');
             });
     });
 

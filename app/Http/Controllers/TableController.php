@@ -54,4 +54,11 @@ class TableController extends Controller
         $table->update($validated);
         return redirect()->route('merchant.table.index_merchant');
     }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $table = Table::findOrFail($id);
+        $table->delete();
+        return redirect()->route('merchant.table.index_merchant');
+    }
 }
