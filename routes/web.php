@@ -228,9 +228,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
     Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clearCart');
+    Route::patch('/cart/note/{id}', [CartController::class, 'addedNote'])->name('cart.addedNote');
     Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-    Route::delete('/cart/merchant/{merchantId}', [CartController::class, 'destroyByMerchant'])->name('cart.destroyByMerchant');
+    Route::delete('/cart/merchant/{merchantId}', [CartController::class, 'destroyAll'])->name('cart.destroyAll');
 
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');

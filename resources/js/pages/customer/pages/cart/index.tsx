@@ -3,13 +3,17 @@ import DefaultPhotoProfile from '@/assets/images/default-image.png';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import CustomerLayout from '@/layouts/customer/layout';
 import { Cart } from '@/models/cart';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { DialogTrigger } from '@radix-ui/react-dialog';
+import { Check, Minus, Plus, StickyNote, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -22,6 +26,11 @@ export default function CartPage({ carts }: Props) {
 
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [merchantSelected, setMerchantSelected] = useState(false);
+    const [openDialogNote, setOpenDialogNote] = useState(false);
+    const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+    const [formData, setFormData] = useState({
+        note: '',
+    });
 
     const selectedTotal =
         carts?.items?.reduce?.((acc, item) => {
@@ -84,8 +93,9 @@ export default function CartPage({ carts }: Props) {
             preserveScroll: true,
         });
     };
+
     const handleDeleteAllItemFromCart = (merchantId: number) => {
-        router.delete(route('cart.destroyByMerchant', { merchantId }), {
+        router.delete(route('cart.destroyAll', { merchantId }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Berhasil Menghapus Semua Menu Dari Keranjang',
@@ -107,6 +117,38 @@ export default function CartPage({ carts }: Props) {
                 });
             },
         });
+    };
+
+    const addedNote = (id: number) => {
+        router.patch(
+            route('cart.addedNote', id),
+            {
+                note: formData.note,
+            },
+            {
+                onSuccess: () => {
+                    setOpenDialogNote(false);
+                    toast.success('Success', {
+                        description: 'Catatan Berhasil Disimpan',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (errors) => {
+                    Object.keys(errors).forEach((key) => {
+                        toast.error('Error', {
+                            description: errors[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
     };
 
     return (
@@ -171,35 +213,87 @@ export default function CartPage({ carts }: Props) {
                                                         <div>
                                                             <h4 className="text-muted-foreground text-sm font-medium">{item?.menu_item?.category}</h4>
                                                             <h1 className="font-semibold">{item.menu_item.name}</h1>
-                                                            <div className="mt-2 flex items-center gap-4">
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    className="h-8 w-8 cursor-pointer shadow-none"
-                                                                    onClick={() => handleUpdateQuantity(item.id, false)}
-                                                                >
-                                                                    <Minus className="h-4 w-4" />
-                                                                </Button>
-                                                                <span className="text-sm font-semibold">{item.quantity}</span>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    className="h-8 w-8 cursor-pointer shadow-none"
-                                                                    onClick={() => handleUpdateQuantity(item.id, true)}
-                                                                >
-                                                                    <Plus className="h-4 w-4" />
-                                                                </Button>
+                                                            <div className="mt-2 flex items-center justify-between">
+                                                                <div className="flex items-center gap-4">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        className="h-8 w-8 cursor-pointer shadow-none"
+                                                                        onClick={() => handleUpdateQuantity(item.id, false)}
+                                                                    >
+                                                                        <Minus className="h-4 w-4" />
+                                                                    </Button>
+                                                                    <span className="text-sm font-semibold">{item.quantity}</span>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        className="h-8 w-8 cursor-pointer shadow-none"
+                                                                        onClick={() => handleUpdateQuantity(item.id, true)}
+                                                                    >
+                                                                        <Plus className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex items-center justify-end gap-4 text-start">
-                                                        <p className="text-primary text-sm font-semibold">
-                                                            {formatCurrency(item.unit_price * item.quantity)}
-                                                        </p>
-                                                        <Button variant="ghost" size="icon" onClick={() => handleDeleteItemFromCart(item.id)}>
-                                                            <Trash2 className="h-5 w-5 cursor-pointer text-red-500" />
-                                                        </Button>
+                                                    <div className="flex items-center justify-between gap-4 text-start lg:flex-row">
+                                                        {/* Note */}
+                                                        <div>
+                                                            <Dialog open={openDialogNote} onOpenChange={setOpenDialogNote}>
+                                                                <DialogTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        className="cursor-pointer text-sm"
+                                                                        onClick={() => {
+                                                                            setSelectedItemId(item.id);
+                                                                            setFormData({ note: item.note || '' }); // Set isi awal textarea
+                                                                            setOpenDialogNote(true); // Buka dialog
+                                                                        }}
+                                                                    >
+                                                                        <StickyNote className="mr-2 h-4 w-4" />
+                                                                        {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                    </Button>
+                                                                </DialogTrigger>
+                                                                <DialogContent className="sm:max-w-xl">
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>{item?.note ? 'Edit Catatan' : 'Tambah Catatan'}</DialogTitle>
+                                                                    </DialogHeader>
+
+                                                                    <div className="space-y-4">
+                                                                        <Label htmlFor="note">Catatan</Label>
+                                                                        <Textarea
+                                                                            id="note"
+                                                                            value={formData.note}
+                                                                            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                                                                            placeholder="Masukkan catatan (opsional)"
+                                                                            className="mt-2 min-h-[200px]"
+                                                                        />
+
+                                                                        <Button
+                                                                            className="w-full cursor-pointer py-6"
+                                                                            type="submit"
+                                                                            onClick={() => {
+                                                                                if (selectedItemId !== null) {
+                                                                                    addedNote(selectedItemId);
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                            <Check className="ml-2 h-4 w-4" />
+                                                                        </Button>
+                                                                    </div>
+                                                                </DialogContent>
+                                                            </Dialog>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="text-primary text-sm font-semibold">
+                                                                {formatCurrency(item.unit_price * item.quantity)}
+                                                            </p>
+                                                            <Button variant="ghost" size="icon" onClick={() => handleDeleteItemFromCart(item?.id)}>
+                                                                <Trash2 className="h-5 w-5 cursor-pointer text-red-500" />
+                                                            </Button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}

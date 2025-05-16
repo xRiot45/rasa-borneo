@@ -10,11 +10,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
 class CartController extends Controller
 {
-    public function index_customer(): RedirectResponse|Response
+    public function index_customer(): RedirectResponse|InertiaResponse
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
@@ -47,6 +47,7 @@ class CartController extends Controller
                             'id' => $cart->id,
                             'quantity' => $cart->quantity,
                             'unit_price' => $cart->unit_price,
+                            'note' => $cart->note,
                             'menu_item' => [
                                 'id' => $cart->menuItem->id,
                                 'name' => $cart->menuItem->name,
@@ -108,6 +109,15 @@ class CartController extends Controller
         ]);
     }
 
+    public function addedNote(Request $request, int $id): RedirectResponse
+    {
+        Cart::where('id', $id)->update([
+            'note' => $request->note,
+        ]);
+
+        return back()->with('success', 'Catatan berhasil ditambahkan.');
+    }
+
     public function clearCart(): RedirectResponse
     {
         $user = Auth::user();
@@ -145,7 +155,7 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Menu berhasil dihapus dari keranjang.');
     }
 
-    public function destroyByMerchant(int $merchantId): RedirectResponse
+    public function destroyAll(int $merchantId): RedirectResponse
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
