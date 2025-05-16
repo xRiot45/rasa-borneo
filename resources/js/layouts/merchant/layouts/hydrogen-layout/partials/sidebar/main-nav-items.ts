@@ -59,6 +59,11 @@ const mainNavItems: NavGroup[] = [
                 href: '/merchant/store-management/store-operating-hour',
                 icon: 'mdi:clock',
             },
+            {
+                title: 'Meja',
+                href: '/merchant/store-management/table',
+                icon: 'mdi:table-chair',
+            },
             // {
             //     title: 'Promo & Diskon',
             //     href: '/merchant/store-management/store-promotions',

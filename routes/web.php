@@ -15,6 +15,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
+use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use App\Models\Merchant;
@@ -193,6 +194,20 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'index_merchant')->name('merchant.store-operating-hour.index_merchant');
                 Route::get('/create', 'create')->name('merchant.store-operating-hour.create');
                 Route::post('/store-or-update', 'storeOrUpdate')->name('merchant.store-operating-hour.storeOrUpdate');
+            });
+
+        // Table
+        Route::prefix('/table')
+            ->controller(TableController::class)
+            ->group(function () {
+                Route::get('/', 'index_merchant')->name('merchant.table.index_merchant');
+                Route::get('/create', 'create')->name('merchant.table.create');
+                Route::post('/create', 'store')->name('merchant.table.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.table.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.table.update');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.table.softDelete');
+                Route::patch('/restore/{id}', 'restore')->name('merchant.table.restore');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.table.forceDelete');
             });
     });
 
