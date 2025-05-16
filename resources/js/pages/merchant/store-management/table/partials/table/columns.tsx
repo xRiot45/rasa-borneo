@@ -1,10 +1,10 @@
-import { BusinessCategory } from '@/models/business-category';
+import { TableModel } from '@/models/table';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
+import { DataTableColumnHeader } from './components/data-table-column-header';
+import { DataTableRowActions } from './components/data-table-row-actions';
 
-export const columns: ColumnDef<BusinessCategory>[] = [
+export const columns: ColumnDef<TableModel>[] = [
     {
         id: 'no',
         accessorKey: 'no',
@@ -16,10 +16,18 @@ export const columns: ColumnDef<BusinessCategory>[] = [
     {
         id: 'name',
         accessorKey: 'name',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Kategori Bisnis" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Nama / Nomor Meja" />,
         cell: ({ row }) => <span className="max-w-36">{row.getValue('name')}</span>,
-        enableHiding: true,
-        enableSorting: true,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'capacity',
+        accessorKey: 'capacity',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Kapasitas Meja" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('capacity')} Orang</span>,
+        enableSorting: false,
+        enableHiding: false,
     },
     {
         id: 'created_at',
@@ -38,21 +46,10 @@ export const columns: ColumnDef<BusinessCategory>[] = [
         enableSorting: true,
     },
     {
-        id: 'deleted_at',
-        accessorKey: 'deleted_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Dihapus Pada" />,
-        cell: ({ row }) => {
-            const deletedAt = row.getValue('deleted_at');
-            return <span className="max-w-36">{deletedAt ? formatDate(String(deletedAt)) : '-'}</span>;
-        },
-        enableHiding: true,
-        enableSorting: true,
-    },
-    {
         id: 'actions',
         accessorKey: 'actions',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
-        cell: ({ row }) => <DataTableRowActions row={row as Row<BusinessCategory>} />,
+        cell: ({ row }) => <DataTableRowActions row={row as Row<TableModel>} />,
         enableHiding: false,
     },
 ];

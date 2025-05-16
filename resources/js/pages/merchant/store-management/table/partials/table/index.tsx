@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { BusinessCategory } from '@/models/business-category';
+import { TableModel } from '@/models/table';
 import { DataTableProps } from '@/types/tanstack';
 import {
     ColumnFiltersState,
@@ -15,10 +15,10 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import { DataTablePagination } from './data-table-pagination';
-import { DataTableToolbar } from './data-table-toolbar';
+import { DataTablePagination } from './components/data-table-pagination';
+import { DataTableToolbar } from './components/data-table-toolbar';
 
-export default function BusinessCategoryTable({ columns, data }: DataTableProps<BusinessCategory>) {
+export default function MerchantTable({ columns, data }: DataTableProps<TableModel>) {
     const [rowSelection, setRowSelection] = useState({});
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
