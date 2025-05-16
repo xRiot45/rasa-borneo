@@ -38,4 +38,20 @@ class TableController extends Controller
 
         return redirect()->route('merchant.table.index_merchant');
     }
+
+    public function edit(int $id): InertiaResponse
+    {
+        $table = Table::findOrFail($id);
+        return Inertia::render('merchant/store-management/table/pages/form', [
+            'table' => $table,
+        ]);
+    }
+
+    public function update(TableRequest $request, int $id): RedirectResponse
+    {
+        $validated = $request->validated();
+        $table = Table::findOrFail($id);
+        $table->update($validated);
+        return redirect()->route('merchant.table.index_merchant');
+    }
 }
