@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('transaction_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
+            $table->foreignId('menu_item_id')->constrained('menu_items')->cascadeOnDelete();
+            $table->integer('quantity')->default(0);
+            $table->integer('unit_price')->default(0);
+            $table->integer('subtotal')->default(0);
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }
