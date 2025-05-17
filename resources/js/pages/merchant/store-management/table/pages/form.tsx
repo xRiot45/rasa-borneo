@@ -123,7 +123,7 @@ export default function MerchantTableForm({ table }: Props) {
                             </Label>
                             <Input
                                 id="capacity"
-                                type="text"
+                                type="number"
                                 required
                                 tabIndex={2}
                                 autoComplete="capacity"

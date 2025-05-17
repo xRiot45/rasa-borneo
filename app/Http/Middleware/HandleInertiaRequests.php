@@ -56,7 +56,9 @@ class HandleInertiaRequests extends Middleware
             'menuCategoriesMerchant' => $request->user()?->merchant ? MenuCategory::where('merchant_id', $request->user()->merchant->id)->get() : [],
             'menuItemsRecommended' => MenuItem::with('menuCategory', 'merchant')->where('status', 'tersedia')->where('is_recommended', 1)->get(),
             'merchants' => Merchant::with('businessCategory', 'user', 'storeProfile')->where('is_verified', 1)->get(),
-            'wishlist' => $request->user() ? Wishlist::where('customer_id', $request->user()->customer->id)->pluck('menu_item_id') : [],
+            'wishlist' => $request->user() && $request->user()->customer
+                ? Wishlist::where('customer_id', $request->user()->customer->id)->pluck('menu_item_id')
+                : [],
         ];
     }
 }
