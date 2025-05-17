@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->timestamp('end_date')->nullable(); // Tanggal berakhir
             $table->boolean('is_active')->default(true); // Bisa di-nonaktifkan kapan saja oleh merchant
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

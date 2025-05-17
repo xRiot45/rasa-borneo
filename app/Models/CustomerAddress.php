@@ -5,9 +5,12 @@ namespace App\Models;
 use App\Enums\AddressLabelEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CustomerAddress extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'customer_addresses';
 
     protected $fillable = [

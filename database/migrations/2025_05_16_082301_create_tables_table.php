@@ -15,6 +15,7 @@ return new class extends Migration
             $table->integer('capacity');
             $table->boolean('is_available')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
