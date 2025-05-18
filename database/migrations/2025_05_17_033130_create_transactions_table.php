@@ -19,11 +19,11 @@ return new class extends Migration {
             $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
 
             //   -- Informasi Tipe Order & Lokasi Order
-            $table->enum('order_type', OrderTypeEnum::values())->default(OrderTypeEnum::DINEIN);
-            $table->enum('order_location', OrderLocationEnum::values())->default(OrderLocationEnum::ON_PREMISE);
+            $table->enum('order_type', OrderTypeEnum::values())->nullable();
+            $table->enum('order_location', OrderLocationEnum::values())->nullable();
 
             //   -- Informasi Pembayaran
-            $table->enum('payment_method', PaymentMethodEnum::values())->default(PaymentMethodEnum::CASH);
+            $table->enum('payment_method', PaymentMethodEnum::values())->nullable();
             $table->enum('payment_status', PaymentStatusEnum::values())->default(PaymentStatusEnum::PENDING);
             $table->string('payment_reference')->nullable();
             $table->integer('cash_received_amount')->default(0);
