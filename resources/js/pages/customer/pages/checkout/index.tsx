@@ -1,11 +1,15 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { OrderLocationEnum } from '@/enums/order-location';
+import { OrderTypeEnum } from '@/enums/order-type';
+import { PaymentMethodEnum } from '@/enums/payment-method';
 import CustomerLayout from '@/layouts/customer/layout';
 import { Coupon } from '@/models/coupon';
-import { Transaction } from '@/models/transactions';
+import { Transaction, TransactionForm } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import OrderLocationSelection from './components/order-location-selection';
 import OrderTypeSelection from './components/order-type-selection';
@@ -16,9 +20,37 @@ interface Props {
     coupons: Coupon[];
 }
 
-export default function CheckoutPage({ transaction, coupons }: Props) {
-    console.log('Coupon', coupons);
-    console.log('Transaction', transaction);
+export default function CheckoutPage({ transaction }: Props) {
+    // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
+
+    const { data: formData, setData } = useForm<Required<TransactionForm>>({
+        order_type: OrderTypeEnum.DINEIN,
+        order_location: OrderLocationEnum.ON_PREMISE,
+        payment_method: PaymentMethodEnum.CASH,
+        cash_received_amount: 0,
+        delivery_note: '',
+        dine_in_table_id: 0,
+        dine_in_table_label: '',
+        orderer_name: '',
+        orderer_phone_number: '',
+        coupon_id: 0,
+        note: '',
+    });
+
+    const handleOrderLocationChange = (orderLocation: OrderLocationEnum) => {
+        setData('order_location', orderLocation);
+    };
+
+    const handleOrderTypeChange = (orderType: OrderTypeEnum) => {
+        setData('order_type', orderType);
+        if (orderType === OrderTypeEnum.DINEIN) setData('dine_in_table_id', 0);
+    };
+
+    const handlePaymentMethodChange = (paymentMethod: PaymentMethodEnum) => {
+        setData('payment_method', paymentMethod);
+        if (paymentMethod !== PaymentMethodEnum.CASH) setData('cash_received_amount', 0);
+    };
+
     return (
         <>
             <Head title="Checkout" />
@@ -40,7 +72,7 @@ export default function CheckoutPage({ transaction, coupons }: Props) {
                         </AlertDescription>
                     </Alert>
 
-                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
+                    <div className="mt-8 grid min-h-screen grid-cols-1 lg:grid-cols-3 lg:gap-4">
                         <div className="col-span-2 space-y-8">
                             {/* Menu Yang Dipesan */}
                             <div className="mt-2 space-y-4">
@@ -75,14 +107,41 @@ export default function CheckoutPage({ transaction, coupons }: Props) {
                             </div>
 
                             {/* Lokasi Anda */}
-                            <OrderLocationSelection selectedOrderLocation={'ONPREMISE'} setSelectedOrderLocation={() => {}} />
+                            <OrderLocationSelection
+                                selectedOrderLocation={formData.order_location}
+                                setSelectedOrderLocation={handleOrderLocationChange}
+                            />
 
                             {/* Metode Pemesanan */}
-                            <OrderTypeSelection selectedOrderType={'TAKEAWAY'} setSelectedOrderType={() => {}} />
+                            <OrderTypeSelection selectedOrderType={formData.order_type} setSelectedOrderType={handleOrderTypeChange} />
 
                             {/* Metode Pembayaran */}
-                            <PaymentTypeSelection selectedPaymentType={'DEBIT_CARD'} setSelectedPaymentType={() => {}} />
+                            <PaymentTypeSelection
+                                selectedPaymentMethod={formData.payment_method}
+                                setSelectedPaymentMethod={handlePaymentMethodChange}
+                            />
                         </div>
+
+                        <Card className="sticky top-20 mt-4 h-fit w-full border p-7 shadow-none lg:mt-18">
+                            <div className="flex items-center justify-between">
+                                <div className="w-full">
+                                    <div className="flex items-center justify-between">
+                                        <h1 className="text-md mb-1 font-bold">Rincian Pembayaran</h1>
+                                        <span className="text-sm">
+                                            {new Date().toLocaleDateString('id-ID', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                            })}
+                                        </span>
+                                    </div>
+                                    <span className="text-sm font-semibold">{transaction?.transaction_code}</span>
+                                </div>
+                            </div>
+
+                            <Separator />
+                        </Card>
                     </div>
                 </main>
             </CustomerLayout>

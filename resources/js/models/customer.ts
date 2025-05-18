@@ -8,7 +8,6 @@ export interface Customer {
     gender: GenderEnum.MALE | GenderEnum.FEMALE;
     user: User;
     profile_image: string;
-
     created_at?: string;
     updated_at?: string;
     deleted_at?: string;

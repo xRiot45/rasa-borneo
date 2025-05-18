@@ -1,3 +1,7 @@
+import { OrderLocationEnum } from '@/enums/order-location';
+import { OrderTypeEnum } from '@/enums/order-type';
+import { PaymentMethodEnum } from '@/enums/payment-method';
+
 export interface TransactionItem {
     id: number;
     transaction_id: number;
@@ -51,4 +55,31 @@ export interface Transaction {
     updated_at: string;
     deleted_at: string | null;
     transaction_items: TransactionItem[];
+}
+
+export interface TransactionForm {
+    //   -- Informasi Tipe Order & Lokasi Order
+    order_type: OrderTypeEnum;
+    order_location: OrderLocationEnum;
+
+    //   -- Informasi Pembayaran
+    payment_method: PaymentMethodEnum;
+    cash_received_amount: number;
+
+    //   -- Snapshot dari customer_address_id (khusus untuk delivery)
+    delivery_note: string;
+
+    //   -- Snapshot dari table (khusus dine-in)
+    dine_in_table_id: number;
+    dine_in_table_label: string;
+
+    //   -- Informasi customer (khusus dine-in, takeway dan pickup)
+    orderer_name: string;
+    orderer_phone_number: string;
+
+    //   -- Snapshot dari coupon_id (Informasi Kupon)
+    coupon_id: number;
+
+    //     -- Informasi Tambahan
+    note: string;
 }
