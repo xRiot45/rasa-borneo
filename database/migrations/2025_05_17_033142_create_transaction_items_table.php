@@ -11,11 +11,15 @@ return new class extends Migration
         Schema::create('transaction_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
-            $table->foreignId('menu_item_id')->constrained('menu_items')->cascadeOnDelete();
+            $table->unsignedBigInteger('menu_item_id');
+            $table->unsignedBigInteger('merchant_id');
+            $table->string('menu_item_name')->nullable();
+            $table->integer('menu_item_price')->default(0);
+            $table->text('menu_item_image_url');
+            $table->string('menu_item_category')->nullable();
             $table->integer('quantity')->default(0);
-            $table->integer('unit_price')->default(0);
-            $table->integer('subtotal')->default(0);
             $table->string('note')->nullable();
+            $table->integer('subtotal')->default(0);
             $table->timestamps();
         });
     }
