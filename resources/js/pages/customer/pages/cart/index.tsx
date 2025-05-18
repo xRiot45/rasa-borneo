@@ -119,7 +119,7 @@ export default function CartPage({ carts }: Props) {
         });
     };
 
-    const addedNote = (id: number) => {
+    const handleAddedNote = (id: number) => {
         router.patch(
             route('cart.addedNote', id),
             {
@@ -147,6 +147,39 @@ export default function CartPage({ carts }: Props) {
                         });
                     });
                 },
+            },
+        );
+    };
+
+    const handleCheckout = () => {
+        const selectedArray = Array.from(selectedItems);
+
+        router.post(
+            route('checkout.store'),
+            { cart_item_ids: selectedArray },
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Berhasil melakukan checkout, Silahkan lengkapi informasi lainnya',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (errors) => {
+                    Object.keys(errors).forEach((key) => {
+                        toast.error('Error', {
+                            description: errors[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+
+                preserveScroll: true,
             },
         );
     };
@@ -285,7 +318,7 @@ export default function CartPage({ carts }: Props) {
                                                                                 type="submit"
                                                                                 onClick={() => {
                                                                                     if (selectedItemId !== null) {
-                                                                                        addedNote(selectedItemId);
+                                                                                        handleAddedNote(selectedItemId);
                                                                                     }
                                                                                 }}
                                                                             >
@@ -354,7 +387,11 @@ export default function CartPage({ carts }: Props) {
                                             <h1 className="text-md">Total Harga</h1>
                                             <span className="text-primary">{formatCurrency(selectedTotal)}</span>
                                         </div>
-                                        <Button className="mt-4 w-full cursor-pointer py-6 text-sm">
+                                        <Button
+                                            className="mt-4 w-full cursor-pointer py-6 text-sm"
+                                            onClick={handleCheckout}
+                                            disabled={selectedItems.size === 0}
+                                        >
                                             Lanjut Ke Pembayaran
                                             <Icon icon={'heroicons:arrow-right'} className="text-background" />
                                         </Button>
@@ -371,7 +408,11 @@ export default function CartPage({ carts }: Props) {
                                         <p className="text-muted-foreground text-sm dark:text-black">{selectedItems.size} Menu dipilih</p>
                                         <h1 className="text-lg font-semibold dark:text-black">{formatCurrency(selectedTotal)}</h1>
                                     </div>
-                                    <Button className="cursor-pointer px-6 py-5 text-sm shadow-none dark:bg-black dark:text-white">
+                                    <Button
+                                        className="cursor-pointer px-6 py-5 text-sm shadow-none dark:bg-black dark:text-white"
+                                        onClick={handleCheckout}
+                                        disabled={selectedItems.size === 0}
+                                    >
                                         Lanjut Ke Pembayaran
                                         <Icon icon={'heroicons:arrow-right'} className="dark:text-white" />
                                     </Button>

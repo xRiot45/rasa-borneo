@@ -9,6 +9,7 @@ use App\Enums\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Transaction extends Model
 {
@@ -76,6 +77,16 @@ class Transaction extends Model
             'payment_status' => PaymentStatusEnum::class,
             'checked_out_at' => 'datetime',
         ];
+    }
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($transaction) {
+            $randomString = strtoupper(Str::random(6));
+            $transaction->transaction_code = 'TRSC-' . now()->format('Ymd') . '-' . $randomString;
+        });
     }
 
     public function customer(): BelongsTo

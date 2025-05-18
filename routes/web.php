@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
@@ -249,6 +250,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index_customer'])->name('wishlist');
     Route::post('/wishlist', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+    // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     // Address List
     Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list.index');
