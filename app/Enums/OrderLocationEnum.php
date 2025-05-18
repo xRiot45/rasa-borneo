@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum OrderLocationEnum: string
 {
-    case ON_PREMISE = 'di tempat';
-    case OFF_PREMISE = 'di luar tempat';
+    case ON_PREMISE = 'di lokasi';
+    case OFF_PREMISE = 'di luar lokasi';
 
     public static function values(): array
     {

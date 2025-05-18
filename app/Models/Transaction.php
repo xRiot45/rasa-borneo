@@ -17,8 +17,10 @@ class Transaction extends Model
 
     protected $fillable = [
         'transaction_code',
-        //   -- Relasi ke tabel customers
+
+        //   -- Relasi ke tabel lainnya
         'customer_id',
+        'merchant_id',
 
         //   -- Informasi Tipe Order & Lokasi Order
         'order_type',
@@ -112,5 +114,10 @@ class Transaction extends Model
     public function transactionItems(): HasMany
     {
         return $this->hasMany(TransactionItem::class);
+    }
+
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 }

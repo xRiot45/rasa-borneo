@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
             $table->unsignedBigInteger('menu_item_id');
-            $table->unsignedBigInteger('merchant_id');
             $table->string('menu_item_name')->nullable();
             $table->integer('menu_item_price')->default(0);
             $table->text('menu_item_image_url');

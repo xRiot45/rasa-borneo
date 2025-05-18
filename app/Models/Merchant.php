@@ -114,4 +114,10 @@ class Merchant extends Model
     {
         return $this->hasMany(Table::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN TRANSACTION
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

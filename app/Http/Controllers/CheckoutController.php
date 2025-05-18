@@ -3,20 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Customer;
+use App\Models\Fee;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Inertia\Response as IntertiaResponse;
+use Inertia\Response as InertiaResponse;
 
 class CheckoutController extends Controller
 {
-    public function index(): IntertiaResponse
+    public function index(string $transactionCode): InertiaResponse
     {
-        return Inertia::render('customer/pages/checkout/index');
+        $transaction = Transaction::with('transactionItems', 'coupon')->where('transaction_code', $transactionCode)->first();
+        $coupons = Coupon::where('is_active', true)
+            ->where('merchant_id', $transaction->merchant_id)
+            ->get();
+
+        return Inertia::render('customer/pages/checkout/index', [
+            'transaction' => $transaction,
+            'coupons' => $coupons
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -41,11 +51,29 @@ class CheckoutController extends Controller
             return redirect()->back()->withErrors('Item yang dipilih tidak ditemukan di keranjang Anda.');
         }
 
-        $transaction = Transaction::create(
-            array_merge([
-                'customer_id' => $customerId,
-            ]),
-        );
+        // Ambil fee
+        $fees = Fee::whereIn('type', ['delivery_fee', 'application_service_fee'])->pluck('amount', 'type');
+        $deliveryFee = $fees['delivery_fee'] ?? 0;
+        $applicationServiceFee = $fees['application_service_fee'] ?? 0;
+
+        // Hitung subtotal
+        $subtotalTransactionItems = 0;
+        foreach ($cartItems as $cartItem) {
+            $menuItem = $cartItem->menuItem;
+            if ($menuItem) {
+                $subtotalTransactionItems += $cartItem->quantity * $menuItem->price;
+            }
+        }
+
+        $merchantId = $cartItems->first()->merchant_id;
+
+        $transaction = Transaction::create([
+            'customer_id' => $customerId,
+            'merchant_id' => $merchantId,
+            'delivery_fee' => $deliveryFee,
+            'application_service_fee' => $applicationServiceFee,
+            'subtotal_transaction_item' => $subtotalTransactionItems,
+        ]);
 
         foreach ($cartItems as $cartItem) {
             $menuItem = $cartItem->menuItem;

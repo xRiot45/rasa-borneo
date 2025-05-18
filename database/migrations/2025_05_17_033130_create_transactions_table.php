@@ -15,8 +15,9 @@ return new class extends Migration {
             $table->id();
             $table->string('transaction_code');
 
-            //   -- Relasi ke tabel customers
+            //   -- Relasi ke tabel
             $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
+            $table->foreignId('merchant_id')->nullable()->constrained('merchants')->nullOnDelete();
 
             //   -- Informasi Tipe Order & Lokasi Order
             $table->enum('order_type', OrderTypeEnum::values())->nullable();

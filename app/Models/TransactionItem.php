@@ -12,7 +12,6 @@ class TransactionItem extends Model
     protected $fillable = [
         'transaction_id',
         'menu_item_id',
-        'merchant_id',
         'menu_item_name',
         'menu_item_price',
         'menu_item_image_url',

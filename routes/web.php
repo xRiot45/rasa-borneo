@@ -252,7 +252,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/wishlist', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
     // Checkout
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::get('/checkout/{transactionCode}', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     // Address List
