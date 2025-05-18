@@ -1,4 +1,4 @@
 export enum OrderLocationEnum {
-    ONPREMISE = 'di lokasi',
-    OFFPREMISE = 'di luar lokasi',
+    ON_PREMISE = 'di lokasi',
+    OFF_PREMISE = 'di luar lokasi',
 }

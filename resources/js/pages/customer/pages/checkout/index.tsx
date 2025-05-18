@@ -7,6 +7,9 @@ import { Transaction } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
 import { Head } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import OrderLocationSelection from './components/order-location-selection';
+import OrderTypeSelection from './components/order-type-selection';
+import PaymentTypeSelection from './components/payment-method-selection';
 
 interface Props {
     transaction: Transaction;
@@ -39,8 +42,12 @@ export default function CheckoutPage({ transaction, coupons }: Props) {
 
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
                         <div className="col-span-2 space-y-8">
+                            {/* Menu Yang Dipesan */}
                             <div className="mt-2 space-y-4">
-                                <h1 className="mb-4 text-lg font-semibold">Menu Yang Dipesan</h1>
+                                <div className="mb-4">
+                                    <h1 className="text-lg font-semibold">Menu Yang Dipesan</h1>
+                                    <p className="text-muted-foreground text-sm font-medium">Total Menu : {transaction.transaction_items?.length}</p>
+                                </div>
                                 {transaction.transaction_items?.map((item) => (
                                     <Card key={item.id} className="px-2 shadow-none">
                                         <CardContent className="flex items-center gap-4 p-4">
@@ -59,13 +66,22 @@ export default function CheckoutPage({ transaction, coupons }: Props) {
                                                 </div>
                                                 <div>
                                                     <Badge className="rounded-sm bg-gray-200 text-black">{item.menu_item_category}</Badge>
-                                                    <p className="text-md mt-1 font-bold">{formatCurrency(item.menu_item_price * item.quantity)}</p>
+                                                    <p className="text-md mt-4 font-bold">{formatCurrency(item.menu_item_price * item.quantity)}</p>
                                                 </div>
                                             </div>
                                         </CardContent>
                                     </Card>
                                 ))}
                             </div>
+
+                            {/* Lokasi Anda */}
+                            <OrderLocationSelection selectedOrderLocation={'ONPREMISE'} setSelectedOrderLocation={() => {}} />
+
+                            {/* Metode Pemesanan */}
+                            <OrderTypeSelection selectedOrderType={'TAKEAWAY'} setSelectedOrderType={() => {}} />
+
+                            {/* Metode Pembayaran */}
+                            <PaymentTypeSelection selectedPaymentType={'DEBIT_CARD'} setSelectedPaymentType={() => {}} />
                         </div>
                     </div>
                 </main>
