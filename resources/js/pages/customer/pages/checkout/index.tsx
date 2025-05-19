@@ -21,9 +21,10 @@ import { TableModel } from '@/models/table';
 import { Transaction, TransactionForm } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import OrderLocationSelection from './components/order-location-selection';
 import OrderTypeSelection from './components/order-type-selection';
 import PaymentTypeSelection from './components/payment-method-selection';
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export default function CheckoutPage({ transaction, coupons, tables, fees }: Props) {
+    console.log(coupons);
     // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
     const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
@@ -103,7 +105,29 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     };
 
     const handlePayWithCash = () => {
-        console.log('Pay With Cash');
+        router.put(route('transaction.payWithCash', { transactionCode: transaction?.transaction_code }), formData, {
+            onSuccess: () => {
+                setShowPaymentMethodCashDialog(false);
+                toast.success('Success', {
+                    description: 'Transaksi Berhasil',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
     };
 
     const handlePayWithMidtrans = () => {
@@ -263,20 +287,6 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                     </div>
                                 )}
 
-                                {/* Jumlah Uang Diterima */}
-                                {formData?.payment_method === PaymentMethodEnum.CASH && (
-                                    <div className="flex flex-col gap-3">
-                                        <Label>Jumlah Uang yang Anda Bayarkan</Label>
-                                        <Input
-                                            type="number"
-                                            placeholder="Jumlah Uang Diterima"
-                                            value={formData.cash_received_amount}
-                                            onChange={(e) => setData('cash_received_amount', parseInt(e.target.value))}
-                                            className="w-full border py-6 shadow-none"
-                                        />
-                                    </div>
-                                )}
-
                                 {/* Kupon Select */}
                                 <div>
                                     <Label>Pilih Kupon</Label>
@@ -300,6 +310,20 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                         </SelectContent>
                                     </Select>
                                 </div>
+
+                                {/* Jumlah Uang Diterima */}
+                                {formData?.payment_method === PaymentMethodEnum.CASH && (
+                                    <div className="flex flex-col gap-3">
+                                        <Label>Jumlah Uang yang Anda Bayarkan</Label>
+                                        <Input
+                                            type="number"
+                                            placeholder="Jumlah Uang Diterima"
+                                            value={formData.cash_received_amount}
+                                            onChange={(e) => setData('cash_received_amount', parseInt(e.target.value))}
+                                            className="w-full border py-6 shadow-none"
+                                        />
+                                    </div>
+                                )}
 
                                 {/* Note */}
                                 <div className="flex flex-col gap-2">

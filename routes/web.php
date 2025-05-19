@@ -17,6 +17,7 @@ use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use App\Models\Merchant;
@@ -254,6 +255,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Checkout
     Route::get('/checkout/{transactionCode}', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+    // Transaction
+    Route::put('/transaction/{transactionCode}', [TransactionController::class, 'payWithCash'])->name('transaction.payWithCash');
 
     // Address List
     Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list.index');
