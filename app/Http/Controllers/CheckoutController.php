@@ -22,11 +22,15 @@ class CheckoutController extends Controller
         $transaction = Transaction::with('transactionItems', 'coupon')->where('transaction_code', $transactionCode)->first();
         $coupons = Coupon::where('is_active', true)->where('merchant_id', $transaction->merchant_id)->get();
         $tables = Table::where('merchant_id', $transaction->merchant_id)->get();
+        $fees = Fee::whereIn('type', ['delivery_fee', 'application_service_fee'])
+            ->get()
+            ->keyBy('type');
 
         return Inertia::render('customer/pages/checkout/index', [
             'transaction' => $transaction,
             'coupons' => $coupons,
             'tables' => $tables,
+            'fees' => $fees,
         ]);
     }
 

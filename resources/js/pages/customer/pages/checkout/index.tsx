@@ -16,6 +16,7 @@ import { PaymentMethodEnum } from '@/enums/payment-method';
 import CustomerLayout from '@/layouts/customer/layout';
 import { cn } from '@/lib/utils';
 import { Coupon } from '@/models/coupon';
+import { Fee } from '@/models/fee';
 import { TableModel } from '@/models/table';
 import { Transaction, TransactionForm } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
@@ -31,14 +32,12 @@ interface Props {
     transaction: Transaction;
     coupons: Coupon[];
     tables: TableModel[];
+    fees: Fee;
 }
 
-export default function CheckoutPage({ transaction, coupons, tables }: Props) {
+export default function CheckoutPage({ transaction, coupons, tables, fees }: Props) {
     // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
-
-    const finalTotal =
-        transaction?.subtotal_transaction_item + transaction?.delivery_fee + transaction?.application_service_fee - transaction?.coupon_discount;
 
     const {
         data: formData,
@@ -56,6 +55,9 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
         coupon_id: 0,
         note: '',
     });
+
+    const deliveryFee = formData?.order_type === OrderTypeEnum.DELIVERY ? fees?.delivery_fee?.amount : 0;
+    const finalTotal = transaction?.subtotal_transaction_item + deliveryFee + transaction?.application_service_fee - transaction?.coupon_discount;
 
     const handleOrderLocationChange = (orderLocation: OrderLocationEnum) => {
         setData('order_location', orderLocation);
@@ -294,7 +296,7 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                             <div className="space-y-4">
                                 <SummaryRow label="Subtotal" value={formatCurrency(transaction?.subtotal_transaction_item)} />
                                 {formData.order_type === OrderTypeEnum.DELIVERY && (
-                                    <SummaryRow label="Biaya Pengiriman" value={formatCurrency(transaction?.delivery_fee)} />
+                                    <SummaryRow label="Biaya Pengiriman" value={formatCurrency(deliveryFee)} />
                                 )}
 
                                 <SummaryRow label="Biaya Layanan Aplikasi" value={formatCurrency(transaction?.application_service_fee)} />
