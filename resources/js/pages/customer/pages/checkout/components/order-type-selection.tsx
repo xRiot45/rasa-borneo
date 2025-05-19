@@ -32,7 +32,7 @@ const OrderTypeSelection: React.FC<Props> = ({ selectedOrderType, setSelectedOrd
         <div className="mt-2">
             <div className="mb-4">
                 <h1 className="text-lg font-semibold">Metode Pemesanan</h1>
-                <p className="text-muted-foreground text-sm">Pilih Metode Pemesanan Yang Tersedia Berdasarkan Lokasi Anda</p>
+                <p className="text-muted-foreground text-sm">Pilih Metode Pemesanan Berdasarkan Lokasi Anda</p>
             </div>
             <RadioGroup
                 value={selectedOrderType || ''}
