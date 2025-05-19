@@ -88,12 +88,18 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
 
     const handleOrderTypeChange = (orderType: OrderTypeEnum) => {
         setData('order_type', orderType);
-        if (orderType === OrderTypeEnum.DINEIN) setData('dine_in_table_id', 0);
+        if (orderType === OrderTypeEnum.DINEIN) {
+            setData('dine_in_table_id', 0);
+            setData('orderer_name', '');
+            setData('orderer_phone_number', '');
+        }
     };
 
     const handlePaymentMethodChange = (paymentMethod: PaymentMethodEnum) => {
         setData('payment_method', paymentMethod);
-        if (paymentMethod !== PaymentMethodEnum.CASH) setData('cash_received_amount', 0);
+        if (paymentMethod !== PaymentMethodEnum.CASH) {
+            setData('cash_received_amount', 0);
+        }
     };
 
     const handlePayWithCash = () => {
