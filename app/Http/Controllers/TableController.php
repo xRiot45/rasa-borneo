@@ -15,7 +15,11 @@ class TableController extends Controller
 {
     public function index_merchant(): InertiaResponse
     {
-        $tables = Table::all();
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $tables = Table::where('merchant_id', $merchantId)->get();
         return Inertia::render('merchant/store-management/table/index', [
             'data' => $tables,
         ]);
