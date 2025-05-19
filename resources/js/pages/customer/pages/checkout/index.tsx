@@ -38,6 +38,8 @@ interface Props {
 export default function CheckoutPage({ transaction, coupons, tables, fees }: Props) {
     // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
+    const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
+    const [couponDiscount, setCouponDiscount] = useState<number>(0);
 
     const {
         data: formData,
@@ -57,7 +59,28 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     });
 
     const deliveryFee = formData?.order_type === OrderTypeEnum.DELIVERY ? fees?.delivery_fee?.amount : 0;
-    const finalTotal = transaction?.subtotal_transaction_item + deliveryFee + transaction?.application_service_fee - transaction?.coupon_discount;
+    const finalTotal = transaction?.subtotal_transaction_item + deliveryFee + transaction?.application_service_fee - couponDiscount;
+
+    const handleSelectCoupon = (value: string) => {
+        const couponId = parseInt(value);
+        setSelectedCouponId(couponId);
+        setData('coupon_id', couponId);
+
+        const selectedCoupon = coupons.find(
+            (c) => c.id === couponId && c.is_active && new Date() >= new Date(c.start_date) && new Date() <= new Date(c.end_date),
+        );
+
+        if (selectedCoupon && transaction?.subtotal_transaction_item >= selectedCoupon.minimum_purchase) {
+            const discountValue =
+                selectedCoupon.type === 'percentage'
+                    ? (transaction?.subtotal_transaction_item * selectedCoupon.discount) / 100
+                    : selectedCoupon.discount;
+
+            setCouponDiscount(discountValue);
+        } else {
+            setCouponDiscount(0);
+        }
+    };
 
     const handleOrderLocationChange = (orderLocation: OrderLocationEnum) => {
         setData('order_location', orderLocation);
@@ -103,7 +126,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                     </Alert>
 
                     <div className="mt-8 grid min-h-screen grid-cols-1 lg:grid-cols-3 lg:gap-4">
-                        <div className="col-span-2 space-y-8">
+                        <Card className="col-span-2 border-none shadow-none">
                             {/* Menu Yang Dipesan */}
                             <div className="mt-2 space-y-4">
                                 <div className="mb-4">
@@ -136,7 +159,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                 ))}
                             </div>
 
-                            <div className="space-y-12">
+                            <div className="space-y-8">
                                 {/* Lokasi Anda */}
                                 <OrderLocationSelection
                                     selectedOrderLocation={formData.order_location}
@@ -156,7 +179,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                     setSelectedPaymentMethod={handlePaymentMethodChange}
                                 />
                             </div>
-                        </div>
+                        </Card>
 
                         <Card className="sticky top-20 mt-4 h-fit w-full border p-6 shadow-none lg:mt-18">
                             <div className="flex items-center justify-between">
@@ -251,7 +274,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                 {/* Kupon Select */}
                                 <div>
                                     <Label>Pilih Kupon</Label>
-                                    <Select onValueChange={(value) => setData('coupon_id', parseInt(value))}>
+                                    <Select onValueChange={handleSelectCoupon} value={selectedCouponId ? String(selectedCouponId) : undefined}>
                                         <SelectTrigger className={cn('mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none')}>
                                             <SelectValue placeholder="Pilih Kupon Diskon" />
                                         </SelectTrigger>
@@ -300,7 +323,11 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                 )}
 
                                 <SummaryRow label="Biaya Layanan Aplikasi" value={formatCurrency(transaction?.application_service_fee)} />
-                                <SummaryRow label="Diskon" value={`- ${formatCurrency(transaction?.discount_total)}`} className="text-red-500" />
+                                <SummaryRow
+                                    label="Diskon"
+                                    value={couponDiscount > 0 ? `- ${formatCurrency(couponDiscount)}` : '- Rp. 0'}
+                                    className="text-red-500"
+                                />
 
                                 <SummaryRow label="Total Akhir" value={formatCurrency(finalTotal)} />
                                 {formData?.payment_method === PaymentMethodEnum.CASH && (
