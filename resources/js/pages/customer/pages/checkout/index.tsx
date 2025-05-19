@@ -37,7 +37,6 @@ interface Props {
 }
 
 export default function CheckoutPage({ transaction, coupons, tables, fees }: Props) {
-    console.log(coupons);
     // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
     const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
@@ -289,7 +288,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
 
                                 {/* Kupon Select */}
                                 <div>
-                                    <Label>Pilih Kupon</Label>
+                                    <Label>Pilih Kupon Diskon</Label>
                                     <Select onValueChange={handleSelectCoupon} value={selectedCouponId ? String(selectedCouponId) : undefined}>
                                         <SelectTrigger className={cn('mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none')}>
                                             <SelectValue placeholder="Pilih Kupon Diskon" />
@@ -299,10 +298,16 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                                 const isPercentage = item.type === 'percentage';
                                                 const discountText = isPercentage ? `${item.discount}%` : `${formatCurrency(item?.discount)}`;
                                                 const minPurchaseText = `Min. Belanja ${formatCurrency(item?.minimum_purchase)}`;
+                                                const isDisabled = transaction?.subtotal_transaction_item < item.minimum_purchase;
 
                                                 return (
-                                                    <SelectItem key={item.id} value={String(item.id)} className="cursor-pointer p-4">
-                                                        <Icon icon="mdi:percent-circle-outline" />
+                                                    <SelectItem
+                                                        key={item.id}
+                                                        value={String(item.id)}
+                                                        className="cursor-pointer p-4"
+                                                        disabled={isDisabled}
+                                                    >
+                                                        <Icon icon="mdi:percent-circle-outline" className="mr-2" />
                                                         {`Diskon ${discountText} (${minPurchaseText})`}
                                                     </SelectItem>
                                                 );
