@@ -170,7 +170,7 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                                             })}
                                         </span>
                                     </div>
-                                    <span className="text-sm font-semibold">{transaction?.transaction_code}</span>
+                                    <span className="text-sm">{transaction?.transaction_code}</span>
                                 </div>
                             </div>
 
