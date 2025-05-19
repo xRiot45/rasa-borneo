@@ -15,7 +15,7 @@ const iconsPaymentMethod = {
 
 const OrderLocationSelection: React.FC<Props> = ({ selectedOrderLocation, setSelectedOrderLocation }) => {
     return (
-        <div className="mt-2 space-y-3">
+        <div className="mt-2">
             <div className="mb-4">
                 <h1 className="text-lg font-semibold">Lokasi Anda</h1>
                 <p className="text-muted-foreground text-sm">Pilih Lokasi Anda Saat Ini</p>
@@ -23,7 +23,7 @@ const OrderLocationSelection: React.FC<Props> = ({ selectedOrderLocation, setSel
             <RadioGroup
                 value={selectedOrderLocation || ''}
                 onValueChange={(value) => setSelectedOrderLocation(value as OrderLocationEnum)}
-                className="grid w-full space-y-4 md:grid-cols-2"
+                className="grid w-full md:grid-cols-2"
             >
                 {Object.entries(OrderLocationEnum).map(([key, value]) => (
                     <Card

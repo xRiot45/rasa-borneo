@@ -1,7 +1,10 @@
 import SummaryRow from '@/components/summary-row';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -19,6 +22,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
 import { Head, useForm } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import { useState } from 'react';
 import OrderLocationSelection from './components/order-location-selection';
 import OrderTypeSelection from './components/order-type-selection';
 import PaymentTypeSelection from './components/payment-method-selection';
@@ -30,10 +34,17 @@ interface Props {
 }
 
 export default function CheckoutPage({ transaction, coupons, tables }: Props) {
-    console.log(tables);
     // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
+    const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
 
-    const { data: formData, setData } = useForm<Required<TransactionForm>>({
+    const finalTotal =
+        transaction?.subtotal_transaction_item + transaction?.delivery_fee + transaction?.application_service_fee - transaction?.coupon_discount;
+
+    const {
+        data: formData,
+        setData,
+        processing,
+    } = useForm<Required<TransactionForm>>({
         order_type: OrderTypeEnum.DINEIN,
         order_location: OrderLocationEnum.ON_PREMISE,
         payment_method: PaymentMethodEnum.CASH,
@@ -60,8 +71,13 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
         if (paymentMethod !== PaymentMethodEnum.CASH) setData('cash_received_amount', 0);
     };
 
-    const finalTotal =
-        transaction?.subtotal_transaction_item + transaction?.delivery_fee + transaction?.application_service_fee - transaction?.coupon_discount;
+    const handlePayWithCash = () => {
+        console.log('Pay With Cash');
+    };
+
+    const handlePayWithMidtrans = () => {
+        console.log('Pay With Midtrans');
+    };
 
     return (
         <>
@@ -118,24 +134,26 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                                 ))}
                             </div>
 
-                            {/* Lokasi Anda */}
-                            <OrderLocationSelection
-                                selectedOrderLocation={formData.order_location}
-                                setSelectedOrderLocation={handleOrderLocationChange}
-                            />
+                            <div className="space-y-12">
+                                {/* Lokasi Anda */}
+                                <OrderLocationSelection
+                                    selectedOrderLocation={formData.order_location}
+                                    setSelectedOrderLocation={handleOrderLocationChange}
+                                />
 
-                            {/* Metode Pemesanan */}
-                            <OrderTypeSelection
-                                selectedOrderType={formData.order_type}
-                                setSelectedOrderType={handleOrderTypeChange}
-                                selectedOrderLocation={formData.order_location}
-                            />
+                                {/* Metode Pemesanan */}
+                                <OrderTypeSelection
+                                    selectedOrderType={formData.order_type}
+                                    setSelectedOrderType={handleOrderTypeChange}
+                                    selectedOrderLocation={formData.order_location}
+                                />
 
-                            {/* Metode Pembayaran */}
-                            <PaymentTypeSelection
-                                selectedPaymentMethod={formData.payment_method}
-                                setSelectedPaymentMethod={handlePaymentMethodChange}
-                            />
+                                {/* Metode Pembayaran */}
+                                <PaymentTypeSelection
+                                    selectedPaymentMethod={formData.payment_method}
+                                    setSelectedPaymentMethod={handlePaymentMethodChange}
+                                />
+                            </div>
                         </div>
 
                         <Card className="sticky top-20 mt-4 h-fit w-full border p-6 shadow-none lg:mt-18">
@@ -256,7 +274,7 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                                 <div className="flex flex-col gap-2">
                                     <Label>Tambahkan Catatan</Label>
                                     <Textarea
-                                        className="mt-2 h-30"
+                                        className="mt-2 h-30 shadow-none"
                                         placeholder="Cth : Tambahkan sendok"
                                         onChange={(e) => setData('note', e.target.value)}
                                         value={formData.note}
@@ -271,6 +289,8 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                             )}
 
                             <Separator />
+
+                            {/* Rincian Pembayaran */}
                             <div className="space-y-4">
                                 <SummaryRow label="Subtotal" value={formatCurrency(transaction?.subtotal_transaction_item)} />
                                 {formData.order_type === OrderTypeEnum.DELIVERY && (
@@ -292,6 +312,44 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                                     />
                                 )}
                             </div>
+
+                            <Dialog open={showPaymentMethodCashDialog} onOpenChange={setShowPaymentMethodCashDialog}>
+                                <Button
+                                    type="submit"
+                                    className="mt-4 w-full py-6 text-sm"
+                                    disabled={processing}
+                                    onClick={() => {
+                                        if (formData.payment_method === PaymentMethodEnum.CASH) {
+                                            setShowPaymentMethodCashDialog(true);
+                                        } else {
+                                            handlePayWithMidtrans();
+                                        }
+                                    }}
+                                >
+                                    <Icon icon={formData.payment_method === PaymentMethodEnum.CASH ? 'mdi:cash' : 'streamline:bill-cashless'} />
+                                    {formData.payment_method === PaymentMethodEnum.CASH ? 'Bayar dengan Cash / Tunai' : 'Bayar dengan Midtrans'}
+                                </Button>
+
+                                <DialogContent>
+                                    <AlertDialogHeader>
+                                        <DialogTitle>Bayar dengan Tunai</DialogTitle>
+                                    </AlertDialogHeader>
+                                    <DialogDescription className="text-sm">
+                                        Cek semua data pembayaran diatas dan pastikan sudah benar. Jika sudah benar, klik tombol dibawah ini untuk
+                                        melanjutkan proses nya
+                                    </DialogDescription>
+                                    <AlertDialogFooter className="mt-4">
+                                        <Button
+                                            onClick={() => {
+                                                handlePayWithCash();
+                                                setShowPaymentMethodCashDialog(false);
+                                            }}
+                                        >
+                                            Saya Mengerti & Lanjutkan Proses
+                                        </Button>
+                                    </AlertDialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </Card>
                     </div>
                 </main>
