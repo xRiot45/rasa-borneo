@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\Fee;
+use App\Models\Table;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Illuminate\Http\RedirectResponse;
@@ -19,13 +20,13 @@ class CheckoutController extends Controller
     public function index(string $transactionCode): InertiaResponse
     {
         $transaction = Transaction::with('transactionItems', 'coupon')->where('transaction_code', $transactionCode)->first();
-        $coupons = Coupon::where('is_active', true)
-            ->where('merchant_id', $transaction->merchant_id)
-            ->get();
+        $coupons = Coupon::where('is_active', true)->where('merchant_id', $transaction->merchant_id)->get();
+        $tables = Table::where('merchant_id', $transaction->merchant_id)->get();
 
         return Inertia::render('customer/pages/checkout/index', [
             'transaction' => $transaction,
-            'coupons' => $coupons
+            'coupons' => $coupons,
+            'tables' => $tables,
         ]);
     }
 

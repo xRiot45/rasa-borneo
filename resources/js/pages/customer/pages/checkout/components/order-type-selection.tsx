@@ -1,11 +1,13 @@
 import { CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { OrderLocationEnum } from '@/enums/order-location';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { Icon } from '@iconify/react';
 
 interface Props {
     selectedOrderType: OrderTypeEnum | null;
     setSelectedOrderType: (value: OrderTypeEnum) => void;
+    selectedOrderLocation: OrderLocationEnum | null;
 }
 
 const iconsOrderType = {
@@ -15,19 +17,29 @@ const iconsOrderType = {
     PICKUP: <Icon icon="tdesign:undertake-delivery-filled" width={24} height={24} />,
 };
 
-const OrderTypeSelection: React.FC<Props> = ({ selectedOrderType, setSelectedOrderType }) => {
+const OrderTypeSelection: React.FC<Props> = ({ selectedOrderType, setSelectedOrderType, selectedOrderLocation }) => {
+    const getFilteredOrderTypes = (orderLocation: OrderLocationEnum | null): [string, OrderTypeEnum][] => {
+        if (orderLocation === OrderLocationEnum.ON_PREMISE) {
+            return Object.entries(OrderTypeEnum).filter(([key]) => key === 'DINEIN' || key === 'TAKEAWAY');
+        } else if (orderLocation === OrderLocationEnum.OFF_PREMISE) {
+            return Object.entries(OrderTypeEnum).filter(([key]) => key === 'DELIVERY' || key === 'PICKUP');
+        }
+
+        return [];
+    };
+
     return (
         <div className="mt-2 space-y-3">
             <div className="mb-4">
                 <h1 className="text-lg font-semibold">Metode Pemesanan</h1>
-                <p className="text-muted-foreground text-sm">Pilih Metode Pemesanan Yang Tersedia</p>
+                <p className="text-muted-foreground text-sm">Pilih Metode Pemesanan Yang Tersedia Berdasarkan Lokasi Anda</p>
             </div>
             <RadioGroup
                 value={selectedOrderType || ''}
                 onValueChange={(value) => setSelectedOrderType(value as OrderTypeEnum)}
                 className="grid w-full md:grid-cols-2"
             >
-                {Object.entries(OrderTypeEnum).map(([key, value]) => (
+                {getFilteredOrderTypes(selectedOrderLocation).map(([key, value]) => (
                     <CardContent
                         key={key}
                         className={`flex h-24 w-full cursor-pointer flex-row items-center gap-4 rounded-xl border px-8 py-6 shadow-none transition-colors ${
@@ -44,7 +56,6 @@ const OrderTypeSelection: React.FC<Props> = ({ selectedOrderType, setSelectedOrd
                         />
                         {iconsOrderType[key as keyof typeof iconsOrderType]}
                         <div>
-                            {/* <p className="font-bold">{key.replace('_', ' ')}</p> */}
                             <h1 className="font-medium capitalize">{value}</h1>
                         </div>
                     </CardContent>

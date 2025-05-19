@@ -64,10 +64,7 @@ export interface TransactionForm {
 
     //   -- Informasi Pembayaran
     payment_method: PaymentMethodEnum;
-    cash_received_amount: number;
-
-    //   -- Snapshot dari customer_address_id (khusus untuk delivery)
-    delivery_note: string;
+    cash_received_amount: number | undefined;
 
     //   -- Snapshot dari table (khusus dine-in)
     dine_in_table_id: number;
