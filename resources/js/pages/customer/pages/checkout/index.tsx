@@ -235,7 +235,7 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                                 {/* Jumlah Uang Diterima */}
                                 {formData?.payment_method === PaymentMethodEnum.CASH && (
                                     <div className="flex flex-col gap-3">
-                                        <Label>Jumlah Uang Diterima</Label>
+                                        <Label>Jumlah Uang yang Anda Bayarkan</Label>
                                         <Input
                                             type="number"
                                             placeholder="Jumlah Uang Diterima"
