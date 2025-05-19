@@ -54,7 +54,6 @@ class CheckoutController extends Controller
 
         // Ambil fee
         $fees = Fee::whereIn('type', ['delivery_fee', 'application_service_fee'])->pluck('amount', 'type');
-        $deliveryFee = $fees['delivery_fee'] ?? 0;
         $applicationServiceFee = $fees['application_service_fee'] ?? 0;
 
         // Hitung subtotal
@@ -71,7 +70,6 @@ class CheckoutController extends Controller
         $transaction = Transaction::create([
             'customer_id' => $customerId,
             'merchant_id' => $merchantId,
-            'delivery_fee' => $deliveryFee,
             'application_service_fee' => $applicationServiceFee,
             'subtotal_transaction_item' => $subtotalTransactionItems,
         ]);

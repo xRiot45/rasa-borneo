@@ -300,7 +300,7 @@ export default function CheckoutPage({ transaction, coupons, tables }: Props) {
                                 <SummaryRow label="Biaya Layanan Aplikasi" value={formatCurrency(transaction?.application_service_fee)} />
                                 <SummaryRow label="Diskon" value={`- ${formatCurrency(transaction?.discount_total)}`} className="text-red-500" />
 
-                                <SummaryRow label="Total Akhir" value={formatCurrency(10000)} />
+                                <SummaryRow label="Total Akhir" value={formatCurrency(finalTotal)} />
                                 {formData?.payment_method === PaymentMethodEnum.CASH && (
                                     <SummaryRow
                                         label="Kembalian"
