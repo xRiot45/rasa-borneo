@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useAuth } from '@/hooks/use-auth';
 import { MenuItem } from '@/models/menu-item';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
@@ -16,15 +17,14 @@ interface Props {
 }
 
 const CardMenuItem: React.FC<Props> = ({ data }) => {
+    const isLoading = !data;
+    const { isLoggedIn } = useAuth();
     const { wishlist } = usePage<{ wishlist: number[] }>().props;
 
-    const isLoading = !data;
     const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
     const [openMenuItemDialog, setOpenMenuItemDialog] = useState<boolean>(false);
-
     const [merchantConflictOpen, setMerchantConflictOpen] = useState(false);
     const [pendingMenuToAdd, setPendingMenuToAdd] = useState<MenuItem | null>(null);
-
     const [wishlistItems, setWishlistItems] = useState<number[]>(wishlist || []);
 
     useEffect(() => {
@@ -37,6 +37,19 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
     };
 
     const handleAddMenuToCart = (item: MenuItem) => {
+        if (!isLoggedIn) {
+            toast.error('Gagal', {
+                description: 'Silakan login terlebih dahulu untuk menggunakan fitur keranjang.',
+                action: {
+                    label: 'Tutup',
+                    onClick: () => toast.dismiss(),
+                },
+            });
+
+            router.visit(route('login'));
+            return;
+        }
+
         const cartItem = {
             menu_item_id: item?.id,
             quantity: 1,
@@ -77,6 +90,19 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
     };
 
     const handleAddMenuToWishlist = async (menuItemId: number) => {
+        if (!isLoggedIn) {
+            toast.error('Gagal', {
+                description: 'Silakan login terlebih dahulu untuk menggunakan fitur wishlist.',
+                action: {
+                    label: 'Tutup',
+                    onClick: () => toast.dismiss(),
+                },
+            });
+
+            router.visit(route('login'));
+            return;
+        }
+
         router.post(
             route('wishlist.toggle'),
             { menu_item_id: menuItemId },
@@ -251,7 +277,7 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                         onClick={() => handleAddMenuToCart(selectedMenu)}
                                         className="w-full cursor-pointer border-none py-6 shadow-none"
                                     >
-                                        Tambah ke Keranjang
+                                        Tambah menu ke keranjang
                                         <Icon icon="mdi:cart-outline" className="mr-1" />
                                     </Button>
                                 </DialogFooter>
