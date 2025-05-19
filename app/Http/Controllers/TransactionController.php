@@ -52,7 +52,6 @@ class TransactionController extends Controller
         // 7. Hitung diskon berdasarkan kupon
         $discountTotal = 0;
         $couponSnapshot = [];
-
         if ($request->coupon_id) {
             $coupon = Coupon::find($request->coupon_id);
 
@@ -64,17 +63,14 @@ class TransactionController extends Controller
                 }
 
                 $discountTotal = min($discountTotal, $subtotalTransactionItems);
-
                 $couponSnapshot = [
                     'coupon_id' => $coupon->id,
                     'coupon_code' => $coupon->code,
-                    'coupon_type' => $coupon->type->value, // simpan string ke DB
+                    'coupon_type' => $coupon->type->value,
                     'coupon_discount' => $coupon->discount,
                 ];
             }
         }
-
-
 
         // 8. Hitung final total
         $finalTotal = $subtotalTransactionItems + $deliveryFee + $applicationServiceFee - $discountTotal;
@@ -114,8 +110,6 @@ class TransactionController extends Controller
                 $dineInSnapshot = [
                     'dine_in_table_id' => $dineInTable->id,
                     'dine_in_table_label' => $dineInTable->name,
-                    'orderer_name' => $request->orderer_name,
-                    'orderer_phone_number' => $request->orderer_phone_number,
                 ];
             }
         }
@@ -133,6 +127,8 @@ class TransactionController extends Controller
                     'delivery_fee' => $deliveryFee,
                     'application_service_fee' => $applicationServiceFee,
                     'discount_total' => $discountTotal,
+                    'orderer_name' => $request->orderer_name,
+                    'orderer_phone_number' => $request->orderer_phone_number,
                     'note' => $request->note,
                     'final_total' => $finalTotal,
                     'checked_out_at' => now(),
