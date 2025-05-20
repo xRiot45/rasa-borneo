@@ -28,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'check.transaction.status' => \App\Http\Middleware\CheckTransactionStatus::class,
+            'check.transaction.owner' => \App\Http\Middleware\CheckTransactionOwner::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

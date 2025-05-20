@@ -175,7 +175,9 @@ class TransactionController extends Controller
             ),
         );
 
-        return redirect()->route('home')->with('success', 'Transaksi berhasil diperbarui.');
+        return redirect()
+            ->route('transaction.success', ['transactionCode' => $transactionCode])
+            ->with('message', 'Transaksi sudah selesai dibayar.');
     }
 
     public function payWithMidtrans(TransactionRequest $request, string $transactionCode): RedirectResponse
@@ -251,9 +253,9 @@ class TransactionController extends Controller
             'customer_details' => $customerDetails,
             'item_details' => $itemDetails,
             'callbacks' => [
-                'finish' => route('transaction.success'),
-                'pending' => route('transaction.pending'),
-                'error' => route('transaction.failed'),
+                'finish' => route('transaction.success', ['transactionCode' => $transaction->transaction_code]),
+                'pending' => route('transaction.pending', ['transactionCode' => $transaction->transaction_code]),
+                'error' => route('transaction.failed', ['transactionCode' => $transaction->transaction_code]),
             ],
             'notification_url' => route('midtrans.notification'),
         ];
@@ -325,24 +327,42 @@ class TransactionController extends Controller
         return response()->json(['message' => 'Notifikasi berhasil diproses'], 200);
     }
 
-    public function transactionSuccess(): InertiaResponse
+    public function transactionSuccess(string $transactionCode): InertiaResponse|RedirectResponse
     {
+        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
+        if (!$transaction || $transaction->payment_status !== PaymentStatusEnum::PAID) {
+            return redirect('/')->with('error', 'Transaksi tidak ditemukan atau status tidak valid.');
+        }
+
         return Inertia::render('customer/pages/transaction/success', [
             'message' => 'Pembayaran berhasil! Terima kasih telah memesan.',
+            'transaction' => $transaction,
         ]);
     }
 
-    public function transactionPending(): InertiaResponse
+    public function transactionPending(string $transactionCode): InertiaResponse|RedirectResponse
     {
+        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
+        if (!$transaction || $transaction->payment_status !== PaymentStatusEnum::PENDING) {
+            return redirect('/')->with('error', 'Transaksi tidak ditemukan atau status tidak valid.');
+        }
+
         return Inertia::render('customer/pages/transaction/pending', [
             'message' => 'Pembayaran pending.',
+            'transaction' => $transaction,
         ]);
     }
 
-    public function transactionFailed(): InertiaResponse
+    public function transactionFailed(string $transactionCode): InertiaResponse|RedirectResponse
     {
+        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
+        if (!$transaction || $transaction->payment_status !== PaymentStatusEnum::FAILED) {
+            return redirect('/')->with('error', 'Transaksi tidak ditemukan atau status tidak valid.');
+        }
+
         return Inertia::render('customer/pages/transaction/failed', [
             'message' => 'Pembayaran gagal. Silakan coba lagi atau hubungi kasir.',
+            'transaction' => $transaction,
         ]);
     }
 }

@@ -253,15 +253,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/wishlist', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
     // Checkout
-    Route::get('/checkout/{transactionCode}', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::get('/checkout/{transactionCode}', [CheckoutController::class, 'index'])
+        ->middleware(['auth', 'check.transaction.status'])
+        ->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     // Transaction
     Route::put('/transaction/pay-with-cash/{transactionCode}', [TransactionController::class, 'payWithCash'])->name('transaction.payWithCash');
     Route::put('/transaction/pay-with-midtrans/{transactionCode}', [TransactionController::class, 'payWithMidtrans'])->name('transaction.payWithMidtrans');
-    Route::get('/transaction/success', [TransactionController::class, 'transactionSuccess'])->name('transaction.success');
-    Route::get('/transaction/pending', [TransactionController::class, 'transactionPending'])->name('transaction.pending');
-    Route::get('/transaction/failed', [TransactionController::class, 'transactionFailed'])->name('transaction.failed');
+    Route::get('/transaction/{transactionCode}/success', [TransactionController::class, 'transactionSuccess'])
+        ->middleware(['auth', 'check.transaction.owner'])
+        ->name('transaction.success');
+    Route::get('/transaction/{transactionCode}/pending', [TransactionController::class, 'transactionPending'])
+        ->middleware(['auth', 'check.transaction.owner'])
+        ->name('transaction.pending');
+    Route::get('/transaction/{transactionCode}/failed', [TransactionController::class, 'transactionFailed'])
+        ->middleware(['auth', 'check.transaction.owner'])
+        ->name('transaction.failed');
 
     // Address List
     Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list.index');
