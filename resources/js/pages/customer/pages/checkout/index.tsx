@@ -2,9 +2,8 @@ import InputError from '@/components/input-error';
 import SummaryRow from '@/components/summary-row';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,9 +25,10 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import OrderLocationSelection from './components/order-location-selection';
-import OrderTypeSelection from './components/order-type-selection';
-import PaymentTypeSelection from './components/payment-method-selection';
+import OrderSummary from './components/order-summary';
+import OrderLocationSelection from './components/selections/order-location-selection';
+import OrderTypeSelection from './components/selections/order-type-selection';
+import PaymentTypeSelection from './components/selections/payment-method-selection';
 
 interface Props {
     transaction: Transaction;
@@ -170,36 +170,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                     <div className="mt-8 grid min-h-screen grid-cols-1 lg:grid-cols-3 lg:gap-4">
                         <Card className="col-span-2 border-none shadow-none">
                             {/* Menu Yang Dipesan */}
-                            <div className="mt-2 space-y-4">
-                                <div className="mb-4">
-                                    <h1 className="text-lg font-semibold">Menu Yang Dipesan</h1>
-                                    <p className="text-muted-foreground text-sm font-medium">Total Menu : {transaction.transaction_items?.length}</p>
-                                </div>
-                                {transaction.transaction_items?.map((item) => (
-                                    <Card key={item.id} className="px-2 shadow-none">
-                                        <CardContent className="flex items-center gap-4 p-4">
-                                            <img
-                                                src={item.menu_item_image_url}
-                                                alt={item.menu_item_name}
-                                                className="h-20 w-20 rounded-lg border object-cover"
-                                            />
-                                            <div className="flex w-full items-center justify-between">
-                                                <div className="space-y-1">
-                                                    <h3 className="text-lg font-semibold">{item.menu_item_name}</h3>
-                                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-200">Jumlah : {item.quantity}</p>
-                                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-200">
-                                                        {formatCurrency(item.menu_item_price)} / Menu
-                                                    </p>
-                                                </div>
-                                                <div className="flex flex-col items-end">
-                                                    <Badge className="rounded-sm bg-gray-200 text-black">{item?.menu_item_category}</Badge>
-                                                    <p className="text-md mt-4 font-bold">{formatCurrency(item?.menu_item_price * item.quantity)}</p>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
+                            <OrderSummary transaction={transaction} />
 
                             <div className="space-y-8">
                                 {/* Lokasi Anda */}
