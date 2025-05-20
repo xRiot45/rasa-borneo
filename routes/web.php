@@ -259,6 +259,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Transaction
     Route::put('/transaction/pay-with-cash/{transactionCode}', [TransactionController::class, 'payWithCash'])->name('transaction.payWithCash');
     Route::put('/transaction/pay-with-midtrans/{transactionCode}', [TransactionController::class, 'payWithMidtrans'])->name('transaction.payWithMidtrans');
+    Route::get('/midtrans/callback', [TransactionController::class, 'midtransCallback'])->name('midtrans.callback');
+    Route::get('/transaction/success', [TransactionController::class, 'transactionSuccess'])->name('transaction.success');
+    Route::get('/transaction/pending', [TransactionController::class, 'transactionPending'])->name('transaction.pending');
+    Route::get('/transaction/failed', [TransactionController::class, 'transactionFailed'])->name('transaction.failed');
 
     // Address List
     Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list.index');

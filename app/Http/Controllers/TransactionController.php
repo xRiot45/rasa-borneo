@@ -16,6 +16,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class TransactionController extends Controller
 {
@@ -411,5 +413,26 @@ class TransactionController extends Controller
         $this->handleMidtransStatusUpdate($order, $transactionStatus);
 
         return response()->json(['message' => 'Notifikasi berhasil diterima'], 200);
+    }
+
+    public function transactionSuccess(): InertiaResponse
+    {
+        return Inertia::render('customer/pages/transaction/success', [
+            'message' => 'Pembayaran berhasil! Terima kasih telah memesan.',
+        ]);
+    }
+
+    public function transactionPending(): InertiaResponse
+    {
+        return Inertia::render('customer/pages/transaction/pending', [
+            'message' => 'Pembayaran pending.',
+        ]);
+    }
+
+    public function transactionFailed(): InertiaResponse
+    {
+        return Inertia::render('customer/pages/transaction/failed', [
+            'message' => 'Pembayaran gagal. Silakan coba lagi atau hubungi kasir.',
+        ]);
     }
 }
