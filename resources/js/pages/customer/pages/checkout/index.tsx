@@ -21,9 +21,9 @@ import { TableModel } from '@/models/table';
 import { Transaction, TransactionForm } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import OrderLocationSelection from './components/order-location-selection';
 import OrderTypeSelection from './components/order-type-selection';
@@ -37,10 +37,12 @@ interface Props {
 }
 
 export default function CheckoutPage({ transaction, coupons, tables, fees }: Props) {
-    // const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
+    const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
     const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
     const [couponDiscount, setCouponDiscount] = useState<number>(0);
+
+    console.log(flash);
 
     const {
         data: formData,
@@ -105,6 +107,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
 
     const handlePayWithCash = () => {
         router.put(route('transaction.payWithCash', { transactionCode: transaction?.transaction_code }), formData, {
+            preserveScroll: true,
             onSuccess: () => {
                 setShowPaymentMethodCashDialog(false);
                 toast.success('Success', {
@@ -130,8 +133,35 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     };
 
     const handlePayWithMidtrans = () => {
-        console.log('Pay With Midtrans');
+        router.put(route('transaction.payWithMidtrans', { transactionCode: transaction?.transaction_code }), formData, {
+            preserveScroll: true,
+            onSuccess: () =>
+                toast.success('Success', {
+                    description: 'Silahkan melakukan pembayaran melalui midtrans',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                }),
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
     };
+
+    useEffect(() => {
+        if (flash?.snap_token) {
+            window.snap.pay(flash.snap_token);
+        }
+    }, [flash?.snap_token]);
 
     return (
         <>

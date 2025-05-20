@@ -257,7 +257,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     // Transaction
-    Route::put('/transaction/{transactionCode}', [TransactionController::class, 'payWithCash'])->name('transaction.payWithCash');
+    Route::put('/transaction/pay-with-cash/{transactionCode}', [TransactionController::class, 'payWithCash'])->name('transaction.payWithCash');
+    Route::put('/transaction/pay-with-midtrans/{transactionCode}', [TransactionController::class, 'payWithMidtrans'])->name('transaction.payWithMidtrans');
 
     // Address List
     Route::get('/address-list', [CustomerAddressController::class, 'index'])->name('address-list.index');
