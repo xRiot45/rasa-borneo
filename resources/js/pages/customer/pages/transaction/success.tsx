@@ -16,7 +16,7 @@ export default function TransactionSuccessPage() {
                             <h1 className="text-gray-1000 text-[22px] leading-normal font-bold text-gray-700 lg:text-3xl dark:text-gray-100">
                                 Pembayaran Berhasil
                             </h1>
-                            <p className="text-sm leading-loose text-gray-500 mt-2 lg:text-base lg:leading-loose dark:text-gray-400">
+                            <p className="mt-2 text-sm leading-loose text-gray-500 lg:text-base lg:leading-loose dark:text-gray-400">
                                 Terima kasih telah melakukan pembayaran. Silahkan kembali ke halaman beranda
                             </p>
 
