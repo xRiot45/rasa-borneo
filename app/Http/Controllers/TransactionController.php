@@ -279,7 +279,7 @@ class TransactionController extends Controller
             $itemDetails[] = [
                 'id' => 'discount_total',
                 'name' => 'Diskon',
-                'price' => -$discountTotal,
+                'price' => $discountTotal,
                 'quantity' => 1,
             ];
         }
@@ -353,65 +353,45 @@ class TransactionController extends Controller
             ->with(['snap_token' => $snapToken]);
     }
 
-    public function midtransCallback(Request $request)
+    public function midtransNotification(Request $request): mixed
     {
-        $transactionCode = $request->transaction_code;
-        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
+        // 1. Validasi Signature Key
+        $serverKey = config('services.midtrans.server_key');
+        $hashed = hash('sha512', $request['order_id'] . $request['status_code'] . $request['gross_amount'] . $serverKey);
 
-        if (!$transaction) {
-            return response()->json(['message' => 'Transaksi tidak ditemukan.'], 404);
+        if ($hashed !== $request['signature_key']) {
+            return response()->json(['message' => 'Invalid Signature Key'], 403);
         }
 
-        $transactionStatus = $request['transaction_status'];
-        $this->handleMidtransStatusUpdate($transaction, $transactionStatus);
+        // 2. Ambil transaksi berdasarkan kode
+        $transaction = Transaction::where('transaction_code', $request['order_id'])->first();
 
-        if ($transactionStatus === 'settlement') {
+        // 3. Cek jika tidak ditemukan
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        // 4. Ambil status dan reference dari Midtrans
+        $transactionStatus = $request['transaction_status'];
+        $paymentReference = $request['transaction_id'] ?? null;
+
+        // 5. Update berdasarkan status Midtrans
+        if (in_array($transactionStatus, ['settlement', 'capture']) && $transaction->payment_status !== PaymentStatusEnum::PAID) {
             $transaction->update([
                 'payment_status' => PaymentStatusEnum::PAID,
+                'payment_reference' => $paymentReference,
                 'checked_out_at' => now(),
+            ]);
+        } elseif (in_array($transactionStatus, ['cancel', 'expire', 'deny'])) {
+            $transaction->update([
+                'payment_status' => PaymentStatusEnum::FAILED,
+                'payment_reference' => $paymentReference,
             ]);
         }
 
-        return response()->json(['message' => 'Callback diterima dan diproses.']);
+        return response()->json(['message' => 'Notifikasi berhasil diproses'], 200);
     }
 
-    public function midtransNotification(Request $request)
-    {
-        try {
-            // 1. Validasi Signature Key
-            $serverKey = config('services.midtrans.server_key');
-            $hashed = hash('sha512', $request['order_id'] . $request['status_code'] . $request['gross_amount'] . $serverKey);
-
-            if ($hashed !== $request['signature_key']) {
-                return response()->json(['message' => 'Invalid Signature Key'], 403);
-            }
-
-            // 2. Ambil transaksi berdasarkan kode
-            $transaction = Transaction::where('transaction_code', $request['order_id'])->first();
-
-            // 3. Cek jika tidak ditemukan
-            if (!$transaction) {
-                return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
-            }
-
-            // 4. Update status jika settlement / capture
-            $transactionStatus = $request['transaction_status'];
-
-            if (in_array($transactionStatus, ['settlement', 'capture']) && $transaction->payment_status !== PaymentStatusEnum::PAID) {
-                $transaction->update([
-                    'payment_status' => PaymentStatusEnum::PAID,
-                    'checked_out_at' => now(),
-                ]);
-            }
-
-            // 5. Kembalikan respon sukses
-            return response()->json(['message' => 'Notifikasi berhasil diproses'], 200);
-        } catch (\Throwable $e) {
-            Log::error('Midtrans Notification Error: ' . $e->getMessage());
-
-            return response()->json(['message' => 'Internal Server Error'], 500);
-        }
-    }
 
     public function transactionSuccess(): InertiaResponse
     {

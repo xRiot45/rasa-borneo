@@ -41,7 +41,6 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
     const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
     const [couponDiscount, setCouponDiscount] = useState<number>(0);
-    const [shouldPay, setShouldPay] = useState<boolean>(false);
 
     const {
         data: formData,
@@ -135,9 +134,8 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
         router.put(route('transaction.payWithMidtrans', { transactionCode: transaction?.transaction_code }), formData, {
             preserveScroll: true,
             onSuccess: () => {
-                setShouldPay(true);
                 toast.success('Success', {
-                    description: 'Transaksi Berhasil',
+                    description: 'Silahkan melakukan pembayaran melalui midtrans',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
@@ -159,11 +157,10 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     };
 
     useEffect(() => {
-        if (shouldPay && flash?.snap_token) {
+        if (flash?.snap_token) {
             window.snap.pay(flash.snap_token);
-            setShouldPay(false);
         }
-    }, [shouldPay, flash?.snap_token]);
+    }, [flash?.snap_token]);
 
     return (
         <>
