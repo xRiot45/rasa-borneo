@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckTransactionOwner
 {
-    public function handle(Request $request, Closure $next, $expectedStatus)
+    public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
@@ -26,10 +26,6 @@ class CheckTransactionOwner
 
         if ($transaction->customer_id !== $customerId) {
             abort(403, 'Unauthorized action.');
-        }
-
-        if ($transaction->status !== $expectedStatus) {
-            abort(404, 'Transaction status not found.');
         }
 
         return $next($request);

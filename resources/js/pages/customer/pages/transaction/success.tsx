@@ -1,6 +1,7 @@
 import PaymentSuccessImg from '@/assets/images/payment/payment-success.png';
 import { Button } from '@/components/ui/button';
 import CustomerLayout from '@/layouts/customer/layout';
+import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
 
 export default function TransactionSuccessPage() {
@@ -15,12 +16,13 @@ export default function TransactionSuccessPage() {
                             <h1 className="text-gray-1000 text-[22px] leading-normal font-bold text-gray-700 lg:text-3xl dark:text-gray-100">
                                 Pembayaran Berhasil
                             </h1>
-                            <p className="mt-3 text-sm leading-loose text-gray-500 lg:mt-6 lg:text-base lg:leading-loose dark:text-gray-400">
+                            <p className="text-sm leading-loose text-gray-500 mt-2 lg:text-base lg:leading-loose dark:text-gray-400">
                                 Terima kasih telah melakukan pembayaran. Silahkan kembali ke halaman beranda
                             </p>
 
                             <div className="mt-6">
-                                <Button className="cursor-pointer" onClick={() => router.visit(route('home'))}>
+                                <Button className="cursor-pointer rounded-lg py-6" onClick={() => router.visit(route('home'))}>
+                                    <Icon icon="material-symbols:home" />
                                     Kembali ke halaman beranda
                                 </Button>
                             </div>

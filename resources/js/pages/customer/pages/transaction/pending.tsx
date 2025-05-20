@@ -1,7 +1,8 @@
 import PaymentPendingImg from '@/assets/images/payment/payment-pending.png';
 import { Button } from '@/components/ui/button';
 import CustomerLayout from '@/layouts/customer/layout';
-import { Head } from '@inertiajs/react';
+import { Icon } from '@iconify/react';
+import { Head, router } from '@inertiajs/react';
 
 export default function TransactionPendingPage() {
     return (
@@ -15,13 +16,14 @@ export default function TransactionPendingPage() {
                             <h1 className="text-gray-1000 text-[22px] leading-normal font-bold text-gray-700 lg:text-3xl dark:text-gray-100">
                                 Pembayaran Pending
                             </h1>
-                            <p className="mt-3 text-sm leading-loose text-gray-500 lg:mt-6 lg:text-base lg:leading-loose dark:text-gray-400">
+                            <p className="mt-2 text-sm leading-loose text-gray-500 lg:text-base lg:leading-loose dark:text-gray-400">
                                 Pembayaran anda sedang tertunda, silahkan kembali ke halaman sebelumnya untuk menyelesai pembayaran.
                             </p>
 
                             <div className="mt-6">
-                                <Button className="cursor-pointer" onClick={() => window.history.back()}>
-                                    Kembali ke halaman sebelumnya
+                                <Button className="cursor-pointer rounded-lg py-6" onClick={() => router.visit(route('home'))}>
+                                    <Icon icon="material-symbols:home" />
+                                    Kembali ke halaman beranda
                                 </Button>
                             </div>
                         </div>

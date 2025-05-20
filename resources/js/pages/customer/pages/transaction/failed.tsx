@@ -1,6 +1,7 @@
 import PaymentFailedImg from '@/assets/images/payment/payment-failed.png';
 import { Button } from '@/components/ui/button';
 import CustomerLayout from '@/layouts/customer/layout';
+import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
 
 export default function TransactionFailedPage() {
@@ -15,12 +16,13 @@ export default function TransactionFailedPage() {
                             <h1 className="text-gray-1000 text-[22px] leading-normal font-bold text-gray-700 lg:text-3xl dark:text-gray-100">
                                 Pembayaran Gagal
                             </h1>
-                            <p className="mt-3 text-sm leading-loose text-gray-500 lg:mt-6 lg:text-base lg:leading-loose dark:text-gray-400">
+                            <p className="mt-2 text-sm leading-loose text-gray-500 lg:text-base lg:leading-loose dark:text-gray-400">
                                 Maaf pembayaran Anda gagal. Silakan coba lagi dalam beberapa saat.
                             </p>
 
                             <div className="mt-6">
-                                <Button className="cursor-pointer" onClick={() => router.visit(route('home'))}>
+                                <Button className="cursor-pointer rounded-lg py-6" onClick={() => router.visit(route('home'))}>
+                                    <Icon icon="material-symbols:home" />
                                     Kembali ke halaman beranda
                                 </Button>
                             </div>
