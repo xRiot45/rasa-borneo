@@ -24,7 +24,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import OrderLocationSelection from './components/order-location-selection';
 import OrderTypeSelection from './components/order-type-selection';
@@ -105,58 +105,40 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
         }
     };
 
-    const handlePayWithCash = () => {
-        put(route('transaction.payWithCash', { transactionCode: transaction?.transaction_code }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                setShowPaymentMethodCashDialog(false);
-                toast.success('Success', {
-                    description: 'Transaksi Berhasil',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-            onError: (errors) => {
-                Object.keys(errors).forEach((key) => {
-                    toast.error('Error', {
-                        description: errors[key],
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
-                    });
-                });
-            },
-        });
-    };
+    const handlePay = useCallback(
+        (method: PaymentMethodEnum) => {
+            const routeName = method === PaymentMethodEnum.CASH ? 'transaction.payWithCash' : 'transaction.payWithMidtrans';
 
-    const handlePayWithMidtrans = () => {
-        put(route('transaction.payWithMidtrans', { transactionCode: transaction?.transaction_code }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                toast.success('Success', {
-                    description: 'Silahkan melakukan pembayaran melalui midtrans',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-            onError: (errors) => {
-                Object.keys(errors).forEach((key) => {
-                    toast.error('Error', {
-                        description: errors[key],
+            put(route(routeName, { transactionCode: transaction.transaction_code }), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    if (method === PaymentMethodEnum.CASH) {
+                        setShowPaymentMethodCashDialog(false);
+                    }
+
+                    toast.success('Success', {
+                        description: method === PaymentMethodEnum.CASH ? 'Transaksi Berhasil' : 'Silahkan melakukan pembayaran melalui Midtrans',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
-                });
-            },
-        });
-    };
+                },
+                onError: (errors) => {
+                    Object.values(errors).forEach((err) =>
+                        toast.error('Error', {
+                            description: err,
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        }),
+                    );
+                },
+            });
+        },
+        [put, transaction],
+    );
 
     useEffect(() => {
         if (flash?.snap_token) {
@@ -434,7 +416,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                         if (formData.payment_method === PaymentMethodEnum.CASH) {
                                             setShowPaymentMethodCashDialog(true);
                                         } else {
-                                            handlePayWithMidtrans();
+                                            handlePay(PaymentMethodEnum.CASHLESS);
                                         }
                                     }}
                                 >
@@ -453,7 +435,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                     <AlertDialogFooter className="mt-4">
                                         <Button
                                             onClick={() => {
-                                                handlePayWithCash();
+                                                handlePay(PaymentMethodEnum.CASH);
                                                 setShowPaymentMethodCashDialog(false);
                                             }}
                                         >
