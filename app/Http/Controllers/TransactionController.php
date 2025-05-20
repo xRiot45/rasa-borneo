@@ -6,6 +6,7 @@ use App\Enums\CouponTypeEnum;
 use App\Enums\OrderTypeEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
+use App\Http\Requests\TransactionRequest;
 use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
@@ -14,74 +15,53 @@ use App\Models\Table;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class TransactionController extends Controller
 {
-    private function handleMidtransStatusUpdate(Transaction $transaction, string $transactionStatus): void
+    private function getTransaction(string $transactionCode): Transaction
     {
-        $paymentStatusMap = [
-            'capture' => PaymentStatusEnum::PAID,
-            'settlement' => PaymentStatusEnum::PAID,
-            'pending' => PaymentStatusEnum::PENDING,
-            'deny' => PaymentStatusEnum::FAILED,
-            'cancel' => PaymentStatusEnum::CANCELLED,
-            'failure' => PaymentStatusEnum::FAILED,
-        ];
-
-        $transaction->payment_status = $paymentStatusMap[$transactionStatus] ?? $transaction->payment_status;
-        $transaction->payment_method = PaymentMethodEnum::CASHLESS;
-        $transaction->save();
-    }
-
-    public function payWithCash(Request $request, string $transactionCode): RedirectResponse
-    {
-        // 1. Autentikasi user dan ambil data customer
-        $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
-        $customerId = $customer->id;
-
-        // 2. Ambil transaksi
         $transaction = Transaction::where('transaction_code', $transactionCode)->first();
         if (!$transaction) {
-            return redirect()->back()->withErrors('Transaksi tidak ditemukan.');
+            abort(404, 'Transaksi tidak ditemukan.');
         }
+        return $transaction;
+    }
 
-        // 3. Ambil alamat customer (jika ada)
-        $customerAddress = CustomerAddress::where('customer_id', $customerId)->where('is_primary', true)->first();
-
-        // 4. Ambil biaya (delivery dan application fee)
-        $fees = Fee::whereIn(DB::raw('LOWER(type)'), ['delivery_fee', 'application_service_fee'])
+    private function getFees(): Collection
+    {
+        return Fee::whereIn(DB::raw('LOWER(type)'), ['delivery_fee', 'application_service_fee'])
             ->get()
             ->keyBy('type');
+    }
 
-        // 5. Setup enum
-        $orderType = OrderTypeEnum::tryFrom($request->order_type) ?? OrderTypeEnum::DINEIN;
-        $paymentMethod = PaymentMethodEnum::tryFrom($request->payment_method) ?? PaymentMethodEnum::CASH;
+    private function calculateDeliveryFee(OrderTypeEnum $orderType, $fees): int
+    {
+        return $orderType === OrderTypeEnum::DELIVERY ? $fees['delivery_fee']->amount ?? 0 : 0;
+    }
 
-        // 6. Hitung subtotal dan biaya
-        $subtotalTransactionItems = $transaction->subtotal_transaction_item;
-        $deliveryFee = $orderType === OrderTypeEnum::DELIVERY ? $fees['delivery_fee']->amount ?? 0 : 0;
-        $applicationServiceFee = $fees['application_service_fee']->amount ?? 0;
-
-        // 7. Hitung diskon berdasarkan kupon
+    private function calculateDiscount(?int $couponId, float $subtotal): array
+    {
         $discountTotal = 0;
         $couponSnapshot = [];
-        if ($request->coupon_id) {
-            $coupon = Coupon::find($request->coupon_id);
 
+        if ($couponId) {
+            $coupon = Coupon::find($couponId);
             if ($coupon) {
                 if ($coupon->type === CouponTypeEnum::PERCENTAGE) {
-                    $discountTotal = ($coupon->discount / 100) * $subtotalTransactionItems;
+                    $discountTotal = ($coupon->discount / 100) * $subtotal;
                 } elseif ($coupon->type === CouponTypeEnum::FIXED) {
                     $discountTotal = $coupon->discount;
                 }
 
-                $discountTotal = min($discountTotal, $subtotalTransactionItems);
+                $discountTotal = min($discountTotal, $subtotal);
+
                 $couponSnapshot = [
                     'coupon_id' => $coupon->id,
                     'coupon_code' => $coupon->code,
@@ -91,49 +71,86 @@ class TransactionController extends Controller
             }
         }
 
-        // 8. Hitung final total
-        $finalTotal = $subtotalTransactionItems + $deliveryFee + $applicationServiceFee - $discountTotal;
+        return [$discountTotal, $couponSnapshot];
+    }
 
-        // 9. Validasi pembayaran tunai
+    private function getPaymentStatus(PaymentMethodEnum $method, ?float $cashReceived, float $finalTotal): PaymentStatusEnum
+    {
+        if ($method === PaymentMethodEnum::CASH && $cashReceived >= $finalTotal) {
+            return PaymentStatusEnum::PAID;
+        }
+        return PaymentStatusEnum::PENDING;
+    }
+
+    private function getCustomerAddressSnapshot(int $customerId, OrderTypeEnum $orderType): array
+    {
+        if ($orderType !== OrderTypeEnum::DELIVERY) {
+            return [];
+        }
+
+        $address = CustomerAddress::where('customer_id', $customerId)->where('is_primary', true)->first();
+        if (!$address) {
+            return [];
+        }
+
+        return [
+            'customer_address_id' => $address->id,
+            'recipient_address_label' => $address->address_label,
+            'recipient_name' => $address->recipient_name,
+            'recipient_phone_number' => $address->phone_number,
+            'recipient_email' => $address->email,
+            'recipient_address' => $address->complete_address,
+            'delivery_note' => $address->note_to_courier,
+        ];
+    }
+
+    private function getDineInSnapshot(Request $request, OrderTypeEnum $orderType): array
+    {
+        if ($orderType !== OrderTypeEnum::DINEIN) {
+            return [];
+        }
+
+        $table = Table::find($request->dine_in_table_id);
+        if (!$table) {
+            return [];
+        }
+
+        return [
+            'dine_in_table_id' => $table->id,
+            'dine_in_table_label' => $table->name,
+        ];
+    }
+
+    public function payWithCash(TransactionRequest $request, string $transactionCode): RedirectResponse
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->firstOrFail();
+
+        $transaction = $this->getTransaction($transactionCode);
+        $fees = $this->getFees();
+        $orderType = OrderTypeEnum::tryFrom($request->order_type) ?? OrderTypeEnum::DINEIN;
+        $paymentMethod = PaymentMethodEnum::tryFrom($request->payment_method) ?? PaymentMethodEnum::CASH;
+
+        $subtotal = $transaction->subtotal_transaction_item;
+        $deliveryFee = $this->calculateDeliveryFee($orderType, $fees);
+        $applicationServiceFee = $fees['application_service_fee']->amount ?? 0;
+
+        [$discountTotal, $couponSnapshot] = $this->calculateDiscount($request->coupon_id, $subtotal);
+        $finalTotal = $subtotal + $deliveryFee + $applicationServiceFee - $discountTotal;
+
         if ($paymentMethod === PaymentMethodEnum::CASH && $request->cash_received_amount < $finalTotal) {
             return redirect()
                 ->back()
                 ->withErrors(['cash_received_amount' => 'Uang Anda kurang.']);
         }
 
-        // 10. Status pembayaran
-        $paymentStatus = $paymentMethod === PaymentMethodEnum::CASH && $request->cash_received_amount >= $finalTotal ? PaymentStatusEnum::PAID : PaymentStatusEnum::PENDING;
-
         $cashReceivedAmount = $paymentMethod === PaymentMethodEnum::CASH ? $request->cash_received_amount : null;
         $changeAmount = $cashReceivedAmount !== null ? $cashReceivedAmount - $finalTotal : 0;
+        $paymentStatus = $this->getPaymentStatus($paymentMethod, $cashReceivedAmount, $finalTotal);
 
-        // 11. Snapshot alamat jika delivery
-        $customerAddressSnapshot = [];
-        if ($orderType === OrderTypeEnum::DELIVERY && $customerAddress) {
-            $customerAddressSnapshot = [
-                'customer_address_id' => $customerAddress->id,
-                'recipient_address_label' => $customerAddress->address_label,
-                'recipient_name' => $customerAddress->recipient_name,
-                'recipient_phone_number' => $customerAddress->phone_number,
-                'recipient_email' => $customerAddress->email,
-                'recipient_address' => $customerAddress->complete_address,
-                'delivery_note' => $customerAddress->note_to_courier,
-            ];
-        }
+        $customerAddressSnapshot = $this->getCustomerAddressSnapshot($customer->id, $orderType);
+        $dineInSnapshot = $this->getDineInSnapshot($request, $orderType);
 
-        // 12. Snapshot dine-in table
-        $dineInSnapshot = [];
-        if ($orderType === OrderTypeEnum::DINEIN) {
-            $dineInTable = Table::find($request->dine_in_table_id);
-            if ($dineInTable) {
-                $dineInSnapshot = [
-                    'dine_in_table_id' => $dineInTable->id,
-                    'dine_in_table_label' => $dineInTable->name,
-                ];
-            }
-        }
-
-        // 13. Update transaksi
         $transaction->update(
             array_merge(
                 [
@@ -161,152 +178,71 @@ class TransactionController extends Controller
         return redirect()->route('home')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
-    public function payWithMidtrans(Request $request, string $transactionCode): RedirectResponse
+    public function payWithMidtrans(TransactionRequest $request, string $transactionCode): RedirectResponse
     {
-        // 1. Autentikasi user dan ambil data customer
         $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
-        $customerId = $customer->id;
-
-        // 2. Ambil transaksi
-        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
-        if (!$transaction) {
-            return redirect()->back()->withErrors('Transaksi tidak ditemukan.');
-        }
-
+        $customer = Customer::where('user_id', $user->id)->firstOrFail();
+        $transaction = $this->getTransaction($transactionCode);
         $transaction->load('transactionItems');
 
-        // 3. Ambil alamat customer (jika ada)
-        $customerAddress = CustomerAddress::where('customer_id', $customerId)->where('is_primary', true)->first();
-
-        // 4. Ambil biaya (delivery dan application fee)
-        $fees = Fee::whereIn(DB::raw('LOWER(type)'), ['delivery_fee', 'application_service_fee'])
-            ->get()
-            ->keyBy('type');
-
-        // 5. Setup enum
+        $fees = $this->getFees();
         $orderType = OrderTypeEnum::tryFrom($request->order_type) ?? OrderTypeEnum::DINEIN;
-        $paymentMethod = PaymentMethodEnum::tryFrom($request->payment_method) ?? PaymentMethodEnum::CASH;
+        $paymentMethod = PaymentMethodEnum::tryFrom($request->payment_method) ?? PaymentMethodEnum::CASHLESS;
 
-        // 6. Hitung subtotal dan biaya
         $subtotalTransactionItems = $transaction->subtotal_transaction_item;
-        $deliveryFee = $orderType === OrderTypeEnum::DELIVERY ? $fees['delivery_fee']->amount ?? 0 : 0;
+        $deliveryFee = $this->calculateDeliveryFee($orderType, $fees);
         $applicationServiceFee = $fees['application_service_fee']->amount ?? 0;
 
-        // 7. Hitung diskon berdasarkan kupon
-        $discountTotal = 0;
-        $couponSnapshot = [];
-        if ($request->coupon_id) {
-            $coupon = Coupon::find($request->coupon_id);
-
-            if ($coupon) {
-                if ($coupon->type === CouponTypeEnum::PERCENTAGE) {
-                    $discountTotal = ($coupon->discount / 100) * $subtotalTransactionItems;
-                } elseif ($coupon->type === CouponTypeEnum::FIXED) {
-                    $discountTotal = $coupon->discount;
-                }
-
-                $discountTotal = min($discountTotal, $subtotalTransactionItems);
-                $couponSnapshot = [
-                    'coupon_id' => $coupon->id,
-                    'coupon_code' => $coupon->code,
-                    'coupon_type' => $coupon->type->value,
-                    'coupon_discount' => $coupon->discount,
-                ];
-            }
-        }
-
-        // 8. Snapshot alamat jika delivery
-        $customerAddressSnapshot = [];
-        if ($orderType === OrderTypeEnum::DELIVERY && $customerAddress) {
-            $customerAddressSnapshot = [
-                'customer_address_id' => $customerAddress->id,
-                'recipient_address_label' => $customerAddress->address_label,
-                'recipient_name' => $customerAddress->recipient_name,
-                'recipient_phone_number' => $customerAddress->phone_number,
-                'recipient_email' => $customerAddress->email,
-                'recipient_address' => $customerAddress->complete_address,
-                'delivery_note' => $customerAddress->note_to_courier,
-            ];
-        }
-
-        // 9. Snapshot dine-in table
-        $dineInSnapshot = [];
-        if ($orderType === OrderTypeEnum::DINEIN) {
-            $dineInTable = Table::find($request->dine_in_table_id);
-            if ($dineInTable) {
-                $dineInSnapshot = [
-                    'dine_in_table_id' => $dineInTable->id,
-                    'dine_in_table_label' => $dineInTable->name,
-                ];
-            }
-        }
-
-        // 10. Hitung final total
+        [$discountTotal, $couponSnapshot] = $this->calculateDiscount($request->coupon_id, $subtotalTransactionItems);
         $finalTotal = $subtotalTransactionItems + $deliveryFee + $applicationServiceFee - $discountTotal;
 
-        // 11. Buat item detail untuk midtrans
+        $customerAddressSnapshot = $this->getCustomerAddressSnapshot($customer->id, $orderType);
+        $dineInSnapshot = $this->getDineInSnapshot($request, $orderType);
+
         $itemDetails = $transaction->transactionItems
-            ->map(function ($item) {
-                return [
+            ->map(
+                fn($item) => [
                     'id' => $item->id,
                     'name' => $item->menu_item_name,
                     'price' => $item->menu_item_price,
                     'quantity' => $item->quantity,
-                ];
-            })
+                ],
+            )
             ->toArray();
 
-        if ($orderType === OrderTypeEnum::DELIVERY && $deliveryFee > 0) {
-            $itemDetails[] = [
-                'id' => 'delivery_fee',
-                'name' => 'Biaya Pengiriman',
-                'price' => $deliveryFee,
-                'quantity' => 1,
-            ];
+        if ($deliveryFee > 0) {
+            $itemDetails[] = ['id' => 'delivery_fee', 'name' => 'Biaya Pengiriman', 'price' => $deliveryFee, 'quantity' => 1];
         }
 
         if ($applicationServiceFee > 0) {
-            $itemDetails[] = [
-                'id' => 'application_service_fee',
-                'name' => 'Biaya Layanan Aplikasi',
-                'price' => $applicationServiceFee,
-                'quantity' => 1,
-            ];
+            $itemDetails[] = ['id' => 'application_service_fee', 'name' => 'Biaya Layanan Aplikasi', 'price' => $applicationServiceFee, 'quantity' => 1];
         }
 
         if ($discountTotal > 0) {
-            $itemDetails[] = [
-                'id' => 'discount_total',
-                'name' => 'Diskon',
-                'price' => $discountTotal,
-                'quantity' => 1,
-            ];
+            $itemDetails[] = ['id' => 'discount_total', 'name' => 'Diskon', 'price' => -$discountTotal, 'quantity' => 1];
         }
 
-        // 12. Konfigurasi Midtrans
-        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
-        \Midtrans\Config::$isSanitized = config('services.midtrans.is_sanitized');
-        \Midtrans\Config::$is3ds = config('services.midtrans.is_3ds');
+        // Konfigurasi Midtrans
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = config('services.midtrans.is_sanitized');
+        Config::$is3ds = config('services.midtrans.is_3ds');
 
-        // 13. Buat Data untuk parameter midtrans
         $customerDetails = [
             'first_name' => $user->full_name,
             'phone' => $user->phone_number,
             'email' => $user->email,
         ];
 
-        if ($orderType === OrderTypeEnum::DELIVERY && $customerAddress) {
+        if (!empty($customerAddressSnapshot)) {
             $customerDetails['shipping_address'] = [
-                'first_name' => $customerAddress->recipient_name,
-                'phone' => $customerAddress->recipient_phone_number,
-                'email' => $customerAddress->recipient_email,
-                'address' => $customerAddress->complete_address,
+                'first_name' => $customerAddressSnapshot['recipient_name'],
+                'phone' => $customerAddressSnapshot['recipient_phone_number'],
+                'email' => $customerAddressSnapshot['recipient_email'],
+                'address' => $customerAddressSnapshot['recipient_address'],
             ];
         }
 
-        // 14. Parameter Midtrans
         $midtransParams = [
             'transaction_details' => [
                 'order_id' => $transaction->transaction_code,
@@ -316,16 +252,14 @@ class TransactionController extends Controller
             'item_details' => $itemDetails,
             'callbacks' => [
                 'finish' => route('transaction.success'),
-                'unfinish' => route('transaction.pending'),
+                'pending' => route('transaction.pending'),
                 'error' => route('transaction.failed'),
             ],
             'notification_url' => route('midtrans.notification'),
         ];
 
-        // 15. Ambil Snap Token
-        $snapToken = \Midtrans\Snap::getSnapToken($midtransParams);
+        $snapToken = Snap::getSnapToken($midtransParams);
 
-        // 16. Update transaksi
         $transaction->update(
             array_merge(
                 [
@@ -341,13 +275,12 @@ class TransactionController extends Controller
                     'final_total' => $finalTotal,
                     'checked_out_at' => now(),
                 ],
+                $couponSnapshot,
                 $customerAddressSnapshot,
                 $dineInSnapshot,
-                $couponSnapshot,
             ),
         );
 
-        // 17. Kembalikan ke halaman sebelumnya dan berikan snap token
         return redirect()
             ->back()
             ->with(['snap_token' => $snapToken]);
@@ -391,7 +324,6 @@ class TransactionController extends Controller
 
         return response()->json(['message' => 'Notifikasi berhasil diproses'], 200);
     }
-
 
     public function transactionSuccess(): InertiaResponse
     {

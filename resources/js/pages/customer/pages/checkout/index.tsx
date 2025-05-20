@@ -1,3 +1,4 @@
+import InputError from '@/components/input-error';
 import SummaryRow from '@/components/summary-row';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog';
@@ -21,7 +22,7 @@ import { TableModel } from '@/models/table';
 import { Transaction, TransactionForm } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -44,15 +45,16 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
 
     const {
         data: formData,
+        put,
         setData,
         processing,
+        errors,
     } = useForm<Required<TransactionForm>>({
         order_type: OrderTypeEnum.DINEIN,
         order_location: OrderLocationEnum.ON_PREMISE,
         payment_method: PaymentMethodEnum.CASH,
         cash_received_amount: 0,
-        dine_in_table_id: 0,
-        dine_in_table_label: '',
+        dine_in_table_id: null,
         orderer_name: '',
         orderer_phone_number: '',
         coupon_id: 0,
@@ -104,7 +106,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     };
 
     const handlePayWithCash = () => {
-        router.put(route('transaction.payWithCash', { transactionCode: transaction?.transaction_code }), formData, {
+        put(route('transaction.payWithCash', { transactionCode: transaction?.transaction_code }), {
             preserveScroll: true,
             onSuccess: () => {
                 setShowPaymentMethodCashDialog(false);
@@ -131,7 +133,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
     };
 
     const handlePayWithMidtrans = () => {
-        router.put(route('transaction.payWithMidtrans', { transactionCode: transaction?.transaction_code }), formData, {
+        put(route('transaction.payWithMidtrans', { transactionCode: transaction?.transaction_code }), {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Success', {
@@ -262,10 +264,16 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                             <div className="space-y-4">
                                 {/* Nomor Meja Select */}
                                 {formData?.order_type === OrderTypeEnum.DINEIN && (
-                                    <div>
-                                        <Label>Pilih Meja</Label>
+                                    <div className="flex flex-col gap-3">
+                                        <Label>
+                                            Pilih Meja <strong className="text-red-500">*</strong>
+                                        </Label>
                                         <Select onValueChange={(value) => setData('dine_in_table_id', parseInt(value))}>
-                                            <SelectTrigger className={cn('mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none')}>
+                                            <SelectTrigger
+                                                className={cn(
+                                                    `mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none ${errors?.dine_in_table_id && 'border-red-500'}`,
+                                                )}
+                                            >
                                                 <SelectValue placeholder="Pilih Meja" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -285,6 +293,8 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                                 })}
                                             </SelectContent>
                                         </Select>
+
+                                        <InputError message={errors.dine_in_table_id} />
                                     </div>
                                 )}
 
@@ -292,32 +302,38 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                 {formData?.order_type !== OrderTypeEnum.DELIVERY && (
                                     <div className="space-y-4">
                                         <div className="flex flex-col gap-3">
-                                            <Label>Nama Pemesan</Label>
+                                            <Label>
+                                                Nama Pemesan <strong className="text-red-500">*</strong>
+                                            </Label>
                                             <Input
                                                 type="text"
                                                 placeholder="Nama Pemesan"
                                                 value={formData.orderer_name}
                                                 onChange={(e) => setData('orderer_name', e.target.value)}
-                                                className="w-full border py-6 shadow-none"
+                                                className={cn(`w-full border py-6 shadow-none ${errors?.orderer_name && 'border-red-500'}`)}
                                             />
+                                            <InputError message={errors.orderer_name} />
                                         </div>
 
                                         <div className="flex flex-col gap-3">
-                                            <Label>Nomor Telepon Pemesan</Label>
+                                            <Label>
+                                                Nomor Telepon Pemesan <strong className="text-red-500">*</strong>
+                                            </Label>
                                             <Input
                                                 type="number"
                                                 placeholder="Nomor Telepon Pemesan"
                                                 value={formData.orderer_phone_number}
                                                 onChange={(e) => setData('orderer_phone_number', e.target.value)}
-                                                className="w-full border py-6 shadow-none"
+                                                className={cn(`w-full border py-6 shadow-none ${errors?.orderer_phone_number && 'border-red-500'}`)}
                                             />
+                                            <InputError message={errors.orderer_phone_number} />
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Kupon Select */}
                                 <div>
-                                    <Label>Pilih Kupon Diskon</Label>
+                                    <Label>Kupon Diskon</Label>
                                     <Select onValueChange={handleSelectCoupon} value={selectedCouponId ? String(selectedCouponId) : undefined}>
                                         <SelectTrigger className={cn('mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none')}>
                                             <SelectValue placeholder="Pilih Kupon Diskon" />
@@ -348,14 +364,17 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                                 {/* Jumlah Uang Diterima */}
                                 {formData?.payment_method === PaymentMethodEnum.CASH && (
                                     <div className="flex flex-col gap-3">
-                                        <Label>Jumlah Uang yang Anda Bayarkan</Label>
+                                        <Label>
+                                            Jumlah Uang yang Anda Bayarkan <strong className="text-red-500">*</strong>
+                                        </Label>
                                         <Input
                                             type="number"
                                             placeholder="Jumlah Uang Diterima"
                                             value={formData.cash_received_amount}
                                             onChange={(e) => setData('cash_received_amount', parseInt(e.target.value))}
-                                            className="w-full border py-6 shadow-none"
+                                            className={cn(`w-full border py-6 shadow-none ${errors.cash_received_amount && 'border-red-500'}`)}
                                         />
+                                        <InputError message={errors.cash_received_amount} />
                                     </div>
                                 )}
 

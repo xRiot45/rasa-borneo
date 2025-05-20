@@ -67,8 +67,7 @@ export interface TransactionForm {
     cash_received_amount: number | undefined;
 
     //   -- Snapshot dari table (khusus dine-in)
-    dine_in_table_id: number;
-    dine_in_table_label: string;
+    dine_in_table_id: number | null;
 
     //   -- Informasi customer (khusus dine-in, takeway dan pickup)
     orderer_name: string;
