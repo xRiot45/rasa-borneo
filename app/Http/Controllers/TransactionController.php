@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -314,8 +315,9 @@ class TransactionController extends Controller
             'customer_details' => $customerDetails,
             'item_details' => $itemDetails,
             'callbacks' => [
-                'finish' => route('midtrans.callback'),
-                'unfinish' => route('midtrans.callback'),
+                'finish' => route('transaction.success'),
+                'unfinish' => route('transaction.pending'),
+                'error' => route('transaction.failed'),
             ],
             'notification_url' => route('midtrans.notification'),
         ];
@@ -351,68 +353,64 @@ class TransactionController extends Controller
             ->with(['snap_token' => $snapToken]);
     }
 
-    public function midtransCallback(Request $request): RedirectResponse
+    public function midtransCallback(Request $request)
     {
         $transactionCode = $request->transaction_code;
         $transaction = Transaction::where('transaction_code', $transactionCode)->first();
 
         if (!$transaction) {
-            return redirect()->back()->withErrors('Transaksi tidak ditemukan.');
+            return response()->json(['message' => 'Transaksi tidak ditemukan.'], 404);
         }
 
         $transactionStatus = $request['transaction_status'];
         $this->handleMidtransStatusUpdate($transaction, $transactionStatus);
 
-        $isPending = $transactionStatus === 'pending';
-        $isSuccess = $transactionStatus === 'settlement';
-
-        if ($isSuccess) {
+        if ($transactionStatus === 'settlement') {
             $transaction->update([
                 'payment_status' => PaymentStatusEnum::PAID,
                 'checked_out_at' => now(),
             ]);
         }
 
-        if ($isSuccess) {
-            return redirect()->route('transaction.success');
-        } elseif ($isPending) {
-            return redirect()->route('transaction.pending');
-        } else {
-            return redirect()->route('transaction.failed');
-        }
+        return response()->json(['message' => 'Callback diterima dan diproses.']);
     }
 
     public function midtransNotification(Request $request)
     {
-        $transaction = Transaction::where('order_number', $request['order_id'])->first();
+        try {
+            // 1. Validasi Signature Key
+            $serverKey = config('services.midtrans.server_key');
+            $hashed = hash('sha512', $request['order_id'] . $request['status_code'] . $request['gross_amount'] . $serverKey);
 
-        $orderId = $request['order_id'];
-        $statusCode = $request['status_code'];
-        $grossAmount = $request['gross_amount'];
-        $reqSignature = $request['signature_key'];
-        $signature = hash('sha512', $orderId . $statusCode . $grossAmount . config('services.midtrans.server_key'));
+            if ($hashed !== $request['signature_key']) {
+                return response()->json(['message' => 'Invalid Signature Key'], 403);
+            }
 
-        if ($signature !== $reqSignature) {
-            return response()->json(['message' => 'Invalid signature'], 401);
+            // 2. Ambil transaksi berdasarkan kode
+            $transaction = Transaction::where('transaction_code', $request['order_id'])->first();
+
+            // 3. Cek jika tidak ditemukan
+            if (!$transaction) {
+                return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+            }
+
+            // 4. Update status jika settlement / capture
+            $transactionStatus = $request['transaction_status'];
+
+            if (in_array($transactionStatus, ['settlement', 'capture']) && $transaction->payment_status !== PaymentStatusEnum::PAID) {
+                $transaction->update([
+                    'payment_status' => PaymentStatusEnum::PAID,
+                    'checked_out_at' => now(),
+                ]);
+            }
+
+            // 5. Kembalikan respon sukses
+            return response()->json(['message' => 'Notifikasi berhasil diproses'], 200);
+        } catch (\Throwable $e) {
+            Log::error('Midtrans Notification Error: ' . $e->getMessage());
+
+            return response()->json(['message' => 'Internal Server Error'], 500);
         }
-
-        $transactionStatus = $request['transaction_status'];
-        $order = Transaction::where('order_number', $orderId)->first();
-
-        if (in_array($transactionStatus, ['settlement', 'capture']) && $transaction->payment_status !== PaymentStatusEnum::PAID) {
-            $transaction->update([
-                'payment_status' => PaymentStatusEnum::PAID,
-                'checked_out_at' => now(),
-            ]);
-        }
-
-        if (!$order) {
-            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
-        }
-
-        $this->handleMidtransStatusUpdate($order, $transactionStatus);
-
-        return response()->json(['message' => 'Notifikasi berhasil diterima'], 200);
     }
 
     public function transactionSuccess(): InertiaResponse
