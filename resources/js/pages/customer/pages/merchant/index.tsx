@@ -29,6 +29,11 @@ export default function MerchantPage({ data }: Props) {
         setCategory(tempCategory);
     };
 
+    const resetFilters = () => {
+        setSearch('');
+        setCategory('');
+    };
+
     const filteredItems = data
         .filter((item) => item.business_name.toLowerCase().includes(search.toLowerCase()))
         .filter((item) => (category ? item.business_category_id.toString() === category : true));
@@ -87,11 +92,18 @@ export default function MerchantPage({ data }: Props) {
                                         </Select>
                                     </div>
                                 </div>
-                                <DialogFooter>
+                                <DialogFooter className="sm:flex-col">
                                     <DialogTrigger asChild>
                                         <Button type="button" onClick={applyFilters} className="w-full cursor-pointer py-6">
                                             Terapkan Filter
                                             <Icon icon="material-symbols:check" className="ml-2" />
+                                        </Button>
+                                    </DialogTrigger>
+
+                                    <DialogTrigger asChild>
+                                        <Button type="button" variant="destructive" onClick={resetFilters} className="w-full cursor-pointer py-6">
+                                            Reset Filter
+                                            <Icon icon="bx:reset" className="ml-2" />
                                         </Button>
                                     </DialogTrigger>
                                 </DialogFooter>
