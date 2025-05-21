@@ -48,7 +48,7 @@ const PaymentActionButton: React.FC<Props> = ({ processing, formData, handlePay,
                         }}
                     >
                         <Icon icon="mdi:cash" width={24} height={24} />
-                        Saya Mengerti & Lanjutkan Proses
+                        Saya Mengerti & Selesaikan Pesanan
                     </Button>
                 </AlertDialogFooter>
             </DialogContent>
