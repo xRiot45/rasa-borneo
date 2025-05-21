@@ -9,15 +9,14 @@ import { MenuCategory } from '@/models/menu-category';
 import { MenuItem } from '@/models/menu-item';
 import CardMenuItem from '@/pages/customer/components/card-menu-items';
 import { Icon } from '@iconify/react';
-import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
     data: MenuItem[];
+    menuCategories: MenuCategory[];
 }
 
-const TabMenuContent: React.FC<Props> = ({ data }) => {
-    const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
+const TabMenuContent: React.FC<Props> = ({ data, menuCategories }) => {
     const [search, setSearch] = useState<string>('');
     const [category, setCategory] = useState<string>('');
     const [recommendedOnly, setRecommendedOnly] = useState<boolean>(false);
@@ -33,6 +32,13 @@ const TabMenuContent: React.FC<Props> = ({ data }) => {
         setCategory(tempCategory);
         setRecommendedOnly(tempRecommendedOnly);
         setSortOrder(tempSortOrder);
+    };
+
+    const resetFilters = () => {
+        setSearch('');
+        setCategory('');
+        setRecommendedOnly(false);
+        setSortOrder('asc');
     };
 
     const filteredItems = data
@@ -113,11 +119,18 @@ const TabMenuContent: React.FC<Props> = ({ data }) => {
                                     <Label>Hanya Menu Yang Direkomendasi</Label>
                                 </div>
                             </div>
-                            <DialogFooter>
+                            <DialogFooter className="flex sm:flex-col">
                                 <DialogTrigger asChild>
                                     <Button type="button" onClick={applyFilters} className="w-full cursor-pointer py-6">
                                         Terapkan Filter
                                         <Icon icon="material-symbols:check" className="ml-2" />
+                                    </Button>
+                                </DialogTrigger>
+
+                                <DialogTrigger asChild>
+                                    <Button type="button" onClick={resetFilters} className="w-full cursor-pointer py-6" variant="destructive">
+                                        Reset Filter
+                                        <Icon icon="bx:reset" className="ml-2" />
                                     </Button>
                                 </DialogTrigger>
                             </DialogFooter>

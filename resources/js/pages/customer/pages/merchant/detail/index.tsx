@@ -23,6 +23,7 @@ interface Props {
 
 export default function MerchantDetailPage({ data }: Props) {
     const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const menuCategories = data?.menu_categories;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(shareUrl);
@@ -359,7 +360,7 @@ export default function MerchantDetailPage({ data }: Props) {
 
                                 {/* Tabs Menu */}
                                 <TabsContent value="menu" className="mt-10">
-                                    <TabMenuContent data={data?.menu_items?.map((item) => item) || []} />
+                                    <TabMenuContent data={data?.menu_items?.map((item) => item) || []} menuCategories={menuCategories} />
                                 </TabsContent>
 
                                 {/* Tabs Gallery */}
