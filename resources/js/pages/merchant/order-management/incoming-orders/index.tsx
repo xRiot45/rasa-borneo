@@ -1,8 +1,10 @@
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { Order } from '@/models/order';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
+import { TabsContent } from '@radix-ui/react-tabs';
 
 interface Props {
     orders: Order[];
@@ -21,6 +23,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function IncomingOrderPage({ orders }: Props) {
     console.log(orders);
+    const newOrders: Record<string, number> = {
+        dineIn: 3,
+        takeAway: 1,
+        delivery: 0,
+        pickup: 5,
+    };
+
     return (
         <>
             <Head title="Pesanan Masuk" />
@@ -35,20 +44,41 @@ export default function IncomingOrderPage({ orders }: Props) {
 
                     <div className="mt-10">
                         <Tabs defaultValue="dineIn">
-                            <TabsList className="border-muted border-b px-0">
-                                <TabsTrigger value="dineIn" className="cursor-pointer">
-                                    Makan Di Tempat
-                                </TabsTrigger>
-                                <TabsTrigger value="takeAway" className="cursor-pointer">
-                                    Bungkus / Bawa Pulang
-                                </TabsTrigger>
-                                <TabsTrigger value="delivery" className="cursor-pointer">
-                                    Antar Ke Rumah
-                                </TabsTrigger>
-                                <TabsTrigger value="pickup" className="cursor-pointer">
-                                    Ambil Di Tempat
-                                </TabsTrigger>
+                            <TabsList className="border-muted gap-4 border-b px-0">
+                                {[
+                                    { value: 'dineIn', label: 'Makan di Tempat' },
+                                    { value: 'takeAway', label: 'Bungkus / Bawa Pulang' },
+                                    { value: 'delivery', label: 'Antar ke Rumah' },
+                                    { value: 'pickup', label: 'Ambil di Tempat' },
+                                ].map((tab) => (
+                                    <div key={tab.value} className="relative">
+                                        {newOrders[tab.value] > 0 && (
+                                            <Badge variant="destructive" className="absolute -top-2 left-1/1 -translate-x-1/2 px-1.5 py-0.5 text-xs">
+                                                {newOrders[tab.value]}
+                                            </Badge>
+                                        )}
+                                        <TabsTrigger value={tab.value} className="cursor-pointer">
+                                            {tab.label}
+                                        </TabsTrigger>
+                                    </div>
+                                ))}
                             </TabsList>
+
+                            <TabsContent value="dineIn">
+                                <p>Dine In Content</p>
+                            </TabsContent>
+
+                            <TabsContent value="takeAway">
+                                <p>Take Away Content</p>
+                            </TabsContent>
+
+                            <TabsContent value="delivery">
+                                <p>Delivery Content</p>
+                            </TabsContent>
+
+                            <TabsContent value="pickup">
+                                <p>Pickup Content</p>
+                            </TabsContent>
                         </Tabs>
                     </div>
                 </main>
