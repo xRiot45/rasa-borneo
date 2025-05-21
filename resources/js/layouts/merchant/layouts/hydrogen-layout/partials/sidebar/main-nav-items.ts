@@ -27,11 +27,11 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
-        group: 'MANAJEMEN PEMESANAN',
+        group: 'MANAJEMEN PESANAN',
         items: [
             {
                 title: 'Pesanan Masuk',
-                href: '/merchant/orders',
+                href: '/merchant/order-management/incoming-order',
                 icon: 'mdi:order-bool-descending',
             },
             {

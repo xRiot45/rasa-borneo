@@ -11,6 +11,7 @@ use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreGalleryController;
@@ -223,6 +224,16 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('merchant.coupon.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.coupon.update');
                 Route::delete('/destroy/{id}', 'destroy')->name('merchant.coupon.destroy');
+            });
+    });
+
+    // Order Management
+    Route::prefix('/merchant/order-management')->group(function () {
+        // Incoming Order
+        Route::prefix('/incoming-order')
+            ->controller(OrderController::class)
+            ->group(function () {
+                Route::get('/', 'incomingOrder')->name('merchant.incoming-order.index');
             });
     });
 });
