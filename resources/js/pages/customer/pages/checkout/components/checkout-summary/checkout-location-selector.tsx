@@ -13,7 +13,7 @@ const iconsPaymentMethod = {
     OFF_PREMISE: <Icon icon="material-symbols:location-off-outline" width={24} height={24} />,
 };
 
-const OrderLocationSelection: React.FC<Props> = ({ selectedOrderLocation, setSelectedOrderLocation }) => {
+const CheckoutLocationSelector: React.FC<Props> = ({ selectedOrderLocation, setSelectedOrderLocation }) => {
     return (
         <div className="mt-2">
             <div className="mb-4">
@@ -48,4 +48,4 @@ const OrderLocationSelection: React.FC<Props> = ({ selectedOrderLocation, setSel
     );
 };
 
-export default OrderLocationSelection;
+export default CheckoutLocationSelector;

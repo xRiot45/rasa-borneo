@@ -1,34 +1,26 @@
-import InputError from '@/components/input-error';
-import SummaryRow from '@/components/summary-row';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
 import { OrderLocationEnum } from '@/enums/order-location';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import CustomerLayout from '@/layouts/customer/layout';
-import { cn } from '@/lib/utils';
 import { Coupon } from '@/models/coupon';
 import { Fee } from '@/models/fee';
 import { TableModel } from '@/models/table';
 import { Transaction, TransactionForm } from '@/models/transactions';
-import { formatCurrency } from '@/utils/format-currency';
-import { Icon } from '@iconify/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import OrderSummary from './components/order-summary';
-import OrderLocationSelection from './components/selections/order-location-selection';
-import OrderTypeSelection from './components/selections/order-type-selection';
-import PaymentTypeSelection from './components/selections/payment-method-selection';
+import Header from './components/checkout-payment-details/header';
+import OrderDetailsForm from './components/checkout-payment-details/order-details-form';
+import PaymentActionButton from './components/checkout-payment-details/payment-action-button';
+import TransactionSummary from './components/checkout-payment-details/transaction-summary';
+import CheckoutLocationSelector from './components/checkout-summary/checkout-location-selector';
+import CheckoutMenuList from './components/checkout-summary/checkout-menu-list';
+import CheckoutOrderTypeSelector from './components/checkout-summary/checkout-order-type-selector';
+import CheckoutPaymentMethodSelector from './components/checkout-summary/checkout-payment-method-selector';
 
 interface Props {
     transaction: Transaction;
@@ -170,24 +162,24 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                     <div className="mt-8 grid min-h-screen grid-cols-1 lg:grid-cols-3 lg:gap-4">
                         <Card className="col-span-2 border-none shadow-none">
                             {/* Menu Yang Dipesan */}
-                            <OrderSummary transaction={transaction} />
+                            <CheckoutMenuList transaction={transaction} />
 
                             <div className="space-y-8">
                                 {/* Lokasi Anda */}
-                                <OrderLocationSelection
+                                <CheckoutLocationSelector
                                     selectedOrderLocation={formData.order_location}
                                     setSelectedOrderLocation={handleOrderLocationChange}
                                 />
 
                                 {/* Metode Pemesanan */}
-                                <OrderTypeSelection
+                                <CheckoutOrderTypeSelector
                                     selectedOrderType={formData.order_type}
                                     setSelectedOrderType={handleOrderTypeChange}
                                     selectedOrderLocation={formData.order_location}
                                 />
 
                                 {/* Metode Pembayaran */}
-                                <PaymentTypeSelection
+                                <CheckoutPaymentMethodSelector
                                     selectedPaymentMethod={formData.payment_method}
                                     setSelectedPaymentMethod={handlePaymentMethodChange}
                                 />
@@ -195,226 +187,42 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                         </Card>
 
                         <Card className="sticky top-20 mt-4 h-fit w-full border p-6 shadow-none lg:mt-18">
-                            <div className="flex items-center justify-between">
-                                <div className="w-full">
-                                    <div className="flex items-center justify-between">
-                                        <h1 className="text-md mb-1 font-bold">Rincian Pembayaran</h1>
-                                        <span className="text-sm">
-                                            {new Date().toLocaleDateString('id-ID', {
-                                                weekday: 'long',
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric',
-                                            })}
-                                        </span>
-                                    </div>
-                                    <span className="text-sm">{transaction?.transaction_code}</span>
-                                </div>
-                            </div>
+                            {/* Header */}
+                            <Header transaction={transaction} />
 
                             <Separator />
 
-                            <div className="space-y-4">
-                                {/* Nomor Meja Select */}
-                                {formData?.order_type === OrderTypeEnum.DINEIN && (
-                                    <div className="flex flex-col gap-3">
-                                        <Label>
-                                            Pilih Meja <strong className="text-red-500">*</strong>
-                                        </Label>
-                                        <Select onValueChange={(value) => setData('dine_in_table_id', parseInt(value))}>
-                                            <SelectTrigger
-                                                className={cn(
-                                                    `mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none ${errors?.dine_in_table_id && 'border-red-500'}`,
-                                                )}
-                                            >
-                                                <SelectValue placeholder="Pilih Meja" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {tables.map((item: TableModel) => {
-                                                    return (
-                                                        <SelectItem
-                                                            key={item.id}
-                                                            value={String(item.id)}
-                                                            disabled={!item.is_available}
-                                                            className="cursor-pointer p-4"
-                                                        >
-                                                            <Icon icon="material-symbols:table-restaurant" className="mr-2" />
-                                                            {item.name} ({item.capacity} orang)
-                                                            {!item.is_available && ' - Tidak tersedia'}
-                                                        </SelectItem>
-                                                    );
-                                                })}
-                                            </SelectContent>
-                                        </Select>
-
-                                        <InputError message={errors.dine_in_table_id} />
-                                    </div>
-                                )}
-
-                                {/* Nama Pemesan & Nomor Telepon Pemesan */}
-                                {formData?.order_type !== OrderTypeEnum.DELIVERY && (
-                                    <div className="space-y-4">
-                                        <div className="flex flex-col gap-3">
-                                            <Label>
-                                                Nama Pemesan <strong className="text-red-500">*</strong>
-                                            </Label>
-                                            <Input
-                                                type="text"
-                                                placeholder="Nama Pemesan"
-                                                value={formData.orderer_name}
-                                                onChange={(e) => setData('orderer_name', e.target.value)}
-                                                className={cn(`w-full border py-6 shadow-none ${errors?.orderer_name && 'border-red-500'}`)}
-                                            />
-                                            <InputError message={errors.orderer_name} />
-                                        </div>
-
-                                        <div className="flex flex-col gap-3">
-                                            <Label>
-                                                Nomor Telepon Pemesan <strong className="text-red-500">*</strong>
-                                            </Label>
-                                            <Input
-                                                type="number"
-                                                placeholder="Nomor Telepon Pemesan"
-                                                value={formData.orderer_phone_number}
-                                                onChange={(e) => setData('orderer_phone_number', e.target.value)}
-                                                className={cn(`w-full border py-6 shadow-none ${errors?.orderer_phone_number && 'border-red-500'}`)}
-                                            />
-                                            <InputError message={errors.orderer_phone_number} />
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Kupon Select */}
-                                <div>
-                                    <Label>Kupon Diskon</Label>
-                                    <Select onValueChange={handleSelectCoupon} value={selectedCouponId ? String(selectedCouponId) : undefined}>
-                                        <SelectTrigger className={cn('mt-2 w-full cursor-pointer rounded-lg py-6 shadow-none')}>
-                                            <SelectValue placeholder="Pilih Kupon Diskon" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {coupons.map((item: Coupon) => {
-                                                const isPercentage = item.type === 'percentage';
-                                                const discountText = isPercentage ? `${item.discount}%` : `${formatCurrency(item?.discount)}`;
-                                                const minPurchaseText = `Min. Belanja ${formatCurrency(item?.minimum_purchase)}`;
-                                                const isDisabled = transaction?.subtotal_transaction_item < item.minimum_purchase;
-
-                                                return (
-                                                    <SelectItem
-                                                        key={item.id}
-                                                        value={String(item.id)}
-                                                        className="cursor-pointer p-4"
-                                                        disabled={isDisabled}
-                                                    >
-                                                        <Icon icon="mdi:percent-circle-outline" className="mr-2" />
-                                                        {`Diskon ${discountText} (${minPurchaseText})`}
-                                                    </SelectItem>
-                                                );
-                                            })}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Jumlah Uang Diterima */}
-                                {formData?.payment_method === PaymentMethodEnum.CASH && (
-                                    <div className="flex flex-col gap-3">
-                                        <Label>
-                                            Jumlah Uang yang Anda Bayarkan <strong className="text-red-500">*</strong>
-                                        </Label>
-                                        <Input
-                                            type="number"
-                                            placeholder="Jumlah Uang Diterima"
-                                            value={formData.cash_received_amount}
-                                            onChange={(e) => setData('cash_received_amount', parseInt(e.target.value))}
-                                            className={cn(`w-full border py-6 shadow-none ${errors.cash_received_amount && 'border-red-500'}`)}
-                                        />
-                                        <InputError message={errors.cash_received_amount} />
-                                    </div>
-                                )}
-
-                                {/* Note */}
-                                <div className="flex flex-col gap-2">
-                                    <Label>Tambahkan Catatan</Label>
-                                    <Textarea
-                                        className="mt-2 h-30 shadow-none"
-                                        placeholder="Cth : Tambahkan sendok"
-                                        onChange={(e) => setData('note', e.target.value)}
-                                        value={formData.note}
-                                    />
-                                </div>
-                            </div>
-
-                            {formData.payment_method === PaymentMethodEnum.CASH && (
-                                <p className="text-sm font-semibold text-red-500 italic">
-                                    *Jika Anda memilih pembayaran tunai, pastikan untuk menyiapkan uang pas sesuai total akhir.
-                                </p>
-                            )}
+                            {/* Form Tambahan */}
+                            <OrderDetailsForm
+                                formData={formData}
+                                errors={errors}
+                                setData={setData}
+                                transaction={transaction}
+                                tables={tables}
+                                coupons={coupons}
+                                handleSelectCoupon={handleSelectCoupon}
+                                selectedCouponId={selectedCouponId}
+                            />
 
                             <Separator />
 
                             {/* Rincian Pembayaran */}
-                            <div className="space-y-4">
-                                <SummaryRow label="Subtotal" value={formatCurrency(transaction?.subtotal_transaction_item)} />
-                                {formData.order_type === OrderTypeEnum.DELIVERY && (
-                                    <SummaryRow label="Biaya Pengiriman" value={formatCurrency(deliveryFee)} />
-                                )}
+                            <TransactionSummary
+                                transaction={transaction}
+                                formData={formData}
+                                couponDiscount={couponDiscount}
+                                deliveryFee={deliveryFee}
+                                finalTotal={finalTotal}
+                            />
 
-                                <SummaryRow label="Biaya Layanan Aplikasi" value={formatCurrency(transaction?.application_service_fee)} />
-                                <SummaryRow
-                                    label="Diskon"
-                                    value={couponDiscount > 0 ? `- ${formatCurrency(couponDiscount)}` : '- Rp. 0'}
-                                    className="text-red-500"
-                                />
-
-                                <SummaryRow label="Total Akhir" value={formatCurrency(finalTotal)} />
-                                {formData?.payment_method === PaymentMethodEnum.CASH && (
-                                    <SummaryRow
-                                        label="Kembalian"
-                                        value={
-                                            (formData.cash_received_amount ?? 0) >= finalTotal
-                                                ? formatCurrency((formData.cash_received_amount ?? 0) - finalTotal)
-                                                : formatCurrency(0)
-                                        }
-                                    />
-                                )}
-                            </div>
-
-                            <Dialog open={showPaymentMethodCashDialog} onOpenChange={setShowPaymentMethodCashDialog}>
-                                <Button
-                                    type="submit"
-                                    className="mt-4 w-full py-6 text-sm"
-                                    disabled={processing}
-                                    onClick={() => {
-                                        if (formData.payment_method === PaymentMethodEnum.CASH) {
-                                            setShowPaymentMethodCashDialog(true);
-                                        } else {
-                                            handlePay(PaymentMethodEnum.CASHLESS);
-                                        }
-                                    }}
-                                >
-                                    <Icon icon={formData.payment_method === PaymentMethodEnum.CASH ? 'mdi:cash' : 'streamline:bill-cashless'} />
-                                    {formData.payment_method === PaymentMethodEnum.CASH ? 'Bayar dengan Cash / Tunai' : 'Bayar dengan Midtrans'}
-                                </Button>
-
-                                <DialogContent>
-                                    <AlertDialogHeader>
-                                        <DialogTitle>Bayar dengan Tunai</DialogTitle>
-                                    </AlertDialogHeader>
-                                    <DialogDescription className="text-sm">
-                                        Cek semua data pembayaran diatas dan pastikan sudah benar. Jika sudah benar, klik tombol dibawah ini untuk
-                                        melanjutkan proses nya
-                                    </DialogDescription>
-                                    <AlertDialogFooter className="mt-4">
-                                        <Button
-                                            onClick={() => {
-                                                handlePay(PaymentMethodEnum.CASH);
-                                                setShowPaymentMethodCashDialog(false);
-                                            }}
-                                        >
-                                            Saya Mengerti & Lanjutkan Proses
-                                        </Button>
-                                    </AlertDialogFooter>
-                                </DialogContent>
-                            </Dialog>
+                            {/* Tombol Bayar */}
+                            <PaymentActionButton
+                                processing={processing}
+                                formData={formData}
+                                handlePay={handlePay}
+                                setShowPaymentMethodCashDialog={setShowPaymentMethodCashDialog}
+                                showPaymentMethodCashDialog={showPaymentMethodCashDialog}
+                            />
                         </Card>
                     </div>
                 </main>

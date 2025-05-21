@@ -7,7 +7,7 @@ interface Props {
     transaction: Transaction;
 }
 
-const OrderSummary: React.FC<Props> = ({ transaction }) => {
+const CheckoutMenuList: React.FC<Props> = ({ transaction }) => {
     return (
         <main className="mt-2 space-y-4">
             <div className="mb-4">
@@ -36,4 +36,4 @@ const OrderSummary: React.FC<Props> = ({ transaction }) => {
     );
 };
 
-export default OrderSummary;
+export default CheckoutMenuList;

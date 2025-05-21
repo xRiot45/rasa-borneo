@@ -13,7 +13,7 @@ const iconsPaymentMethod = {
     CASHLESS: <Icon icon="streamline:bill-cashless" width={24} height={24} />,
 };
 
-const PaymentTypeSelection: React.FC<Props> = ({ selectedPaymentMethod, setSelectedPaymentMethod }) => {
+const CheckoutPaymentMethodSelector: React.FC<Props> = ({ selectedPaymentMethod, setSelectedPaymentMethod }) => {
     return (
         <div className="mt-2">
             <div className="mb-4">
@@ -48,4 +48,4 @@ const PaymentTypeSelection: React.FC<Props> = ({ selectedPaymentMethod, setSelec
     );
 };
 
-export default PaymentTypeSelection;
+export default CheckoutPaymentMethodSelector;

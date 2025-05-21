@@ -17,7 +17,7 @@ const iconsOrderType = {
     PICKUP: <Icon icon="tdesign:undertake-delivery-filled" width={24} height={24} />,
 };
 
-const OrderTypeSelection: React.FC<Props> = ({ selectedOrderType, setSelectedOrderType, selectedOrderLocation }) => {
+const CheckoutOrderTypeSelector: React.FC<Props> = ({ selectedOrderType, setSelectedOrderType, selectedOrderLocation }) => {
     const getFilteredOrderTypes = (orderLocation: OrderLocationEnum | null): [string, OrderTypeEnum][] => {
         if (orderLocation === OrderLocationEnum.ON_PREMISE) {
             return Object.entries(OrderTypeEnum).filter(([key]) => key === 'DINEIN' || key === 'TAKEAWAY');
@@ -65,4 +65,4 @@ const OrderTypeSelection: React.FC<Props> = ({ selectedOrderType, setSelectedOrd
     );
 };
 
-export default OrderTypeSelection;
+export default CheckoutOrderTypeSelector;
