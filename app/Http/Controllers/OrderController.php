@@ -48,4 +48,19 @@ class OrderController extends Controller
             'pickupOrders' => $pickupOrders
         ]);
     }
+
+    public function showOrderDetail(string $transactionCode): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+
+        $order = Order::where('transaction_code', $transactionCode)
+            ->where('merchant_id', $merchant->id)
+            ->with(['transactionItems', 'customer'])
+            ->firstOrFail();
+
+        return Inertia::render('merchant/order-management/incoming-orders/pages/detail', [
+            'order' => $order
+        ]);
+    }
 }
