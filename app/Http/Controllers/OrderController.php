@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderTypeEnum;
 use App\Models\Merchant;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
@@ -16,10 +17,22 @@ class OrderController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $orders = Order::where('merchant_id', $merchantId)
-            ->whereNotNull('checked_out_at')
-            ->with('transactionItems')
-            ->get();
+        $orderTypes = [
+            'dineInOrders'   => OrderTypeEnum::DINEIN,
+            'takeAwayOrders' => OrderTypeEnum::TAKEAWAY,
+            'deliveryOrders' => OrderTypeEnum::DELIVERY,
+            'pickupOrders'   => OrderTypeEnum::PICKUP,
+        ];
+
+        $orders = [];
+
+        foreach ($orderTypes as $key => $type) {
+            $orders[$key] = Order::where('merchant_id', $merchantId)
+                ->whereNotNull('checked_out_at')
+                ->where('order_type', $type->value)
+                ->with('transactionItems')
+                ->get();
+        }
 
         return Inertia::render('merchant/order-management/incoming-orders/index', [
             'orders' => $orders
