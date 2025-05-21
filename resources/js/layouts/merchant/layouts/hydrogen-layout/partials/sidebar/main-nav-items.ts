@@ -27,7 +27,7 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
-        group: 'PEMESANAN',
+        group: 'MANAJEMEN PEMESANAN',
         items: [
             {
                 title: 'Pesanan Masuk',
@@ -64,16 +64,6 @@ const mainNavItems: NavGroup[] = [
                 href: '/merchant/store-management/table',
                 icon: 'mdi:table-chair',
             },
-            // {
-            //     title: 'Promo & Diskon',
-            //     href: '/merchant/store-management/store-promotions',
-            //     icon: 'mdi:tag-multiple',
-            // },
-            // {
-            //     title: 'Pengaturan Pengiriman',
-            //     href: '/merchant/delivery-settings',
-            //     icon: 'mdi:truck-delivery',
-            // },
         ],
     },
     {
@@ -119,11 +109,11 @@ const mainNavItems: NavGroup[] = [
                 href: '/merchant/reports',
                 icon: 'mdi:chart-line',
             },
-            // {
-            //     title: 'Manajemen Karyawan',
-            //     href: '/merchant/employees',
-            //     icon: 'mdi:account-group',
-            // },
+            {
+                title: 'Manajemen Karyawan',
+                href: '/merchant/employees',
+                icon: 'mdi:account-group',
+            },
             {
                 title: 'Keamanan & Privasi',
                 href: '/merchant/security',
