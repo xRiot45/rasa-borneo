@@ -5,7 +5,7 @@ namespace App\Enums;
 enum OrderTypeEnum: string
 {
     case DINEIN = 'makan di tempat';
-    case TAKEWAY = 'pesan lalu dibawa pulang';
+    case TAKEAWAY = 'pesan lalu dibawa pulang';
     case DELIVERY = 'antar ke rumah';
     case PICKUP = 'ambil di tempat';
 
