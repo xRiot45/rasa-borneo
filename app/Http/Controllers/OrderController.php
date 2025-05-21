@@ -17,25 +17,35 @@ class OrderController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $orderTypes = [
-            'dineInOrders'   => OrderTypeEnum::DINEIN,
-            'takeAwayOrders' => OrderTypeEnum::TAKEAWAY,
-            'deliveryOrders' => OrderTypeEnum::DELIVERY,
-            'pickupOrders'   => OrderTypeEnum::PICKUP,
-        ];
+        $dineInOrders = Order::where('merchant_id', $merchantId)
+            ->whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::DINEIN->value)
+            ->with('transactionItems')
+            ->get();
 
-        $orders = [];
+        $takeAwayOrders = Order::where('merchant_id', $merchantId)
+            ->whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::TAKEAWAY->value)
+            ->with('transactionItems')
+            ->get();
 
-        foreach ($orderTypes as $key => $type) {
-            $orders[$key] = Order::where('merchant_id', $merchantId)
-                ->whereNotNull('checked_out_at')
-                ->where('order_type', $type->value)
-                ->with('transactionItems')
-                ->get();
-        }
+        $deliveryOrders = Order::where('merchant_id', $merchantId)
+            ->whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::DELIVERY->value)
+            ->with('transactionItems')
+            ->get();
+
+        $pickupOrders = Order::where('merchant_id', $merchantId)
+            ->whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::PICKUP->value)
+            ->with('transactionItems')
+            ->get();
 
         return Inertia::render('merchant/order-management/incoming-orders/index', [
-            'orders' => $orders
+            'dineInOrders' => $dineInOrders,
+            'takeAwayOrders' => $takeAwayOrders,
+            'deliveryOrders' => $deliveryOrders,
+            'pickupOrders' => $pickupOrders
         ]);
     }
 }

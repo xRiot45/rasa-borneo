@@ -5,9 +5,13 @@ import { Order } from '@/models/order';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { TabsContent } from '@radix-ui/react-tabs';
+import TabDineInOrderContent from './partials/tab-dineIn-orders';
 
 interface Props {
-    orders: Order[];
+    dineInOrders: Order[];
+    takeAwayOrders: Order[];
+    deliveryOrders: Order[];
+    pickupOrders: Order[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -21,8 +25,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function IncomingOrderPage({ orders }: Props) {
-    console.log(orders);
+export default function IncomingOrderPage({ dineInOrders, takeAwayOrders, deliveryOrders, pickupOrders }: Props) {
+    console.log(dineInOrders);
+    console.log(takeAwayOrders);
+    console.log(deliveryOrders);
+    console.log(pickupOrders);
+
     const newOrders: Record<string, number> = {
         dineIn: 3,
         takeAway: 1,
@@ -64,8 +72,8 @@ export default function IncomingOrderPage({ orders }: Props) {
                                 ))}
                             </TabsList>
 
-                            <TabsContent value="dineIn">
-                                <p>Dine In Content</p>
+                            <TabsContent value="dineIn" className="mt-10">
+                                <TabDineInOrderContent data={dineInOrders} />
                             </TabsContent>
 
                             <TabsContent value="takeAway">
