@@ -7,6 +7,7 @@ import Ads6 from '@/assets/images/ads/ads-6.png';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import CustomerLayout from '@/layouts/customer/layout';
+import { BusinessCategory } from '@/models/business-category';
 import { MenuItem } from '@/models/menu-item';
 import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
@@ -14,6 +15,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
 import CardMenuItem from './components/card-menu-items';
+import CardMerchantCategories from './components/card-merchant-categories';
 import CardMerchant from './components/card-merchants';
 
 const banners = [
@@ -38,7 +40,7 @@ const banners = [
 ];
 
 export default function HomePage() {
-    // const { menuCategories } = usePage<{ menuCategories: MenuCategory[] }>().props;
+    const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
     const { merchants } = usePage<{ merchants: Merchant[] }>().props;
     const { menuItemsRecommended } = usePage<{ menuItemsRecommended: MenuItem[] }>().props;
     const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
@@ -61,14 +63,14 @@ export default function HomePage() {
                     <CarouselNext className="hidden sm:flex" />
                 </Carousel>
 
-                {/* Menu Categories */}
-                {/* <section className="mx-auto mt-12 w-full max-w-screen-xl">
+                {/* Merchant Categories */}
+                <section className="mx-auto mt-12 w-full max-w-screen-xl">
                     <div className="mb-5 flex items-center justify-between">
                         <div>
-                            <h2 className="text-lg font-black">Kategori Menu</h2>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Daftar kategori menu yang tersedia</p>
+                            <h2 className="text-lg font-black">Kategori Toko</h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Daftar kategori toko yang tersedia</p>
                         </div>
-                        <Link href={route('menu-categories')}>
+                        <Link href={route('merchant-categories')}>
                             <Button className="cursor-pointer text-sm font-medium" variant="link">
                                 Lihat Semua Kategori
                                 <Icon icon="icon-park-outline:right-c" />
@@ -76,8 +78,8 @@ export default function HomePage() {
                         </Link>
                     </div>
 
-                    <CardMenuCategories data={menuCategories.slice(0, 6)} />
-                </section> */}
+                    <CardMerchantCategories data={businessCategories.slice(0, 6)} />
+                </section>
 
                 {/* Recommended Menu Items Section */}
                 <section className="mx-auto mt-12 w-full max-w-screen-xl">

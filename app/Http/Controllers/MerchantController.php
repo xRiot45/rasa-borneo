@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BusinessCategory;
 use App\Models\Merchant;
 use App\Notifications\MerchantVerifiedNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
 class MerchantController extends Controller
 {
-    public function index(): Response
+    public function index(): InertiaResponse
     {
         $merchants = Merchant::withTrashed()->with('businessCategory')->get();
         return Inertia::render('admin/users-management/merchants/index', [
@@ -19,15 +21,34 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function index_customer(): Response
+    public function index_customer(Request $request): InertiaResponse
     {
-        $merchants = Merchant::with('businessCategory', 'user', 'storeProfile')->where('is_verified', 1)->get();
+        $category = $request->query('category');
+
+        $merchants = Merchant::with('businessCategory', 'user', 'storeProfile')
+            ->where('is_verified', 1)
+            ->when($category, function ($query, $category) {
+                $query->whereHas('businessCategory', function ($q) use ($category) {
+                    $q->where('name', $category);
+                });
+            })
+            ->get();
+
         return Inertia::render('customer/pages/merchant/index', [
             'data' => $merchants,
+            'selectedCategory' => $category,
         ]);
     }
 
-    public function show(int $id): Response
+    public function merchant_categories(): InertiaResponse
+    {
+        $merchantCategories = BusinessCategory::all();
+        return Inertia::render('customer/pages/merchant-categories/index', [
+            'data' => $merchantCategories,
+        ]);
+    }
+
+    public function show(int $id): InertiaResponse
     {
         $merchant = Merchant::withTrashed()->findOrFail($id);
 
@@ -37,7 +58,7 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function showForCustomer(Merchant $merchant): Response
+    public function showForCustomer(Merchant $merchant): InertiaResponse
     {
         $merchant->load('businessCategory', 'user', 'storeProfile', 'storeGalleries', 'storeOperatingHours', 'menuCategories', 'menuItems.menuCategory');
         return Inertia::render('customer/pages/merchant/detail/index', [
