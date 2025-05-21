@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CouponTypeEnum;
+use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
@@ -11,6 +12,7 @@ use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
 use App\Models\Fee;
+use App\Models\OrderStatus;
 use App\Models\Table;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
@@ -175,6 +177,11 @@ class TransactionController extends Controller
             ),
         );
 
+        OrderStatus::create([
+            'transaction_id' => $transaction->id,
+            'status' => OrderStatusEnum::PENDING,
+        ]);
+
         return redirect()
             ->route('transaction.success', ['transactionCode' => $transactionCode])
             ->with('message', 'Transaksi sudah selesai dibayar.');
@@ -282,6 +289,11 @@ class TransactionController extends Controller
                 $dineInSnapshot,
             ),
         );
+
+        OrderStatus::create([
+            'transaction_id' => $transaction->id,
+            'status' => OrderStatusEnum::PENDING,
+        ]);
 
         return redirect()
             ->back()

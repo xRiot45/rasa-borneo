@@ -120,4 +120,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(Merchant::class);
     }
+
+    public function orderStatus(): HasMany
+    {
+        return $this->hasMany(OrderStatus::class);
+    }
 }
