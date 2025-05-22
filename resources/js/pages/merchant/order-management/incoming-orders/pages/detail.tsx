@@ -2,8 +2,10 @@ import OrderProgress from '@/components/order-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
 import MerchantLayout from '@/layouts/merchant/layout';
@@ -67,6 +69,7 @@ export default function OrderDetailPage({ order }: Props) {
 
     const statusKey = payment_status as PaymentStatusEnum;
     const badgeClass = paymentStatusColorMap[statusKey] ?? 'bg-gray-300 text-black';
+    const latestStatus = order_status?.[order_status.length - 1]?.status || '';
 
     return (
         <>
@@ -89,150 +92,181 @@ export default function OrderDetailPage({ order }: Props) {
                         </Button>
                     </div>
 
-                    {/* Order Progress */}
-                    <OrderProgress transactionCode={transaction_code} orderStatus={order_status} />
+                    <div className="grid grid-cols-1 gap-y-6 md:grid-cols-3 md:gap-x-6">
+                        <div className="col-span-2 grid space-y-6">
+                            {/* Order Progress */}
+                            <OrderProgress transactionCode={transaction_code} orderStatus={order_status} />
 
-                    <main ref={contentRef} className="space-y-6">
-                        <Card className="p-4 shadow-none">
-                            <CardContent className="space-y-4 p-4">
-                                <h2 className="text-lg font-semibold">Informasi Pemesanan</h2>
+                            <section ref={contentRef} className="space-y-6">
+                                <Card className="p-4 shadow-none">
+                                    <CardContent className="space-y-4 p-4">
+                                        <h2 className="text-lg font-semibold">Informasi Pemesanan</h2>
 
-                                <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="space-y-4">
-                                        <p className="capitalize">
-                                            <strong>Kode Transaksi :</strong> {transaction_code}
-                                        </p>
-                                        <p className="capitalize">
-                                            <strong>Nama Pemesan :</strong> {orderer_name || '-'}
-                                        </p>
-                                        <p className="capitalize">
-                                            <strong>No. HP Pemesan :</strong> {orderer_phone_number || '-'}
-                                        </p>
-                                        <p className="capitalize">
-                                            <strong>Metode Pemesanan :</strong> {order_type || '-'} ({order_location || '-'})
-                                        </p>
-                                        <p className="capitalize">
-                                            <strong>Nomor Meja :</strong> {dine_in_table_label || '-'}
-                                        </p>
-                                        <p className="capitalize">
-                                            <strong>Catatan :</strong> {note || '-'}
-                                        </p>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <p className="capitalize">
-                                            <strong>Metode Pembayaran : </strong>
-                                            <Badge
-                                                variant="default"
-                                                className={`rounded-sm font-bold capitalize ${PaymentMethodEnum.CASH === payment_method ? 'bg-green-600' : 'bg-blue-600'}`}
-                                            >
-                                                {payment_method?.toUpperCase()}
-                                            </Badge>
-                                        </p>
-                                        <p className="capitalize">
-                                            <strong>Status Pembayaran : </strong>
-                                            <Badge variant="default" className={`rounded-sm font-bold capitalize ${badgeClass}`}>
-                                                {payment_status?.toUpperCase() || 'UNKNOWN'}
-                                            </Badge>
-                                        </p>
-                                        {payment_method === PaymentMethodEnum.CASH && (
-                                            <>
-                                                <p>
-                                                    <strong>Uang Diterima :</strong> {formatCurrency(cash_received_amount)}
+                                        <div className="grid gap-4 md:grid-cols-2">
+                                            <div className="space-y-4">
+                                                <p className="capitalize">
+                                                    <strong>Kode Transaksi :</strong> {transaction_code}
                                                 </p>
-                                                <p>
-                                                    <strong>Kembalian :</strong> {formatCurrency(change_amount)}
+                                                <p className="capitalize">
+                                                    <strong>Nama Pemesan :</strong> {orderer_name || '-'}
                                                 </p>
-                                            </>
-                                        )}
+                                                <p className="capitalize">
+                                                    <strong>No. HP Pemesan :</strong> {orderer_phone_number || '-'}
+                                                </p>
+                                                <p className="capitalize">
+                                                    <strong>Metode Pemesanan :</strong> {order_type || '-'} ({order_location || '-'})
+                                                </p>
+                                                <p className="capitalize">
+                                                    <strong>Nomor Meja :</strong> {dine_in_table_label || '-'}
+                                                </p>
+                                                <p className="capitalize">
+                                                    <strong>Catatan :</strong> {note || '-'}
+                                                </p>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <p className="capitalize">
+                                                    <strong>Metode Pembayaran : </strong>
+                                                    <Badge
+                                                        variant="default"
+                                                        className={`rounded-sm font-bold capitalize ${PaymentMethodEnum.CASH === payment_method ? 'bg-green-600' : 'bg-blue-600'}`}
+                                                    >
+                                                        {payment_method?.toUpperCase()}
+                                                    </Badge>
+                                                </p>
+                                                <p className="capitalize">
+                                                    <strong>Status Pembayaran : </strong>
+                                                    <Badge variant="default" className={`rounded-sm font-bold capitalize ${badgeClass}`}>
+                                                        {payment_status?.toUpperCase() || 'UNKNOWN'}
+                                                    </Badge>
+                                                </p>
+                                                {payment_method === PaymentMethodEnum.CASH && (
+                                                    <>
+                                                        <p>
+                                                            <strong>Uang Diterima :</strong> {formatCurrency(cash_received_amount)}
+                                                        </p>
+                                                        <p>
+                                                            <strong>Kembalian :</strong> {formatCurrency(change_amount)}
+                                                        </p>
+                                                    </>
+                                                )}
 
-                                        {coupon_code && (
-                                            <p>
-                                                <strong>Kupon :</strong> {coupon_code} ({coupon_discount}%)
-                                            </p>
-                                        )}
-                                        <p>
-                                            <strong>Tanggal & Waktu Pesanan :</strong> {formatDate(checked_out_at ?? '')}
-                                        </p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                                {coupon_code && (
+                                                    <p>
+                                                        <strong>Kupon :</strong> {coupon_code} ({coupon_discount}%)
+                                                    </p>
+                                                )}
+                                                <p>
+                                                    <strong>Tanggal & Waktu Pesanan :</strong> {formatDate(checked_out_at ?? '')}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
-                        <Card className="p-4 shadow-none">
-                            <CardContent className="space-y-4 p-4">
-                                <h2 className="text-lg font-semibold">Item Pesanan</h2>
+                                <Card className="p-4 shadow-none">
+                                    <CardContent className="space-y-4 p-4">
+                                        <h2 className="text-lg font-semibold">Item Pesanan</h2>
 
-                                <div className="grid grid-cols-1 rounded-md">
-                                    <Table className="min-w-[750px]">
-                                        <TableHeader className="bg-gray-100 dark:bg-gray-800">
-                                            <TableRow>
-                                                <TableHead className="whitespace-nowrap">Menu</TableHead>
-                                                <TableHead className="text-center whitespace-nowrap">Kategori</TableHead>
-                                                <TableHead className="text-center whitespace-nowrap">Jumlah</TableHead>
-                                                <TableHead className="text-center whitespace-nowrap">Harga</TableHead>
-                                                <TableHead className="text-center whitespace-nowrap">Subtotal</TableHead>
-                                                <TableHead className="text-center whitespace-nowrap">Catatan</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {transaction_items.map((item: TransactionItem) => (
-                                                <TableRow key={item.id}>
-                                                    <TableCell className="min-w-[200px]">
-                                                        <div className="flex items-center gap-3">
-                                                            <img
-                                                                src={item.menu_item_image_url}
-                                                                alt={item.menu_item_name}
-                                                                className="h-16 w-16 shrink-0 rounded-md object-cover"
-                                                            />
-                                                            <span className="text-sm font-medium">{item.menu_item_name}</span>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="text-center text-sm">{item.menu_item_category}</TableCell>
-                                                    <TableCell className="text-center text-sm">{item.quantity}</TableCell>
-                                                    <TableCell className="text-center text-sm">{formatCurrency(item.menu_item_price)}</TableCell>
-                                                    <TableCell className="text-center text-sm">{formatCurrency(item.subtotal)}</TableCell>
-                                                    <TableCell className="text-center text-sm">{item.note || '-'}</TableCell>
-                                                </TableRow>
+                                        <div className="grid grid-cols-1 rounded-md">
+                                            <Table className="min-w-[750px]">
+                                                <TableHeader className="bg-gray-100 dark:bg-gray-800">
+                                                    <TableRow>
+                                                        <TableHead className="whitespace-nowrap">Menu</TableHead>
+                                                        <TableHead className="text-center whitespace-nowrap">Kategori</TableHead>
+                                                        <TableHead className="text-center whitespace-nowrap">Jumlah</TableHead>
+                                                        <TableHead className="text-center whitespace-nowrap">Harga</TableHead>
+                                                        <TableHead className="text-center whitespace-nowrap">Subtotal</TableHead>
+                                                        <TableHead className="text-center whitespace-nowrap">Catatan</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {transaction_items.map((item: TransactionItem) => (
+                                                        <TableRow key={item.id}>
+                                                            <TableCell className="min-w-[200px]">
+                                                                <div className="flex items-center gap-3">
+                                                                    <img
+                                                                        src={item.menu_item_image_url}
+                                                                        alt={item.menu_item_name}
+                                                                        className="h-16 w-16 shrink-0 rounded-md object-cover"
+                                                                    />
+                                                                    <span className="text-sm font-medium">{item.menu_item_name}</span>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell className="text-center text-sm">{item.menu_item_category}</TableCell>
+                                                            <TableCell className="text-center text-sm">{item.quantity}</TableCell>
+                                                            <TableCell className="text-center text-sm">
+                                                                {formatCurrency(item.menu_item_price)}
+                                                            </TableCell>
+                                                            <TableCell className="text-center text-sm">{formatCurrency(item.subtotal)}</TableCell>
+                                                            <TableCell className="text-center text-sm">{item.note || '-'}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card className="p-4 shadow-none">
+                                    <CardContent className="space-y-2 p-4">
+                                        <h2 className="text-lg font-semibold">Rincian Biaya</h2>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between">
+                                                <span>Subtotal Item</span>
+                                                <span>{formatCurrency(subtotal_transaction_item)}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>Biaya Layanan</span>
+                                                <span>{formatCurrency(application_service_fee)}</span>
+                                            </div>
+                                            {discount_total > 0 && (
+                                                <div className="flex justify-between text-red-600">
+                                                    <span>Diskon</span>
+                                                    <span>- {formatCurrency(discount_total)}</span>
+                                                </div>
+                                            )}
+                                            {delivery_fee > 0 && (
+                                                <div className="flex justify-between">
+                                                    <span>Biaya Pengiriman</span>
+                                                    <span>Rp{delivery_fee.toLocaleString()}</span>
+                                                </div>
+                                            )}
+                                            <Separator />
+                                            <div className="flex justify-between text-lg font-bold">
+                                                <span>Total Bayar</span>
+                                                <span>{formatCurrency(final_total)}</span>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </section>
+                        </div>
+
+                        {/* Sidebar (Update Status) */}
+                        <div className="md:col-span-1">
+                            <Card className="p-4 shadow-none">
+                                <CardContent className="w-full space-y-4 p-4">
+                                    <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
+                                    <Select value={latestStatus}>
+                                        <SelectTrigger className="w-full rounded-md py-6">
+                                            <SelectValue placeholder="Pilih status pesanan" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Object.values(OrderStatusEnum).map((status) => (
+                                                <SelectItem key={status} value={status} className="w-full cursor-pointer p-4 capitalize">
+                                                    {status.replace(/_/g, ' ')}
+                                                </SelectItem>
                                             ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="p-4 shadow-none">
-                            <CardContent className="space-y-2 p-4">
-                                <h2 className="text-lg font-semibold">Rincian Biaya</h2>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between">
-                                        <span>Subtotal Item</span>
-                                        <span>{formatCurrency(subtotal_transaction_item)}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Biaya Layanan</span>
-                                        <span>{formatCurrency(application_service_fee)}</span>
-                                    </div>
-                                    {discount_total > 0 && (
-                                        <div className="flex justify-between text-red-600">
-                                            <span>Diskon</span>
-                                            <span>- {formatCurrency(discount_total)}</span>
-                                        </div>
-                                    )}
-                                    {delivery_fee > 0 && (
-                                        <div className="flex justify-between">
-                                            <span>Biaya Pengiriman</span>
-                                            <span>Rp{delivery_fee.toLocaleString()}</span>
-                                        </div>
-                                    )}
-                                    <Separator />
-                                    <div className="flex justify-between text-lg font-bold">
-                                        <span>Total Bayar</span>
-                                        <span>{formatCurrency(final_total)}</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </main>
+                                        </SelectContent>
+                                    </Select>
+                                    <Button className="w-full cursor-pointer rounded-md py-6">
+                                        <Icon icon="mdi:reload" className="mr-2 h-4 w-4" />
+                                        Perbarui Status Pesanan
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
                 </div>
             </MerchantLayout>
         </>
