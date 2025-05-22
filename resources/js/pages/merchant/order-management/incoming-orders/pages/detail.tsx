@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { OrderStatusEnum } from '@/enums/order-status';
+import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
 import MerchantLayout from '@/layouts/merchant/layout';
@@ -44,6 +45,11 @@ export default function OrderDetailPage({ order }: Props) {
         transaction_code,
         orderer_name,
         orderer_phone_number,
+        recipient_address,
+        recipient_phone_number,
+        recipient_name,
+        recipient_email,
+        recipient_address_label,
         order_type,
         order_location,
         payment_method,
@@ -53,6 +59,7 @@ export default function OrderDetailPage({ order }: Props) {
         cash_received_amount,
         change_amount,
         coupon_code,
+        coupon_type,
         coupon_discount,
         transaction_items,
         subtotal_transaction_item,
@@ -107,18 +114,25 @@ export default function OrderDetailPage({ order }: Props) {
                                                 <p className="capitalize">
                                                     <strong>Kode Transaksi :</strong> {transaction_code}
                                                 </p>
-                                                <p className="capitalize">
-                                                    <strong>Nama Pemesan :</strong> {orderer_name || '-'}
-                                                </p>
-                                                <p className="capitalize">
-                                                    <strong>No. HP Pemesan :</strong> {orderer_phone_number || '-'}
-                                                </p>
+                                                {order_type !== OrderTypeEnum.DELIVERY && (
+                                                    <>
+                                                        <p className="capitalize">
+                                                            <strong>Nama Pemesan :</strong> {orderer_name || '-'}
+                                                        </p>
+                                                        <p className="capitalize">
+                                                            <strong>No. HP Pemesan :</strong> {orderer_phone_number || '-'}
+                                                        </p>
+                                                    </>
+                                                )}
+
                                                 <p className="capitalize">
                                                     <strong>Metode Pemesanan :</strong> {order_type || '-'} ({order_location || '-'})
                                                 </p>
-                                                <p className="capitalize">
-                                                    <strong>Nomor Meja :</strong> {dine_in_table_label || '-'}
-                                                </p>
+                                                {order_type === OrderTypeEnum.DINEIN && (
+                                                    <p className="capitalize">
+                                                        <strong>Nomor Meja :</strong> {dine_in_table_label || '-'}
+                                                    </p>
+                                                )}
                                                 <p className="capitalize">
                                                     <strong>Catatan :</strong> {note || '-'}
                                                 </p>
@@ -152,16 +166,49 @@ export default function OrderDetailPage({ order }: Props) {
 
                                                 {coupon_code && (
                                                     <p>
-                                                        <strong>Kupon :</strong> {coupon_code} ({coupon_discount}%)
+                                                        <strong>Kupon:</strong> {coupon_code} | Diskon (
+                                                        {coupon_type === 'percentage' ? `${coupon_discount}%` : `${formatCurrency(coupon_discount)}`})
                                                     </p>
                                                 )}
+
                                                 <p>
-                                                    <strong>Tanggal & Waktu Pesanan :</strong> {formatDate(checked_out_at ?? '')}
+                                                    <strong>Tanggal & Waktu Pemesanan :</strong> {formatDate(checked_out_at ?? '')}
                                                 </p>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
+
+                                {order_type === OrderTypeEnum.DELIVERY && (
+                                    <Card className="p-4 shadow-none">
+                                        <CardContent className="space-y-4 p-4">
+                                            <h2 className="text-lg font-semibold">Informasi Pengiriman</h2>
+
+                                            <div className="grid gap-4 md:grid-cols-2">
+                                                <div className="space-y-4">
+                                                    <p className="capitalize">
+                                                        <strong>Nama Penerima :</strong> {recipient_name || '-'}
+                                                    </p>
+                                                    <p className="capitalize">
+                                                        <strong>No. HP Penerima :</strong> {recipient_phone_number || '-'}
+                                                    </p>
+                                                    <p>
+                                                        <strong>Alamat Email Penerima :</strong> {recipient_email || '-'}
+                                                    </p>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <p className="capitalize">
+                                                        <strong>Alamat Penerima :</strong> {recipient_address || '-'}
+                                                    </p>
+                                                    <p className="capitalize">
+                                                        <strong>Label Alamat Penerima :</strong> {recipient_address_label || '-'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                )}
 
                                 <Card className="p-4 shadow-none">
                                     <CardContent className="space-y-4 p-4">

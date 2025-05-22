@@ -28,7 +28,7 @@ export const columns: ColumnDef<Order>[] = [
     {
         id: 'checked_out_at',
         accessorKey: 'checked_out_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Waktu Pemesanan" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Tanggal & Waktu Pemesanan" />,
         cell: ({ row }) => {
             const { date, time } = formatDateTimeIndo(row.getValue('checked_out_at'));
 
