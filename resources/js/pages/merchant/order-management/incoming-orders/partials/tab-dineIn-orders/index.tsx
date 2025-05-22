@@ -2,7 +2,6 @@ import { Order } from '@/models/order';
 import IncomingOrdersTable from '../../shared/table';
 import { columns } from '../../shared/table/columns';
 
-
 interface Props {
     data: Order[];
 }
