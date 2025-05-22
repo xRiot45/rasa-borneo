@@ -81,6 +81,25 @@ class CustomerAddressController extends Controller
         return redirect()->route('address-list.index')->with('success', 'Alamat berhasil diubah.');
     }
 
+    public function setPrimary(int $customerAddressId): RedirectResponse
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $customerId = $customer->id;
+
+        $customerAddress = CustomerAddress::findOrFail($customerAddressId);
+        if ($customerAddress->customer_id !== $customerId) {
+            abort(403, 'Anda tidak memiliki izin untuk mengubah alamat ini.');
+        }
+
+        CustomerAddress::where('customer_id', $customerAddress->customer_id)
+            ->update(['is_primary' => false]);
+
+        $customerAddress->update(['is_primary' => true]);
+
+        return redirect()->back()->with('success', 'Alamat utama berhasil diubah.');
+    }
+
     public function destroy(int $customerAddressId): RedirectResponse
     {
         $customerAddress = CustomerAddress::where('id', $customerAddressId)->first();

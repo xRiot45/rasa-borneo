@@ -1,18 +1,23 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { OrderLocationEnum } from '@/enums/order-location';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import CustomerLayout from '@/layouts/customer/layout';
 import { Coupon } from '@/models/coupon';
+import { CustomerAddress } from '@/models/customer-address';
 import { Fee } from '@/models/fee';
 import { TableModel } from '@/models/table';
 import { Transaction, TransactionForm } from '@/models/transactions';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import { MapPin } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import CustomerAddressDialog from './components/checkout-payment-details/customer-address-dialog';
 import Header from './components/checkout-payment-details/header';
 import OrderDetailsForm from './components/checkout-payment-details/order-details-form';
 import PaymentActionButton from './components/checkout-payment-details/payment-action-button';
@@ -27,13 +32,15 @@ interface Props {
     coupons: Coupon[];
     tables: TableModel[];
     fees: Fee;
+    customerAddress: CustomerAddress[];
 }
 
-export default function CheckoutPage({ transaction, coupons, tables, fees }: Props) {
+export default function CheckoutPage({ transaction, coupons, tables, fees, customerAddress }: Props) {
     const { flash } = usePage().props as unknown as { flash: { snap_token: string } };
     const [showPaymentMethodCashDialog, setShowPaymentMethodCashDialog] = useState<boolean>(false);
     const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
     const [couponDiscount, setCouponDiscount] = useState<number>(0);
+    const [showAddressDialog, setShowAddressDialog] = useState(false);
 
     const {
         data: formData,
@@ -189,6 +196,74 @@ export default function CheckoutPage({ transaction, coupons, tables, fees }: Pro
                         <Card className="sticky top-20 mt-4 h-fit w-full border p-6 shadow-none lg:mt-18">
                             {/* Header */}
                             <Header transaction={transaction} />
+
+                            <Separator />
+
+                            {/* Alamat Customer */}
+                            {formData?.order_type === OrderTypeEnum.DELIVERY && (
+                                <>
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-base font-semibold">Alamat Pengiriman</h3>
+
+                                        {customerAddress?.length > 0 ? (
+                                            <Button
+                                                variant="ghost"
+                                                className="text-primary text-sm underline"
+                                                onClick={() => setShowAddressDialog(true)}
+                                            >
+                                                Pilih Alamat Lain
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="ghost"
+                                                className="text-primary text-sm underline"
+                                                onClick={() => router.visit(route('address-list.index'))}
+                                            >
+                                                Tambah Alamat
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {customerAddress?.length > 0 ? (
+                                        customerAddress.map((item, index) =>
+                                            item.is_primary ? (
+                                                <Card
+                                                    key={index}
+                                                    className="relative rounded-2xl border border-green-300 bg-green-50 shadow-none transition-all duration-300 dark:border-green-500 dark:bg-green-950"
+                                                >
+                                                    <CardContent className="space-y-5 p-6">
+                                                        <div className="flex items-center gap-2">
+                                                            <h1 className="text-md font-semibold text-black capitalize dark:text-white">
+                                                                {item.address_label}
+                                                            </h1>
+                                                            <Badge className="rounded bg-gray-200 text-xs font-medium text-gray-600 dark:bg-green-500/10 dark:text-green-400">
+                                                                Alamat Utama
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <h3 className="text-lg font-semibold text-black dark:text-white">
+                                                                {item.recipient_name}
+                                                            </h3>
+                                                            <p className="text-muted-foreground text-sm dark:text-zinc-400">{item.phone_number}</p>
+                                                            <p className="text-muted-foreground text-sm dark:text-zinc-400">{item.email}</p>
+                                                        </div>
+                                                        <div className="text-muted-foreground flex items-start gap-2 text-sm dark:text-zinc-400">
+                                                            <MapPin className="mt-0.5 h-4 w-4 text-green-600 dark:text-green-400" />
+                                                            <p>{item.complete_address}</p>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            ) : null,
+                                        )
+                                    ) : (
+                                        <div className="text-muted-foreground mt-4 rounded-xl border border-dashed p-4 text-center text-sm dark:border-zinc-700 dark:text-zinc-400">
+                                            Alamat belum tersedia. Silakan tambahkan alamat terlebih dahulu.
+                                        </div>
+                                    )}
+
+                                    <CustomerAddressDialog open={showAddressDialog} onOpenChange={setShowAddressDialog} addresses={customerAddress} />
+                                </>
+                            )}
 
                             <Separator />
 

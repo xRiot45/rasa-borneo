@@ -289,6 +289,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/address-list', [CustomerAddressController::class, 'store'])->name('address-list.store');
     Route::get('/address-list/edit/{id}', [CustomerAddressController::class, 'edit'])->name('address-list.edit');
     Route::put('/address-list/edit/{id}', [CustomerAddressController::class, 'update'])->name('address-list.update');
+    Route::put('/address-list/set-primary/{id}', [CustomerAddressController::class, 'setPrimary'])->name('address-list.setPrimary');
     Route::delete('/address-list/{id}', [CustomerAddressController::class, 'destroy'])->name('address-list.destroy');
 });
 

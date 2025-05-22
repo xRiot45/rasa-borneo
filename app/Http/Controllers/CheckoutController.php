@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Customer;
+use App\Models\CustomerAddress;
 use App\Models\Fee;
 use App\Models\Table;
 use App\Models\Transaction;
@@ -19,6 +20,10 @@ class CheckoutController extends Controller
 {
     public function index(string $transactionCode): InertiaResponse
     {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $customerId = $customer->id;
+
         $transaction = Transaction::with('transactionItems', 'coupon')->where('transaction_code', $transactionCode)->first();
         $coupons = Coupon::where('is_active', true)->where('merchant_id', $transaction->merchant_id)->get();
         $tables = Table::where('merchant_id', $transaction->merchant_id)->get();
@@ -26,11 +31,14 @@ class CheckoutController extends Controller
             ->get()
             ->keyBy('type');
 
+        $customerAddress = CustomerAddress::where('customer_id', $customerId)->get();
+
         return Inertia::render('customer/pages/checkout/index', [
             'transaction' => $transaction,
             'coupons' => $coupons,
             'tables' => $tables,
             'fees' => $fees,
+            'customerAddress' => $customerAddress,
         ]);
     }
 
