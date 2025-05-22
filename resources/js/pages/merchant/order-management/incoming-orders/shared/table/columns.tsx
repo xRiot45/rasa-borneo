@@ -42,35 +42,27 @@ export const columns: ColumnDef<Order>[] = [
         enableHiding: false,
         enableSorting: false,
     },
-    {
-        id: 'orderer_info',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Informasi Pemesan" />,
-        cell: ({ row }) => {
-            const name = row.original.orderer_name;
-            const phone = row.original.orderer_phone_number;
-            return (
-                <div className="space-y-1 text-sm">
-                    <h1 className="font-medium">{name}</h1>
-                    <span className="text-sm">{phone}</span>
-                </div>
-            );
-        },
-        filterFn: (row, _columnId, filterValue) => {
-            const name = row.original.orderer_name?.toLowerCase() ?? '';
-            const phone = row.original.orderer_phone_number?.toLowerCase() ?? '';
-            return name.includes(filterValue.toLowerCase()) || phone.includes(filterValue.toLowerCase());
-        },
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        id: 'dine_in_table_label',
-        accessorKey: 'dine_in_table_label',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Nomor Meja" />,
-        cell: ({ row }) => <span className="text-sm text-gray-800 dark:text-gray-200">{row.getValue('dine_in_table_label')}</span>,
-        enableSorting: false,
-        enableHiding: false,
-    },
+    // {
+    //     id: 'orderer_info',
+    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Informasi Pemesan" />,
+    //     cell: ({ row }) => {
+    //         const name = row.original.orderer_name;
+    //         const phone = row.original.orderer_phone_number;
+    //         return (
+    //             <div className="space-y-1 text-sm">
+    //                 <h1 className="font-medium">{name}</h1>
+    //                 <span className="text-sm">{phone}</span>
+    //             </div>
+    //         );
+    //     },
+    //     filterFn: (row, _columnId, filterValue) => {
+    //         const name = row.original.orderer_name?.toLowerCase() ?? '';
+    //         const phone = row.original.orderer_phone_number?.toLowerCase() ?? '';
+    //         return name.includes(filterValue.toLowerCase()) || phone.includes(filterValue.toLowerCase());
+    //     },
+    //     enableSorting: false,
+    //     enableHiding: false,
+    // },
     {
         id: 'payment_method',
         accessorKey: 'payment_method',

@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { DataTablePagination } from './components/data-table-pagination';
 import { DataTableToolbar } from './components/data-table-toolbar';
 
-export default function DineInOrderTable({ columns, data }: DataTableProps<Order>) {
+export default function IncomingOrdersTable({ columns, data }: DataTableProps<Order>) {
     const [rowSelection, setRowSelection] = useState({});
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

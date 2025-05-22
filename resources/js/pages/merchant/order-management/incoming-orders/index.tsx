@@ -5,7 +5,10 @@ import { Order } from '@/models/order';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { TabsContent } from '@radix-ui/react-tabs';
+import TabDeliveryOrderContent from './partials/tab-delivery-orders';
 import TabDineInOrderContent from './partials/tab-dineIn-orders';
+import TabPickupOrderContent from './partials/tab-pickup-orders';
+import TabTakeAwayOrderContent from './partials/tab-takeAway-orders';
 
 interface Props {
     dineInOrders: Order[];
@@ -26,16 +29,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function IncomingOrderPage({ dineInOrders, takeAwayOrders, deliveryOrders, pickupOrders }: Props) {
-    console.log(dineInOrders);
-    console.log(takeAwayOrders);
-    console.log(deliveryOrders);
-    console.log(pickupOrders);
-
     const newOrders: Record<string, number> = {
-        dineIn: 3,
-        takeAway: 1,
-        delivery: 0,
-        pickup: 5,
+        dineIn: dineInOrders.length,
+        takeAway: takeAwayOrders.length,
+        delivery: deliveryOrders.length,
+        pickup: pickupOrders.length,
     };
 
     return (
@@ -76,16 +74,16 @@ export default function IncomingOrderPage({ dineInOrders, takeAwayOrders, delive
                                 <TabDineInOrderContent data={dineInOrders} />
                             </TabsContent>
 
-                            <TabsContent value="takeAway">
-                                <p>Take Away Content</p>
+                            <TabsContent value="takeAway" className="mt-10">
+                                <TabTakeAwayOrderContent data={takeAwayOrders} />
                             </TabsContent>
 
-                            <TabsContent value="delivery">
-                                <p>Delivery Content</p>
+                            <TabsContent value="delivery" className="mt-10">
+                                <TabDeliveryOrderContent data={deliveryOrders} />
                             </TabsContent>
 
-                            <TabsContent value="pickup">
-                                <p>Pickup Content</p>
+                            <TabsContent value="pickup" className="mt-10">
+                                <TabPickupOrderContent data={pickupOrders} />
                             </TabsContent>
                         </Tabs>
                     </div>
