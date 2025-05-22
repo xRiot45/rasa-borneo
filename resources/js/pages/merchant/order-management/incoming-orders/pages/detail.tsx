@@ -1,3 +1,4 @@
+import OrderProgress from '@/components/order-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,7 +36,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function OrderDetailPage({ order }: Props) {
-    console.log(order);
     const {
         transaction_code,
         orderer_name,
@@ -57,6 +57,7 @@ export default function OrderDetailPage({ order }: Props) {
         final_total,
         delivery_fee,
         checked_out_at,
+        order_status,
     } = order;
 
     const statusKey = payment_status as PaymentStatusEnum;
@@ -71,7 +72,9 @@ export default function OrderDetailPage({ order }: Props) {
                         <Icon icon="bx:arrow-back" />
                         Kembali Ke Halaman Sebelumnya
                     </Button>
-                    <h1 className="text-2xl font-bold">Detail Pesanan</h1>
+
+                    {/* Order Progress */}
+                    <OrderProgress transactionCode={transaction_code} orderStatus={order_status} />
 
                     <Card className="p-4 shadow-none">
                         <CardContent className="space-y-4 p-4">

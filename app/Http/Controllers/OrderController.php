@@ -56,7 +56,7 @@ class OrderController extends Controller
 
         $order = Order::where('transaction_code', $transactionCode)
             ->where('merchant_id', $merchant->id)
-            ->with(['transactionItems', 'customer'])
+            ->with(['transactionItems', 'customer', 'orderStatus'])
             ->firstOrFail();
 
         return Inertia::render('merchant/order-management/incoming-orders/pages/detail', [
