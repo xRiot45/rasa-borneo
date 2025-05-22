@@ -17,17 +17,10 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                 />
 
                 <Input
-                    placeholder="Cari nama pemesan..."
-                    value={(table.getColumn('orderer_name')?.getFilterValue() as string) ?? ''}
-                    onChange={(event) => table.getColumn('orderer_name')?.setFilterValue(event.target.value)}
-                    className="h-8 w-[150px] lg:w-[250px]"
-                />
-
-                <Input
-                    placeholder="Cari nomor telepon pemesan..."
-                    value={(table.getColumn('orderer_phone_number')?.getFilterValue() as string) ?? ''}
-                    onChange={(event) => table.getColumn('orderer_phone_number')?.setFilterValue(event.target.value)}
-                    className="h-8 w-[150px] lg:w-[250px]"
+                    placeholder="Cari pemesan (nama / nomor telepon)..."
+                    value={(table.getColumn('orderer_info')?.getFilterValue() as string) ?? ''}
+                    onChange={(event) => table.getColumn('orderer_info')?.setFilterValue(event.target.value)}
+                    className="h-8 w-[200px] lg:w-[300px]"
                 />
 
                 {isFiltered && (
