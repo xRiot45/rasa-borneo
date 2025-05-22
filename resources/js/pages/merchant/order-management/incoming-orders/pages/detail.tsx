@@ -89,13 +89,13 @@ export default function OrderDetailPage({ order }: Props) {
                                         <strong>Nama Pemesan :</strong> {orderer_name}
                                     </p>
                                     <p className="capitalize">
-                                        <strong>No. HP :</strong> {orderer_phone_number}
+                                        <strong>No. HP Pemesan :</strong> {orderer_phone_number}
                                     </p>
                                     <p className="capitalize">
                                         <strong>Metode Pemesanan :</strong> {order_type} ({order_location})
                                     </p>
                                     <p className="capitalize">
-                                        <strong>Meja :</strong> {dine_in_table_label}
+                                        <strong>Nomor Meja :</strong> {dine_in_table_label}
                                     </p>
                                     <p className="capitalize">
                                         <strong>Catatan :</strong> {note}
