@@ -22,8 +22,8 @@ export const columns: ColumnDef<Order>[] = [
         accessorKey: 'transaction_code',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Kode Transaksi" />,
         cell: ({ row }) => <span className="text-primary text-sm">{row.getValue('transaction_code')}</span>,
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
     },
     {
         id: 'checked_out_at',
@@ -39,8 +39,8 @@ export const columns: ColumnDef<Order>[] = [
                 </div>
             );
         },
-        enableHiding: false,
-        enableSorting: false,
+        enableHiding: true,
+        enableSorting: true,
     },
     // {
     //     id: 'orderer_info',
@@ -63,6 +63,17 @@ export const columns: ColumnDef<Order>[] = [
     //     enableSorting: false,
     //     enableHiding: false,
     // },
+    {
+        id: 'order_type',
+        accessorKey: 'order_type',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Metode Pemesanan" />,
+        cell: ({ row }) => {
+            const orderType: string = row.getValue('order_type');
+            return <span className="text-primary text-sm capitalize">{orderType}</span>;
+        },
+        enableHiding: false,
+        enableSorting: false,
+    },
     {
         id: 'payment_method',
         accessorKey: 'payment_method',
@@ -103,8 +114,8 @@ export const columns: ColumnDef<Order>[] = [
         accessorKey: 'final_total',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Total Akhir" />,
         cell: ({ row }) => <span className="text-sm">{formatCurrency(row.getValue('final_total'))}</span>,
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
     },
     {
         id: 'actions',

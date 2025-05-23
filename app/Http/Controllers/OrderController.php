@@ -21,24 +21,28 @@ class OrderController extends Controller
             ->whereNotNull('checked_out_at')
             ->where('order_type', OrderTypeEnum::DINEIN->value)
             ->with('transactionItems')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $takeAwayOrders = Order::where('merchant_id', $merchantId)
             ->whereNotNull('checked_out_at')
             ->where('order_type', OrderTypeEnum::TAKEAWAY->value)
             ->with('transactionItems')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $deliveryOrders = Order::where('merchant_id', $merchantId)
             ->whereNotNull('checked_out_at')
             ->where('order_type', OrderTypeEnum::DELIVERY->value)
             ->with('transactionItems')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $pickupOrders = Order::where('merchant_id', $merchantId)
             ->whereNotNull('checked_out_at')
             ->where('order_type', OrderTypeEnum::PICKUP->value)
             ->with('transactionItems')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('merchant/order-management/incoming-orders/index', [
