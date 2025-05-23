@@ -151,6 +151,7 @@ export default function OrderDetailPage({ order }: Props) {
                             <OrderProgress transactionCode={transaction_code} orderStatus={order_status} />
 
                             <section ref={contentRef} className="space-y-6">
+                                {/* Informasi Pemesanan */}
                                 <Card className="print p-4 shadow-none">
                                     <CardContent className="space-y-4 p-4">
                                         <h2 className="text-lg font-semibold">Informasi Pemesanan</h2>
@@ -192,7 +193,7 @@ export default function OrderDetailPage({ order }: Props) {
                                                     <strong>Metode Pembayaran : </strong>
                                                     <Badge
                                                         variant="default"
-                                                        className={`rounded-sm font-bold capitalize ${PaymentMethodEnum.CASH === payment_method ? 'bg-green-600' : 'bg-blue-600'}`}
+                                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === payment_method ? 'bg-green-600' : 'bg-blue-600'}`}
                                                     >
                                                         {payment_method?.toUpperCase()}
                                                     </Badge>
@@ -252,7 +253,7 @@ export default function OrderDetailPage({ order }: Props) {
 
                                         <div className="grid grid-cols-1 rounded-md">
                                             <Table className="min-w-[750px]">
-                                                <TableHeader className="bg-gray-100 dark:bg-gray-800">
+                                                <TableHeader className="bg-gray-100 dark:bg-neutral-800">
                                                     <TableRow>
                                                         <TableHead className="whitespace-nowrap">Menu</TableHead>
                                                         <TableHead className="text-center whitespace-nowrap">Kategori</TableHead>
@@ -366,7 +367,10 @@ export default function OrderDetailPage({ order }: Props) {
                                 <DialogContent className="sm:max-w-xl">
                                     <DialogHeader>
                                         <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
-                                        <DialogDescription>Ingin mengubah status pesanan menjadi {latestStatus}?</DialogDescription>
+                                        <DialogDescription>
+                                            Ingin mengubah status pesanan menjadi{' '}
+                                            <strong className="font-bold text-black uppercase italic dark:text-white">{latestStatus} ?</strong>
+                                        </DialogDescription>
                                     </DialogHeader>
                                     <DialogFooter className="mt-6">
                                         <Button
