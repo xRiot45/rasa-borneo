@@ -35,8 +35,8 @@ const mainNavItems: NavGroup[] = [
                 icon: 'mdi:order-bool-descending',
             },
             {
-                title: 'Riwayat Transaksi',
-                href: '/merchant/transactions',
+                title: 'Riwayat Pesanan',
+                href: '/merchant/order-management/order-history',
                 icon: 'mdi:history',
             },
         ],

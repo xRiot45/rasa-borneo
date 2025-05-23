@@ -103,4 +103,23 @@ class OrderController extends Controller
 
         return redirect()->route('merchant.incoming-order.index')->with('success', 'Status berhasil diperbarui.');
     }
+
+    public function orderHistory(): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $orders = Order::where('merchant_id', $merchantId)
+            ->whereHas('latestOrderStatus', function ($query) {
+                $query->where('status', OrderStatusEnum::COMPLETED->value);
+            })
+            ->with(['transactionItems', 'latestOrderStatus'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return Inertia::render('merchant/order-management/order-history/index', [
+            'orders' => $orders,
+        ]);
+    }
 }

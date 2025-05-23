@@ -237,6 +237,14 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/show/{transactionCode}', 'showOrderDetail')->name('merchant.incoming-order.show');
                 Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('merchant.incoming-order.updateOrderStatus');
             });
+
+        // Order History
+        Route::prefix('/order-history')
+            ->controller(OrderController::class)
+            ->group(function () {
+                Route::get('/', 'orderHistory')->name('merchant.order-history.index');
+                Route::get('/show/{transactionCode}', 'showOrderDetail')->name('merchant.order-history.show');
+            });
     });
 });
 
