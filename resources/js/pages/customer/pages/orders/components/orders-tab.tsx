@@ -1,3 +1,4 @@
+import EmptyImage from '@/assets/errors/empty.svg';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +8,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 
 interface Props {
@@ -38,7 +39,19 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                 <TabsContent value="ordersCheckout" className="mt-10">
                     <div className="mt-6 grid gap-4">
                         {checkedOutOrders.length === 0 ? (
-                            <p className="text-muted-foreground text-sm">Belum ada pesanan yang diselesaikan.</p>
+                            <div className="flex flex-col">
+                                <div className="flex grow items-center px-6 xl:px-10">
+                                    <div className="mx-auto text-center">
+                                        <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
+                                        <h1 className="mb-1 text-[22px] font-bold text-gray-700 dark:text-gray-100">
+                                            Pesanan Yang Sudah Diselesaikan Tidak Ada
+                                        </h1>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            Pesanan yang sudah diselesaikan saat ini sedang kosong
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         ) : (
                             checkedOutOrders.map((order) => {
                                 const items = order.transaction_items;
@@ -135,7 +148,19 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                 <TabsContent value="ordersNotCheckout" className="mt-10">
                     <div className="mt-6 grid gap-4">
                         {notCheckedOutOrders.length === 0 ? (
-                            <p className="text-muted-foreground text-sm">Belum ada pesanan yang belum diselesaikan.</p>
+                            <div className="flex flex-col">
+                                <div className="flex grow items-center px-6 xl:px-10">
+                                    <div className="mx-auto text-center">
+                                        <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
+                                        <h1 className="mb-1 text-[22px] font-bold text-gray-700 dark:text-gray-100">
+                                            Pesanan Yang Belum Diselesaikan Tidak Ada
+                                        </h1>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            Pesanan yang belum diselesaikan saat ini sedang kosong
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         ) : (
                             notCheckedOutOrders.map((order) => {
                                 const items = order.transaction_items;
@@ -192,6 +217,7 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                                                     variant="default"
                                                     size="sm"
                                                     className="cursor-pointer bg-green-600 text-white hover:bg-green-700"
+                                                    onClick={() => router.visit(route('checkout.index', order?.transaction_code))}
                                                 >
                                                     Selesaikan Pesanan Sekarang
                                                     <Icon icon="material-symbols:arrow-right-alt-rounded" className="h-5 w-5" />
