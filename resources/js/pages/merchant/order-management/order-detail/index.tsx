@@ -81,6 +81,7 @@ export default function OrderDetailPage({ order }: Props) {
     const badgeClass = paymentStatusColorMap[statusKey] ?? 'bg-gray-300 text-black';
 
     const [latestStatus, setLatestStatus] = useState<string>(order_status?.[order_status.length - 1]?.status || '');
+    const [selectedStatus, setSelectedStatus] = useState<string>(order_status?.[order_status.length - 1]?.status || '');
     const [showDialogUpdateOrderStatus, setShowDialogUpdateOrderStatus] = useState<boolean>(false);
 
     const availableStatuses = Object.values(OrderStatusEnum).filter((status) => {
@@ -95,10 +96,6 @@ export default function OrderDetailPage({ order }: Props) {
         return true;
     });
 
-    const handleStatusChange = (value: string) => {
-        setLatestStatus(value);
-    };
-
     const confirmUpdateStatus = () => {
         if (!latestStatus) {
             toast.error('Pilih status terlebih dahulu!');
@@ -110,7 +107,7 @@ export default function OrderDetailPage({ order }: Props) {
     const handleUpdateStatus = () => {
         router.put(
             route('merchant.incoming-order.updateOrderStatus', transaction_code),
-            { status: latestStatus },
+            { status: selectedStatus },
             {
                 onSuccess: () => {
                     toast.success('Success', {
@@ -346,7 +343,7 @@ export default function OrderDetailPage({ order }: Props) {
                                 <Card className="p-4 shadow-none">
                                     <CardContent className="w-full space-y-4 p-4">
                                         <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
-                                        <Select value={latestStatus} onValueChange={handleStatusChange}>
+                                        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                                             <SelectTrigger className="w-full rounded-md py-6">
                                                 <SelectValue placeholder="Pilih status pesanan" />
                                             </SelectTrigger>
@@ -371,18 +368,20 @@ export default function OrderDetailPage({ order }: Props) {
                                             <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
                                             <DialogDescription>
                                                 Ingin mengubah status pesanan menjadi{' '}
-                                                <strong className="font-bold text-black uppercase italic dark:text-white">{latestStatus} ?</strong>
+                                                <strong className="font-bold text-black uppercase italic dark:text-white">{selectedStatus}?</strong>
                                             </DialogDescription>
                                         </DialogHeader>
                                         <DialogFooter className="mt-6">
-                                            <Button
-                                                variant="destructive"
-                                                className="cursor-pointer"
-                                                onClick={() => setShowDialogUpdateOrderStatus(false)}
-                                            >
+                                            <Button variant="destructive" onClick={() => setShowDialogUpdateOrderStatus(false)}>
                                                 Batal
                                             </Button>
-                                            <Button className="cursor-pointer" onClick={handleUpdateStatus}>
+                                            <Button
+                                                onClick={() => {
+                                                    setLatestStatus(selectedStatus);
+                                                    setShowDialogUpdateOrderStatus(false);
+                                                    handleUpdateStatus();
+                                                }}
+                                            >
                                                 Ya, Ubah Status Pesanan
                                             </Button>
                                         </DialogFooter>

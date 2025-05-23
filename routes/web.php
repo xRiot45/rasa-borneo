@@ -302,6 +302,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/address-list/edit/{id}', [CustomerAddressController::class, 'update'])->name('address-list.update');
     Route::put('/address-list/set-primary/{id}', [CustomerAddressController::class, 'setPrimary'])->name('address-list.setPrimary');
     Route::delete('/address-list/{id}', [CustomerAddressController::class, 'destroy'])->name('address-list.destroy');
+
+    // Order List
+    Route::get('/orders', [OrderController::class, 'customerOrders'])->name('order-list.customerOrders');
 });
 
 require __DIR__ . '/settings.php';

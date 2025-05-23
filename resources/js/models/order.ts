@@ -1,3 +1,6 @@
+import { OrderStatus } from './order-status';
 import { Transaction } from './transactions';
 
-export type Order = Transaction;
+export interface Order extends Transaction {
+    latest_order_status: OrderStatus;
+}

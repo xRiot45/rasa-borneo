@@ -1,6 +1,7 @@
 import { OrderLocationEnum } from '@/enums/order-location';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
+import { Merchant } from './merchant';
 import { OrderStatus } from './order-status';
 
 export interface TransactionItem {
@@ -57,6 +58,7 @@ export interface Transaction {
     deleted_at: string | null;
     transaction_items: TransactionItem[];
     order_status: OrderStatus[];
+    merchant: Merchant;
 }
 
 export interface TransactionForm {

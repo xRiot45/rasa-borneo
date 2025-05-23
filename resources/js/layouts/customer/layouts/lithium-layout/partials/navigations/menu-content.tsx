@@ -52,7 +52,7 @@ export function CustomerMenuContent({ user }: Props) {
                 )}
                 {user?.roles[0] === 'customer' && (
                     <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                        <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
+                        <Link className="block w-full" href={route('order-list.customerOrders')} as="button" prefetch onClick={cleanup}>
                             <Icon icon="material-symbols:receipt-long" className="mr-2" />
                             Pesanan Saya
                         </Link>

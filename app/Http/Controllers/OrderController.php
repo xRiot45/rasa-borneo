@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
+use App\Models\Customer;
 use App\Models\Merchant;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
@@ -120,6 +121,30 @@ class OrderController extends Controller
 
         return Inertia::render('merchant/order-management/order-history/index', [
             'orders' => $orders,
+        ]);
+    }
+
+    public function customerOrders(): InertiaResponse
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $customerId = $customer->id;
+
+        $checkedOutOrders = Order::where('customer_id', $customerId)
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant', 'merchant.storeProfile',])
+            ->orderBy('created_at', 'desc')
+            ->where('checked_out_at', '!=', null)
+            ->get();
+
+        $notCheckedOutOrders = Order::where('customer_id', $customerId)
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant', 'merchant.storeProfile'])
+            ->orderBy('created_at', 'desc')
+            ->where('checked_out_at', null)
+            ->get();
+
+        return Inertia::render('customer/pages/orders/index', [
+            'checkedOutOrders' => $checkedOutOrders,
+            'notCheckedOutOrders' => $notCheckedOutOrders,
         ]);
     }
 }
