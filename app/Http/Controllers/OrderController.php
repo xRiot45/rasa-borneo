@@ -69,17 +69,24 @@ class OrderController extends Controller
         ]);
     }
 
-    public function showOrderDetail(string $transactionCode): InertiaResponse
+    public function showOrderDetailMerchant(string $transactionCode): InertiaResponse
     {
-        $user = Auth::user();
-        $merchant = Merchant::where('user_id', $user->id)->first();
-
         $order = Order::where('transaction_code', $transactionCode)
-            ->where('merchant_id', $merchant->id)
             ->with(['transactionItems', 'customer', 'orderStatus'])
             ->firstOrFail();
 
         return Inertia::render('merchant/order-management/order-detail/index', [
+            'order' => $order,
+        ]);
+    }
+
+    public function showOrderDetailCustomer(string $transactionCode): InertiaResponse
+    {
+        $order = Order::where('transaction_code', $transactionCode)
+            ->with(['transactionItems', 'customer', 'orderStatus'])
+            ->firstOrFail();
+
+        return Inertia::render('customer/pages/orders/pages/detail', [
             'order' => $order,
         ]);
     }
@@ -131,7 +138,7 @@ class OrderController extends Controller
         $customerId = $customer->id;
 
         $checkedOutOrders = Order::where('customer_id', $customerId)
-            ->with(['transactionItems', 'latestOrderStatus', 'merchant', 'merchant.storeProfile',])
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant', 'merchant.storeProfile', 'orderStatus'])
             ->orderBy('created_at', 'desc')
             ->where('checked_out_at', '!=', null)
             ->get();

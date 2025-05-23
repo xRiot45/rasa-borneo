@@ -245,7 +245,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             });
 
         Route::controller(OrderController::class)->group(function () {
-            Route::get('/show-order/{transactionCode}', 'showOrderDetail')->name('merchant.order.show');
+            Route::get('/show-order/{transactionCode}', 'showOrderDetailMerchant')->name('merchant.order.show');
         });
     });
 });
@@ -305,6 +305,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Order List
     Route::get('/orders', [OrderController::class, 'customerOrders'])->name('order-list.customerOrders');
+    Route::get('/order/show/{transactionCode}', [OrderController::class, 'showOrderDetailCustomer'])->name('order-list.showOrderDetailCustomer');
 });
 
 require __DIR__ . '/settings.php';

@@ -17,10 +17,10 @@ const statusIcons: Record<OrderStatusEnum, JSX.Element> = {
     [OrderStatusEnum.READY_TO_SERVE]: <Icon icon="material-symbols:restaurant-menu" className="h-5 w-5" />,
     [OrderStatusEnum.DELIVERING]: <Icon icon="mdi:truck-delivery-outline" className="h-5 w-5" />,
     [OrderStatusEnum.COMPLETED]: <Icon icon="mdi:check-decagram" className="h-5 w-5" />,
-    [OrderStatusEnum.CANCELLED]: <Icon icon="mdi:cancel" className="h-5 w-5" />,
+    // [OrderStatusEnum.CANCELLED]: <Icon icon="mdi:cancel" className="h-5 w-5" />,
 };
 
-const OrderProgress: React.FC<Props> = ({ transactionCode, orderStatus }) => {
+const OrderProgressStatus: React.FC<Props> = ({ transactionCode, orderStatus }) => {
     return (
         <div className="rounded-2xl border p-6 shadow-none">
             <div className="mb-16">
@@ -77,4 +77,4 @@ const OrderProgress: React.FC<Props> = ({ transactionCode, orderStatus }) => {
     );
 };
 
-export default OrderProgress;
+export default OrderProgressStatus;

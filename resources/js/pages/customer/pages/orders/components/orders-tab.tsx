@@ -1,7 +1,9 @@
 import EmptyImage from '@/assets/errors/empty.svg';
+import OrderProgressStatus from '@/components/order-progress-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { Order } from '@/models/order';
 import { formatCurrency } from '@/utils/format-currency';
@@ -10,6 +12,7 @@ import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
 import { Link, router } from '@inertiajs/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
+import { useState } from 'react';
 
 interface Props {
     checkedOutOrders: Order[];
@@ -17,6 +20,14 @@ interface Props {
 }
 
 const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) => {
+    const [showDialogOrderProgressStatus, setShowDialogOrderProgressStatus] = useState<boolean>(false);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    const handleTrackOrder = (order: Order) => {
+        setSelectedOrder(order);
+        setShowDialogOrderProgressStatus(true);
+    };
+
     return (
         <>
             <Tabs defaultValue="ordersCheckout" className="w-full">
@@ -124,6 +135,7 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                                                 <Button
                                                     variant="default"
                                                     className="flex w-auto cursor-pointer items-center justify-center gap-2 px-6 text-sm font-medium"
+                                                    onClick={() => router.visit(route('order-list.showOrderDetailCustomer', order?.transaction_code))}
                                                 >
                                                     Lihat Detail Pesanan
                                                     <Icon icon="material-symbols:arrow-right-alt-rounded" className="h-5 w-5" />
@@ -131,6 +143,7 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                                                 <Button
                                                     variant="outline"
                                                     className="flex w-auto cursor-pointer items-center justify-center gap-2 px-6 text-sm font-medium"
+                                                    onClick={() => handleTrackOrder(order)}
                                                 >
                                                     Lacak Status Pesanan
                                                     <Icon icon="pajamas:status-closed" className="h-5 w-5" />
@@ -230,6 +243,19 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                         )}
                     </div>
                 </TabsContent>
+
+                <Dialog open={showDialogOrderProgressStatus} onOpenChange={setShowDialogOrderProgressStatus}>
+                    <DialogContent className="sm:max-w-5xl">
+                        <DialogHeader>
+                            <DialogTitle>Lacak Status Pesanan</DialogTitle>
+                        </DialogHeader>
+
+                        <OrderProgressStatus
+                            transactionCode={selectedOrder?.transaction_code ?? ''}
+                            orderStatus={selectedOrder?.order_status ?? []}
+                        />
+                    </DialogContent>
+                </Dialog>
             </Tabs>
         </>
     );
