@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CustomerAddress } from '@/models/customer-address';
@@ -46,7 +47,7 @@ const CustomerAddressDialog: React.FC<Props> = ({ open, onOpenChange, addresses 
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="sm:max-w-4xl">
+                <DialogContent className="sm:max-w-3xl">
                     <DialogHeader>
                         <DialogTitle>Pilih Alamat Pengiriman</DialogTitle>
                         <DialogDescription>Klik salah satu untuk menjadikannya alamat utama.</DialogDescription>
@@ -90,6 +91,10 @@ const CustomerAddressDialog: React.FC<Props> = ({ open, onOpenChange, addresses 
                             </Card>
                         ))}
                     </div>
+
+                    <Button className="cursor-pointer py-6" onClick={() => router.visit(route('address-list.create'))}>
+                        Tambah Alamat
+                    </Button>
                 </DialogContent>
             </Dialog>
         </>

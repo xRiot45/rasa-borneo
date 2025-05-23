@@ -160,7 +160,7 @@ export default function CartPage({ carts }: Props) {
             {
                 onSuccess: () => {
                     toast.success('Success', {
-                        description: 'Berhasil melakukan checkout, Silahkan lengkapi informasi lainnya',
+                        description: 'Silahkan lengkapi informasi lainnya',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
