@@ -2,6 +2,7 @@ import OrderProgress from '@/components/order-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -17,9 +18,11 @@ import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
 import { Icon } from '@iconify/react';
-import { Head } from '@inertiajs/react';
-import { useRef } from 'react';
+import { Head, router } from '@inertiajs/react';
+import { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { toast } from 'sonner';
+import ButtonPartials from './components/button-partials';
 
 interface Props {
     order: Order;
@@ -76,28 +79,71 @@ export default function OrderDetailPage({ order }: Props) {
 
     const statusKey = payment_status as PaymentStatusEnum;
     const badgeClass = paymentStatusColorMap[statusKey] ?? 'bg-gray-300 text-black';
-    const latestStatus = order_status?.[order_status.length - 1]?.status || '';
+
+    const [latestStatus, setLatestStatus] = useState<string>(order_status?.[order_status.length - 1]?.status || '');
+    const [showDialogUpdateOrderStatus, setShowDialogUpdateOrderStatus] = useState<boolean>(false);
+
+    const availableStatuses = Object.values(OrderStatusEnum).filter((status) => {
+        if (order_type !== OrderTypeEnum.DELIVERY && (status === OrderStatusEnum.READY_FOR_DELIVERY || status === OrderStatusEnum.DELIVERING)) {
+            return false;
+        }
+
+        if (order_type === OrderTypeEnum.DELIVERY && status === OrderStatusEnum.READY_TO_SERVE) {
+            return false;
+        }
+
+        return true;
+    });
+
+    const handleStatusChange = (value: string) => {
+        setLatestStatus(value);
+    };
+
+    const confirmUpdateStatus = () => {
+        if (!latestStatus) {
+            toast.error('Pilih status terlebih dahulu!');
+            return;
+        }
+        setShowDialogUpdateOrderStatus(true);
+    };
+
+    const handleUpdateStatus = () => {
+        router.put(
+            route('merchant.incoming-order.updateOrderStatus', transaction_code),
+            { status: latestStatus },
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Status Pesanan Berhasil Diubah!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+
+                    setShowDialogUpdateOrderStatus(false);
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
+    };
 
     return (
         <>
             <Head title="Detail Pesanan" />
             <MerchantLayout breadcrumbs={breadcrumbs}>
                 <div className="space-y-6 p-6">
-                    <div className="mb-4 flex flex-col items-center justify-between gap-2 md:flex-row">
-                        <Button className="w-full cursor-pointer md:w-fit" variant="default" onClick={() => window.history.back()}>
-                            <Icon icon="mdi:arrow-left" className="mr-2 h-4 w-4" />
-                            Kembali ke halaman sebelumnya
-                        </Button>
-
-                        <Button
-                            className="w-full cursor-pointer bg-green-600 hover:bg-green-700 md:w-fit"
-                            variant="default"
-                            onClick={() => handlePrint()}
-                        >
-                            <Icon icon="mdi:printer" className="mr-2 h-4 w-4" />
-                            Print Invoice
-                        </Button>
-                    </div>
+                    <ButtonPartials handlePrint={handlePrint} />
 
                     <div className="grid grid-cols-1 gap-y-6 md:grid-cols-3 md:gap-x-6">
                         <div className="col-span-2 grid space-y-6">
@@ -105,7 +151,7 @@ export default function OrderDetailPage({ order }: Props) {
                             <OrderProgress transactionCode={transaction_code} orderStatus={order_status} />
 
                             <section ref={contentRef} className="space-y-6">
-                                <Card className="p-4 shadow-none">
+                                <Card className="print p-4 shadow-none">
                                     <CardContent className="space-y-4 p-4">
                                         <h2 className="text-lg font-semibold">Informasi Pemesanan</h2>
 
@@ -136,6 +182,10 @@ export default function OrderDetailPage({ order }: Props) {
                                                 <p className="capitalize">
                                                     <strong>Catatan :</strong> {note || '-'}
                                                 </p>
+
+                                                <p>
+                                                    <strong>Tanggal & Waktu Pemesanan :</strong> {formatDate(checked_out_at ?? '')}
+                                                </p>
                                             </div>
                                             <div className="space-y-4">
                                                 <p className="capitalize">
@@ -153,16 +203,6 @@ export default function OrderDetailPage({ order }: Props) {
                                                         {payment_status?.toUpperCase() || 'UNKNOWN'}
                                                     </Badge>
                                                 </p>
-                                                {payment_method === PaymentMethodEnum.CASH && (
-                                                    <>
-                                                        <p>
-                                                            <strong>Uang Diterima :</strong> {formatCurrency(cash_received_amount)}
-                                                        </p>
-                                                        <p>
-                                                            <strong>Kembalian :</strong> {formatCurrency(change_amount)}
-                                                        </p>
-                                                    </>
-                                                )}
 
                                                 {coupon_code && (
                                                     <p>
@@ -170,17 +210,13 @@ export default function OrderDetailPage({ order }: Props) {
                                                         {coupon_type === 'percentage' ? `${coupon_discount}%` : `${formatCurrency(coupon_discount)}`})
                                                     </p>
                                                 )}
-
-                                                <p>
-                                                    <strong>Tanggal & Waktu Pemesanan :</strong> {formatDate(checked_out_at ?? '')}
-                                                </p>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
 
                                 {order_type === OrderTypeEnum.DELIVERY && (
-                                    <Card className="p-4 shadow-none">
+                                    <Card className="print p-4 shadow-none">
                                         <CardContent className="space-y-4 p-4">
                                             <h2 className="text-lg font-semibold">Informasi Pengiriman</h2>
 
@@ -210,7 +246,7 @@ export default function OrderDetailPage({ order }: Props) {
                                     </Card>
                                 )}
 
-                                <Card className="p-4 shadow-none">
+                                <Card className="print p-4 shadow-none">
                                     <CardContent className="space-y-4 p-4">
                                         <h2 className="text-lg font-semibold">Item Pesanan</h2>
 
@@ -254,7 +290,7 @@ export default function OrderDetailPage({ order }: Props) {
                                     </CardContent>
                                 </Card>
 
-                                <Card className="p-4 shadow-none">
+                                <Card className="print p-4 shadow-none">
                                     <CardContent className="space-y-2 p-4">
                                         <h2 className="text-lg font-semibold">Rincian Biaya</h2>
                                         <div className="space-y-4">
@@ -279,10 +315,23 @@ export default function OrderDetailPage({ order }: Props) {
                                                 </div>
                                             )}
                                             <Separator />
-                                            <div className="flex justify-between text-lg font-bold">
+                                            <div className="text-md flex justify-between font-bold">
                                                 <span>Total Bayar</span>
                                                 <span>{formatCurrency(final_total)}</span>
                                             </div>
+
+                                            {payment_method === PaymentMethodEnum.CASH && (
+                                                <>
+                                                    <div className="text-md flex justify-between font-bold">
+                                                        <span>Uang Diterima</span>
+                                                        <span>{formatCurrency(cash_received_amount)}</span>
+                                                    </div>
+                                                    <div className="text-md flex justify-between font-bold">
+                                                        <span>Kembalian</span>
+                                                        <span>{formatCurrency(change_amount)}</span>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -294,24 +343,45 @@ export default function OrderDetailPage({ order }: Props) {
                             <Card className="p-4 shadow-none">
                                 <CardContent className="w-full space-y-4 p-4">
                                     <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
-                                    <Select value={latestStatus}>
+                                    <Select value={latestStatus} onValueChange={handleStatusChange}>
                                         <SelectTrigger className="w-full rounded-md py-6">
                                             <SelectValue placeholder="Pilih status pesanan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {Object.values(OrderStatusEnum).map((status) => (
+                                            {availableStatuses.map((status) => (
                                                 <SelectItem key={status} value={status} className="w-full cursor-pointer p-4 capitalize">
-                                                    {status.replace(/_/g, ' ')}
+                                                    {status}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <Button className="w-full cursor-pointer rounded-md py-6">
+                                    <Button className="w-full cursor-pointer rounded-md py-6" onClick={confirmUpdateStatus}>
                                         <Icon icon="mdi:reload" className="mr-2 h-4 w-4" />
                                         Perbarui Status Pesanan
                                     </Button>
                                 </CardContent>
                             </Card>
+
+                            <Dialog open={showDialogUpdateOrderStatus} onOpenChange={setShowDialogUpdateOrderStatus}>
+                                <DialogContent className="sm:max-w-xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
+                                        <DialogDescription>Ingin mengubah status pesanan menjadi {latestStatus}?</DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter className="mt-6">
+                                        <Button
+                                            variant="destructive"
+                                            className="cursor-pointer"
+                                            onClick={() => setShowDialogUpdateOrderStatus(false)}
+                                        >
+                                            Batal
+                                        </Button>
+                                        <Button className="cursor-pointer" onClick={handleUpdateStatus}>
+                                            Ya, Ubah Status Pesanan
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
                 </div>

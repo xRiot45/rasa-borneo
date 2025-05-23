@@ -235,6 +235,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->group(function () {
                 Route::get('/', 'incomingOrder')->name('merchant.incoming-order.index');
                 Route::get('/show/{transactionCode}', 'showOrderDetail')->name('merchant.incoming-order.show');
+                Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('merchant.incoming-order.updateOrderStatus');
             });
     });
 });

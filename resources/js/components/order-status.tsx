@@ -4,7 +4,7 @@ import { OrderStatus } from '@/models/order-status';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
 
-interface OrderProgressProps {
+interface Props {
     transactionCode: string;
     orderStatus: OrderStatus[];
 }
@@ -14,13 +14,13 @@ const statusIcons: Record<OrderStatusEnum, JSX.Element> = {
     [OrderStatusEnum.CONFIRMED]: <Icon icon="mdi:check-circle-outline" className="h-5 w-5" />,
     [OrderStatusEnum.PROCESSING]: <Icon icon="mdi:progress-clock" className="h-5 w-5" />,
     [OrderStatusEnum.READY_FOR_DELIVERY]: <Icon icon="solar:delivery-bold" className="h-5 w-5" />,
-    [OrderStatusEnum.READY_TO_SERVE]: <Icon icon="solar:delivery-bold" className="h-5 w-5" />,
+    [OrderStatusEnum.READY_TO_SERVE]: <Icon icon="material-symbols:restaurant-menu" className="h-5 w-5" />,
     [OrderStatusEnum.DELIVERING]: <Icon icon="mdi:truck-delivery-outline" className="h-5 w-5" />,
     [OrderStatusEnum.COMPLETED]: <Icon icon="mdi:check-decagram" className="h-5 w-5" />,
     [OrderStatusEnum.CANCELLED]: <Icon icon="mdi:cancel" className="h-5 w-5" />,
 };
 
-const OrderProgress: React.FC<OrderProgressProps> = ({ transactionCode, orderStatus }) => {
+const OrderProgress: React.FC<Props> = ({ transactionCode, orderStatus }) => {
     return (
         <div className="rounded-2xl border p-6 shadow-none">
             <div className="mb-16">
