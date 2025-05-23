@@ -18,4 +18,9 @@ class Order extends Transaction
     {
         return $this->hasMany(OrderStatus::class, 'transaction_id', 'id');
     }
+
+    public function latestOrderStatus(): HasOne
+    {
+        return $this->hasOne(OrderStatus::class, 'transaction_id')->latestOfMany();
+    }
 }

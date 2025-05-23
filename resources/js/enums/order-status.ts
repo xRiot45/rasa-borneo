@@ -6,5 +6,5 @@ export enum OrderStatusEnum {
     READY_TO_SERVE = 'siap disajikan',
     DELIVERING = 'diantar',
     COMPLETED = 'selesai',
-    CANCELLED = 'dibatalkan',
+    // CANCELLED = 'dibatalkan',
 }
