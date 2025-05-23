@@ -125,7 +125,7 @@ const OrderDetailsForm: React.FC<Props> = ({ formData, errors, setData, transact
                 {formData?.payment_method === PaymentMethodEnum.CASH && (
                     <div className="flex flex-col gap-3">
                         <Label>
-                            Jumlah Uang yang Anda Bayarkan <strong className="text-red-500">*</strong>
+                            Jumlah Uang yang Ingin Anda Bayarkan <strong className="text-red-500">*</strong>
                         </Label>
                         <Input
                             type="number"
