@@ -234,7 +234,6 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->controller(OrderController::class)
             ->group(function () {
                 Route::get('/', 'incomingOrder')->name('merchant.incoming-order.index');
-                Route::get('/show/{transactionCode}', 'showOrderDetail')->name('merchant.incoming-order.show');
                 Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('merchant.incoming-order.updateOrderStatus');
             });
 
@@ -243,8 +242,11 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->controller(OrderController::class)
             ->group(function () {
                 Route::get('/', 'orderHistory')->name('merchant.order-history.index');
-                Route::get('/show/{transactionCode}', 'showOrderDetail')->name('merchant.order-history.show');
             });
+
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('/show-order/{transactionCode}', 'showOrderDetail')->name('merchant.order.show');
+        });
     });
 });
 

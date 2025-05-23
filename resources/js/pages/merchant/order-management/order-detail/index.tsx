@@ -146,7 +146,7 @@ export default function OrderDetailPage({ order }: Props) {
                     <ButtonPartials handlePrint={handlePrint} />
 
                     <div className="grid grid-cols-1 gap-y-6 md:grid-cols-3 md:gap-x-6">
-                        <div className="col-span-2 grid space-y-6">
+                        <div className={`${latestStatus !== OrderStatusEnum.COMPLETED ? 'col-span-2' : 'col-span-3'} grid space-y-6`}>
                             {/* Order Progress */}
                             <OrderProgress transactionCode={transaction_code} orderStatus={order_status} />
 
@@ -340,53 +340,56 @@ export default function OrderDetailPage({ order }: Props) {
                         </div>
 
                         {/* Sidebar (Update Status) */}
-                        <div className="md:col-span-1">
-                            <Card className="p-4 shadow-none">
-                                <CardContent className="w-full space-y-4 p-4">
-                                    <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
-                                    <Select value={latestStatus} onValueChange={handleStatusChange}>
-                                        <SelectTrigger className="w-full rounded-md py-6">
-                                            <SelectValue placeholder="Pilih status pesanan" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {availableStatuses.map((status) => (
-                                                <SelectItem key={status} value={status} className="w-full cursor-pointer p-4 capitalize">
-                                                    {status}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <Button className="w-full cursor-pointer rounded-md py-6" onClick={confirmUpdateStatus}>
-                                        <Icon icon="mdi:reload" className="mr-2 h-4 w-4" />
-                                        Perbarui Status Pesanan
-                                    </Button>
-                                </CardContent>
-                            </Card>
 
-                            <Dialog open={showDialogUpdateOrderStatus} onOpenChange={setShowDialogUpdateOrderStatus}>
-                                <DialogContent className="sm:max-w-xl">
-                                    <DialogHeader>
-                                        <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
-                                        <DialogDescription>
-                                            Ingin mengubah status pesanan menjadi{' '}
-                                            <strong className="font-bold text-black uppercase italic dark:text-white">{latestStatus} ?</strong>
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <DialogFooter className="mt-6">
-                                        <Button
-                                            variant="destructive"
-                                            className="cursor-pointer"
-                                            onClick={() => setShowDialogUpdateOrderStatus(false)}
-                                        >
-                                            Batal
+                        {latestStatus !== OrderStatusEnum.COMPLETED && (
+                            <div className="md:col-span-1">
+                                <Card className="p-4 shadow-none">
+                                    <CardContent className="w-full space-y-4 p-4">
+                                        <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
+                                        <Select value={latestStatus} onValueChange={handleStatusChange}>
+                                            <SelectTrigger className="w-full rounded-md py-6">
+                                                <SelectValue placeholder="Pilih status pesanan" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {availableStatuses.map((status) => (
+                                                    <SelectItem key={status} value={status} className="w-full cursor-pointer p-4 capitalize">
+                                                        {status}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <Button className="w-full cursor-pointer rounded-md py-6" onClick={confirmUpdateStatus}>
+                                            <Icon icon="mdi:reload" className="mr-2 h-4 w-4" />
+                                            Perbarui Status Pesanan
                                         </Button>
-                                        <Button className="cursor-pointer" onClick={handleUpdateStatus}>
-                                            Ya, Ubah Status Pesanan
-                                        </Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Dialog open={showDialogUpdateOrderStatus} onOpenChange={setShowDialogUpdateOrderStatus}>
+                                    <DialogContent className="sm:max-w-xl">
+                                        <DialogHeader>
+                                            <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
+                                            <DialogDescription>
+                                                Ingin mengubah status pesanan menjadi{' '}
+                                                <strong className="font-bold text-black uppercase italic dark:text-white">{latestStatus} ?</strong>
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <DialogFooter className="mt-6">
+                                            <Button
+                                                variant="destructive"
+                                                className="cursor-pointer"
+                                                onClick={() => setShowDialogUpdateOrderStatus(false)}
+                                            >
+                                                Batal
+                                            </Button>
+                                            <Button className="cursor-pointer" onClick={handleUpdateStatus}>
+                                                Ya, Ubah Status Pesanan
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                        )}
                     </div>
                 </div>
             </MerchantLayout>
