@@ -50,14 +50,19 @@ const mainNavItems: NavGroup[] = [
                 icon: 'la:users',
             },
             {
-                title: 'Customer',
+                title: 'Customer / Pelanggan',
                 href: '/admin/users-management/customers',
                 icon: 'carbon:customer',
             },
             {
-                title: 'Merchant',
+                title: 'Merchant / Penjual',
                 href: '/admin/users-management/merchants',
                 icon: 'material-symbols:storefront',
+            },
+            {
+                title: 'Courier / Kurir',
+                href: '/admin/users-management/couriers',
+                icon: 'material-symbols:local-shipping',
             },
         ],
     },
