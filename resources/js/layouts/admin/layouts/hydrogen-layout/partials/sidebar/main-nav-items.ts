@@ -77,6 +77,27 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
+        group: 'KEUANGAN',
+        items: [
+            {
+                title: 'Penarikan Dana',
+                href: '/admin/withdrawals',
+                icon: 'mdi:cash-minus',
+            },
+            // (opsional di masa depan) bisa tambahkan:
+            // {
+            //     title: 'Deposit',
+            //     href: '/admin/deposits',
+            //     icon: 'mdi:cash-plus',
+            // },
+            // {
+            //     title: 'Transaksi Keuangan',
+            //     href: '/admin/transactions',
+            //     icon: 'mdi:swap-horizontal',
+            // },
+        ],
+    },
+    {
         group: 'PENGATURAN',
         items: [
             {
