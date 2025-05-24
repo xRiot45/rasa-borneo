@@ -77,6 +77,32 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
+        group: 'KEUANGAN',
+        items: [
+            {
+                title: 'Penarikan Dana',
+                href: '/merchant/withdraw',
+                icon: 'mdi:cash-multiple',
+            },
+            {
+                title: 'Laporan Pendapatan',
+                href: '/merchant/financial/revenue-report',
+                icon: 'mdi:chart-bar',
+            },
+            {
+                title: 'Laporan Pengeluaran',
+                href: '/merchant/financial/expense-report',
+                icon: 'mdi:cash-remove',
+            },
+            {
+                title: 'Riwayat Transaksi',
+                href: '/merchant/financial/transactions',
+                icon: 'mdi:history',
+            },
+        ],
+    },
+
+    {
         group: 'INTERAKSI PELANGGAN',
         items: [
             {
@@ -99,11 +125,11 @@ const mainNavItems: NavGroup[] = [
                 href: '/merchant/account-settings',
                 icon: 'mdi:account-cog',
             },
-            // {
-            //     title: 'Pengaturan Notifikasi',
-            //     href: '/merchant/notification-settings',
-            //     icon: 'mdi:bell-ring',
-            // },
+            {
+                title: 'Pengaturan Notifikasi',
+                href: '/merchant/notification-settings',
+                icon: 'mdi:bell-ring',
+            },
             {
                 title: 'Laporan & Analitik',
                 href: '/merchant/reports',
