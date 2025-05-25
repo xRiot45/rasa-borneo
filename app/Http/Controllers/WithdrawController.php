@@ -18,7 +18,12 @@ class WithdrawController extends Controller
 
         $withdraws = Withdraw::where('merchant_id', $merchantId)->get();
         return Inertia::render('merchant/financial-management/withdraw/index', [
-            'withdraws' => $withdraws,
+            'data' => $withdraws,
         ]);
+    }
+
+    public function create(): InertiaResponse
+    {
+        return Inertia::render('merchant/financial-management/withdraw/pages/form');
     }
 }
