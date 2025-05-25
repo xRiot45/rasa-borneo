@@ -21,6 +21,7 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\WithdrawController;
 use App\Models\Merchant;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -247,6 +248,18 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         Route::controller(OrderController::class)->group(function () {
             Route::get('/show-order/{transactionCode}', 'showOrderDetailMerchant')->name('merchant.order.show');
         });
+    });
+
+    // Financial Management
+    Route::prefix('/merchant/financial-management')->group(function () {
+        // Withdraw
+        Route::prefix('/withdraw')
+            ->controller(WithdrawController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.withdraw.indexMerchant');
+                Route::get('/create', 'create')->name('merchant.withdraw.create');
+                Route::post('/create', 'store')->name('merchant.withdraw.store');
+            });
     });
 });
 

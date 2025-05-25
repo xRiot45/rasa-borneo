@@ -77,26 +77,26 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
-        group: 'KEUANGAN',
+        group: 'MANAJEMENT KEUANGAN',
         items: [
             {
                 title: 'Penarikan Dana',
-                href: '/merchant/withdraw',
+                href: '/merchant/financial-management/withdraw',
                 icon: 'mdi:cash-multiple',
             },
             {
                 title: 'Laporan Pendapatan',
-                href: '/merchant/financial/revenue-report',
+                href: '/merchant/financial-management/revenue-report',
                 icon: 'mdi:chart-bar',
             },
             {
                 title: 'Laporan Pengeluaran',
-                href: '/merchant/financial/expense-report',
+                href: '/merchant/financial-management/expense-report',
                 icon: 'mdi:cash-remove',
             },
             {
                 title: 'Riwayat Transaksi',
-                href: '/merchant/financial/transactions',
+                href: '/merchant/financial-management/transactions',
                 icon: 'mdi:history',
             },
         ],
