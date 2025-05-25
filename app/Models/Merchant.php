@@ -120,4 +120,10 @@ class Merchant extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN WITHDRAW
+    public function withdraws(): HasMany
+    {
+        return $this->hasMany(Withdraw::class);
+    }
 }
