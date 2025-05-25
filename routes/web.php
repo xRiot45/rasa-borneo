@@ -259,6 +259,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.withdraw.indexMerchant');
                 Route::get('/create', 'create')->name('merchant.withdraw.create');
                 Route::post('/create', 'store')->name('merchant.withdraw.store');
+                Route::put('/cancel/{id}', 'cancelledWithdraw')->name('merchant.withdraw.cancelledWithdraw');
             });
     });
 });

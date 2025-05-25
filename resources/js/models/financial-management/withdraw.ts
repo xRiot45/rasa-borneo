@@ -6,7 +6,7 @@ export interface Withdraw {
     merchant_id: number;
     merchant: Merchant;
     withdraw_code: string;
-    amout: number;
+    amount: number;
     bank_code: string;
     bank_account_number: string;
     bank_account_name: string;
