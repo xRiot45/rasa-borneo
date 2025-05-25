@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\WithdrawStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -43,6 +44,10 @@ class Withdraw extends Model
         static::creating(function ($withdraw) {
             $randomString = strtoupper(Str::random(6));
             $withdraw->withdraw_code = 'WD-' . now()->format('Ymd') . '-' . $randomString;
+
+            if (empty($withdraw->requested_at)) {
+                $withdraw->requested_at = Carbon::now();
+            }
         });
     }
 

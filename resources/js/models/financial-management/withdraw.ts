@@ -20,3 +20,11 @@ export interface Withdraw {
     created_at: string;
     updated_at: string;
 }
+
+export interface WithdrawForm {
+    amount: number;
+    bank_code: string;
+    bank_account_number: string;
+    bank_account_name: string;
+    note?: string;
+}
