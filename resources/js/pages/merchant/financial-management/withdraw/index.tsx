@@ -3,6 +3,8 @@ import { Withdraw } from '@/models/financial-management/withdraw';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import ButtonPartials from './partials/buttons';
+import WithdrawTable from './partials/table';
+import { columns } from './partials/table/columns';
 
 interface Props {
     data: Withdraw[];
@@ -31,6 +33,10 @@ export default function WithdrawPage({ data }: Props) {
                         <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua penarikan dana anda</p>
                     </div>
                     <ButtonPartials />
+                </div>
+
+                <div className="p-4">
+                    <WithdrawTable data={data} columns={columns} />
                 </div>
             </MerchantLayout>
         </>
