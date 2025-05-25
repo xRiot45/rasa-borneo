@@ -1,6 +1,7 @@
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,6 +12,7 @@ import { Bank } from '@/models/bank';
 import { WithdrawForm } from '@/models/financial-management/withdraw';
 import { Merchant } from '@/models/merchant';
 import { BreadcrumbItem } from '@/types';
+import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
@@ -39,6 +41,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function FormPage({ merchantBank }: Props) {
     const { banks } = usePage<{ banks: Bank[] }>().props;
     const [useMerchantBank, setUseMerchantBank] = useState<boolean>(false);
+    const [showDialogConfirm, setShowDialogConfirm] = useState<boolean>(false);
 
     const { data, setData, post, processing, errors } = useForm<Required<WithdrawForm>>({
         amount: 0,
@@ -61,10 +64,18 @@ export default function FormPage({ merchantBank }: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [useMerchantBank]);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const confirmWithdrawRequest = () => {
+        if (!data.amount || data.amount <= 0) {
+            toast.error('Error', { description: 'Jumlah penarikan tidak boleh kosong atau nol' });
+            return;
+        }
+        setShowDialogConfirm(true);
+    };
+
+    const handleSubmit = () => {
         post(route('merchant.withdraw.store'), {
             onSuccess: () => {
+                setShowDialogConfirm(false);
                 toast.success('Success', {
                     description: 'Penarikan Dana Berhasil Diajukan!',
                     action: {
@@ -207,12 +218,37 @@ export default function FormPage({ merchantBank }: Props) {
                                 Batalkan <Icon icon="iconoir:cancel" />
                             </Button>
                         </Link>
-                        <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        <Button type="button" onClick={confirmWithdrawRequest} disabled={processing}>
                             Ajukan Penarikan Dana <Icon icon="ph:hand-withdraw" />
                         </Button>
                     </div>
                 </form>
+
+                <Dialog open={showDialogConfirm} onOpenChange={setShowDialogConfirm}>
+                    <DialogContent className="sm:max-w-2xl">
+                        <DialogHeader>
+                            <DialogTitle>Konfirmasi Penarikan Dana</DialogTitle>
+                            <DialogDescription>
+                                Apakah kamu yakin ingin mengajukan penarikan dana sebesar{' '}
+                                <strong className="text-black dark:text-white">{formatCurrency(data.amount)}</strong>? <br />
+                                <span className="text-muted-foreground text-sm">
+                                    Pastikan data yang Anda masukkan sudah benar.{' '}
+                                    <strong className="text-red-500">Proses ini tidak dapat diubah setelah diajukan.</strong>
+                                </span>
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="mt-4 flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowDialogConfirm(false)} className="cursor-pointer">
+                                Batal
+                            </Button>
+                            <Button onClick={handleSubmit} disabled={processing} className="cursor-pointer">
+                                {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                                Ya, Ajukan
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </MerchantLayout>
         </>
     );
