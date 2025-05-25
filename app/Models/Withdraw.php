@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\WithdrawStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Withdraw extends Model
 {
@@ -34,6 +35,16 @@ class Withdraw extends Model
         'canceled_at' => 'datetime',
         'transferred_at' => 'datetime',
     ];
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($withdraw) {
+            $randomString = strtoupper(Str::random(6));
+            $withdraw->withdraw_code = 'WD-' . now()->format('Ymd') . '-' . $randomString;
+        });
+    }
 
     public function merchants(): BelongsTo
     {
