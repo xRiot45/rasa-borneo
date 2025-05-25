@@ -85,6 +85,7 @@ export default function FormPage({ merchantBank }: Props) {
                 });
             },
             onError: (error) => {
+                setShowDialogConfirm(false);
                 Object.keys(error).forEach((key) => {
                     toast.error('Error', {
                         description: error[key],

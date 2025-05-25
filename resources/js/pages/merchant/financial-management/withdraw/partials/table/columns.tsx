@@ -56,7 +56,14 @@ export const columns: ColumnDef<Withdraw>[] = [
         enableSorting: false,
         enableHiding: false,
     },
-
+    {
+        id: 'note',
+        accessorKey: 'note',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Catatan" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('note') || '-'}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         id: 'status',
         accessorKey: 'status',
