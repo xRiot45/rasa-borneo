@@ -50,7 +50,7 @@ class WithdrawController extends Controller
         $merchantId = $merchant->id;
 
         $balances = $this->calculateMerchantBalance($merchantId);
-        $withdraws = Withdraw::where('merchant_id', $merchantId)->get();
+        $withdraws = Withdraw::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('merchant/financial-management/withdraw/index', [
             'data' => $withdraws,
@@ -62,7 +62,7 @@ class WithdrawController extends Controller
 
     public function indexAdmin(): InertiaResponse
     {
-        $withdraws = Withdraw::with('merchant')->get();
+        $withdraws = Withdraw::with('merchant')->orderBy('created_at', 'desc')->get();
         return Inertia::render('admin/financial-management/withdraw/index', [
             'data' => $withdraws,
         ]);
@@ -115,10 +115,6 @@ class WithdrawController extends Controller
 
         $withdraw = Withdraw::with('merchant.user')->findOrFail($withdrawId);
 
-        if ($withdraw->status !== WithdrawStatusEnum::PENDING) {
-            return back()->with('error', 'Penarikan hanya bisa diproses jika status masih pending.');
-        }
-
         if ($request->hasFile('transfer_proof') && $request->file('transfer_proof')->isValid()) {
             $file = $request->file('transfer_proof');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -134,10 +130,8 @@ class WithdrawController extends Controller
         $merchantEmail = $withdraw->merchant->user->email;
         Mail::to($merchantEmail)->send(new WithdrawTransferProofMail($withdraw));
 
-        return redirect()->route('admin.withdraw.indexAdmin')
-            ->with('success', 'Bukti transfer berhasil diupload dan email notifikasi terkirim.');
+        return redirect()->route('admin.withdraw.indexAdmin')->with('success', 'Bukti transfer berhasil diupload dan email notifikasi terkirim.');
     }
-
 
     public function updateStatus(Request $request, int $withdrawId): RedirectResponse
     {
@@ -147,17 +141,40 @@ class WithdrawController extends Controller
 
         $withdraw = Withdraw::findOrFail($withdrawId);
 
-        if (in_array($withdraw->status, [WithdrawStatusEnum::REJECTED, WithdrawStatusEnum::CANCELED, WithdrawStatusEnum::TRANSFERED])) {
+        if (in_array($withdraw->status, [
+            WithdrawStatusEnum::REJECTED,
+            WithdrawStatusEnum::CANCELED,
+            WithdrawStatusEnum::TRANSFERED,
+        ])) {
             return back()->with('error', 'Status tidak dapat diubah karena withdraw sudah memiliki status akhir.');
         }
 
         $newStatus = WithdrawStatusEnum::from($request->input('status'));
-        $withdraw->update([
-            'status' => $newStatus,
-        ]);
+
+        // Siapkan array untuk pembaruan data
+        $updateData = ['status' => $newStatus];
+
+        // Tambahkan waktu berdasarkan status
+        switch ($newStatus) {
+            case WithdrawStatusEnum::APPROVED:
+                $updateData['approved_at'] = now();
+                break;
+            case WithdrawStatusEnum::REJECTED:
+                $updateData['rejected_at'] = now();
+                break;
+            case WithdrawStatusEnum::CANCELED:
+                $updateData['cancelled_at'] = now();
+                break;
+            case WithdrawStatusEnum::TRANSFERED:
+                $updateData['transferred_at'] = now();
+                break;
+        }
+
+        $withdraw->update($updateData);
 
         return back()->with('success', 'Status penarikan berhasil diperbarui.');
     }
+
 
     public function cancelledWithdraw(int $withdrawId): RedirectResponse
     {
@@ -175,7 +192,7 @@ class WithdrawController extends Controller
             return redirect()->route('merchant.withdraw.indexMerchant')->with('error', 'Penarikan hanya dapat dibatalkan jika masih dalam status "pending".');
         }
 
-        $withdraw->update(['status' => WithdrawStatusEnum::CANCELED]);
+        $withdraw->update(['status' => WithdrawStatusEnum::CANCELED, 'cancelled_at' => now()]);
 
         return redirect()->route('merchant.withdraw.indexMerchant')->with('success', 'Pengajuan Penarikan Dana Berhasil Dibatalkan');
     }

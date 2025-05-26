@@ -97,7 +97,7 @@ const WithdrawDetailDialog: React.FC<Props> = ({ withdraw }) => {
                             <span>{withdraw.rejected_at ? formatDate(withdraw.rejected_at) : '-'}</span>
 
                             <span className="text-muted-foreground font-semibold">Tanggal Dibatalkan</span>
-                            <span>{withdraw.canceled_at ? formatDate(withdraw.canceled_at) : '-'}</span>
+                            <span>{withdraw.cancelled_at ? formatDate(withdraw.cancelled_at) : '-'}</span>
 
                             <span className="text-muted-foreground font-semibold">Tanggal Transfer</span>
                             <span>{withdraw.transferred_at ? formatDate(withdraw.transferred_at) : '-'}</span>

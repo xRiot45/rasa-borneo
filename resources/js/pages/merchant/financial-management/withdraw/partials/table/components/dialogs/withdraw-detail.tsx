@@ -81,7 +81,7 @@ const WithdrawDetailDialog: React.FC<Props> = ({ withdraw }) => {
 
                     <div className="grid grid-cols-2 gap-2">
                         <span className="text-muted-foreground font-semibold">Tanggal Dibatalkan</span>
-                        <span>{withdraw.canceled_at ? formatDate(withdraw.canceled_at) : '-'}</span>
+                        <span>{withdraw.cancelled_at ? formatDate(withdraw.cancelled_at) : '-'}</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">

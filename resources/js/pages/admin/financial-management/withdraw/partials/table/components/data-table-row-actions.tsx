@@ -20,10 +20,21 @@ const withdrawStatusIcons: Record<WithdrawStatusEnum, string> = {
     [WithdrawStatusEnum.TRANSFERED]: 'mdi:bank-transfer',
 };
 
+const statusOptionsByCurrentStatus: Record<WithdrawStatusEnum, WithdrawStatusEnum[]> = {
+    [WithdrawStatusEnum.PENDING]: [WithdrawStatusEnum.APPROVED, WithdrawStatusEnum.REJECTED, WithdrawStatusEnum.CANCELED],
+    [WithdrawStatusEnum.APPROVED]: [WithdrawStatusEnum.TRANSFERED],
+    [WithdrawStatusEnum.REJECTED]: [],
+    [WithdrawStatusEnum.CANCELED]: [],
+    [WithdrawStatusEnum.TRANSFERED]: [],
+};
+
 export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<WithdrawStatusEnum | null>(null);
     const [showUploadDialog, setShowUploadDialog] = useState<boolean>(false);
+
+    const currentStatus = row.original.status;
+    const allowedStatuses = statusOptionsByCurrentStatus[currentStatus] || [];
 
     const handleSelectStatus = (status: WithdrawStatusEnum) => {
         setSelectedStatus(status);
@@ -31,6 +42,8 @@ export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
     };
 
     const handleConfirmUpdate = () => {
+        if (!selectedStatus) return;
+
         router.put(
             route('admin.withdraw.updateStatus', { withdrawId: row.original.id }),
             { status: selectedStatus },
@@ -72,18 +85,23 @@ export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
                     <WithdrawDetailDialog withdraw={row.original} />
-                    {Object.values(WithdrawStatusEnum).map((status) => (
-                        <DropdownMenuItem key={status} className="cursor-pointer p-3 capitalize" onClick={() => handleSelectStatus(status)}>
-                            {status}
-                            <DropdownMenuShortcut>
-                                <Icon icon={withdrawStatusIcons[status]} className="text-muted-foreground" />
-                            </DropdownMenuShortcut>
+                    {allowedStatuses.length > 0
+                        ? allowedStatuses.map((status) => (
+                              <DropdownMenuItem key={status} className="cursor-pointer p-3 capitalize" onClick={() => handleSelectStatus(status)}>
+                                  {status}
+                                  <DropdownMenuShortcut>
+                                      <Icon icon={withdrawStatusIcons[status]} className="text-muted-foreground" />
+                                  </DropdownMenuShortcut>
+                              </DropdownMenuItem>
+                          ))
+                        : null}
+
+                    {row.original.status === WithdrawStatusEnum.APPROVED && (
+                        <DropdownMenuItem onClick={() => setShowUploadDialog(true)} className="cursor-pointer justify-between p-3">
+                            Upload Bukti Transfer
+                            <Icon icon="tabler:transfer" />
                         </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuItem onClick={() => setShowUploadDialog(true)} className="cursor-pointer justify-between p-3">
-                        Upload Bukti Transfer
-                        <Icon icon="tabler:transfer" />
-                    </DropdownMenuItem>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
 
@@ -94,7 +112,9 @@ export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
                 handleConfirmUpdate={handleConfirmUpdate}
             />
 
-            <UploadTransferProofDialog withdrawId={row.original.id} open={showUploadDialog} onOpenChange={setShowUploadDialog} />
+            {row.original.status === WithdrawStatusEnum.APPROVED && (
+                <UploadTransferProofDialog withdrawId={row.original.id} open={showUploadDialog} onOpenChange={setShowUploadDialog} />
+            )}
         </>
     );
 }

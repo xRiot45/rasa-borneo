@@ -29,7 +29,7 @@
         </tr>
         <tr>
           <td class="py-2 font-medium text-gray-600">Status Penarikan</td>
-          <td class="py-2 font-semibold text-gray-800">: {{ $status }}</td>
+          <td class="py-2 font-semibold text-gray-800 capitalize">: {{ $status }}</td>
         </tr>
       </tbody>
     </table>

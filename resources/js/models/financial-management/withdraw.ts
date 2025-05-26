@@ -15,7 +15,7 @@ export interface Withdraw {
     requested_at: string;
     aproved_at: string;
     rejected_at: string;
-    canceled_at: string;
+    cancelled_at: string;
     transferred_at: string;
     created_at: string;
     updated_at: string;

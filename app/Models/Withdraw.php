@@ -24,7 +24,7 @@ class Withdraw extends Model
         'requested_at',
         'approved_at',
         'rejected_at',
-        'canceled_at',
+        'cancelled_at',
         'transferred_at',
         'transfer_proof',
     ];
@@ -34,7 +34,7 @@ class Withdraw extends Model
         'requested_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
-        'canceled_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'transferred_at' => 'datetime',
     ];
 

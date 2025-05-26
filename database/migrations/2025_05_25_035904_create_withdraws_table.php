@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('requested_at');
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
-            $table->timestamp('canceled_at')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamp('transferred_at')->nullable();
             $table->string('transfer_proof')->nullable();
             $table->timestamps();
