@@ -28,3 +28,7 @@ export interface WithdrawForm {
     bank_account_name: string;
     note?: string;
 }
+
+export interface UploadTransferProofForm {
+    transfer_proof: string | File | null;
+}

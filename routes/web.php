@@ -137,7 +137,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(WithdrawController::class)
             ->group(function () {
                 Route::get('/', 'indexAdmin')->name('admin.withdraw.indexAdmin');
-                Route::put('/update-status/{id}', 'updateStatus')->name('admin.withdraw.updateStatus');
+                Route::put('/update-status/{withdrawId}', 'updateStatus')->name('admin.withdraw.updateStatus');
+                Route::post('/store-admin/{withdrawId}', 'storeAdmin')->name('admin.withdraw.storeAdmin');
             });
     });
 });

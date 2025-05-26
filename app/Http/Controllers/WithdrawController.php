@@ -6,12 +6,14 @@ use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
 use App\Enums\WithdrawStatusEnum;
 use App\Http\Requests\WithdrawRequest;
+use App\Mail\WithdrawTransferProofMail;
 use App\Models\Merchant;
 use App\Models\Transaction;
 use App\Models\Withdraw;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -104,6 +106,38 @@ class WithdrawController extends Controller
 
         return redirect()->route('merchant.withdraw.indexMerchant')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
+
+    public function storeAdmin(Request $request, int $withdrawId): RedirectResponse
+    {
+        $request->validate([
+            'transfer_proof' => 'required|image|max:2048',
+        ]);
+
+        $withdraw = Withdraw::with('merchant.user')->findOrFail($withdrawId);
+
+        if ($withdraw->status !== WithdrawStatusEnum::PENDING) {
+            return back()->with('error', 'Penarikan hanya bisa diproses jika status masih pending.');
+        }
+
+        if ($request->hasFile('transfer_proof') && $request->file('transfer_proof')->isValid()) {
+            $file = $request->file('transfer_proof');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('withdraw_proofs', $filename, 'public');
+
+            $withdraw->update([
+                'transfer_proof' => '/storage/' . $path,
+                'status' => WithdrawStatusEnum::TRANSFERED,
+                'transferred_at' => now(),
+            ]);
+        }
+
+        $merchantEmail = $withdraw->merchant->user->email;
+        Mail::to($merchantEmail)->send(new WithdrawTransferProofMail($withdraw));
+
+        return redirect()->route('admin.withdraw.indexAdmin')
+            ->with('success', 'Bukti transfer berhasil diupload dan email notifikasi terkirim.');
+    }
+
 
     public function updateStatus(Request $request, int $withdrawId): RedirectResponse
     {

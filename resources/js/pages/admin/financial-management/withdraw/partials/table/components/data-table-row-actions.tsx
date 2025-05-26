@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { WithdrawStatusEnum } from '@/enums/withdraw-status';
 import { Withdraw } from '@/models/financial-management/withdraw';
@@ -9,7 +8,9 @@ import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import WithdrawDetailDialog from './dialogs/withdraw-detail';
+import UpdateStatusDialog from './dialogs/update-status-dialog';
+import UploadTransferProofDialog from './dialogs/upload-transfer-proof-dialog';
+import WithdrawDetailDialog from './dialogs/withdraw-detail-dialog';
 
 const withdrawStatusIcons: Record<WithdrawStatusEnum, string> = {
     [WithdrawStatusEnum.PENDING]: 'mdi:clock-outline',
@@ -22,6 +23,7 @@ const withdrawStatusIcons: Record<WithdrawStatusEnum, string> = {
 export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<WithdrawStatusEnum | null>(null);
+    const [showUploadDialog, setShowUploadDialog] = useState<boolean>(false);
 
     const handleSelectStatus = (status: WithdrawStatusEnum) => {
         setSelectedStatus(status);
@@ -30,7 +32,7 @@ export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
 
     const handleConfirmUpdate = () => {
         router.put(
-            route('admin.withdraw.updateStatus', { id: row.original.id }),
+            route('admin.withdraw.updateStatus', { withdrawId: row.original.id }),
             { status: selectedStatus },
             {
                 onSuccess: () => {
@@ -78,28 +80,21 @@ export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     ))}
+                    <DropdownMenuItem onClick={() => setShowUploadDialog(true)} className="cursor-pointer justify-between p-3">
+                        Upload Bukti Transfer
+                        <Icon icon="tabler:transfer" />
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogContent className="sm:max-w-xl">
-                    <DialogHeader>
-                        <DialogTitle>Konfirmasi Update Status</DialogTitle>
-                        <DialogDescription>
-                            Apakah Anda yakin ingin mengubah status penarikan menjadi{' '}
-                            <strong className="text-black uppercase dark:text-white">{selectedStatus}</strong>? Tindakan ini tidak dapat dibatalkan.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowDialog(false)}>
-                            Batal
-                        </Button>
-                        <Button variant="default" onClick={handleConfirmUpdate}>
-                            Konfirmasi
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <UpdateStatusDialog
+                showDialog={showDialog}
+                setShowDialog={setShowDialog}
+                selectedStatus={selectedStatus || ''}
+                handleConfirmUpdate={handleConfirmUpdate}
+            />
+
+            <UploadTransferProofDialog withdrawId={row.original.id} open={showUploadDialog} onOpenChange={setShowUploadDialog} />
         </>
     );
 }
