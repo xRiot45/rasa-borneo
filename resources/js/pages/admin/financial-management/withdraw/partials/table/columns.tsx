@@ -67,12 +67,16 @@ export const columns: ColumnDef<Withdraw>[] = [
     {
         id: 'status',
         accessorKey: 'status',
+        accessorFn: (row) => row.status,
         header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
         cell: ({ row }) => {
             const status: WithdrawStatusEnum = row.getValue('status');
             const statusClass = withdrawStatusColorMap[status] || 'bg-gray-200 text-gray-800';
 
             return <Badge className={`capitalize ${statusClass}`}>{status.toLowerCase()}</Badge>;
+        },
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id));
         },
         enableSorting: true,
         enableHiding: true,

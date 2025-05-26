@@ -12,8 +12,8 @@ export function DataTableFacetedFilter<TData, TValue>({ column, title, options }
     const selectedValues = new Set(column?.getFilterValue() as string[]);
     return (
         <Popover>
-            <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 border-dashed">
+            <PopoverTrigger>
+                <Button variant="outline" size="sm" className="h-9 border-dashed">
                     <PlusCircledIcon className="h-4 w-4" />
                     {title}
                     {selectedValues?.size > 0 && (
@@ -71,7 +71,7 @@ export function DataTableFacetedFilter<TData, TValue>({ column, title, options }
                                             <CheckIcon className={cn('h-4 w-4')} />
                                         </div>
                                         {option.icon && <option.icon className="text-muted-foreground h-4 w-4" />}
-                                        <span>{option.label}</span>
+                                        <span className="capitalize">{option.label}</span>
                                         {facets?.get(option.value) && (
                                             <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                                                 {facets.get(option.value)}
