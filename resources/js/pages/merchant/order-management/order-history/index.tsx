@@ -21,7 +21,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function OrderHistory({ orders }: Props) {
-    console.log(orders);
     return (
         <>
             <Head title="Riwayat Pesanan" />

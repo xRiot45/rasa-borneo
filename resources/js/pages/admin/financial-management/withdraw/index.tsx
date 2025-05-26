@@ -25,7 +25,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function WithdrawPage({ data }: Props) {
-    console.log(data);
     return (
         <>
             <Head title="Penarikan Dana" />
@@ -33,7 +32,7 @@ export default function WithdrawPage({ data }: Props) {
                 <div className="mb-2 flex flex-wrap justify-between space-y-2 p-4">
                     <div>
                         <h2 className="text-2xl font-black tracking-tight text-gray-700 dark:text-gray-200">Daftar Semua Penarikan Dana</h2>
-                        <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua pengajuan penarikan dana yang telah diajukan</p>
+                        <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua penarikan dana yang telah diajukan oleh merchant</p>
                     </div>
                     <ButtonPartials />
                 </div>
