@@ -13,7 +13,7 @@ export interface Withdraw {
     status: WithdrawStatusEnum;
     note: string;
     requested_at: string;
-    aproved_at: string;
+    approved_at: string;
     rejected_at: string;
     cancelled_at: string;
     transferred_at: string;
