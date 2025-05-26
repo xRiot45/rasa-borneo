@@ -5,5 +5,5 @@ export const withdrawStatusColorMap: Record<WithdrawStatusEnum, string> = {
     [WithdrawStatusEnum.APPROVED]: 'bg-green-100 border-green-600 text-green-600 font-bold',
     [WithdrawStatusEnum.REJECTED]: 'bg-red-100 border-red-600 text-red-600 font-bold',
     [WithdrawStatusEnum.CANCELED]: 'bg-gray-100 border-gray-600 text-gray-600 font-bold',
-    [WithdrawStatusEnum.TRANSFERED]: 'bg-info-100 border-info-600 text-info-600 font-bold',
+    [WithdrawStatusEnum.TRANSFERED]: 'bg-blue-100 border-blue-600 text-blue-600 font-bold',
 };
