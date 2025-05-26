@@ -11,23 +11,33 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import WithdrawDetailDialog from './dialogs/withdraw-detail';
 
-export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
-    const withdrawIsPending = row.original.status === WithdrawStatusEnum.PENDING;
-    const [showDialogCancelWithdraw, setShowDialogCancelWithdraw] = useState<boolean>(false);
+const withdrawStatusIcons: Record<WithdrawStatusEnum, string> = {
+    [WithdrawStatusEnum.PENDING]: 'mdi:clock-outline',
+    [WithdrawStatusEnum.APPROVED]: 'mdi:check-circle-outline',
+    [WithdrawStatusEnum.REJECTED]: 'mdi:close-circle-outline',
+    [WithdrawStatusEnum.CANCELED]: 'mdi:cancel',
+    [WithdrawStatusEnum.TRANSFERED]: 'mdi:bank-transfer',
+};
 
-    const confirmCancelWithdraw = () => {
-        setShowDialogCancelWithdraw(true);
+export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [selectedStatus, setSelectedStatus] = useState<WithdrawStatusEnum | null>(null);
+
+    const handleSelectStatus = (status: WithdrawStatusEnum) => {
+        setSelectedStatus(status);
+        setShowDialog(true);
     };
 
-    const handleCancelledWithdraw = (id: number) => {
+    const handleConfirmUpdate = () => {
         router.put(
-            route('merchant.withdraw.cancelledWithdraw', id),
-            {},
+            route('admin.withdraw.updateStatus', { id: row.original.id }),
+            { status: selectedStatus },
             {
                 onSuccess: () => {
-                    setShowDialogCancelWithdraw(false);
+                    setShowDialog(false);
+                    setSelectedStatus(null);
                     toast.success('Success', {
-                        description: 'Penarikan Dana Berhasil Dibatalkan!',
+                        description: 'Status penarikan dana berhasil diubah',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
@@ -60,34 +70,32 @@ export function DataTableRowActions({ row }: { row: Row<Withdraw> }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
                     <WithdrawDetailDialog withdraw={row.original} />
-
-                    {withdrawIsPending && (
-                        <DropdownMenuItem className="cursor-pointer p-3 text-red-500" onClick={confirmCancelWithdraw}>
-                            Batalkan Penarikan
+                    {Object.values(WithdrawStatusEnum).map((status) => (
+                        <DropdownMenuItem key={status} className="cursor-pointer p-3 capitalize" onClick={() => handleSelectStatus(status)}>
+                            {status}
                             <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:cancel'} className="text-red-500" />
+                                <Icon icon={withdrawStatusIcons[status]} className="text-muted-foreground" />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
-                    )}
+                    ))}
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <Dialog open={showDialogCancelWithdraw} onOpenChange={setShowDialogCancelWithdraw}>
+            <Dialog open={showDialog} onOpenChange={setShowDialog}>
                 <DialogContent className="sm:max-w-xl">
                     <DialogHeader>
-                        <DialogTitle>Batalkan Pengajuan Penarikan Dana</DialogTitle>
+                        <DialogTitle>Konfirmasi Update Status</DialogTitle>
                         <DialogDescription>
-                            Apakah anda yakin ingin membatalkan pengajuan penarikan dana ini? Anda tidak dapat mengembalikan penarikan dana yang telah
-                            dibatalkan.
+                            Apakah Anda yakin ingin mengubah status penarikan menjadi{' '}
+                            <strong className="text-black uppercase dark:text-white">{selectedStatus}</strong>? Tindakan ini tidak dapat dibatalkan.
                         </DialogDescription>
                     </DialogHeader>
-
                     <DialogFooter>
-                        <Button variant="outline" className="cursor-pointer" onClick={() => setShowDialogCancelWithdraw(false)}>
-                            Batalkan
+                        <Button variant="outline" onClick={() => setShowDialog(false)}>
+                            Batal
                         </Button>
-                        <Button variant="destructive" className="cursor-pointer" onClick={() => handleCancelledWithdraw(row.original.id)}>
-                            Batalkan Penarikan
+                        <Button variant="default" onClick={handleConfirmUpdate}>
+                            Konfirmasi
                         </Button>
                     </DialogFooter>
                 </DialogContent>

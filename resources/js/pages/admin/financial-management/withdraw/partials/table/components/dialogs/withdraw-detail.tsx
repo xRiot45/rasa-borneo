@@ -16,7 +16,7 @@ const WithdrawDetailDialog: React.FC<Props> = ({ withdraw }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="ghost" className="flex w-full cursor-pointer items-center justify-between gap-1 px-3 font-light">
+                <Button variant="ghost" className="flex w-full cursor-pointer items-center justify-between gap-1 p-6 font-light">
                     Lihat Detail Pengajuan
                     <Icon icon={'mdi:eye'} className="h-4 w-4" />
                 </Button>

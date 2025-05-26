@@ -10,6 +10,7 @@ use App\Models\Merchant;
 use App\Models\Transaction;
 use App\Models\Withdraw;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -104,6 +105,26 @@ class WithdrawController extends Controller
         return redirect()->route('merchant.withdraw.indexMerchant')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
 
+    public function updateStatus(Request $request, int $withdrawId): RedirectResponse
+    {
+        $request->validate([
+            'status' => 'required|in:' . implode(',', WithdrawStatusEnum::values()),
+        ]);
+
+        $withdraw = Withdraw::findOrFail($withdrawId);
+
+        if (in_array($withdraw->status, [WithdrawStatusEnum::REJECTED, WithdrawStatusEnum::CANCELED, WithdrawStatusEnum::TRANSFERED])) {
+            return back()->with('error', 'Status tidak dapat diubah karena withdraw sudah memiliki status akhir.');
+        }
+
+        $newStatus = WithdrawStatusEnum::from($request->input('status'));
+        $withdraw->update([
+            'status' => $newStatus,
+        ]);
+
+        return back()->with('success', 'Status penarikan berhasil diperbarui.');
+    }
+
     public function cancelledWithdraw(int $withdrawId): RedirectResponse
     {
         $user = Auth::user();
@@ -113,18 +134,15 @@ class WithdrawController extends Controller
         $withdraw = Withdraw::where('id', $withdrawId)->first();
 
         if (!$withdraw || $merchantId !== $withdraw->merchant_id) {
-            return redirect()->route('merchant.withdraw.indexMerchant')
-                ->with('error', 'Anda tidak memiliki izin untuk melakukan pembatalan penarikan ini.');
+            return redirect()->route('merchant.withdraw.indexMerchant')->with('error', 'Anda tidak memiliki izin untuk melakukan pembatalan penarikan ini.');
         }
 
         if ($withdraw->status !== WithdrawStatusEnum::PENDING) {
-            return redirect()->route('merchant.withdraw.indexMerchant')
-                ->with('error', 'Penarikan hanya dapat dibatalkan jika masih dalam status "pending".');
+            return redirect()->route('merchant.withdraw.indexMerchant')->with('error', 'Penarikan hanya dapat dibatalkan jika masih dalam status "pending".');
         }
 
         $withdraw->update(['status' => WithdrawStatusEnum::CANCELED]);
 
-        return redirect()->route('merchant.withdraw.indexMerchant')
-            ->with('success', 'Pengajuan Penarikan Dana Berhasil Dibatalkan');
+        return redirect()->route('merchant.withdraw.indexMerchant')->with('success', 'Pengajuan Penarikan Dana Berhasil Dibatalkan');
     }
 }
