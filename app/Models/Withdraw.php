@@ -51,7 +51,7 @@ class Withdraw extends Model
         });
     }
 
-    public function merchants(): BelongsTo
+    public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);
     }

@@ -57,6 +57,14 @@ class WithdrawController extends Controller
         ]);
     }
 
+    public function indexAdmin(): InertiaResponse
+    {
+        $withdraws = Withdraw::with('merchant')->get();
+        return Inertia::render('admin/financial-management/withdraw/index', [
+            'data' => $withdraws,
+        ]);
+    }
+
     public function create(): InertiaResponse
     {
         $user = Auth::user();

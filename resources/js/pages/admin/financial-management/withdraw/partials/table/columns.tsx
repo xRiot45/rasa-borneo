@@ -1,0 +1,87 @@
+import { Badge } from '@/components/ui/badge';
+import { WithdrawStatusEnum } from '@/enums/withdraw-status';
+import { Withdraw } from '@/models/financial-management/withdraw';
+import { formatCurrency } from '@/utils/format-currency';
+import { withdrawStatusColorMap } from '@/utils/withdraw-status-color';
+import { ColumnDef, Row } from '@tanstack/react-table';
+import { DataTableColumnHeader } from './components/data-table-column-header';
+import { DataTableRowActions } from './components/data-table-row-actions';
+
+export const columns: ColumnDef<Withdraw>[] = [
+    {
+        id: 'no',
+        accessorKey: 'no',
+        header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
+        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'withdraw_code',
+        accessorKey: 'withdraw_code',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Kode Penarikan" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('withdraw_code')}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'merchant.business_name',
+        accessorKey: 'merchant.business_name',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Merchant" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('merchant.business_name') || '-'}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'amount',
+        accessorKey: 'amount',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Jumlah Penarikan" />,
+        cell: ({ row }) => <span className="max-w-36">{formatCurrency(row.getValue('amount'))}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'bank_code',
+        accessorKey: 'bank_code',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Kode & Nama Bank" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_code')}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'bank_account_number',
+        accessorKey: 'bank_account_number',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Nomor Rekening" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_account_number')}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'bank_account_name',
+        accessorKey: 'bank_account_name',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Pemilik Rekening" />,
+        cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_account_name')}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'status',
+        accessorKey: 'status',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        cell: ({ row }) => {
+            const status: WithdrawStatusEnum = row.getValue('status');
+            const statusClass = withdrawStatusColorMap[status] || 'bg-gray-200 text-gray-800';
+
+            return <Badge className={`capitalize ${statusClass}`}>{status.toLowerCase()}</Badge>;
+        },
+        enableSorting: true,
+        enableHiding: true,
+    },
+    {
+        id: 'actions',
+        accessorKey: 'actions',
+        header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
+        cell: ({ row }) => <DataTableRowActions row={row as Row<Withdraw>} />,
+        enableHiding: false,
+    },
+];

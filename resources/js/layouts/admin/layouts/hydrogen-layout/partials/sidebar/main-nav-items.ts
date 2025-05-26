@@ -81,7 +81,7 @@ const mainNavItems: NavGroup[] = [
         items: [
             {
                 title: 'Penarikan Dana',
-                href: '/admin/withdrawals',
+                href: '/admin/financial-management/withdraw',
                 icon: 'mdi:cash-minus',
             },
             // (opsional di masa depan) bisa tambahkan:
@@ -126,7 +126,7 @@ const mainNavItems: NavGroup[] = [
                 icon: 'mdi:folder-edit',
             },
             {
-                title: 'Pengaturan Tarif & Diskon',
+                title: 'Pengaturan Tarif',
                 href: '/admin/discount-settings',
                 icon: 'mdi:tag-multiple',
             },

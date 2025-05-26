@@ -129,6 +129,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::patch('/restore/{merchant}', 'restore')->name('admin.merchants.restore');
             });
     });
+
+    // Financial Management
+    Route::prefix('/admin/financial-management')->group(function () {
+        // Withdraw
+        Route::prefix('/withdraw')
+            ->controller(WithdrawController::class)
+            ->group(function () {
+                Route::get('/', 'indexAdmin')->name('admin.withdraw.indexAdmin');
+            });
+    });
 });
 
 // MERCHANT ROUTES
