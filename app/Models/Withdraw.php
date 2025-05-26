@@ -26,6 +26,7 @@ class Withdraw extends Model
         'rejected_at',
         'canceled_at',
         'transferred_at',
+        'transfer_proof',
     ];
 
     protected $casts = [
