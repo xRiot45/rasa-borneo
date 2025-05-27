@@ -3,7 +3,6 @@ import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
 import { Transaction } from '@/models/transactions';
-import { formatCurrency } from '@/utils/format-currency';
 import { formatDateTimeIndo } from '@/utils/format-date-time';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
@@ -92,14 +91,14 @@ export const columns: ColumnDef<Transaction>[] = [
         enableSorting: false,
         enableHiding: false,
     },
-    {
-        id: 'final_total',
-        accessorKey: 'final_total',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Total Akhir" />,
-        cell: ({ row }) => <span className="text-sm">{formatCurrency(row.getValue('final_total'))}</span>,
-        enableSorting: true,
-        enableHiding: true,
-    },
+    // {
+    //     id: 'final_total',
+    //     accessorKey: 'final_total',
+    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Total Akhir" />,
+    //     cell: ({ row }) => <span className="text-sm">{formatCurrency(row.getValue('final_total'))}</span>,
+    //     enableSorting: true,
+    //     enableHiding: true,
+    // },
     {
         id: 'latest_order_status',
         accessorKey: 'latest_order_status',
