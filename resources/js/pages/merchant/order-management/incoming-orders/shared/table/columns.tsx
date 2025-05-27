@@ -1,9 +1,11 @@
 import { Badge } from '@/components/ui/badge';
+import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
 import { Order } from '@/models/order';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatDateTimeIndo } from '@/utils/format-date-time';
+import { orderStatusMap } from '@/utils/order-status-map';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
@@ -103,6 +105,39 @@ export const columns: ColumnDef<Order>[] = [
             return (
                 <Badge variant="outline" className={`${color} rounded-sm`}>
                     {String(status).toUpperCase()}
+                </Badge>
+            );
+        },
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'latest_order_status',
+        accessorKey: 'latest_order_status',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status Pesanan" />,
+        cell: ({ row }) => {
+            const latestStatus = row.getValue('latest_order_status') as {
+                status: OrderStatusEnum;
+            } | null;
+
+            if (!latestStatus || typeof latestStatus !== 'object') {
+                return <span className="text-muted-foreground text-sm italic">Tidak tersedia</span>;
+            }
+
+            const status = latestStatus.status;
+            const statusData = orderStatusMap[status];
+
+            if (!statusData) {
+                return (
+                    <Badge variant="outline" className="bg-muted text-muted-foreground rounded-sm font-bold">
+                        {status.toUpperCase()}
+                    </Badge>
+                );
+            }
+
+            return (
+                <Badge variant="outline" className={`${statusData.className} rounded-sm font-bold`}>
+                    {statusData.label}
                 </Badge>
             );
         },

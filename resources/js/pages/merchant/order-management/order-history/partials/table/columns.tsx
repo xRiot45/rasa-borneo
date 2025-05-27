@@ -1,9 +1,11 @@
 import { Badge } from '@/components/ui/badge';
+import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
 import { Order } from '@/models/order';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatDateTimeIndo } from '@/utils/format-date-time';
+import { orderStatusMap } from '@/utils/order-status-map';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
@@ -61,11 +63,13 @@ export const columns: ColumnDef<Order>[] = [
         cell: ({ row }) => {
             const method = row.getValue('payment_method');
             const color =
-                method === PaymentMethodEnum.CASH ? 'bg-green-600 text-white border-none font-bold' : 'bg-blue-600 text-white border-none font-bold';
+                method === PaymentMethodEnum.CASH
+                    ? 'bg-green-100 text-green-600 border-green-600 font-bold'
+                    : 'bg-blue-100 text-blue-600 border-blue-600 font-bold';
 
             return (
-                <Badge variant="outline" className={`${color} rounded-sm`}>
-                    {String(method).toUpperCase()}
+                <Badge variant="outline" className={`${color} rounded-sm capitalize`}>
+                    {String(method)}
                 </Badge>
             );
         },
@@ -81,8 +85,8 @@ export const columns: ColumnDef<Order>[] = [
             const color = paymentStatusColorMap[status] ?? 'bg-muted text-muted-foreground';
 
             return (
-                <Badge variant="outline" className={`${color} rounded-sm`}>
-                    {String(status).toUpperCase()}
+                <Badge variant="outline" className={`${color} rounded-sm capitalize`}>
+                    {status}
                 </Badge>
             );
         },
@@ -102,24 +106,28 @@ export const columns: ColumnDef<Order>[] = [
         accessorKey: 'latest_order_status',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Status Pesanan" />,
         cell: ({ row }) => {
-            const latestStatus = row.getValue('latest_order_status') as { status: string } | null;
+            const latestStatus = row.getValue('latest_order_status') as {
+                status: OrderStatusEnum;
+            } | null;
+
             if (!latestStatus || typeof latestStatus !== 'object') {
                 return <span className="text-muted-foreground text-sm italic">Tidak tersedia</span>;
             }
 
             const status = latestStatus.status;
-            const colorMap: Record<string, string> = {
-                selesai: 'bg-green-600 text-white',
-                diproses: 'bg-yellow-500 text-white',
-                dibatalkan: 'bg-red-600 text-white',
-                pending: 'bg-gray-500 text-white',
-            };
+            const statusData = orderStatusMap[status];
 
-            const badgeColor = colorMap[status] || 'bg-muted text-muted-foreground';
+            if (!statusData) {
+                return (
+                    <Badge variant="outline" className="bg-muted text-muted-foreground rounded-sm font-bold">
+                        {status.toUpperCase()}
+                    </Badge>
+                );
+            }
 
             return (
-                <Badge variant="outline" className={`${badgeColor} rounded-sm border-none font-bold`}>
-                    {status.toUpperCase()}
+                <Badge variant="outline" className={`${statusData.className} rounded-sm font-bold`}>
+                    {statusData.label}
                 </Badge>
             );
         },
