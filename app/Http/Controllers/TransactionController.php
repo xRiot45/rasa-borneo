@@ -259,12 +259,12 @@ class TransactionController extends Controller
             ],
             'customer_details' => $customerDetails,
             'item_details' => $itemDetails,
+            'notification_url' =>  url('/api/midtrans/notification'),
             'callbacks' => [
                 'finish' => route('transaction.success', ['transactionCode' => $transaction->transaction_code]),
                 'pending' => route('transaction.pending', ['transactionCode' => $transaction->transaction_code]),
                 'error' => route('transaction.failed', ['transactionCode' => $transaction->transaction_code]),
             ],
-            'notification_url' => route('midtrans.notification'),
         ];
 
         $snapToken = Snap::getSnapToken($midtransParams);
@@ -304,7 +304,7 @@ class TransactionController extends Controller
     {
         // 1. Validasi Signature Key
         $serverKey = config('services.midtrans.server_key');
-        $hashed = hash('sha512', $request['order_id'] . $request['status_code'] . $request['gross_amount'] . $serverKey);
+        $hashed = hash('sha512', $request->input('order_id') . $request->input('status_code') . $request->input('gross_amount') . $serverKey);
 
         if ($hashed !== $request['signature_key']) {
             return response()->json(['message' => 'Invalid Signature Key'], 403);
