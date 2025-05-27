@@ -13,6 +13,7 @@ use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreOperatingHourController;
@@ -272,6 +273,13 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/create', 'create')->name('merchant.withdraw.create');
                 Route::post('/create', 'store')->name('merchant.withdraw.store');
                 Route::put('/cancel/{id}', 'cancelledWithdraw')->name('merchant.withdraw.cancelledWithdraw');
+            });
+
+        // Revenue Report
+        Route::prefix('/revenue-report')
+            ->controller(RevenueReportController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.revenue-report.indexMerchant');
             });
     });
 });
