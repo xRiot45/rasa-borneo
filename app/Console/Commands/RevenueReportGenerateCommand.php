@@ -29,7 +29,7 @@ class RevenueReportGenerateCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         // Konversi awal dan akhir hari dalam timezone lokal ke UTC
         $startOfDay = Carbon::today(config('app.timezone'))->startOfDay()->timezone('UTC');
@@ -50,6 +50,17 @@ class RevenueReportGenerateCommand extends Command
         $groupedByMerchant = $transactions->groupBy('merchant_id');
 
         foreach ($groupedByMerchant as $merchantId => $merchantTransactions) {
+            // Cek apakah report sudah ada
+            $existingReport = RevenueReport::where('merchant_id', $merchantId)
+                ->where('report_date', $startOfDay->toDateString())
+                ->where('report_type', ReportTypeEnum::DAILY)
+                ->exists();
+
+            if ($existingReport) {
+                $this->info("Laporan Pendapatan sudah ada untuk merchant ID: {$merchantId} pada tanggal {$startOfDay->toDateString()}, lewati...");
+                continue;
+            }
+
             $totalTransactions = $merchantTransactions->count();
             $totalRevenue = $merchantTransactions->reduce(function ($carry, $transaction) {
                 $deliveryFee = $transaction->delivery_fee ?? 0;
