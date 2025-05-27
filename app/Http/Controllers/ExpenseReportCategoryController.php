@@ -36,10 +36,10 @@ class ExpenseReportCategoryController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $request->validated();
+        $validated = $request->validated();
 
         ExpenseReportCategory::create(
-            array_merge([
+            array_merge($validated, [
                 'merchant_id' => $merchantId,
             ]),
         );
@@ -47,10 +47,11 @@ class ExpenseReportCategoryController extends Controller
         return redirect()->route('merchant.expense-report-category.indexMerchant')->with('success', 'Kategori pengeluaran berhasil ditambahkan');
     }
 
-    public function edit(ExpenseReportCategory $expenseReportCategory): InertiaResponse
+    public function edit(int $id): InertiaResponse
     {
+        $expenseReportCategory = ExpenseReportCategory::find($id);
         return Inertia::render('merchant/financial-management/expense-report/expense-report-category/pages/form', [
-            'data' => $expenseReportCategory,
+            'expenseReportCategory' => $expenseReportCategory,
         ]);
     }
 
