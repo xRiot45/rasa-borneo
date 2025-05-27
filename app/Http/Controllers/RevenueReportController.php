@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatusEnum;
+use App\Enums\PaymentStatusEnum;
 use App\Models\Merchant;
+use App\Models\Order;
 use App\Models\RevenueReport;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -44,6 +48,39 @@ class RevenueReportController extends Controller
             'todayRevenue' => $todayRevenue,
             'todayAverageRevenuePerTransaction' => $todayAverageRevenuePerTransaction,
             'revenueByDate' => $revenueByDate,
+        ]);
+    }
+
+    public function detailReport($reportDate): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->firstOrFail();
+        $merchantId = $merchant->id;
+
+        $revenueReport = RevenueReport::where('report_date', $reportDate)
+            ->where('merchant_id', $merchantId)
+            ->first();
+
+        if (!$revenueReport) {
+            abort(404);
+        }
+
+        // Hitung range UTC dari report date lokal
+        $startOfDay = Carbon::parse($reportDate, config('app.timezone'))->startOfDay()->timezone('UTC');
+        $endOfDay = Carbon::parse($reportDate, config('app.timezone'))->endOfDay()->timezone('UTC');
+
+        $transactions = Transaction::with(['latestOrderStatus']) // ← tambahkan eager loading
+            ->where('merchant_id', $merchantId)
+            ->whereBetween('checked_out_at', [$startOfDay, $endOfDay])
+            ->where('payment_status', PaymentStatusEnum::PAID)
+            ->whereHas('orderStatus', function ($query) {
+                $query->where('status', OrderStatusEnum::COMPLETED);
+            })
+            ->get();
+
+        return Inertia::render('merchant/financial-management/revenue-report/pages/detail-report/index', [
+            'report' => $revenueReport,
+            'transactions' => $transactions,
         ]);
     }
 }

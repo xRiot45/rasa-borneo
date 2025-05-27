@@ -9,6 +9,7 @@ use App\Enums\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Transaction extends Model
@@ -124,5 +125,10 @@ class Transaction extends Model
     public function orderStatus(): HasMany
     {
         return $this->hasMany(OrderStatus::class);
+    }
+
+    public function latestOrderStatus(): HasOne
+    {
+        return $this->hasOne(OrderStatus::class, 'transaction_id')->latestOfMany();
     }
 }

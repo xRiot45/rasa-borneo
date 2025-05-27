@@ -1,13 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { RevenueReport } from '@/models/financial-management/revenue-report';
+import { Transaction } from '@/models/transactions';
 import { Icon } from '@iconify/react';
 import { Link } from '@inertiajs/react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 
-export function DataTableRowActions({ row }: { row: Row<RevenueReport> }) {
-    console.log(row);
+export function DataTableRowActions({ row }: { row: Row<Transaction> }) {
     return (
         <>
             <DropdownMenu>
@@ -18,11 +17,11 @@ export function DataTableRowActions({ row }: { row: Row<RevenueReport> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('merchant.revenue-report.detailReport', { reportDate: row.original.report_date })}>
+                    <Link href={route('merchant.order.show', row.original.transaction_code)} className="cursor-pointer">
                         <DropdownMenuItem className="cursor-pointer p-3">
-                            Lihat Detail Laporan
+                            Lihat Detail Pesanan
                             <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:open-in-new'} />
+                                <Icon icon={'bx:detail'} />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
