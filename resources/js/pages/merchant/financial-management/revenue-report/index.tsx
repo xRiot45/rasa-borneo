@@ -54,6 +54,11 @@ export default function RevenueReportPage({
                     <ButtonPartials />
                 </div>
 
+                {/* <div className="p-4">
+                    <h3 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Tren Pendapatan per Tanggal</h3>
+                    <RevenueTrendChart data={revenueByDate} />
+                </div> */}
+
                 <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
                     <CardSummaryStatistics
                         data={totalTransactions}

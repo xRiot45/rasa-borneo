@@ -23,7 +23,7 @@ class RevenueReportController extends Controller
 
         $averageRevenuePerTransaction = $totalTransactions > 0 ? $totalRevenue / $totalTransactions : 0;
         $todayReport = RevenueReport::whereDate('report_date', Carbon::today())->first();
-        $revenueByDate = RevenueReport::selectRaw('report_date, total_revenue')->orderBy('report_date', 'asc')->get();
+        $revenueByDate = RevenueReport::selectRaw('report_date, total_revenue')->get();
 
         $todayTransactions = 0;
         $todayRevenue = 0;
