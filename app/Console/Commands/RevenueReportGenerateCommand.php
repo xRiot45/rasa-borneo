@@ -31,9 +31,11 @@ class RevenueReportGenerateCommand extends Command
      */
     public function handle()
     {
-        $today = Carbon::today(config('app.timezone'))->toDateString();
+        // Konversi awal dan akhir hari dalam timezone lokal ke UTC
+        $startOfDay = Carbon::today(config('app.timezone'))->startOfDay()->timezone('UTC');
+        $endOfDay = Carbon::today(config('app.timezone'))->endOfDay()->timezone('UTC');
 
-        $transactions = Transaction::whereDate('checked_out_at', $today)
+        $transactions = Transaction::whereBetween('checked_out_at', [$startOfDay, $endOfDay])
             ->where('payment_status', PaymentStatusEnum::PAID)
             ->whereHas('orderStatus', function ($query) {
                 $query->where('status', OrderStatusEnum::COMPLETED);
@@ -41,11 +43,10 @@ class RevenueReportGenerateCommand extends Command
             ->get();
 
         if ($transactions->isEmpty()) {
-            $this->info("Tidak ada transaksi pada tanggal {$today}. Revenue report tidak dibuat.");
+            $this->info("Tidak ada transaksi pada tanggal {$startOfDay->toDateString()} (UTC range). Revenue report tidak dibuat.");
             return;
         }
 
-        // Group transaksi berdasarkan merchant_id
         $groupedByMerchant = $transactions->groupBy('merchant_id');
 
         foreach ($groupedByMerchant as $merchantId => $merchantTransactions) {
@@ -53,13 +54,12 @@ class RevenueReportGenerateCommand extends Command
             $totalRevenue = $merchantTransactions->reduce(function ($carry, $transaction) {
                 $deliveryFee = $transaction->delivery_fee ?? 0;
                 $serviceFee = $transaction->application_service_fee ?? 0;
-
                 return $carry + ($transaction->final_total - $deliveryFee - $serviceFee);
             }, 0);
 
             RevenueReport::create([
                 'merchant_id' => $merchantId,
-                'report_date' => $today,
+                'report_date' => $startOfDay->toDateString(),
                 'report_type' => ReportTypeEnum::DAILY,
                 'total_transaction' => $totalTransactions,
                 'total_revenue' => $totalRevenue,
