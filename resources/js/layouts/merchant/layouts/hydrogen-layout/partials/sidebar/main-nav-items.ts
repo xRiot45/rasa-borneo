@@ -77,7 +77,7 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
-        group: 'MANAJEMENT KEUANGAN',
+        group: 'MANAJEMEN KEUANGAN',
         items: [
             {
                 title: 'Penarikan Dana',
@@ -95,13 +95,17 @@ const mainNavItems: NavGroup[] = [
                 icon: 'mdi:cash-remove',
             },
             {
-                title: 'Riwayat Transaksi',
-                href: '/merchant/financial-management/transactions',
-                icon: 'mdi:history',
+                title: 'Laporan Laba Kotor',
+                href: '/merchant/financial-management/gross-profit-report',
+                icon: 'mdi:chart-line',
+            },
+            {
+                title: 'Laporan Laba Bersih',
+                href: '/merchant/financial-management/net-profit-report',
+                icon: 'mdi:finance',
             },
         ],
     },
-
     {
         group: 'INTERAKSI PELANGGAN',
         items: [
