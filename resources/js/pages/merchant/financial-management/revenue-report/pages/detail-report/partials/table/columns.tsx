@@ -7,9 +7,8 @@ import { formatCurrency } from '@/utils/format-currency';
 import { formatDateTimeIndo } from '@/utils/format-date-time';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
-import { ColumnDef, Row } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
-import { DataTableRowActions } from './components/data-table-row-actions';
 
 export const columns: ColumnDef<Transaction>[] = [
     {
@@ -134,11 +133,11 @@ export const columns: ColumnDef<Transaction>[] = [
         enableSorting: false,
         enableHiding: false,
     },
-    {
-        id: 'actions',
-        accessorKey: 'actions',
-        header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
-        cell: ({ row }) => <DataTableRowActions row={row as Row<Transaction>} />,
-        enableHiding: false,
-    },
+    // {
+    //     id: 'actions',
+    //     accessorKey: 'actions',
+    //     header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
+    //     cell: ({ row }) => <DataTableRowActions row={row as Row<Transaction>} />,
+    //     enableHiding: false,
+    // },
 ];
