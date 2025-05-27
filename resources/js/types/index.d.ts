@@ -20,7 +20,7 @@ export interface NavItem {
     href: string;
     icon: string;
     isActive?: boolean;
-    menu?: NavItem[];
+    submenu?: NavItem[];
 }
 
 export interface SharedData {

@@ -91,8 +91,20 @@ const mainNavItems: NavGroup[] = [
             },
             {
                 title: 'Laporan Pengeluaran',
-                href: '/merchant/financial-management/expense-report',
                 icon: 'mdi:cash-remove',
+                href: '#',
+                submenu: [
+                    {
+                        title: 'Daftar Laporan',
+                        href: '/merchant/financial-management/expense-report',
+                        icon: 'mdi:file-document-outline',
+                    },
+                    {
+                        title: 'Kategori Pengeluaran',
+                        href: '/merchant/financial-management/expense-categories',
+                        icon: 'mdi:shape-outline',
+                    },
+                ],
             },
             {
                 title: 'Laporan Laba Kotor',

@@ -36,7 +36,7 @@ function SidebarGroupContent({ item }: { item: NavItem }) {
                 </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="ml-6">
-                {item.menu?.map((subItem) => (
+                {item.submenu?.map((subItem) => (
                     <Link
                         key={subItem.href}
                         href={subItem.href}
@@ -73,7 +73,7 @@ function NavMain({ items = [] }: { items: NavItem[] }) {
 
 export function HydrogenSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible="offcanvas" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -92,7 +92,7 @@ export function HydrogenSidebar() {
                         <SidebarGroupLabel>{group}</SidebarGroupLabel>
                         <SidebarMenu>
                             {items.map((item) =>
-                                item.menu ? <SidebarGroupContent key={item.title} item={item} /> : <NavMain key={item.title} items={[item]} />,
+                                item.submenu ? <SidebarGroupContent key={item.title} item={item} /> : <NavMain key={item.title} items={[item]} />,
                             )}
                         </SidebarMenu>
                     </SidebarGroup>
