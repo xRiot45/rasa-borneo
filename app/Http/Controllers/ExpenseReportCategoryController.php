@@ -2,9 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ExpenseReportCategoryRequest;
+use App\Models\ExpenseReportCategory;
+use App\Models\Merchant;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class ExpenseReportCategoryController extends Controller
 {
-    //
+    public function indexMerchant(): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $expenseReportCategories = ExpenseReportCategory::where('merchant_id', $merchantId)->get();
+
+        return Inertia::render('merchant/financial-management/expense-report/expense-report-category/index', [
+            'data' => $expenseReportCategories,
+        ]);
+    }
+
+    public function create(): InertiaResponse
+    {
+        return Inertia::render('merchant/financial-management/expense-report/expense-report-category/pages/form');
+    }
+
+    public function store(ExpenseReportCategoryRequest $request): RedirectResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $request->validated();
+
+        ExpenseReportCategory::create(
+            array_merge([
+                'merchant_id' => $merchantId,
+            ]),
+        );
+
+        return redirect()->route('merchant.expense-report-category.indexMerchant')->with('success', 'Kategori pengeluaran berhasil ditambahkan');
+    }
+
+    public function edit(ExpenseReportCategory $expenseReportCategory): InertiaResponse
+    {
+        return Inertia::render('merchant/financial-management/expense-report/expense-report-category/pages/form', [
+            'data' => $expenseReportCategory,
+        ]);
+    }
+
+    public function update(ExpenseReportCategoryRequest $request, int $id): RedirectResponse
+    {
+        $request->validated();
+
+        $expenseReportCategory = ExpenseReportCategory::find($id);
+
+        $expenseReportCategory->update($request->all());
+
+        return redirect()->route('merchant.expense-report-category.indexMerchant')->with('success', 'Kategori pengeluaran berhasil diubah');
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $expenseReportCategory = ExpenseReportCategory::find($id);
+        $expenseReportCategory->delete();
+
+        return redirect()->route('merchant.expense-report-category.indexMerchant')->with('success', 'Kategori pengeluaran berhasil dihapus');
+    }
 }

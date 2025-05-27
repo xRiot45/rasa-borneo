@@ -132,4 +132,10 @@ class Merchant extends Model
     {
         return $this->hasMany(RevenueReport::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN EXPENSE_REPORT CATEGORY
+    public function expenseReportCategories(): HasMany
+    {
+        return $this->hasMany(ExpenseReportCategory::class);
+    }
 }

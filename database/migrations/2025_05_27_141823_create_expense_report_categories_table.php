@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('expense_report_categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('merchant_id')->constrained('merchants');
+            $table->string('name');
             $table->timestamps();
         });
     }

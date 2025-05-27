@@ -7,6 +7,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpenseReportCategoryController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuItemController;
@@ -281,6 +282,18 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.revenue-report.indexMerchant');
                 Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.revenue-report.detailReport');
+            });
+
+        // Expense Report Category
+        Route::prefix('/expense-report-category')
+            ->controller(ExpenseReportCategoryController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.expense-report-category.indexMerchant');
+                Route::get('/create', 'create')->name('merchant.expense-report-category.create');
+                Route::post('/create', 'store')->name('merchant.expense-report-category.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.expense-report-category.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.expense-report-category.update');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.expense-report-category.destroy');
             });
     });
 });

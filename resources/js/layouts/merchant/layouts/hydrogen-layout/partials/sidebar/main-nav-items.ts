@@ -101,7 +101,7 @@ const mainNavItems: NavGroup[] = [
                     },
                     {
                         title: 'Kategori Pengeluaran',
-                        href: '/merchant/financial-management/expense-categories',
+                        href: '/merchant/financial-management/expense-report-category',
                         icon: 'mdi:shape-outline',
                     },
                 ],
