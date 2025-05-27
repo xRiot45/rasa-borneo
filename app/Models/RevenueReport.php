@@ -14,11 +14,8 @@ class RevenueReport extends Model
         'merchant_id',
         'report_date',
         'report_type',
-        'total_order',
         'total_transaction',
         'total_revenue',
-        'total_cost',
-        'total_profit',
     ];
 
     protected $casts = [

@@ -14,11 +14,8 @@ return new class extends Migration
             $table->foreignId('merchant_id')->constrained('merchants');
             $table->date('report_date');
             $table->enum('report_type', [ReportTypeEnum::values()])->default(ReportTypeEnum::DAILY);
-            $table->integer('total_order');
-            $table->integer('total_transaction');
-            $table->bigInteger('total_revenue');
-            $table->bigInteger('total_cost');
-            $table->bigInteger('total_profit');
+            $table->integer('total_transaction'); // Total transaksi yang berhasil
+            $table->bigInteger('total_revenue'); // Total pendapatan dari transaksi sukses
             $table->timestamps();
         });
     }

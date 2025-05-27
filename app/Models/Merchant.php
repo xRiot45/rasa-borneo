@@ -126,4 +126,10 @@ class Merchant extends Model
     {
         return $this->hasMany(Withdraw::class);
     }
+
+    // RELASI ONE-TO-MANY DENGAN REVENUE_REPORT
+    public function revenueReports(): HasMany
+    {
+        return $this->hasMany(RevenueReport::class);
+    }
 }
