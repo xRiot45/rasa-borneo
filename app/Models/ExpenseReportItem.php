@@ -12,7 +12,6 @@ class ExpenseReportItem extends Model
     protected $fillable = [
         'expense_report_id',
         'name',
-        'category_id',
         'description',
         'amount',
     ];

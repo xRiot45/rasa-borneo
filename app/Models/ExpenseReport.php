@@ -13,6 +13,7 @@ class ExpenseReport extends Model
     protected $fillable = [
         'merchant_id',
         'report_date',
+        'category_id',
         'description',
         'total_expense',
     ];
@@ -29,5 +30,10 @@ class ExpenseReport extends Model
     public function expenseReportItems(): HasMany
     {
         return $this->hasMany(ExpenseReportItem::class);
+    }
+
+    public function expenseReportCategory(): BelongsTo
+    {
+        return $this->belongsTo(ExpenseReportCategory::class);
     }
 }

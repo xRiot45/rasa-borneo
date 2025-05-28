@@ -1,6 +1,7 @@
 import MerchantLayout from '@/layouts/merchant/layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
+import ButtonPartials from './partials/buttons';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,7 +19,13 @@ export default function ExpenseReportPage() {
         <>
             <Head title="Laporan Pengeluaran" />
             <MerchantLayout breadcrumbs={breadcrumbs}>
-                <h1>Laporan Pengeluaran</h1>
+                <div className="mb-2 flex flex-wrap justify-between space-y-2 p-4">
+                    <div>
+                        <h2 className="text-2xl font-black tracking-tight text-gray-700 dark:text-gray-200">Daftar Laporan Pengeluaran</h2>
+                        <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua laporan pengeluaran anda</p>
+                    </div>
+                    <ButtonPartials />
+                </div>
             </MerchantLayout>
         </>
     );

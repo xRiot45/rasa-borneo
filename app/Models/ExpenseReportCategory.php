@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ExpenseReportCategory extends Model
 {
@@ -17,5 +18,10 @@ class ExpenseReportCategory extends Model
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);
+    }
+
+    public function expenseReports(): HasMany
+    {
+        return $this->hasMany(ExpenseReport::class);
     }
 }
