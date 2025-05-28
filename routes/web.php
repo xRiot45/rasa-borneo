@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseReportCategoryController;
+use App\Http\Controllers\ExpenseReportController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuItemController;
@@ -282,6 +283,14 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.revenue-report.indexMerchant');
                 Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.revenue-report.detailReport');
+            });
+
+        // Expense Report
+        Route::prefix('/expense-report')
+            ->controller(ExpenseReportController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.expense-report.indexMerchant');
+                Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.expense-report.detailReport');
             });
 
         // Expense Report Category
