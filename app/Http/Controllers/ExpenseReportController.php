@@ -16,7 +16,14 @@ class ExpenseReportController extends Controller
 {
     public function indexMerchant(): InertiaResponse
     {
-        return Inertia::render('merchant/financial-management/expense-report/list-expense-report/index');
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $expenseReports = ExpenseReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
+        return Inertia::render('merchant/financial-management/expense-report/list-expense-report/index', [
+            'expenseReports' => $expenseReports,
+        ]);
     }
 
     public function create(): InertiaResponse
@@ -27,7 +34,7 @@ class ExpenseReportController extends Controller
 
         $expenseReportCategories = ExpenseReportCategory::where('merchant_id', $merchantId)->get();
         return Inertia::render('merchant/financial-management/expense-report/list-expense-report/pages/form', [
-            'expenseReportCategories' => $expenseReportCategories
+            'expenseReportCategories' => $expenseReportCategories,
         ]);
     }
 

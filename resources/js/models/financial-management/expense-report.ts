@@ -18,6 +18,9 @@ export interface ExpenseReportForm {
 
 export interface ExpenseReport {
     id: number;
+    report_date: string;
+    description: string;
+    total_expense: number;
 }
 
 export interface ExpenseReportCategory {
