@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('expense_reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('merchant_id')->constrained('merchants');
+            $table->timestamp('report_date');
+            $table->text('description')->nullable();
+            $table->bigInteger('total_expense')->default(0);
             $table->timestamps();
         });
     }
