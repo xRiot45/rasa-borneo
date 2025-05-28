@@ -30,8 +30,8 @@ export const columns: ColumnDef<ExpenseReport>[] = [
         accessorKey: 'description',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Deskripsi Pengeluaran" />,
         cell: ({ row }) => <span className="max-w-36">{row.getValue('description')}</span>,
-        enableHiding: true,
-        enableSorting: true,
+        enableSorting: false,
+        enableHiding: false,
     },
     {
         id: 'total_expense',

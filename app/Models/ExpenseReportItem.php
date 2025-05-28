@@ -24,6 +24,6 @@ class ExpenseReportItem extends Model
 
     public function expenseReportCategory(): BelongsTo
     {
-        return $this->belongsTo(ExpenseReportCategory::class);
+        return $this->belongsTo(ExpenseReportCategory::class, 'category_id');
     }
 }

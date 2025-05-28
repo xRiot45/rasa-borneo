@@ -26,6 +26,14 @@ class ExpenseReportController extends Controller
         ]);
     }
 
+    public function detailReport(string $reportDate): InertiaResponse
+    {
+        $expenseReport = ExpenseReport::with('expenseReportItems', 'expenseReportItems.expenseReportCategory')->where('report_date', $reportDate)->first();
+        return Inertia::render('merchant/financial-management/expense-report/list-expense-report/pages/detail-report/index', [
+            'expenseReport' => $expenseReport,
+        ]);
+    }
+
     public function create(): InertiaResponse
     {
         $user = Auth::user();

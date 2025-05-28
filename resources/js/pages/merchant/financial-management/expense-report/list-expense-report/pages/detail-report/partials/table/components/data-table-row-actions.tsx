@@ -17,7 +17,7 @@ export function DataTableRowActions({ row }: { row: Row<ExpenseReport> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('merchant.expense-report.detailReport', { reportDate: row.original.report_date })}>
+                    <Link href={route('merchant.revenue-report.detailReport', { reportDate: row.original.report_date })}>
                         <DropdownMenuItem className="cursor-pointer p-3">
                             Lihat Detail Laporan
                             <DropdownMenuShortcut>
