@@ -10,7 +10,7 @@ class ExpenseReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'report_date' => 'required|date|unique:expense_reports,report_date',
+            'report_date' => 'required|date',
             'description' => 'nullable|string',
             'items.*.category_id' => 'required|exists:expense_report_categories,id',
             'items' => 'required|array|min:1',
@@ -23,7 +23,7 @@ class ExpenseReportRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'report_date.unique' => 'Laporan pengeluaran untuk tanggal ini sudah ada.',
+            // 'report_date.unique' => 'Laporan pengeluaran untuk tanggal ini sudah ada.',
             'report_date.date' => 'Tanggal harus berupa tanggal.',
 
             'items.*.category_id.required' => 'Kategori pengeluaran harus dipilih.',

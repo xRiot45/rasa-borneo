@@ -74,4 +74,53 @@ class ExpenseReportController extends Controller
 
         return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Ditambahkan');
     }
+
+    public function edit(int $id): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $expenseReportCategories = ExpenseReportCategory::where('merchant_id', $merchantId)->get();
+        $expenseReport = ExpenseReport::with('expenseReportItems', 'expenseReportItems.expenseReportCategory')->where('merchant_id', $merchantId)->where('id', $id)->first();
+        return Inertia::render('merchant/financial-management/expense-report/list-expense-report/pages/form', [
+            'expenseReportCategories' => $expenseReportCategories,
+            'expenseReport' => $expenseReport,
+        ]);
+    }
+
+    public function update(ExpenseReportRequest $request, int $id): RedirectResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $validated = $request->validated();
+        $validated['report_date'] = Carbon::parse($validated['report_date'])->toDateString();
+
+        $totalExpense = collect($validated['items'])->sum('amount');
+
+        $expenseReport = ExpenseReport::where('id', $id)
+            ->where('merchant_id', $merchantId)
+            ->firstOrFail();
+
+        $expenseReport->update([
+            'report_date' => $validated['report_date'],
+            'description' => $validated['description'] ?? null,
+            'total_expense' => $totalExpense,
+        ]);
+
+        $expenseReport->expenseReportItems()->delete();
+
+        foreach ($validated['items'] as $item) {
+            $expenseReport->expenseReportItems()->create([
+                'name' => $item['name'],
+                'category_id' => $item['category_id'],
+                'description' => $item['description'] ?? null,
+                'amount' => $item['amount'],
+            ]);
+        }
+
+        return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Diperbarui');
+    }
 }

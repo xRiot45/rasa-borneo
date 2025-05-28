@@ -25,6 +25,14 @@ export function DataTableRowActions({ row }: { row: Row<ExpenseReport> }) {
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
+                    <Link href={route('merchant.expense-report.edit', { id: row.original.id })}>
+                        <DropdownMenuItem className="cursor-pointer p-3">
+                            Edit Laporan
+                            <DropdownMenuShortcut>
+                                <Icon icon={'material-symbols:edit'} />
+                            </DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

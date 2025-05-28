@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('expense_report_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('expense_report_id')->constrained('expense_reports');
+            $table->foreignId('expense_report_id')->constrained('expense_reports')->onDelete('cascade');
             $table->string('name');
             $table->foreignId('category_id')->constrained('expense_report_categories');
             $table->text('description')->nullable();

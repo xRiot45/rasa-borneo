@@ -9,7 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { cn } from '@/lib/utils';
-import { ExpenseReportCategory, ExpenseReportForm, ExpenseReportItem, NonEmptyArray } from '@/models/financial-management/expense-report';
+import {
+    ExpenseReport,
+    ExpenseReportCategory,
+    ExpenseReportForm,
+    ExpenseReportItem,
+    NonEmptyArray,
+} from '@/models/financial-management/expense-report';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -19,6 +25,7 @@ import { toast } from 'sonner';
 
 interface Props {
     expenseReportCategories: ExpenseReportCategory[];
+    expenseReport: ExpenseReport;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,18 +43,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function FormPage({ expenseReportCategories }: Props) {
-    const { data, setData, post, processing, errors, reset } = useForm<ExpenseReportForm>({
-        report_date: '',
-        description: '',
-        items: [
-            {
-                name: '',
-                category_id: 0,
-                description: '',
-                amount: '',
-            },
-        ],
+export default function FormPage({ expenseReportCategories, expenseReport }: Props) {
+    console.log(expenseReport);
+    const isEdit = !!expenseReport?.id;
+
+    const { data, setData, post, put, processing, errors, reset } = useForm<ExpenseReportForm>({
+        report_date: isEdit ? new Date(expenseReport.report_date) : new Date(),
+        description: isEdit ? expenseReport.description : '',
+        items: isEdit
+            ? (expenseReport.expense_report_items.map((item) => ({
+                  name: item.name,
+                  category_id: item.category_id,
+                  description: item.description,
+                  amount: item.amount,
+              })) as NonEmptyArray<ExpenseReportItem>)
+            : ([{ name: '', category_id: 0, description: '', amount: '' }] as NonEmptyArray<ExpenseReportItem>),
     });
 
     const [inputValue, setInputValue] = useState<string>('');
@@ -85,29 +95,55 @@ export default function FormPage({ expenseReportCategories }: Props) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(route('merchant.expense-report.store'), {
-            onSuccess: () => {
-                toast.success('Success', {
-                    description: 'Laporan Pengeluaran Berhasil Ditambahkan!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-                reset();
-            },
-            onError: (errors) => {
-                Object.keys(errors).forEach((key) => {
-                    toast.error('Error', {
-                        description: errors[key],
+        if (isEdit && expenseReport) {
+            put(route('merchant.expense-report.update', { id: expenseReport?.id }), {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Laporan Pengeluaran Berhasil Diedit!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
-                });
-            },
-        });
+                    reset();
+                },
+                onError: (errors) => {
+                    Object.keys(errors).forEach((key) => {
+                        toast.error('Error', {
+                            description: errors[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        } else {
+            post(route('merchant.expense-report.store'), {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Laporan Pengeluaran Berhasil Ditambahkan!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                    reset();
+                },
+                onError: (errors) => {
+                    Object.keys(errors).forEach((key) => {
+                        toast.error('Error', {
+                            description: errors[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        }
     };
 
     return (
@@ -188,7 +224,7 @@ export default function FormPage({ expenseReportCategories }: Props) {
                                             required
                                             tabIndex={2}
                                             autoComplete="name"
-                                            value={data.name}
+                                            value={item.name}
                                             onChange={(e) => handleItemChange(index, 'name', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nama pengeluaran"
@@ -201,31 +237,35 @@ export default function FormPage({ expenseReportCategories }: Props) {
                                         <Label htmlFor="category_id">
                                             Kategori Pengeluaran <strong className="text-red-500">*</strong>
                                         </Label>
-                                        <Select onValueChange={(e) => handleItemChange(index, 'category_id', e)}>
+                                        <Select
+                                            value={item?.category_id ? String(item.category_id) : ''}
+                                            onValueChange={(e) => handleItemChange(index, 'category_id', e)}
+                                        >
                                             <SelectTrigger className="mt-2 w-full rounded-md py-6 shadow-none">
                                                 <SelectValue placeholder="Pilih Kategori Pengeluaran" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {expenseReportCategories.map((item: ExpenseReportCategory) => (
+                                                {expenseReportCategories?.map((item: ExpenseReportCategory) => (
                                                     <SelectItem key={item.id} value={String(item.id)} className="p-4">
                                                         {item.name}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
+
                                         <InputError message={errors.category_id} />
                                     </div>
 
                                     <div className="grid gap-2">
                                         <Label htmlFor={`amount_${index}`}>
-                                            Jumlah <strong className="text-red-500">*</strong>
+                                            Jumlah Pengeluaran <strong className="text-red-500">*</strong>
                                         </Label>
                                         <Input
                                             id={`amount_${index}`}
                                             type="number"
                                             value={item.amount}
                                             onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
-                                            placeholder="Jumlah"
+                                            placeholder="Jumlah Pengeluaran"
                                             className={cn('mt-2 rounded-lg px-4 py-6 shadow-none', errors.amount && 'border border-red-500')}
                                         />
                                         <InputError message={errors.amount} />
@@ -269,8 +309,8 @@ export default function FormPage({ expenseReportCategories }: Props) {
                             </Button>
                         </Link>
                         <Button type="submit" disabled={processing} className="cursor-pointer">
-                            Simpan Data
-                            <Icon icon={'ic:outline-done-all'} />
+                            {isEdit ? 'Edit Laporan Pengeluaran' : 'Tambah Laporan Pengeluaran'}
+                            <Icon icon={isEdit ? 'heroicons:check' : 'heroicons:plus'} />
                         </Button>
                     </div>
                 </form>

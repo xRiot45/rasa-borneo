@@ -293,6 +293,8 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.expense-report.detailReport');
                 Route::get('/create', 'create')->name('merchant.expense-report.create');
                 Route::post('/create', 'store')->name('merchant.expense-report.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.expense-report.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.expense-report.update');
             });
 
         // Expense Report Category
