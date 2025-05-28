@@ -12,6 +12,7 @@ class ExpenseReportItem extends Model
     protected $fillable = [
         'expense_report_id',
         'name',
+        'category_id',
         'description',
         'amount',
     ];
@@ -19,5 +20,10 @@ class ExpenseReportItem extends Model
     public function expenseReport(): BelongsTo
     {
         return $this->belongsTo(ExpenseReport::class);
+    }
+
+    public function expenseReportCategory(): BelongsTo
+    {
+        return $this->belongsTo(ExpenseReportCategory::class);
     }
 }

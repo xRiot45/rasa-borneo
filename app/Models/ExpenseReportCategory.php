@@ -20,8 +20,8 @@ class ExpenseReportCategory extends Model
         return $this->belongsTo(Merchant::class);
     }
 
-    public function expenseReports(): HasMany
+    public function expenseReportItems(): HasMany
     {
-        return $this->hasMany(ExpenseReport::class);
+        return $this->hasMany(ExpenseReportItem::class);
     }
 }

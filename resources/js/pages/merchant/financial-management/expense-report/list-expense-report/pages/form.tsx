@@ -39,10 +39,10 @@ export default function FormPage({ expenseReportCategories }: Props) {
     const { data, setData, processing, errors } = useForm<ExpenseReportForm>({
         report_date: '',
         description: '',
-        category_id: 0,
         items: [
             {
                 name: '',
+                category_id: 0,
                 description: '',
                 amount: 0,
             },
@@ -56,15 +56,17 @@ export default function FormPage({ expenseReportCategories }: Props) {
 
         if (field === 'amount') {
             updatedItems[index][field] = Number(value);
-        } else {
+        } else if (field === 'name' || field === 'description') {
             updatedItems[index][field] = value as string;
+        } else if (field === 'category_id') {
+            updatedItems[index][field] = Number(value);
         }
 
         setData('items', updatedItems as NonEmptyArray<ExpenseReportItem>);
     };
 
     const handleAddItem = () => {
-        setData('items', [...data.items, { name: '', description: '', amount: 0 }]);
+        setData('items', [...data.items, { name: '', category_id: 0, description: '', amount: 0 }]);
     };
 
     const handleRemoveItem = (index: number) => {
@@ -137,25 +139,6 @@ export default function FormPage({ expenseReportCategories }: Props) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="category_id">
-                                Kategori Pengeluaran <strong className="text-red-500">*</strong>
-                            </Label>
-                            <Select onValueChange={(e) => setData('category_id', Number(e))}>
-                                <SelectTrigger className="mt-2 w-full rounded-md py-6 shadow-none">
-                                    <SelectValue placeholder="Pilih Kategori Pengeluaran" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {expenseReportCategories.map((item: ExpenseReportCategory) => (
-                                        <SelectItem key={item.id} value={String(item.id)} className="p-4">
-                                            {item.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={errors.category_id} className="mt-2" />
-                        </div>
-
-                        <div className="grid gap-2">
                             <Label htmlFor="description">Deskripsi Laporan Pengeluaran</Label>
                             <Textarea
                                 id="description"
@@ -191,6 +174,25 @@ export default function FormPage({ expenseReportCategories }: Props) {
                                             className={cn('mt-2 rounded-lg px-4 py-6 shadow-none', errors.name && 'border border-red-500')}
                                         />
                                         <InputError message={errors.name} />
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="category_id">
+                                            Kategori Pengeluaran <strong className="text-red-500">*</strong>
+                                        </Label>
+                                        <Select onValueChange={(e) => setData('category_id', Number(e))}>
+                                            <SelectTrigger className="mt-2 w-full rounded-md py-6 shadow-none">
+                                                <SelectValue placeholder="Pilih Kategori Pengeluaran" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {expenseReportCategories.map((item: ExpenseReportCategory) => (
+                                                    <SelectItem key={item.id} value={String(item.id)} className="p-4">
+                                                        {item.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError message={errors.category_id} className="mt-2" />
                                     </div>
 
                                     <div className="grid gap-2">

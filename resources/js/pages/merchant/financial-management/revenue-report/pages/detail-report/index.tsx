@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-import AdminLayout from '@/layouts/admin/layout';
 
+import MerchantLayout from '@/layouts/merchant/layout';
 import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { Transaction } from '@/models/transactions';
 import { BreadcrumbItem } from '@/types';
@@ -33,8 +33,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function DetailRevenueReportPage({ report, transactions }: DetailRevenueReportPageProps) {
     return (
         <>
-            <AdminLayout breadcrumbs={breadcrumbs}>
-                <Head title="Detail Laporan Pemasukan" />
+            <Head title="Detail Laporan Pemasukan" />
+            <MerchantLayout breadcrumbs={breadcrumbs}>
                 <div className="space-y-2 p-4">
                     <Button onClick={() => window.history.back()} className="mb-6">
                         <Icon icon={'famicons:arrow-back'} className="mr-2 h-4 w-4" />
@@ -53,7 +53,7 @@ export default function DetailRevenueReportPage({ report, transactions }: Detail
                         <TransactionTable data={transactions} columns={columns} />
                     </div>
                 </div>
-            </AdminLayout>
+            </MerchantLayout>
         </>
     );
 }

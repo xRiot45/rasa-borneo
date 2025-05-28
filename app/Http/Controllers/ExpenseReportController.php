@@ -44,7 +44,6 @@ class ExpenseReportController extends Controller
         $expenseReport = ExpenseReport::create([
             'merchant_id' => $merchantId,
             'report_date' => $validated['report_date'],
-            'category_id' => $validated['category_id'],
             'description' => $validated['description'] ?? null,
             'total_expense' => $totalExpense,
         ]);
@@ -52,6 +51,7 @@ class ExpenseReportController extends Controller
         foreach ($validated['items'] as $item) {
             $expenseReport->expenseReportItems()->create([
                 'name' => $item['name'],
+                'category_id' => $item['category_id'],
                 'description' => $item['description'] ?? null,
                 'amount' => $item['amount'],
             ]);

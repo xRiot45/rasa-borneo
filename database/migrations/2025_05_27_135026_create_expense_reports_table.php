@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('merchant_id')->constrained('merchants');
             $table->timestamp('report_date');
-            $table->foreignId('category_id')->constrained('expense_report_categories');
             $table->text('description')->nullable();
             $table->bigInteger('total_expense')->default(0);
             $table->timestamps();
