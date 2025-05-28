@@ -4,7 +4,7 @@ export interface ExpenseReportItem {
     name: string;
     category_id: number;
     description: string;
-    amount: number;
+    amount: string;
 }
 
 export interface ExpenseReportForm {

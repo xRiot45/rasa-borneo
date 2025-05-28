@@ -15,6 +15,7 @@ import { Icon } from '@iconify/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     expenseReportCategories: ExpenseReportCategory[];
@@ -36,7 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function FormPage({ expenseReportCategories }: Props) {
-    const { data, setData, processing, errors } = useForm<ExpenseReportForm>({
+    const { data, setData, post, processing, errors, reset } = useForm<ExpenseReportForm>({
         report_date: '',
         description: '',
         items: [
@@ -44,29 +45,25 @@ export default function FormPage({ expenseReportCategories }: Props) {
                 name: '',
                 category_id: 0,
                 description: '',
-                amount: 0,
+                amount: '',
             },
         ],
     });
 
     const [inputValue, setInputValue] = useState<string>('');
 
-    const handleItemChange = (index: number, field: keyof ExpenseReportItem, value: ExpenseReportItem[keyof ExpenseReportItem]) => {
+    const handleItemChange = (index: number, field: keyof ExpenseReportItem, value: string) => {
         const updatedItems = [...data.items];
-
-        if (field === 'amount') {
-            updatedItems[index][field] = Number(value);
-        } else if (field === 'name' || field === 'description') {
-            updatedItems[index][field] = value as string;
+        if (field === 'name' || field === 'description' || field === 'amount') {
+            updatedItems[index][field] = value;
         } else if (field === 'category_id') {
-            updatedItems[index][field] = Number(value);
+            updatedItems[index][field] = parseInt(value, 10);
         }
-
         setData('items', updatedItems as NonEmptyArray<ExpenseReportItem>);
     };
 
     const handleAddItem = () => {
-        setData('items', [...data.items, { name: '', category_id: 0, description: '', amount: 0 }]);
+        setData('items', [...data.items, { name: '', category_id: 0, description: '', amount: '' }]);
     };
 
     const handleRemoveItem = (index: number) => {
@@ -87,6 +84,30 @@ export default function FormPage({ expenseReportCategories }: Props) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        post(route('merchant.expense-report.store'), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Laporan Pengeluaran Berhasil Ditambahkan!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                reset();
+            },
+            onError: (errors) => {
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
     };
 
     return (
@@ -168,7 +189,7 @@ export default function FormPage({ expenseReportCategories }: Props) {
                                             tabIndex={2}
                                             autoComplete="name"
                                             value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
+                                            onChange={(e) => handleItemChange(index, 'name', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nama pengeluaran"
                                             className={cn('mt-2 rounded-lg px-4 py-6 shadow-none', errors.name && 'border border-red-500')}
@@ -180,7 +201,7 @@ export default function FormPage({ expenseReportCategories }: Props) {
                                         <Label htmlFor="category_id">
                                             Kategori Pengeluaran <strong className="text-red-500">*</strong>
                                         </Label>
-                                        <Select onValueChange={(e) => setData('category_id', Number(e))}>
+                                        <Select onValueChange={(e) => handleItemChange(index, 'category_id', e)}>
                                             <SelectTrigger className="mt-2 w-full rounded-md py-6 shadow-none">
                                                 <SelectValue placeholder="Pilih Kategori Pengeluaran" />
                                             </SelectTrigger>
@@ -192,7 +213,7 @@ export default function FormPage({ expenseReportCategories }: Props) {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <InputError message={errors.category_id} className="mt-2" />
+                                        <InputError message={errors.category_id} />
                                     </div>
 
                                     <div className="grid gap-2">
