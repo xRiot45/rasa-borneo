@@ -45,7 +45,9 @@ export default function DetailReportPage({ expenseReport }: Props) {
                         </p>
                     </div>
 
-                    <DetailExpenseReportTable data={expenseReport?.expense_report_items} columns={columns} />
+                    <div className="pt-4">
+                        <DetailExpenseReportTable data={expenseReport?.expense_report_items} columns={columns} />
+                    </div>
                 </div>
             </MerchantLayout>
         </>
