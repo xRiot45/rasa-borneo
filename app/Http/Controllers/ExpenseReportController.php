@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExpenseReportRequest;
 use App\Models\ExpenseReport;
 use App\Models\ExpenseReportCategory;
+use App\Models\ExpenseReportItem;
 use App\Models\Merchant;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -21,8 +22,16 @@ class ExpenseReportController extends Controller
         $merchantId = $merchant->id;
 
         $expenseReports = ExpenseReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
+        $expenseSummary = [
+            'total_expense' => $expenseReports->sum('total_expense'),
+            'total_reports' => $expenseReports->count(),
+            'highest_expense' => $expenseReports->max('total_expense'),
+            'lowest_expense' => $expenseReports->min('total_expense'),
+            'average_expense' => $expenseReports->avg('total_expense'),
+        ];
         return Inertia::render('merchant/financial-management/expense-report/list-expense-report/index', [
             'expenseReports' => $expenseReports,
+            'expenseSummary' => $expenseSummary
         ]);
     }
 

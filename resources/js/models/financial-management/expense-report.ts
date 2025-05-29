@@ -33,3 +33,11 @@ export interface ExpenseReportCategory {
 export interface ExpenseReportCategoryForm {
     name: string;
 }
+
+export interface ExpenseSummary {
+    total_expense: number;
+    total_reports: number;
+    highest_expense: number;
+    lowest_expense: number;
+    average_expense: number;
+}
