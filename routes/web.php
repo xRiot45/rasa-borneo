@@ -15,6 +15,7 @@ use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreGalleryController;
@@ -308,6 +309,14 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('merchant.expense-report-category.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.expense-report-category.update');
                 Route::delete('/destroy/{id}', 'destroy')->name('merchant.expense-report-category.destroy');
+            });
+
+        // Profit Report
+        Route::prefix('/profit-report')
+            ->controller(ProfitReportController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.profit-report.indexMerchant');
+                // Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.profit-report.detailReport');
             });
     });
 });
