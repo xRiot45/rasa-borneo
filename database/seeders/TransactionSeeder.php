@@ -50,7 +50,7 @@ class TransactionSeeder extends Seeder
                     'application_service_fee' => $appServiceFee,
                     'discount_total' => $couponDiscount,
                     'final_total' => $finalTotal,
-                    'checked_out_at' => Carbon::create(2024, 5, $day)->addHours($i + 12),
+                    'checked_out_at' => Carbon::create(2025, 5, $day)->addHours($i + 12),
                 ]);
             }
         }
