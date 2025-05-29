@@ -107,13 +107,8 @@ const mainNavItems: NavGroup[] = [
                 ],
             },
             {
-                title: 'Laporan Laba Kotor',
-                href: '/merchant/financial-management/gross-profit-report',
-                icon: 'mdi:chart-line',
-            },
-            {
-                title: 'Laporan Laba Bersih',
-                href: '/merchant/financial-management/net-profit-report',
+                title: 'Laporan Laba',
+                href: '/merchant/financial-management/profit-report',
                 icon: 'mdi:finance',
             },
         ],
