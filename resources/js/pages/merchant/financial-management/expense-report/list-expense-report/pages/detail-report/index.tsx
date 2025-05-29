@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { ExpenseReport } from '@/models/financial-management/expense-report';
 import { BreadcrumbItem } from '@/types';
-import { formatDate } from '@/utils/format-date';
 import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import DetailExpenseReportTable from './partials/table';
@@ -41,7 +40,7 @@ export default function DetailReportPage({ expenseReport }: Props) {
                     <div>
                         <h2 className="text-2xl font-black tracking-tight">Detail Laporan Pengeluaran</h2>
                         <p className="text-muted-foreground mt-1.5 text-[14px]">
-                            Tanggal Laporan Pengeluaran : <strong className="italic">{formatDate(expenseReport.report_date)}</strong>
+                            Tanggal Laporan Pengeluaran : <strong className="italic">{expenseReport.report_date}</strong>
                         </p>
                     </div>
 

@@ -4,7 +4,6 @@ import MerchantLayout from '@/layouts/merchant/layout';
 import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { Transaction } from '@/models/transactions';
 import { BreadcrumbItem } from '@/types';
-import { formatDate } from '@/utils/format-date';
 import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import TransactionTable from './partials/table';
@@ -44,7 +43,7 @@ export default function DetailRevenueReportPage({ report, transactions }: Detail
                         <div>
                             <h2 className="text-2xl font-black tracking-tight">Detail Laporan Pendapatan</h2>
                             <p className="text-muted-foreground mt-1.5 text-[14px]">
-                                Tanggal Laporan Pemasukan : <strong className="italic">{formatDate(report.report_date)}</strong>
+                                Tanggal Laporan Pemasukan : <strong className="italic">{report.report_date}</strong>
                             </p>
                         </div>
                     </div>

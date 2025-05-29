@@ -44,7 +44,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function FormPage({ expenseReportCategories, expenseReport }: Props) {
-    console.log(expenseReport);
     const isEdit = !!expenseReport?.id;
 
     const { data, setData, post, put, processing, errors, reset } = useForm<ExpenseReportForm>({

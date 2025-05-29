@@ -7,7 +7,6 @@ import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 
 export function DataTableRowActions({ row }: { row: Row<RevenueReport> }) {
-    console.log(row);
     return (
         <>
             <DropdownMenu>
