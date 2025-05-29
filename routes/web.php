@@ -295,6 +295,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/create', 'store')->name('merchant.expense-report.store');
                 Route::get('/edit/{id}', 'edit')->name('merchant.expense-report.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.expense-report.update');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.expense-report.destroy');
             });
 
         // Expense Report Category

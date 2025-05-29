@@ -123,4 +123,12 @@ class ExpenseReportController extends Controller
 
         return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Diperbarui');
     }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $expenseReport = ExpenseReport::where('id', $id)->firstOrFail();
+        $expenseReport->delete();
+
+        return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Dihapus');
+    }
 }
