@@ -18,7 +18,7 @@ enum OrderStatusEnum: string
 
     case COMPLETED = 'selesai';               // Order selesai (sudah diterima customer)
 
-    case CANCELLED = 'dibatalkan';               // Order dibatalkan
+    // case CANCELLED = 'dibatalkan';               // Order dibatalkan
 
     public static function values(): array
     {

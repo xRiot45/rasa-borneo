@@ -21,7 +21,7 @@ class RevenueReportController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $revenueReports = RevenueReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
+        $revenueReports = RevenueReport::where('merchant_id', $merchantId)->orderBy('report_date', 'asc')->get();
         $totalTransactions = RevenueReport::where('merchant_id', $merchantId)->sum('total_transaction');
         $totalRevenue = RevenueReport::where('merchant_id', $merchantId)->sum('total_revenue');
 
@@ -57,9 +57,7 @@ class RevenueReportController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->firstOrFail();
         $merchantId = $merchant->id;
 
-        $revenueReport = RevenueReport::where('report_date', $reportDate)
-            ->where('merchant_id', $merchantId)
-            ->first();
+        $revenueReport = RevenueReport::where('report_date', $reportDate)->where('merchant_id', $merchantId)->first();
 
         if (!$revenueReport) {
             abort(404);
