@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('profit_reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('merchant_id')->constrained('merchants');
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('report_type', [ReportTypeEnum::values()])->default(ReportTypeEnum::DAILY);
