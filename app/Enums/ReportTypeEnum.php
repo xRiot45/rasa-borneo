@@ -10,6 +10,8 @@ enum ReportTypeEnum: string
 
     case MONTHLY = 'bulanan';
 
+    case CUSTOM = 'custom';
+
     public static function values(): array
     {
         return array_map(fn($enum) => $enum->value, self::cases());
