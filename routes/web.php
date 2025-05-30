@@ -317,6 +317,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.profit-report.indexMerchant');
                 Route::post('/create', 'store')->name('merchant.profit-report.store');
+                Route::get('/show/{id}', 'show')->name('merchant.profit-report.show');
                 // Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.profit-report.detailReport');
             });
     });

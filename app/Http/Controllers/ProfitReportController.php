@@ -28,6 +28,53 @@ class ProfitReportController extends Controller
         ]);
     }
 
+    public function show(string $id): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->firstOrFail();
+
+        $profitReport = ProfitReport::where('merchant_id', $merchant->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $startDate = Carbon::parse($profitReport->start_date)->startOfDay();
+        $endDate = Carbon::parse($profitReport->end_date)->endOfDay();
+
+        $revenueReports = RevenueReport::where('merchant_id', $merchant->id)
+            ->whereBetween('report_date', [$startDate, $endDate])
+            ->get()
+            ->keyBy(fn($report) => Carbon::parse($report->report_date)->toDateString());
+
+        $expenseReports = ExpenseReport::where('merchant_id', $merchant->id)
+            ->whereBetween('report_date', [$startDate, $endDate])
+            ->get()
+            ->groupBy(fn($report) => Carbon::parse($report->report_date)->toDateString());
+
+
+        // Loop dari tanggal start ke end
+        $reportDetails = [];
+        $period = Carbon::parse($startDate)->daysUntil(Carbon::parse($endDate)->addDay());
+        foreach ($period as $date) {
+            $formattedDate = $date->toDateString();
+
+            $revenue = $revenueReports[$formattedDate]->total_revenue ?? 0;
+            $expenseGroup = $expenseReports[$formattedDate] ?? collect();
+            $expenseTotal = $expenseGroup->sum('total_expense');
+
+            $reportDetails[] = [
+                'date' => $formattedDate,
+                'total_revenue' => $revenue,
+                'total_expense' => $expenseTotal,
+            ];
+        }
+
+        return Inertia::render('merchant/financial-management/profit-report/pages/detail-report/index', [
+            'profitReport' => $profitReport,
+            'reportDetails' => $reportDetails,
+        ]);
+    }
+
+
     public function store(Request $request): RedirectResponse
     {
         $user = Auth::user();

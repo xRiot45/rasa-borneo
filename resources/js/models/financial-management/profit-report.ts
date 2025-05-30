@@ -12,3 +12,9 @@ export interface ProfitReport {
     created_at?: string;
     updated_at?: string;
 }
+
+export interface DetailProfitReport {
+    date: string;
+    total_revenue: number;
+    total_expense: number;
+}

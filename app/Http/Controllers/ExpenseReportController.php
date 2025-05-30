@@ -21,7 +21,7 @@ class ExpenseReportController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $expenseReports = ExpenseReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
+        $expenseReports = ExpenseReport::where('merchant_id', $merchantId)->orderBy('report_date', 'asc')->get();
         $expenseSummary = [
             'total_expense' => $expenseReports->sum('total_expense'),
             'total_reports' => $expenseReports->count(),
