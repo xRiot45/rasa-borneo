@@ -6,6 +6,7 @@ import { ReportTypeEnum } from '@/enums/report-type';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
+import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -62,8 +63,8 @@ export default function ProfitReportPage() {
         const data: Record<string, any> = { report_type: selectedValue };
 
         if (selectedValue === ReportTypeEnum.CUSTOM) {
-            data.start_date = startDate?.toISOString().split('T')[0];
-            data.end_date = endDate?.toISOString().split('T')[0];
+            data.start_date = startDate ? format(startDate, 'yyyy-MM-dd') : undefined;
+            data.end_date = endDate ? format(endDate, 'yyyy-MM-dd') : undefined;
         }
 
         router.post(route('merchant.profit-report.store'), data, {

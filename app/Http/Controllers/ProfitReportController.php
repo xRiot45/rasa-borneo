@@ -49,15 +49,10 @@ class ProfitReportController extends Controller
         }
 
         // Konversi ke UTC jika database pakai timezone UTC (biasanya MySQL)
-        $startDateUtc = $startDate->copy()->setTimezone('UTC');
-        $endDateUtc = $endDate->copy()->setTimezone('UTC');
+        $startDateUtc = $startDate;
+        $endDateUtc = $endDate;
 
-        // Cek laporan yang sudah ada berdasarkan tanggal asli (string) dan tipe laporan
-        $exists = ProfitReport::where('merchant_id', $merchantId)
-            ->where('start_date', $startDate->toDateString())
-            ->where('end_date', $endDate->toDateString())
-            ->where('report_type', $reportType->value)
-            ->exists();
+        $exists = ProfitReport::where('merchant_id', $merchantId)->where('start_date', $startDate->toDateString())->where('end_date', $endDate->toDateString())->where('report_type', $reportType->value)->exists();
 
         if ($exists) {
             return redirect()->back()->with('warning', 'Laporan sudah ada untuk periode ini.');
