@@ -18,7 +18,14 @@ class ProfitReportController extends Controller
 {
     public function indexMerchant(): InertiaResponse
     {
-        return Inertia::render('merchant/financial-management/profit-report/index');
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        $merchantId = $merchant->id;
+
+        $profitReports = ProfitReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
+        return Inertia::render('merchant/financial-management/profit-report/index', [
+            'profitReports' => $profitReports
+        ]);
     }
 
     public function store(Request $request): RedirectResponse

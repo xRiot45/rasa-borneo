@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ReportTypeEnum } from '@/enums/report-type';
 import MerchantLayout from '@/layouts/merchant/layout';
+import { ProfitReport } from '@/models/financial-management/profit-report';
 import { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { format } from 'date-fns';
@@ -11,6 +12,12 @@ import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DatePicker } from './components/date-picker';
+import ProfitReportTable from './partials/table';
+import { columns } from './partials/table/columns';
+
+interface Props {
+    profitReports: ProfitReport[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,7 +37,7 @@ const reportTypeLabels: Record<ReportTypeEnum, string> = {
     [ReportTypeEnum.CUSTOM]: 'Custom - Laporan kustom',
 };
 
-export default function ProfitReportPage() {
+export default function ProfitReportPage({ profitReports }: Props) {
     const [selectedValue, setSelectedValue] = useState<ReportTypeEnum | ''>('');
     const [openDialogConfirm, setOpenDialogConfirm] = useState<boolean>(false);
 
@@ -176,6 +183,8 @@ export default function ProfitReportPage() {
                             </DialogContent>
                         </Dialog>
                     )}
+
+                    <ProfitReportTable data={profitReports} columns={columns} />
                 </main>
             </MerchantLayout>
         </>
