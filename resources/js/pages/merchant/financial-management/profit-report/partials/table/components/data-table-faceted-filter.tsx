@@ -12,7 +12,7 @@ export function DataTableFacetedFilter<TData, TValue>({ column, title, options }
     const selectedValues = new Set(column?.getFilterValue() as string[]);
     return (
         <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger>
                 <Button variant="outline" size="sm" className="h-8 border-dashed">
                     <PlusCircledIcon className="h-4 w-4" />
                     {title}

@@ -184,7 +184,9 @@ export default function ProfitReportPage({ profitReports }: Props) {
                         </Dialog>
                     )}
 
-                    <ProfitReportTable data={profitReports} columns={columns} />
+                    <div className="mt-6">
+                        <ProfitReportTable data={profitReports} columns={columns} />
+                    </div>
                 </main>
             </MerchantLayout>
         </>

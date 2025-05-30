@@ -23,10 +23,13 @@ export const columns: ColumnDef<ProfitReport>[] = [
         header: ({ column }) => <DataTableColumnHeader column={column} title="Tanggal Mulai Laporan" />,
         cell: ({ row }) => format(new Date(row.original.start_date), 'dd/MM/yyyy'),
         filterFn: (row, columnId, value) => {
-            const date = new Date(row.getValue(columnId));
-            const from = value?.from ? new Date(value.from) : null;
-            const to = value?.to ? new Date(value.to) : null;
-            return (!from || date >= from) && (!to || date <= to);
+            if (!value) return true;
+            const rowDate = new Date(row.getValue(columnId));
+            const selectedDate = new Date(value);
+
+            const rowDateOnly = new Date(rowDate.getFullYear(), rowDate.getMonth(), rowDate.getDate());
+            const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            return rowDateOnly.getTime() === selectedDateOnly.getTime();
         },
     },
     {
@@ -35,10 +38,13 @@ export const columns: ColumnDef<ProfitReport>[] = [
         header: ({ column }) => <DataTableColumnHeader column={column} title="Tanggal Akhir Laporan" />,
         cell: ({ row }) => format(new Date(row.original.end_date), 'dd/MM/yyyy'),
         filterFn: (row, columnId, value) => {
-            const date = new Date(row.getValue(columnId));
-            const from = value?.from ? new Date(value.from) : null;
-            const to = value?.to ? new Date(value.to) : null;
-            return (!from || date >= from) && (!to || date <= to);
+            if (!value) return true;
+            const rowDate = new Date(row.getValue(columnId));
+            const selectedDate = new Date(value);
+
+            const rowDateOnly = new Date(rowDate.getFullYear(), rowDate.getMonth(), rowDate.getDate());
+            const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+            return rowDateOnly.getTime() === selectedDateOnly.getTime();
         },
     },
     {

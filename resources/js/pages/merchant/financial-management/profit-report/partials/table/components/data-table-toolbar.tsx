@@ -1,6 +1,9 @@
 import { Button } from '@/components/ui/button';
+import { ReportTypeEnum } from '@/enums/report-type';
 import { DataTableToolbarProps } from '@/types/tanstack';
 import { Icon } from '@iconify/react';
+import { DataTableFacetedFilter } from './data-table-faceted-filter';
+import { DateFacetedFilter } from './filters/date-faceted-filter';
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
     const isFiltered = table.getState().columnFilters.length > 0;
@@ -8,19 +11,20 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     return (
         <div className="flex items-center justify-between">
             <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
-                {/* {table.getColumn('report_date') && <DateRangeFacetedFilter column={table.getColumn('report_date')} title="Rentang Tanggal Laporan" />}
+                {table.getColumn('start_date') && <DateFacetedFilter column={table.getColumn('start_date')} title="Tanggal Mulai Laporan" />}
 
-                {table.getColumn('total_transaction') && (
-                    <TransactionRangeFacetedFilter column={table.getColumn('total_transaction')} title="Total Transaksi Yang Berhasil" />
+                {table.getColumn('end_date') && <DateFacetedFilter column={table.getColumn('end_date')} title="Tanggal Akhir Laporan" />}
+
+                {table.getColumn('report_type') && (
+                    <DataTableFacetedFilter
+                        column={table.getColumn('report_type')}
+                        title="Cari berdasarkan tipe laporan"
+                        options={Object.values(ReportTypeEnum).map((reportType) => ({
+                            label: reportType,
+                            value: reportType,
+                        }))}
+                    />
                 )}
-
-                {table.getColumn('total_revenue') && <RevenueRangeFilter column={table.getColumn('total_revenue')} title="Total Pendapatan" />}
-
-                {table.getColumn('total_expense') && <RevenueRangeFilter column={table.getColumn('total_expense')} title="Total Pengeluaran" />}
-
-                {table.getColumn('gross_profit') && <RevenueRangeFilter column={table.getColumn('gross_profit')} title="Laba Kotor" />}
-
-                {table.getColumn('net_profit') && <RevenueRangeFilter column={table.getColumn('net_profit')} title="Laba Bersih" />} */}
 
                 {isFiltered && (
                     <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 cursor-pointer px-2 lg:px-3">
