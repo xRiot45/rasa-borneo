@@ -64,7 +64,7 @@ export default function ExpenseReportPage({ expenseReports, expenseSummary }: Pr
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 px-4">
+                    <div className="grid gap-4 px-4 sm:grid-cols-2">
                         <CardSummaryStatistics
                             data={formatCurrency(expenseSummary?.lowest_expense)}
                             title="Laporan Terendah"
