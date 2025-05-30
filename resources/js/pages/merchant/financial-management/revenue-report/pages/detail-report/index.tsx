@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button';
-
 import MerchantLayout from '@/layouts/merchant/layout';
 import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { Transaction } from '@/models/transactions';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
-import TransactionTable from './partials/table';
+import DetailRevenueReportTable from './partials/table';
 import { columns } from './partials/table/columns';
 
 interface DetailRevenueReportPageProps {
@@ -49,7 +48,7 @@ export default function DetailRevenueReportPage({ report, transactions }: Detail
                     </div>
 
                     <div className="mt-6">
-                        <TransactionTable data={transactions} columns={columns} />
+                        <DetailRevenueReportTable data={transactions} columns={columns} />
                     </div>
                 </div>
             </MerchantLayout>

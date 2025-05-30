@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { DataTablePagination } from './components/data-table-pagination';
 import { DataTableToolbar } from './components/data-table-toolbar';
 
-export default function TransactionTable({ columns, data }: DataTableProps<Transaction>) {
+export default function DetailRevenueReportTable({ columns, data }: DataTableProps<Transaction>) {
     const [rowSelection, setRowSelection] = useState({});
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
