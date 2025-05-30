@@ -1,4 +1,4 @@
-import { ReportTypeEnum } from "@/enums/report-type";
+import { ReportTypeEnum } from '@/enums/report-type';
 
 export const reportTypeColorMap: Record<ReportTypeEnum, string> = {
     [ReportTypeEnum.DAILY]: 'bg-blue-100 border border-blue-600 text-blue-600 font-bold',
