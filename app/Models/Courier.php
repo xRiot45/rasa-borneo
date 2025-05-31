@@ -25,6 +25,7 @@ class Courier extends Model
         'profile_image',
         'gender',
         'driving_license_photo',
+        'license_plate',
         'is_online',
         'is_verified',
     ];
