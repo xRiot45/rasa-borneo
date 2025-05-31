@@ -11,8 +11,9 @@ import { GenderEnum } from '@/enums/gender-enum';
 import { VehicleTypeEnum } from '@/enums/vehicle-type';
 import AdminLayout from '@/layouts/admin/layout';
 import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { CalendarIcon } from 'lucide-react';
+import { Icon } from '@iconify/react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { CalendarIcon, LoaderCircle } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,6 +31,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function FormPage() {
+    const { data, setData, post, put, processing, errors, reset } = useForm();
+    console.log(data);
+    console.log(setData);
+    console.log(post);
+    console.log(put);
+    console.log(errors);
+    console.log(reset);
+
     return (
         <>
             <Head title="Form Kurir" />
@@ -322,6 +331,18 @@ export default function FormPage() {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        <div className="mt-4 flex justify-end space-x-3">
+                            <Link href={route('admin.couriers.index')} className="cursor-pointer">
+                                <Button variant="destructive">
+                                    Batalkan <Icon icon="iconoir:cancel" />
+                                </Button>
+                            </Link>
+                            <Button type="submit" tabIndex={4} className="cursor-pointer">
+                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                Tambah Kurir <Icon icon="heroicons:plus" />
+                            </Button>
+                        </div>
                     </main>
                 </form>
             </AdminLayout>
