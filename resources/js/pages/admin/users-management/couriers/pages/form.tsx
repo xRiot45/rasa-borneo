@@ -193,7 +193,7 @@ export default function FormPage() {
                                             </Label>
                                             <Popover>
                                                 <PopoverTrigger>
-                                                    <Button type="button" variant="outline" className="w-full px-4 py-6">
+                                                    <Button type="button" variant="outline" className="w-full px-4 py-6 shadow-none">
                                                         {/* {data.birthdate instanceof Date && !isNaN(data.birthdate.getTime()) ? (
                                                             <span>{data.birthdate.toDateString()}</span>
                                                         ) : (
@@ -219,12 +219,12 @@ export default function FormPage() {
                                 <div className="col-span-2">
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         {/* gender */}
-                                        <div className="grid gap-2">
+                                        <div className="grid gap-2.5">
                                             <Label htmlFor="gender">
                                                 Jenis Kelamin <strong className="text-red-500">*</strong>
                                             </Label>
                                             <Select>
-                                                <SelectTrigger className="w-full px-4 py-6">
+                                                <SelectTrigger className="w-full rounded-lg px-4 py-6 shadow-none">
                                                     <SelectValue placeholder="Pilih Jenis Kelamin" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -266,25 +266,60 @@ export default function FormPage() {
                                 <CardDescription className="text-muted-foreground mt-0">Lengkapi data kendaraan kurir</CardDescription>
                             </CardHeader>
                             <CardContent className="mt-4 grid gap-x-4 gap-y-6 sm:grid-cols-2">
-                                {/* vehicle_type */}
-                                <div className="col-span-2 grid gap-2">
-                                    <Label htmlFor="gender">Jenis Kendaraan</Label>
-                                    <Select>
-                                        <SelectTrigger className="w-full px-4 py-6">
-                                            <SelectValue placeholder="Pilih Jenis Kendaraan" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {Object.values(VehicleTypeEnum).map((value) => (
-                                                <SelectItem key={value} value={value} className="cursor-pointer p-4 capitalize">
-                                                    {value}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError className="mt-2" />
+                                {/* vehicle_type & license_plate */}
+                                <div className="col-span-2">
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        {/* vehicle_type */}
+                                        <div className="grid gap-2.5">
+                                            <Label htmlFor="gender">
+                                                Jenis Kendaraan <strong className="text-red-500">*</strong>
+                                            </Label>
+                                            <Select>
+                                                <SelectTrigger className="w-full rounded-lg px-4 py-6 shadow-none">
+                                                    <SelectValue placeholder="Pilih Jenis Kendaraan" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.values(VehicleTypeEnum).map((value) => (
+                                                        <SelectItem key={value} value={value} className="cursor-pointer p-4 capitalize">
+                                                            {value}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <InputError className="mt-2" />
+                                        </div>
+
+                                        {/* license_plate */}
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="license_plate">
+                                                Nomor Kendaraan <strong className="text-red-500">*</strong>
+                                            </Label>
+                                            <Input
+                                                id="license_plate"
+                                                type="number"
+                                                autoFocus
+                                                // value={'test'}
+                                                placeholder="Masukkan nomor kendaraan kurir"
+                                                // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
+                                                className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
+                                            />
+                                            <InputError className="mt-2" />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* driving_license_photo */}
+                                <div className="col-span-2 gap-2">
+                                    <Label htmlFor="driving_license_photo">
+                                        Foto SIM Kendaraan <strong className="text-red-500">*</strong>
+                                    </Label>
+                                    <FileDropzone
+                                        onFileChange={function (file: File | null): void {
+                                            console.log(file);
+                                        }}
+                                    />
+                                    <InputError className="mt-2" />
+                                </div>
                             </CardContent>
                         </Card>
                     </main>
