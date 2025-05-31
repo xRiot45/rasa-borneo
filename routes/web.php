@@ -4,6 +4,7 @@ use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
@@ -42,6 +43,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index_admin'])->name('admin.dashboard');
 
+    // RBAC Management
     Route::prefix('/admin/manajemen-kontrol-akses')->group(function () {
         // Roles
         Route::prefix('/roles')
@@ -81,6 +83,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             });
     });
 
+    // Master Data
     Route::prefix('/admin/master-data')->group(function () {
         // Business Category
         Route::prefix('/business-categories')
@@ -97,6 +100,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             });
     });
 
+    // Users Management
     Route::prefix('/admin/users-management')->group(function () {
         // All Users
         Route::prefix('/all-users')
@@ -131,6 +135,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::delete('/soft-delete/{merchant}', 'softDelete')->name('admin.merchants.softDelete');
                 Route::delete('/force-delete/{merchant}', 'forceDelete')->name('admin.merchants.forceDelete');
                 Route::patch('/restore/{merchant}', 'restore')->name('admin.merchants.restore');
+            });
+
+        // Couriers
+        Route::prefix('/couriers')
+            ->controller(CourierController::class)
+            ->group(function () {
+                Route::get('/', 'indexAdmin')->name('admin.couriers.index');
+                // Route::get('/create', 'create')->name('admin.couriers.create');
+                // Route::post('/create', 'store')->name('admin.couriers.store');
+                // Route::get('/edit/{id}', 'edit')->name('admin.couriers.edit');
+                // Route::put('/edit/{id}', 'update')->name('admin.couriers.update');
+                // Route::delete('/soft-delete/{id}', 'softDelete')->name('admin.couriers.softDelete');
+                // Route::delete('/force-delete/{id}', 'forceDelete')->name('admin.couriers.forceDelete');
+                // Route::patch('/restore/{id}', 'restore')->name('admin.couriers.restore');
             });
     });
 
@@ -318,7 +336,6 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.profit-report.indexMerchant');
                 Route::post('/create', 'store')->name('merchant.profit-report.store');
                 Route::get('/show/{id}', 'show')->name('merchant.profit-report.show');
-                // Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.profit-report.detailReport');
             });
     });
 });
