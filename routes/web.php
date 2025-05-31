@@ -142,7 +142,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(CourierController::class)
             ->group(function () {
                 Route::get('/', 'indexAdmin')->name('admin.couriers.index');
-                // Route::get('/create', 'create')->name('admin.couriers.create');
+                Route::get('/create', 'create')->name('admin.couriers.create');
                 // Route::post('/create', 'store')->name('admin.couriers.store');
                 // Route::get('/edit/{id}', 'edit')->name('admin.couriers.edit');
                 // Route::put('/edit/{id}', 'update')->name('admin.couriers.update');

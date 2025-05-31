@@ -12,4 +12,9 @@ class CourierController extends Controller
     {
         return Inertia::render('admin/users-management/couriers/index');
     }
+
+    public function create(): InertiaResponse
+    {
+        return Inertia::render('admin/users-management/couriers/pages/form');
+    }
 }

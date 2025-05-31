@@ -9,7 +9,7 @@ export default function ButtonPartials() {
                 <span>Refresh Halaman</span>
                 <Icon icon={'material-symbols:refresh'} className="text-background" />
             </Button>
-            <Link href="#">
+            <Link href={route('admin.couriers.create')}>
                 <Button className="cursor-pointer">
                     <span>Tambah Kurir</span> <Icon icon={'heroicons:plus'} className="text-background" />
                 </Button>
