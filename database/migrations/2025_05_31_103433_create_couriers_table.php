@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             $table->enum('gender', GenderEnum::values())->nullable();
             $table->text('driving_license_photo')->nullable();
+            $table->string('license_plate')->nullable();
             $table->boolean('is_online')->default(false);
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
