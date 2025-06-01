@@ -397,5 +397,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/order/show/{transactionCode}', [OrderController::class, 'showOrderDetailCustomer'])->name('order-list.showOrderDetailCustomer');
 });
 
+// COURIER ROUTES
+Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
+    Route::get('/courier/home', [CourierController::class, 'indexCourier'])->name('courier.indexCourier');
+});
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

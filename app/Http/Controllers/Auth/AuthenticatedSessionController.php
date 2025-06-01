@@ -50,6 +50,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('home', absolute: false));
         }
 
+        if ($user->hasRole('courier')) {
+            return redirect()->intended(route('courier.indexCourier', absolute: false));
+        }
+
         return redirect()->intended(route('admin.dashboard', absolute: false));
     }
 
