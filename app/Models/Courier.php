@@ -34,8 +34,6 @@ class Courier extends Model
         'vehicle_type' => VehicleTypeEnum::class,
         'gender' => GenderEnum::class,
         'birthdate' => 'date:Y-m-d',
-        'is_online' => 'boolean',
-        'is_verified' => 'boolean',
     ];
 
     public function user(): BelongsTo

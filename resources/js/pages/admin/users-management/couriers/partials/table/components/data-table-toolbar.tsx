@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { DataTableToolbarProps } from '@/types/tanstack';
 import { Icon } from '@iconify/react';
 import { DataTableViewOptions } from './data-table-view-options';
+import { CourierStatusFilter } from './filters/status-filter';
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
     const isFiltered = table.getState().columnFilters.length > 0;
@@ -30,6 +31,10 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                     onChange={(event) => table.getColumn('user.phone_number')?.setFilterValue(event.target.value)}
                     className="h-8 w-full sm:w-[150px] lg:w-[250px]"
                 />
+
+                <div className="flex gap-x-2">
+                    {table.getColumn('is_verified') && <CourierStatusFilter column={table.getColumn('is_verified')} />}
+                </div>
 
                 {isFiltered && (
                     <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 cursor-pointer px-2 lg:px-3">

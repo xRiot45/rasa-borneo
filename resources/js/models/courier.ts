@@ -15,6 +15,8 @@ export interface Courier {
     gender: GenderEnum;
     driving_license_photo: string;
     license_plate: string;
+    is_online: number;
+    is_verified: number;
 
     created_at?: string;
     updated_at?: string;

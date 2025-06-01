@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Courier } from '@/models/courier';
 import { formatDate } from '@/utils/format-date';
@@ -49,6 +50,28 @@ export const columns: ColumnDef<Courier>[] = [
         },
         enableSorting: false,
         enableHiding: false,
+    },
+    {
+        id: 'is_verified',
+        accessorKey: 'is_verified',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status Verifikasi" />,
+        cell: ({ row }) => {
+            const isVerified = row.original.is_verified === 1;
+            return (
+                <Badge className={isVerified ? 'rounded-sm border-blue-600 bg-blue-100 text-blue-600' : 'border-red-600 bg-red-100 text-red-600'}>
+                    {isVerified ? 'Terverifikasi' : 'Belum Diverifikasi'}
+                </Badge>
+            );
+        },
+        meta: {
+            className: cn('pe-20'),
+        },
+        accessorFn: (row) => row.is_verified,
+        filterFn: (row, id, value) => {
+            return value.includes(row.original.is_verified);
+        },
+        enableHiding: false,
+        enableSorting: false,
     },
     {
         id: 'created_at',
