@@ -115,7 +115,7 @@ export default function CourierDetailPage({ data }: Props) {
                                     <p>{data.vehicle_type || '-'}</p>
                                 </div>
                                 <div>
-                                    <Label className="font-semibold">Plat Nomor</Label>
+                                    <Label className="font-semibold">Plat Kendaraan</Label>
                                     <p>{data.license_plate || '-'}</p>
                                 </div>
                                 <div>

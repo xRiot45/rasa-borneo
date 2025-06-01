@@ -47,7 +47,7 @@ export function DataTableRowActions({ row }: { row: Row<Courier> }) {
     };
 
     const handleForceDelete = (id: number) => {
-        router.delete(route('admin.customers.forceDelete', { id }), {
+        router.delete(route('admin.merchant.forceDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Kurir Berhasil Dihapus Permanen!',
@@ -73,7 +73,7 @@ export function DataTableRowActions({ row }: { row: Row<Courier> }) {
 
     const handleRestoreData = (id: number) => {
         router.patch(
-            route('admin.customers.restore', { id }),
+            route('admin.couriers.restore', { id }),
             {},
             {
                 onSuccess: () => {

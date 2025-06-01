@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -18,7 +19,7 @@ class CourierController extends Controller
     {
         $couriers = Courier::withTrashed()->with('user')->get();
         return Inertia::render('admin/users-management/couriers/index', [
-            'couriers' => $couriers
+            'couriers' => $couriers,
         ]);
     }
 
@@ -98,5 +99,39 @@ class CourierController extends Controller
         return redirect()
             ->back()
             ->with(['success' => 'Courier berhasil dihapus sementara']);
+    }
+
+    public function forceDelete(int $id): RedirectResponse
+    {
+        $courier = Courier::onlyTrashed()->with('user')->findOrFail($id);
+
+        if ($courier->user()->withTrashed()->exists()) {
+            $courier->user()->withTrashed()->first()->forceDelete();
+        }
+
+        $fileFields = ['id_card_photo', 'profile_image', 'driving_license_photo'];
+        foreach ($fileFields as $field) {
+            if ($courier->$field) {
+                $path = str_replace('/storage/', '', $courier->$field);
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+            }
+        }
+
+        $courier->forceDelete();
+        return redirect()->route('admin.couriers.index')->with('success', 'Kurir dan aset terkait berhasil dihapus permanen.');
+    }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $courier = Courier::onlyTrashed()->with('user')->findOrFail($id);
+
+        if ($courier->user()->withTrashed()->exists()) {
+            $courier->user()->withTrashed()->first()->restore();
+        }
+
+        $courier->restore();
+        return redirect()->route('admin.couriers.index')->with('success', 'Kurir berhasil direstore');
     }
 }
