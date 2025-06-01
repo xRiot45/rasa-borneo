@@ -1,7 +1,14 @@
 import AdminLayout from '@/layouts/admin/layout';
+import { Courier } from '@/models/courier';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import ButtonPartials from './partials/buttons';
+import CourierTable from './partials/table';
+import { columns } from './partials/table/columns';
+
+interface Props {
+    couriers: Courier[];
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,7 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function CouriersPage() {
+export default function CouriersPage({ couriers }: Props) {
     return (
         <>
             <Head title="Courier / Kurir" />
@@ -25,6 +32,10 @@ export default function CouriersPage() {
                         <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua kurir yang terdaftar di aplikasi anda</p>
                     </div>
                     <ButtonPartials />
+                </div>
+
+                <div className="p-4">
+                    <CourierTable data={couriers} columns={columns} />
                 </div>
             </AdminLayout>
         </>

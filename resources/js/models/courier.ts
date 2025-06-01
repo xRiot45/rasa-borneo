@@ -1,5 +1,25 @@
 import { GenderEnum } from '@/enums/gender-enum';
 import { VehicleTypeEnum } from '@/enums/vehicle-type';
+import { User } from './user';
+
+export interface Courier {
+    id: number;
+    user: User;
+    vehicle_type: VehicleTypeEnum;
+    national_id: string;
+    id_card_photo: string;
+    age: number;
+    birthplace: string;
+    birthdate: Date;
+    profile_image: string;
+    gender: GenderEnum;
+    driving_license_photo: string;
+    license_plate: string;
+
+    created_at?: string;
+    updated_at?: string;
+    deleted_at?: string;
+}
 
 export interface CourierForm {
     // User fields

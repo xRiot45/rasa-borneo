@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CourierRequest;
 use App\Mail\CourierRegisteredMail;
+use App\Models\Courier;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +16,10 @@ class CourierController extends Controller
 {
     public function indexAdmin(): InertiaResponse
     {
-        return Inertia::render('admin/users-management/couriers/index');
+        $couriers = Courier::withTrashed()->with('user')->get();
+        return Inertia::render('admin/users-management/couriers/index', [
+            'couriers' => $couriers
+        ]);
     }
 
     public function create(): InertiaResponse
@@ -74,5 +78,15 @@ class CourierController extends Controller
         return redirect()
             ->route('admin.couriers.index')
             ->with(['success' => 'Courier berhasil ditambahkan']);
+    }
+
+    public function show(int $id): InertiaResponse
+    {
+        $courier = Courier::withTrashed()->findOrFail($id);
+        $courier->load('user');
+
+        return Inertia::render('admin/users-management/couriers/pages/show', [
+            'data' => $courier,
+        ]);
     }
 }
