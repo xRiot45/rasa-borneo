@@ -9,7 +9,7 @@ export function BottomNavigation() {
     const currentUrl = page.url;
 
     return (
-        <div className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-neutral-800 bg-black py-5 lg:hidden dark:bg-neutral-900">
+        <div className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-neutral-800 bg-black py-6 lg:hidden dark:bg-neutral-900">
             {bottomNavItems.map((item) => {
                 const isActive = currentUrl === item.href;
 
