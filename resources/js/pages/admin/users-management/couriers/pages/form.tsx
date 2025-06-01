@@ -10,10 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { GenderEnum } from '@/enums/gender-enum';
 import { VehicleTypeEnum } from '@/enums/vehicle-type';
 import AdminLayout from '@/layouts/admin/layout';
+import { cn } from '@/lib/utils';
+import { CourierForm } from '@/models/courier';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CalendarIcon, LoaderCircle } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -31,19 +35,105 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function FormPage() {
-    const { data, setData, post, put, processing, errors, reset } = useForm();
-    console.log(data);
-    console.log(setData);
-    console.log(post);
-    console.log(put);
-    console.log(errors);
-    console.log(reset);
+    const { data, setData, post, processing, errors } = useForm<Required<CourierForm>>({
+        // Akun
+        full_name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+
+        // Kurir
+        phone_number: '',
+        vehicle_type: VehicleTypeEnum.MOTORCYCLE,
+        national_id: '',
+        id_card_photo: null,
+        age: '',
+        birthplace: '',
+        birthdate: null,
+        profile_image: null,
+        gender: GenderEnum.MALE,
+        driving_license_photo: null,
+        license_plate: '',
+    });
+
+    const [inputValue, setInputValue] = useState(() => {
+        return data?.birthdate instanceof Date && !isNaN(data?.birthdate.getTime()) ? data.birthdate.toISOString().split('T')[0] : '';
+    });
+
+    const handleInputBirthdate = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+        const parsedData = new Date(event.target.value);
+        if (!isNaN(parsedData.getTime())) {
+            setData('birthdate', parsedData);
+        }
+    };
+
+    const handleFileChange = (file: 'id_card_photo' | 'profile_image' | 'driving_license_photo', fileData: File | null) => {
+        if (fileData) {
+            setData(file, fileData);
+        } else {
+            setData(file, data[file]);
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (key !== 'id_card_photo' && key !== 'profile_image' && key !== 'driving_license_photo') {
+                if (typeof value === 'number') {
+                    formData.append(key, String(value));
+                } else if (value instanceof Date) {
+                    formData.append(key, value.toISOString());
+                } else {
+                    formData.append(key, value ?? '');
+                }
+            }
+        });
+
+        if (data.id_card_photo instanceof File && data.id_card_photo.size > 0) {
+            formData.append('id_card_photo', data.id_card_photo);
+        }
+
+        if (data.profile_image instanceof File && data.profile_image.size > 0) {
+            formData.append('profile_image', data.profile_image);
+        }
+
+        if (data.driving_license_photo instanceof File && data.driving_license_photo.size > 0) {
+            formData.append('driving_license_photo', data.driving_license_photo);
+        }
+
+        post(route('admin.couriers.store'), {
+            forceFormData: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Kurir Berhasil Ditambahkan!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
 
     return (
         <>
             <Head title="Form Kurir" />
             <AdminLayout breadcrumbs={breadcrumbs}>
-                <form action="">
+                <form onSubmit={handleSubmit}>
                     <main className="space-y-6 p-4">
                         {/* Form Akun Kurir */}
                         <Card className="rounded-xl py-8 shadow-none">
@@ -51,73 +141,103 @@ export default function FormPage() {
                                 <CardTitle className="text-xl">Akun Kurir</CardTitle>
                                 <CardDescription className="text-muted-foreground mt-0">Lengkapi data akun kurir</CardDescription>
                             </CardHeader>
-                            <CardContent className="mt-4 grid gap-x-4 gap-y-6 sm:grid-cols-2">
-                                {/* full_name */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="full_name">
-                                        Nama Lengkap <strong className="text-red-500">*</strong>
-                                    </Label>
-                                    <Input
-                                        id="full_name"
-                                        type="text"
-                                        autoFocus
-                                        // value={'test'}
-                                        placeholder="Masukkan nama lengkap kurir"
-                                        // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                        className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
-                                    />
-                                    <InputError className="mt-2" />
+                            <CardContent className="mt-4 grid gap-y-6 sm:grid-cols-3 sm:gap-x-4">
+                                {/* Full Name */}
+                                <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
+                                    <div>
+                                        <Label htmlFor="full_name">
+                                            Nama Lengkap <strong className="text-red-500">*</strong>
+                                        </Label>
+                                        <Input
+                                            id="full_name"
+                                            type="text"
+                                            required
+                                            value={data.full_name}
+                                            onChange={(e) => setData('full_name', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan nama lengkap kurir"
+                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.full_name && 'border border-red-500')}
+                                        />
+                                        <InputError message={errors?.full_name} className="mt-2" />
+                                    </div>
+
+                                    {/* Email */}
+                                    <div>
+                                        <Label htmlFor="email">
+                                            Email <strong className="text-red-500">*</strong>
+                                        </Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            required
+                                            value={data.email}
+                                            onChange={(e) => setData('email', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan email kurir"
+                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.email && 'border border-red-500')}
+                                        />
+                                        <InputError message={errors?.email} className="mt-2" />
+                                    </div>
+
+                                    {/* Phone Number */}
+                                    <div>
+                                        <Label htmlFor="phone_number">
+                                            Nomor Telepon <strong className="text-red-500">*</strong>
+                                        </Label>
+                                        <Input
+                                            id="phone_number"
+                                            type="number"
+                                            required
+                                            value={data.phone_number}
+                                            onChange={(e) => setData('phone_number', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan nomor telepon kurir"
+                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.phone_number && 'border border-red-500')}
+                                        />
+                                        <InputError message={errors?.phone_number} className="mt-2" />
+                                    </div>
                                 </div>
 
-                                {/* email */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">
-                                        Email <strong className="text-red-500">*</strong>
-                                    </Label>
-                                    <Input
-                                        id="full_name"
-                                        type="email"
-                                        autoFocus
-                                        // value={'test'}
-                                        placeholder="Masukkan email kurir"
-                                        // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                        className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
-                                    />
-                                    <InputError className="mt-2" />
-                                </div>
+                                {/* Password dan Confirmation (Baris ke-2, col-span-3) */}
+                                <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                                    {/* Password */}
+                                    <div>
+                                        <Label htmlFor="password">
+                                            Password <strong className="text-red-500">*</strong>
+                                        </Label>
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            required
+                                            value={data.password}
+                                            onChange={(e) => setData('password', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan password kurir"
+                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
+                                        />
+                                        <InputError message={errors?.password} className="mt-2" />
+                                    </div>
 
-                                {/* Password */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password">
-                                        Password <strong className="text-red-500">*</strong>
-                                    </Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        autoFocus
-                                        // value={'test'}
-                                        placeholder="Masukkan password kurir"
-                                        // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                        className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
-                                    />
-                                    <InputError className="mt-2" />
-                                </div>
-
-                                {/* phone_number */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="phone_number">
-                                        Nomor Telepon <strong className="text-red-500">*</strong>
-                                    </Label>
-                                    <Input
-                                        id="phone_number"
-                                        type="number"
-                                        autoFocus
-                                        // value={'test'}
-                                        placeholder="Masukkan nomor telepon kurir"
-                                        // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                        className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
-                                    />
-                                    <InputError className="mt-2" />
+                                    {/* Konfirmasi Password */}
+                                    <div>
+                                        <Label htmlFor="password_confirmation">
+                                            Konfirmasi Password <strong className="text-red-500">*</strong>
+                                        </Label>
+                                        <Input
+                                            id="password_confirmation"
+                                            type="password"
+                                            required
+                                            value={data.password_confirmation}
+                                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan konfirmasi password kurir"
+                                            className={cn(
+                                                'mt-1 rounded-xl px-4 py-6 shadow-none',
+                                                errors.password_confirmation && 'border border-red-500',
+                                            )}
+                                        />
+                                        <InputError message={errors?.password_confirmation} className="mt-2" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -136,14 +256,20 @@ export default function FormPage() {
                                     </Label>
                                     <Input
                                         id="national_id"
-                                        type="text"
+                                        type="number"
                                         autoFocus
-                                        // value={'test'}
+                                        required
+                                        inputMode="numeric"
+                                        pattern="\d{16}"
+                                        maxLength={16}
+                                        autoComplete="on"
+                                        value={data.national_id}
+                                        onChange={(e) => setData('national_id', e.target.value)}
+                                        disabled={processing}
                                         placeholder="Masukkan Nomor Induk Kependudukan (NIK) kurir"
-                                        // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                        className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
+                                        className={cn('mt-1 rounded-xl px-4 py-6', errors?.national_id && 'border border-red-500')}
                                     />
-                                    <InputError className="mt-2" />
+                                    <InputError message={errors?.national_id} className="mt-2" />
                                 </div>
 
                                 {/* id_card_photo & profile_image */}
@@ -155,11 +281,10 @@ export default function FormPage() {
                                                 Foto KTP <strong className="text-red-500">*</strong>
                                             </Label>
                                             <FileDropzone
-                                                onFileChange={function (file: File | null): void {
-                                                    console.log(file);
-                                                }}
+                                                onFileChange={(file) => handleFileChange('id_card_photo', file)}
+                                                error={errors?.id_card_photo}
                                             />
-                                            <InputError className="mt-2" />
+                                            <InputError message={errors?.id_card_photo} className="mt-2" />
                                         </div>
 
                                         {/* profile_image */}
@@ -168,9 +293,8 @@ export default function FormPage() {
                                                 Foto Profil <strong className="text-red-500">*</strong>
                                             </Label>
                                             <FileDropzone
-                                                onFileChange={function (file: File | null): void {
-                                                    console.log(file);
-                                                }}
+                                                onFileChange={(file) => handleFileChange('profile_image', file)}
+                                                error={errors?.profile_image}
                                             />
                                             <InputError className="mt-2" />
                                         </div>
@@ -189,10 +313,14 @@ export default function FormPage() {
                                                 id="birthplace"
                                                 type="text"
                                                 required
+                                                autoComplete="on"
+                                                value={data.birthplace}
+                                                onChange={(e) => setData('birthplace', e.target.value)}
+                                                disabled={processing}
                                                 placeholder="Masukkan tempat lahir kurir"
-                                                className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
+                                                className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.birthdate && 'border border-red-500')}
                                             />
-                                            <InputError className="mt-2" />
+                                            <InputError message={errors?.birthplace} className="mt-2" />
                                         </div>
 
                                         {/* birthdata */}
@@ -203,20 +331,34 @@ export default function FormPage() {
                                             <Popover>
                                                 <PopoverTrigger>
                                                     <Button type="button" variant="outline" className="w-full px-4 py-6 shadow-none">
-                                                        {/* {data.birthdate instanceof Date && !isNaN(data.birthdate.getTime()) ? (
+                                                        {data.birthdate instanceof Date && !isNaN(data.birthdate.getTime()) ? (
                                                             <span>{data.birthdate.toDateString()}</span>
                                                         ) : (
                                                             <span className="text-sm text-gray-400">Masukkan Tanggal Lahir</span>
-                                                        )} */}
-                                                        <span className="text-sm text-gray-400">Masukkan Tanggal Lahir</span>
+                                                        )}
                                                         <CalendarIcon className="ml-auto h-5 w-5 text-gray-500" />
                                                     </Button>
                                                 </PopoverTrigger>
 
                                                 <PopoverContent className="w-auto p-2">
-                                                    <Input type="text" className="mb-2 py-6 text-center" placeholder="tahun-bulan-tanggal" />
+                                                    <Input
+                                                        type="text"
+                                                        value={inputValue}
+                                                        onChange={handleInputBirthdate}
+                                                        className="mb-2 py-6 text-center"
+                                                        placeholder="tahun-bulan-tanggal"
+                                                    />
 
-                                                    <Calendar mode="single" disabled={(date) => date > new Date()} initialFocus />
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={data.birthdate ?? new Date()}
+                                                        onSelect={(date) => {
+                                                            setData('birthdate', date ?? null);
+                                                            setInputValue(date ? date.toISOString().split('T')[0] : '');
+                                                        }}
+                                                        disabled={(date) => date > new Date()}
+                                                        initialFocus
+                                                    />
                                                 </PopoverContent>
                                             </Popover>
                                             <InputError className="mt-2" />
@@ -232,7 +374,7 @@ export default function FormPage() {
                                             <Label htmlFor="gender">
                                                 Jenis Kelamin <strong className="text-red-500">*</strong>
                                             </Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setData('gender', value as GenderEnum)}>
                                                 <SelectTrigger className="w-full rounded-lg px-4 py-6 shadow-none">
                                                     <SelectValue placeholder="Pilih Jenis Kelamin" />
                                                 </SelectTrigger>
@@ -256,12 +398,15 @@ export default function FormPage() {
                                                 id="age"
                                                 type="number"
                                                 autoFocus
-                                                // value={'test'}
+                                                required
+                                                autoComplete="on"
+                                                value={data.age}
+                                                onChange={(e) => setData('age', Number(e.target.value))}
+                                                disabled={processing}
                                                 placeholder="Masukkan umur kurir"
-                                                // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                                className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
+                                                className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.age && 'border border-red-500')}
                                             />
-                                            <InputError className="mt-2" />
+                                            <InputError message={errors.age} className="mt-2" />
                                         </div>
                                     </div>
                                 </div>
@@ -283,7 +428,7 @@ export default function FormPage() {
                                             <Label htmlFor="gender">
                                                 Jenis Kendaraan <strong className="text-red-500">*</strong>
                                             </Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setData('vehicle_type', value as VehicleTypeEnum)}>
                                                 <SelectTrigger className="w-full rounded-lg px-4 py-6 shadow-none">
                                                     <SelectValue placeholder="Pilih Jenis Kendaraan" />
                                                 </SelectTrigger>
@@ -305,14 +450,19 @@ export default function FormPage() {
                                             </Label>
                                             <Input
                                                 id="license_plate"
-                                                type="number"
+                                                type="text"
                                                 autoFocus
-                                                // value={'test'}
+                                                required
+                                                autoComplete="on"
+                                                value={data.license_plate}
+                                                onChange={(e) => setData('license_plate', e.target.value)}
                                                 placeholder="Masukkan nomor kendaraan kurir"
-                                                // className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
-                                                className={'mt-1 rounded-lg px-4 py-6 shadow-none'}
+                                                className={cn(
+                                                    'mt-1 rounded-xl px-4 py-6 shadow-none',
+                                                    errors.license_plate && 'border border-red-500',
+                                                )}
                                             />
-                                            <InputError className="mt-2" />
+                                            <InputError message={errors?.license_plate} className="mt-2" />
                                         </div>
                                     </div>
                                 </div>
@@ -323,15 +473,15 @@ export default function FormPage() {
                                         Foto SIM Kendaraan <strong className="text-red-500">*</strong>
                                     </Label>
                                     <FileDropzone
-                                        onFileChange={function (file: File | null): void {
-                                            console.log(file);
-                                        }}
+                                        onFileChange={(file) => handleFileChange('driving_license_photo', file)}
+                                        error={errors?.driving_license_photo}
                                     />
-                                    <InputError className="mt-2" />
+                                    <InputError message={errors?.driving_license_photo} className="mt-2" />
                                 </div>
                             </CardContent>
                         </Card>
 
+                        {/* Button */}
                         <div className="mt-4 flex justify-end space-x-3">
                             <Link href={route('admin.couriers.index')} className="cursor-pointer">
                                 <Button variant="destructive">

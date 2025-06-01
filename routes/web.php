@@ -143,7 +143,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->group(function () {
                 Route::get('/', 'indexAdmin')->name('admin.couriers.index');
                 Route::get('/create', 'create')->name('admin.couriers.create');
-                // Route::post('/create', 'store')->name('admin.couriers.store');
+                Route::post('/create', 'store')->name('admin.couriers.store');
                 // Route::get('/edit/{id}', 'edit')->name('admin.couriers.edit');
                 // Route::put('/edit/{id}', 'update')->name('admin.couriers.update');
                 // Route::delete('/soft-delete/{id}', 'softDelete')->name('admin.couriers.softDelete');

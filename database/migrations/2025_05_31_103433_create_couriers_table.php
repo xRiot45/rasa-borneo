@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('vehicle_type', [VehicleTypeEnum::values()])->default(VehicleTypeEnum::MOTORCYCLE);
             $table->string('national_id');
             $table->text('id_card_photo');
-            $table->number('age')->default(0)->nullable();
+            $table->integer('age')->default(0)->nullable();
             $table->string('birthplace')->nullable();
             $table->date('birthdate')->nullable();
             $table->string('profile_image')->nullable();
