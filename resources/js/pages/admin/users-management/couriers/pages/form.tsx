@@ -39,8 +39,8 @@ export default function FormPage() {
         // Akun
         full_name: '',
         email: '',
-        password: '',
-        password_confirmation: '',
+        password: '12345678',
+        password_confirmation: '12345678',
 
         // Kurir
         phone_number: '',
@@ -211,7 +211,7 @@ export default function FormPage() {
                                             required
                                             value={data.password}
                                             onChange={(e) => setData('password', e.target.value)}
-                                            disabled={processing}
+                                            disabled
                                             placeholder="Masukkan password kurir"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
                                         />
@@ -229,7 +229,7 @@ export default function FormPage() {
                                             required
                                             value={data.password_confirmation}
                                             onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            disabled={processing}
+                                            disabled
                                             placeholder="Masukkan konfirmasi password kurir"
                                             className={cn(
                                                 'mt-1 rounded-xl px-4 py-6 shadow-none',
@@ -488,7 +488,7 @@ export default function FormPage() {
                                     Batalkan <Icon icon="iconoir:cancel" />
                                 </Button>
                             </Link>
-                            <Button type="submit" tabIndex={4} className="cursor-pointer">
+                            <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                 Tambah Kurir <Icon icon="heroicons:plus" />
                             </Button>

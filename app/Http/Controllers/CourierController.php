@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CourierRequest;
+use App\Mail\CourierRegisteredMail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
-use Throwable;
 
 class CourierController extends Controller
 {
@@ -28,13 +27,20 @@ class CourierController extends Controller
     {
         $validated = $request->validated();
 
+        $defaultPassword = '12345678';
         $user = User::create([
             'full_name' => $validated['full_name'],
             'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
+            'password' => bcrypt($defaultPassword),
             'phone_number' => $validated['phone_number'],
-            'email_verified_at' => now(),
         ]);
+
+        $user
+            ->forceFill([
+                'email_verified_at' => now(),
+            ])
+            ->save();
+        $user->assignRole('courier');
 
         // Handle upload gambar
         $fileFields = ['id_card_photo', 'profile_image', 'driving_license_photo'];
@@ -48,7 +54,6 @@ class CourierController extends Controller
             }
         }
 
-        // Simpan courier
         $user->courier()->create([
             'user_id' => $user->id,
             'national_id' => $validated['national_id'],
@@ -63,6 +68,8 @@ class CourierController extends Controller
             'is_online' => false,
             'is_verified' => true,
         ]);
+
+        Mail::to($user->email)->send(new CourierRegisteredMail($user, $defaultPassword));
 
         return redirect()
             ->route('admin.couriers.index')
