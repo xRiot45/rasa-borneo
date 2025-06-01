@@ -22,10 +22,10 @@ export function DataTableRowActions({ row }: { row: Row<Courier> }) {
     const deletedAtAlreadyExist = row.original.deleted_at !== null;
 
     const handleSoftDelete = (id: number) => {
-        router.delete(route('admin.customers.softDelete', { id }), {
+        router.delete(route('admin.couriers.softDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
-                    description: 'Customer Berhasil Dihapus Sementara!',
+                    description: 'Kurir Berhasil Dihapus Sementara!',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
@@ -50,7 +50,7 @@ export function DataTableRowActions({ row }: { row: Row<Courier> }) {
         router.delete(route('admin.customers.forceDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
-                    description: 'Customer Berhasil Dihapus Permanen!',
+                    description: 'Kurir Berhasil Dihapus Permanen!',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
@@ -78,7 +78,7 @@ export function DataTableRowActions({ row }: { row: Row<Courier> }) {
             {
                 onSuccess: () => {
                     toast.success('Success', {
-                        description: 'Merchant Berhasil Direstore!',
+                        description: 'Kurir Berhasil Direstore!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),

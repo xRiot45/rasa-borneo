@@ -147,7 +147,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/show/{id}', 'show')->name('admin.couriers.show');
                 // Route::get('/edit/{id}', 'edit')->name('admin.couriers.edit');
                 // Route::put('/edit/{id}', 'update')->name('admin.couriers.update');
-                // Route::delete('/soft-delete/{id}', 'softDelete')->name('admin.couriers.softDelete');
+                Route::delete('/soft-delete/{courier}', 'softDelete')->name('admin.couriers.softDelete');
                 // Route::delete('/force-delete/{id}', 'forceDelete')->name('admin.couriers.forceDelete');
                 // Route::patch('/restore/{id}', 'restore')->name('admin.couriers.restore');
             });

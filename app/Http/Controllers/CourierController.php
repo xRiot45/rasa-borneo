@@ -89,4 +89,14 @@ class CourierController extends Controller
             'data' => $courier,
         ]);
     }
+
+    public function softDelete(Courier $courier): RedirectResponse
+    {
+        $user = $courier->user()->first();
+        $user->delete();
+        $courier->delete();
+        return redirect()
+            ->back()
+            ->with(['success' => 'Courier berhasil dihapus sementara']);
+    }
 }
