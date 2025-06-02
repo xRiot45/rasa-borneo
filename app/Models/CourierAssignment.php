@@ -15,14 +15,12 @@ class CourierAssignment extends Model
         'transaction_id',
         'status',
         'accepted_at',
-        'rejected_at',
         'delivered_at',
     ];
 
     protected $casts = [
         'status' => CourierAssignmentStatusEnum::class,
         'accepted_at' => 'datetime',
-        'rejected_at' => 'datetime',
         'delivered_at' => 'datetime',
     ];
 

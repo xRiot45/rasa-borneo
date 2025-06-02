@@ -134,6 +134,11 @@ class Transaction extends Model
 
     public function courierAssigment(): HasOne
     {
-        return $this->hasOne(CourierAssigment::class);
+        return $this->hasOne(CourierAssignment::class);
+    }
+
+    public function courierRejection(): HasOne
+    {
+        return $this->hasOne(CourierRejection::class);
     }
 }

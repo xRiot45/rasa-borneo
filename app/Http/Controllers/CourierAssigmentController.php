@@ -55,4 +55,9 @@ class CourierAssigmentController extends Controller
 
         return back()->with('success', 'Tugas berhasil diambil.');
     }
+    
+    // public function rejectedRequest(Request $request): RedirectResponse
+    // {
+        
+    // }
 }
