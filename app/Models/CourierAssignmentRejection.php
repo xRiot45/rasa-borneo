@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CourierRejection extends Model
+class CourierAssignmentRejection extends Model
 {
     protected $table = 'courier_rejections';
 

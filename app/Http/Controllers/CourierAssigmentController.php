@@ -8,6 +8,8 @@ use App\Enums\OrderTypeEnum;
 use App\Models\Courier;
 use App\Models\CourierAssigment;
 use App\Models\CourierAssignment;
+use App\Models\CourierAssignmentRejection;
+use App\Models\CourierRejection;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,12 +22,15 @@ class CourierAssigmentController extends Controller
     public function deliveryRequest(): InertiaResponse
     {
         $assignedTransactionIds = CourierAssignment::pluck('transaction_id')->toArray();
+        $rejectedTransactionIds = CourierAssignmentRejection::pluck('transaction_id')->toArray();
+
         $orders = Order::where('order_type', OrderTypeEnum::DELIVERY)
             ->with('merchant', 'merchant.storeProfile', 'merchant.businessCategory', 'transactionItems', 'latestOrderStatus')
             ->whereHas('latestOrderStatus', function ($query) {
                 $query->where('status', '!=', OrderStatusEnum::COMPLETED->value);
             })
             ->whereNotIn('id', $assignedTransactionIds)
+            ->whereNotIn('id', $rejectedTransactionIds)
             ->get();
 
         return Inertia::render('courier/pages/delivery-request/index', [
@@ -55,9 +60,27 @@ class CourierAssigmentController extends Controller
 
         return back()->with('success', 'Tugas berhasil diambil.');
     }
-    
-    // public function rejectedRequest(Request $request): RedirectResponse
-    // {
-        
-    // }
+
+    public function rejectedRequest(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+        $courierId = $courier->id;
+
+        $transactionId = $request->transaction_id;
+
+        $alreadyRejected = CourierAssignmentRejection::where('courier_id', $courierId)->where('transaction_id', $transactionId)->exists();
+
+        if ($alreadyRejected) {
+            return back()->with('error', 'Anda sudah menolak tugas ini sebelumnya.');
+        }
+
+        CourierAssignmentRejection::create([
+            'courier_id' => $courierId,
+            'transaction_id' => $transactionId,
+            'rejected_at' => now(),
+        ]);
+
+        return back()->with('success', 'Permintaan pengantaran berhasil ditolak.');
+    }
 }

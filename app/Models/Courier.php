@@ -47,8 +47,8 @@ class Courier extends Model
         return $this->hasMany(CourierAssignment::class);
     }
 
-    public function courierRejections(): HasMany
+    public function courierAssignmentRejections(): HasMany
     {
-        return $this->hasMany(CourierRejection::class);
+        return $this->hasMany(CourierAssignmentRejection::class);
     }
 }
