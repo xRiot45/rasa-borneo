@@ -1,5 +1,5 @@
-import EmptyImage from '@/assets/errors/empty.svg';
 import DefaultPhotoProfile from '@/assets/images/default-image.png';
+import EmptyData from '@/components/empty-img';
 import OrderStatusBadge from '@/components/order-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -219,17 +219,10 @@ export default function OrderRequestPage({ orders }: Props) {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col">
-                            <div className="flex grow items-center px-6 xl:px-10">
-                                <div className="mx-auto text-center">
-                                    <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
-                                    <h1 className="text-xl font-bold">Tidak Ada Permintaan Pengantaran</h1>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Tidak ada permintaan pengantaran saat ini. Silakan coba lagi nanti.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <EmptyData
+                            title="Tidak Ada Permintaan Pengantaran"
+                            description=" Tidak ada permintaan pengantaran saat ini. Silakan coba lagi nanti."
+                        />
                     )}
 
                     {/* Dialog Accepted Order */}
