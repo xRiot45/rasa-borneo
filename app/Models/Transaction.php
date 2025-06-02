@@ -131,4 +131,9 @@ class Transaction extends Model
     {
         return $this->hasOne(OrderStatus::class, 'transaction_id')->latestOfMany();
     }
+
+    public function courierAssigment(): HasOne
+    {
+        return $this->hasOne(CourierAssigment::class);
+    }
 }

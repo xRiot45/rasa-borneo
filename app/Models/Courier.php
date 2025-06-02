@@ -6,6 +6,7 @@ use App\Enums\GenderEnum;
 use App\Enums\VehicleTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Courier extends Model
@@ -39,5 +40,10 @@ class Courier extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withTrashed();
+    }
+
+    public function courierAssigments(): HasMany
+    {
+        return $this->hasMany(CourierAssigment::class);
     }
 }
