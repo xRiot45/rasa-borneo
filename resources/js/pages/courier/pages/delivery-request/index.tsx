@@ -11,13 +11,42 @@ import { Order } from '@/models/order';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
 import { Icon } from '@iconify/react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import { toast } from 'sonner';
 
 interface Props {
     orders: Order[];
 }
 
 export default function OrderRequestPage({ orders }: Props) {
+    const handleAcceptedOrder = (transactionId: number) => {
+        router.post(
+            route('courier.acceptedRequest'),
+            { transaction_id: transactionId },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Permintaan pengantaran berhasil diterima',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: () => {
+                    toast.error('Error', {
+                        description: 'Permintaan pengantaran gagal diterima',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+            },
+        );
+    };
+
     return (
         <>
             <Head title="Permintaan Pesanan" />
@@ -113,7 +142,11 @@ export default function OrderRequestPage({ orders }: Props) {
                                         Tolak Pesanan
                                         <Icon icon={'material-symbols:cancel'} className="text-background ml-2" />
                                     </Button>
-                                    <Button variant="default" className="flex-1 cursor-pointer py-6 text-sm">
+                                    <Button
+                                        variant="default"
+                                        className="flex-1 cursor-pointer py-6 text-sm"
+                                        onClick={() => handleAcceptedOrder(order?.id)}
+                                    >
                                         Terima Pesanan
                                         <Icon icon={'material-symbols:check'} className="text-background ml-2" />
                                     </Button>

@@ -403,6 +403,7 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     Route::get('/courier/home', [CourierController::class, 'indexCourier'])->name('courier.indexCourier');
 
     Route::get('/courier/delivery-requests', [CourierAssigmentController::class, 'deliveryRequest'])->name('courier.deliveryRequest');
+    Route::post('/courier/delivery-requests/accept', [CourierAssigmentController::class, 'acceptedRequest'])->name('courier.acceptedRequest');
 });
 
 require __DIR__ . '/settings.php';

@@ -6,9 +6,9 @@ use App\Enums\CourierAssignmentStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CourierAssigment extends Model
+class CourierAssignment extends Model
 {
-    protected $table = 'courier_assigments';
+    protected $table = 'courier_assignments';
 
     protected $fillable = [
         'courier_id',
