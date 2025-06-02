@@ -10,8 +10,8 @@ const bottomNavItems = [
         icon: 'material-symbols:inbox',
     },
     {
-        title: 'Pengantaran Aktif',
-        href: '/courier/running-orders',
+        title: 'Pengantaran Saya',
+        href: '/courier/my-deliveries',
         icon: 'mdi:truck-delivery-outline',
     },
     {
