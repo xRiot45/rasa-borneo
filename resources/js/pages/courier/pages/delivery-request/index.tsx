@@ -3,6 +3,7 @@ import OrderStatusBadge from '@/components/order-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { OrderStatusEnum } from '@/enums/order-status';
@@ -12,6 +13,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
 import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -19,20 +21,32 @@ interface Props {
 }
 
 export default function OrderRequestPage({ orders }: Props) {
-    const handleAcceptedOrder = (transactionId: number) => {
+    const [showDialogAcceptedOrder, setShowDialogAcceptedOrder] = useState<boolean>(false);
+    const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);
+
+    const handleConfirmAcceptedOrder = (transactionId: number) => {
+        setSelectedTransactionId(transactionId);
+        setShowDialogAcceptedOrder(true);
+    };
+
+    const handleAcceptedOrder = () => {
+        if (!selectedTransactionId) return;
+
         router.post(
             route('courier.acceptedRequest'),
-            { transaction_id: transactionId },
+            { transaction_id: selectedTransactionId },
             {
                 preserveScroll: true,
                 onSuccess: () => {
                     toast.success('Success', {
-                        description: 'Permintaan pengantaran berhasil diterima',
+                        description: 'Pesanan berhasil diterima',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
+                    setShowDialogAcceptedOrder(false);
+                    setSelectedTransactionId(null);
                 },
                 onError: () => {
                     toast.error('Error', {
@@ -42,6 +56,8 @@ export default function OrderRequestPage({ orders }: Props) {
                             onClick: () => toast.dismiss(),
                         },
                     });
+                    setShowDialogAcceptedOrder(false);
+                    setSelectedTransactionId(null);
                 },
             },
         );
@@ -145,7 +161,7 @@ export default function OrderRequestPage({ orders }: Props) {
                                     <Button
                                         variant="default"
                                         className="flex-1 cursor-pointer py-6 text-sm"
-                                        onClick={() => handleAcceptedOrder(order?.id)}
+                                        onClick={() => handleConfirmAcceptedOrder(order?.id)}
                                     >
                                         Terima Pesanan
                                         <Icon icon={'material-symbols:check'} className="text-background ml-2" />
@@ -154,6 +170,28 @@ export default function OrderRequestPage({ orders }: Props) {
                             </Card>
                         ))}
                     </div>
+
+                    {/* Dialog Accepted Order */}
+                    <Dialog open={showDialogAcceptedOrder} onOpenChange={setShowDialogAcceptedOrder}>
+                        <DialogContent className="sm:max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Konfirmasi Terima Pesanan</DialogTitle>
+                                <DialogDescription>
+                                    Apakah Anda yakin ingin menerima permintaan pengantaran ini? Setelah diterima, tugas ini akan tercatat sebagai
+                                    milik Anda dan tidak bisa diambil oleh kurir lain.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="mt-4 flex justify-end gap-2">
+                                <Button variant="outline" onClick={() => setShowDialogAcceptedOrder(false)} className="cursor-pointer">
+                                    Batal
+                                </Button>
+                                <Button onClick={handleAcceptedOrder} className="cursor-pointer">
+                                    Ya, Terima Pesanan
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </main>
             </CourierLayout>
         </>
