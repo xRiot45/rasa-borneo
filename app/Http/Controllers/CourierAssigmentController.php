@@ -8,8 +8,8 @@ use Inertia\Response as InertiaResponse;
 
 class CourierAssigmentController extends Controller
 {
-    public function orderRequest(): InertiaResponse
+    public function deliveryRequest(): InertiaResponse
     {
-        return Inertia::render('courier/pages/order-request/index');
+        return Inertia::render('courier/pages/delivery-request/index');
     }
 }

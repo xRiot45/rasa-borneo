@@ -402,7 +402,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     Route::get('/courier/home', [CourierController::class, 'indexCourier'])->name('courier.indexCourier');
 
-    Route::get('/courier/orders-requests', [CourierAssigmentController::class, 'orderRequest'])->name('courier.orderRequest');
+    Route::get('/courier/delivery-requests', [CourierAssigmentController::class, 'deliveryRequest'])->name('courier.deliveryRequest');
 });
 
 require __DIR__ . '/settings.php';

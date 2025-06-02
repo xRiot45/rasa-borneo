@@ -6,7 +6,7 @@ const bottomNavItems = [
     },
     {
         title: 'Permintaan Pengantaran',
-        href: '/courier/orders-requests',
+        href: '/courier/delivery-requests',
         icon: 'material-symbols:inbox',
     },
     {
