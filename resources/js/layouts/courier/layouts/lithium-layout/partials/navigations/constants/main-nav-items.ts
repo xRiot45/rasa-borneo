@@ -8,7 +8,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Permintaan Pengantaran',
-        href: '/courier/orders-request',
+        href: '/courier/orders-requests',
         icon: 'material-symbols:inbox',
     },
     {

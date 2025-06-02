@@ -4,6 +4,7 @@ use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CourierAssigmentController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
@@ -400,6 +401,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // COURIER ROUTES
 Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     Route::get('/courier/home', [CourierController::class, 'indexCourier'])->name('courier.indexCourier');
+
+    Route::get('/courier/orders-requests', [CourierAssigmentController::class, 'orderRequest'])->name('courier.orderRequest');
 });
 
 require __DIR__ . '/settings.php';
