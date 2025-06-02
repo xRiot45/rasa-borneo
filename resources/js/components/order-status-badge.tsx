@@ -8,7 +8,7 @@ const OrderStatusBadge = ({ status }: { status: OrderStatusEnum }) => {
         className: 'bg-gray-100 border text-gray-600',
     };
 
-    return <Badge className={`rounded-md text-xs font-medium ${className}`}>{label}</Badge>;
+    return <Badge className={`rounded-sm text-xs font-medium ${className}`}>{label}</Badge>;
 };
 
 export default OrderStatusBadge;

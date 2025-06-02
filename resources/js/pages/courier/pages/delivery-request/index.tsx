@@ -40,20 +40,22 @@ export default function OrderRequestPage({ orders }: Props) {
                             <Card key={order.id} className="mb-4 py-6 shadow-none">
                                 <CardHeader className="flex flex-col">
                                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-start gap-4">
                                             <img
                                                 src={`${order?.merchant?.store_profile?.logo_photo}` || DefaultPhotoProfile}
                                                 alt="Logo Merchant"
                                                 className="h-20 w-20 rounded-lg border object-cover"
                                             />
-                                            <div className="flex flex-col items-start space-y-0.5">
+                                            <div className="flex flex-col items-start space-y-1">
                                                 <h3 className="text-md font-bold">{order.merchant.business_name}</h3>
                                                 <p className="text-muted-foreground text-sm">{order?.merchant?.business_category?.name}</p>
+                                                <p className="text-muted-foreground text-sm">{order?.merchant?.business_address}</p>{' '}
+                                                {/* <- Tambahkan ini */}
                                                 <Badge className="mt-1 rounded-sm">{order.transaction_items.length} Pesanan</Badge>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col gap-2 sm:mt-2 sm:flex-col sm:items-end">
+                                        <div className="flex flex-col gap-2 space-y-1 sm:mt-2 sm:flex-col sm:items-end">
                                             <p className="mt-1 text-sm font-medium">{formatDate(order.checked_out_at ?? '')}</p>
                                             <OrderStatusBadge status={order.latest_order_status.status as OrderStatusEnum} />
                                         </div>
