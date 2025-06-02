@@ -22,11 +22,17 @@ interface Props {
 
 export default function OrderRequestPage({ orders }: Props) {
     const [showDialogAcceptedOrder, setShowDialogAcceptedOrder] = useState<boolean>(false);
+    const [showDialogRejectedOrder, setShowDialogRejectedOrder] = useState<boolean>(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);
 
     const handleConfirmAcceptedOrder = (transactionId: number) => {
         setSelectedTransactionId(transactionId);
         setShowDialogAcceptedOrder(true);
+    };
+
+    const handleConfirmRejectedOrder = (transactionId: number) => {
+        setSelectedTransactionId(transactionId);
+        setShowDialogRejectedOrder(true);
     };
 
     const handleAcceptedOrder = () => {
@@ -57,6 +63,40 @@ export default function OrderRequestPage({ orders }: Props) {
                         },
                     });
                     setShowDialogAcceptedOrder(false);
+                    setSelectedTransactionId(null);
+                },
+            },
+        );
+    };
+
+    const handleRejectedOrder = () => {
+        if (!selectedTransactionId) return;
+
+        router.post(
+            route('courier.rejectedRequest'),
+            { transaction_id: selectedTransactionId },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Permintaan pengantaran berhasil ditolak',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                    setShowDialogRejectedOrder(false);
+                    setSelectedTransactionId(null);
+                },
+                onError: () => {
+                    toast.error('Error', {
+                        description: 'Permintaan pengantaran gagal ditolak',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                    setShowDialogRejectedOrder(false);
                     setSelectedTransactionId(null);
                 },
             },
@@ -154,7 +194,11 @@ export default function OrderRequestPage({ orders }: Props) {
                                 </CardContent>
 
                                 <CardFooter className="flex gap-3 pt-2">
-                                    <Button variant="destructive" className="flex-1 cursor-pointer py-6 text-sm hover:bg-red-700">
+                                    <Button
+                                        variant="destructive"
+                                        className="flex-1 cursor-pointer py-6 text-sm hover:bg-red-700"
+                                        onClick={() => handleConfirmRejectedOrder(order?.id)}
+                                    >
                                         Tolak Pesanan
                                         <Icon icon={'material-symbols:cancel'} className="text-background ml-2" />
                                     </Button>
@@ -188,6 +232,28 @@ export default function OrderRequestPage({ orders }: Props) {
                                 </Button>
                                 <Button onClick={handleAcceptedOrder} className="cursor-pointer">
                                     Ya, Terima Pesanan
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Dialog Rejected Order */}
+                    <Dialog open={showDialogRejectedOrder} onOpenChange={setShowDialogRejectedOrder}>
+                        <DialogContent className="sm:max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Konfirmasi Tolak Pesanan</DialogTitle>
+                                <DialogDescription>
+                                    Apakah Anda yakin ingin menolak permintaan pengantaran ini? Setelah ditolak, pesanan ini akan tersedia kembali
+                                    untuk kurir lain dan Anda tidak akan bisa mengambil tugas ini lagi.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="mt-4 flex justify-end gap-2">
+                                <Button variant="outline" onClick={() => setShowDialogRejectedOrder(false)} className="cursor-pointer">
+                                    Batal
+                                </Button>
+                                <Button onClick={handleRejectedOrder} className="cursor-pointer">
+                                    Ya, Tolak Pesanan
                                 </Button>
                             </div>
                         </DialogContent>

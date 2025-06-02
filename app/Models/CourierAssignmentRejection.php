@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CourierAssignmentRejection extends Model
 {
-    protected $table = 'courier_rejections';
+    protected $table = 'courier_assignment_rejections';
 
     protected $fillable = ['courier_id', 'transaction_id', 'rejected_at'];
 
