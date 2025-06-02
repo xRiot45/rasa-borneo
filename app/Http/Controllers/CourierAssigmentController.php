@@ -21,8 +21,12 @@ class CourierAssigmentController extends Controller
 {
     public function deliveryRequest(): InertiaResponse
     {
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+        $courierId = $courier->id;
+
         $assignedTransactionIds = CourierAssignment::pluck('transaction_id')->toArray();
-        $rejectedTransactionIds = CourierAssignmentRejection::pluck('transaction_id')->toArray();
+        $rejectedTransactionIds = CourierAssignmentRejection::where('courier_id', $courierId)->pluck('transaction_id')->toArray();
 
         $orders = Order::where('order_type', OrderTypeEnum::DELIVERY)
             ->with('merchant', 'merchant.storeProfile', 'merchant.businessCategory', 'transactionItems', 'latestOrderStatus')
