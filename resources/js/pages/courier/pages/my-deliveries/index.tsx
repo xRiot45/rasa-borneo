@@ -1,4 +1,5 @@
 import DefaultPhotoProfile from '@/assets/images/default-image.png';
+import EmptyData from '@/components/empty-img';
 import OrderStatusBadge from '@/components/order-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,46 +33,59 @@ export default function MyDeliveriesPage({ myDeliveries }: Props) {
                         </Button>
                     </div>
 
-                    <div className="mt-8">
-                        {myDeliveries?.map((delivery) => (
-                            <Card key={delivery.id} className="mb-4 py-6 shadow-none">
-                                <CardHeader className="flex flex-col">
-                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                        <div className="flex items-start gap-4">
-                                            <img
-                                                src={`${delivery?.transaction?.merchant?.store_profile?.logo_photo}` || DefaultPhotoProfile}
-                                                alt="Logo Merchant"
-                                                className="h-20 w-20 rounded-lg border object-cover"
-                                            />
-                                            <div className="flex flex-col items-start space-y-1">
-                                                <p className="text-muted-foreground text-sm font-medium">{delivery?.transaction?.transaction_code}</p>
-                                                <h3 className="text-md font-bold">{delivery?.transaction?.merchant?.business_name}</h3>
-                                                <p className="text-muted-foreground text-sm">
-                                                    {delivery?.transaction?.merchant?.business_category?.name}
-                                                </p>
-                                                <p className="text-muted-foreground text-sm">{delivery?.transaction?.merchant?.business_address}</p>
-                                                <Badge className="mt-1 rounded-sm">{delivery?.transaction?.transaction_items?.length} Pesanan</Badge>
+                    {myDeliveries?.length > 0 ? (
+                        <div className="mt-8">
+                            {myDeliveries?.map((delivery) => (
+                                <Card key={delivery.id} className="mb-4 py-6 shadow-none">
+                                    <CardHeader className="flex flex-col">
+                                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                            <div className="flex items-start gap-4">
+                                                <img
+                                                    src={`${delivery?.transaction?.merchant?.store_profile?.logo_photo}` || DefaultPhotoProfile}
+                                                    alt="Logo Merchant"
+                                                    className="h-20 w-20 rounded-lg border object-cover"
+                                                />
+                                                <div className="flex flex-col items-start space-y-1">
+                                                    <p className="text-muted-foreground text-sm font-medium">
+                                                        {delivery?.transaction?.transaction_code}
+                                                    </p>
+                                                    <h3 className="text-md font-bold">{delivery?.transaction?.merchant?.business_name}</h3>
+                                                    <p className="text-muted-foreground text-sm">
+                                                        {delivery?.transaction?.merchant?.business_category?.name}
+                                                    </p>
+                                                    <p className="text-muted-foreground text-sm">
+                                                        {delivery?.transaction?.merchant?.business_address}
+                                                    </p>
+                                                    <Badge className="mt-1 rounded-sm">
+                                                        {delivery?.transaction?.transaction_items?.length} Pesanan
+                                                    </Badge>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col gap-2 sm:mt-2 sm:items-end">
+                                                <p className="mt-1 text-sm font-medium">{formatDate(delivery?.transaction?.checked_out_at ?? '')}</p>
+                                                <OrderStatusBadge status={delivery?.transaction?.latest_order_status.status as OrderStatusEnum} />
+                                                <Link
+                                                    href={route('courier.myDeliveriesDetail', delivery?.transaction?.transaction_code ?? '')}
+                                                    className="cursor-pointer"
+                                                >
+                                                    <Button variant="default" size="sm" className="mt-6 w-full cursor-pointer py-5">
+                                                        Lihat Detail Pesanan
+                                                        <Icon icon={'mdi:eye'} className="text-background" />
+                                                    </Button>
+                                                </Link>
                                             </div>
                                         </div>
-
-                                        <div className="flex flex-col gap-2 sm:mt-2 sm:items-end">
-                                            <p className="mt-1 text-sm font-medium">{formatDate(delivery?.transaction?.checked_out_at ?? '')}</p>
-                                            <OrderStatusBadge status={delivery?.transaction?.latest_order_status.status as OrderStatusEnum} />
-                                            <Link
-                                                href={route('courier.myDeliveriesDetail', delivery?.transaction?.transaction_code ?? '')}
-                                                className="cursor-pointer"
-                                            >
-                                                <Button variant="default" size="sm" className="mt-6 w-full cursor-pointer py-5">
-                                                    Lihat Detail Pesanan
-                                                    <Icon icon={'mdi:eye'} className="text-background" />
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                            </Card>
-                        ))}
-                    </div>
+                                    </CardHeader>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (
+                        <EmptyData
+                            title="Tidak ada pengantaran saat ini"
+                            description="Anda belum memiliki pengantaran, silahkan ambil permintaan pengantaran terlebih dahulu"
+                        />
+                    )}
                 </main>
             </CourierLayout>
         </>

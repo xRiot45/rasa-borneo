@@ -93,7 +93,18 @@ class CourierAssigmentController extends Controller
         $courier = Courier::where('user_id', $user->id)->first();
         $courierId = $courier->id;
 
-        $myDeliveries = CourierAssignment::where('courier_id', $courierId)->with('transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile')->get();
+        $myDeliveries = CourierAssignment::where('courier_id', $courierId)
+            ->whereHas('transaction.latestOrderStatus', function ($query) {
+                $query->where('status', '!=', OrderStatusEnum::COMPLETED);
+            })
+            ->with([
+                'transaction',
+                'transaction.transactionItems',
+                'transaction.latestOrderStatus',
+                'transaction.merchant',
+                'transaction.merchant.storeProfile'
+            ])
+            ->get();
 
         return Inertia::render('courier/pages/my-deliveries/index', [
             'myDeliveries' => $myDeliveries,
