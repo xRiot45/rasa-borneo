@@ -161,6 +161,13 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                                     <span>Biaya Layanan</span>
                                     <span>{formatCurrency(transaction?.application_service_fee)}</span>
                                 </div>
+                                {data?.transaction?.discount_total > 0 && (
+                                    <div className="flex justify-between">
+                                        <span>Diskon</span>
+                                        <span>{formatCurrency(data.transaction.discount_total)}</span>
+                                    </div>
+                                )}
+
                                 <Separator />
                                 <div className="flex justify-between font-semibold">
                                     <span>Total</span>
