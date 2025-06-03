@@ -11,6 +11,7 @@ use App\Models\CourierAssignment;
 use App\Models\CourierAssignmentRejection;
 use App\Models\CourierRejection;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -112,5 +113,27 @@ class CourierAssigmentController extends Controller
         return Inertia::render('courier/pages/my-deliveries/pages/detail', [
             'data' => $data,
         ]);
+    }
+
+    public function orderReadyToDelivery(string $transactionCode): RedirectResponse
+    {
+        $data = CourierAssignment::whereHas('transaction', function ($query) use ($transactionCode) {
+            $query->where('transaction_code', $transactionCode);
+        })->first();
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'Courier assignment not found.');
+        }
+
+        $data->update([
+            'delivered_at' => now(),
+        ]);
+
+        OrderStatus::create([
+            'transaction_id' => $data->transaction->id,
+            'status' => OrderStatusEnum::READY_FOR_DELIVERY->value,
+        ]);
+
+        return redirect()->route('courier.myDeliveries')->with('success', 'Order siap diantar.');
     }
 }

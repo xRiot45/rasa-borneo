@@ -10,20 +10,54 @@ import { MyDeliveries } from '@/models/courier-assignment';
 import { formatCurrency } from '@/utils/format-currency';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { StickyNote } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     data: MyDeliveries;
 }
 
 export default function MyDeliveriesDetailPage({ data }: Props) {
+    const [showDialogConfirmOrderReadyToDelivery, setShowDialogConfirmOrderReadyToDelivery] = useState<boolean>(false);
+
     const transaction = data.transaction;
     const merchant = transaction.merchant;
     const items = transaction.transaction_items;
 
     const latitude = merchant?.store_profile?.latitude ? parseFloat(merchant?.store_profile?.latitude) : 0;
     const longitude = merchant?.store_profile?.longitude ? parseFloat(merchant?.store_profile?.longitude) : 0;
+
+    const handleOrderReadyToDelivery = () => {
+        setShowDialogConfirmOrderReadyToDelivery(false);
+
+        router.post(
+            route('courier.orderReadyToDelivery', { transactionCode: transaction.transaction_code }),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Pesanan siap untuk diantar',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: () => {
+                    toast.error('Error', {
+                        description: 'Permintaan pengantaran gagal diterima',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+            },
+        );
+    };
 
     return (
         <>
@@ -191,6 +225,32 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                             </div>
                         </CardContent>
                     </Card>
+
+                    <div className="mt-6 flex items-center justify-end">
+                        {/* Tombol untuk buka dialog */}
+                        <Button className="w-full cursor-pointer py-6 sm:w-auto" onClick={() => setShowDialogConfirmOrderReadyToDelivery(true)}>
+                            Pesanan Siap Diantar
+                            <Icon icon={'grommet-icons:deliver'} className="text-background" />
+                        </Button>
+                    </div>
+
+                    {/* Dialog konfirmasi */}
+                    <Dialog open={showDialogConfirmOrderReadyToDelivery} onOpenChange={setShowDialogConfirmOrderReadyToDelivery}>
+                        <DialogContent className="sm:max-w-xl">
+                            <DialogHeader>
+                                <DialogTitle>Konfirmasi Pengantaran</DialogTitle>
+                                <DialogDescription>Apakah kamu yakin pesanan sudah siap untuk diantar ke pelanggan?</DialogDescription>
+                            </DialogHeader>
+                            <div className="mt-4 flex justify-end gap-3">
+                                <Button variant="outline" onClick={() => setShowDialogConfirmOrderReadyToDelivery(false)} className="cursor-pointer">
+                                    Batal
+                                </Button>
+                                <Button onClick={handleOrderReadyToDelivery} className="cursor-pointer">
+                                    Ya, Sudah Siap
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </main>
             </CourierLayout>
         </>
