@@ -66,7 +66,7 @@ export default function DeliveryHistoryPage({ deliveryHistory }: Props) {
                                                 <p className="mt-1 text-sm font-medium">{formatDate(delivery?.transaction?.checked_out_at ?? '')}</p>
                                                 <OrderStatusBadge status={delivery?.transaction?.latest_order_status.status as OrderStatusEnum} />
                                                 <Link
-                                                    href={route('courier.myDeliveriesDetail', delivery?.transaction?.transaction_code ?? '')}
+                                                    href={route('courier.detailDeliveryHistory', delivery?.transaction?.transaction_code ?? '')}
                                                     className="cursor-pointer"
                                                 >
                                                     <Button variant="default" size="sm" className="mt-6 w-full cursor-pointer py-5">

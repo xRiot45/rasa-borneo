@@ -410,11 +410,12 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     // My Deliveries
     Route::get('/courier/my-deliveries', [CourierAssigmentController::class, 'myDeliveries'])->name('courier.myDeliveries');
     Route::get('/courier/my-deliveries/{transactionCode}', [CourierAssigmentController::class, 'myDeliveriesDetail'])->name('courier.myDeliveriesDetail');
-    Route::post('/courier/my-deliveries/{transactionCode}/ready-to-delivery', [CourierAssigmentController::class, 'orderReadyToDelivery'])
-        ->name('courier.orderReadyToDelivery');
-    Route::post('/courier/my-deliveries/{transactionCode}/order-delivery-completed', [CourierAssigmentController::class, 'orderCompleteDelivery'])
-        ->name('courier.orderCompleteDelivery');
+    Route::post('/courier/my-deliveries/{transactionCode}/ready-to-delivery', [CourierAssigmentController::class, 'orderReadyToDelivery'])->name('courier.orderReadyToDelivery');
+    Route::post('/courier/my-deliveries/{transactionCode}/order-delivery-completed', [CourierAssigmentController::class, 'orderCompleteDelivery'])->name('courier.orderCompleteDelivery');
+
+    // Delivery History
     Route::get('/courier/delivery-history', [CourierAssigmentController::class, 'deliveryHistory'])->name('courier.deliveryHistory');
+    Route::get('/courier/delivery-history/{transactionCode}', [CourierAssigmentController::class, 'detailDeliveryHistory'])->name('courier.detailDeliveryHistory');
 });
 
 require __DIR__ . '/settings.php';

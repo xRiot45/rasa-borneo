@@ -208,4 +208,17 @@ class CourierAssigmentController extends Controller
             'deliveryHistory' => $deliveryHistory,
         ]);
     }
+
+    public function detailDeliveryHistory(string $transactionCode): InertiaResponse
+    {
+        $data = CourierAssignment::whereHas('transaction', function ($query) use ($transactionCode) {
+            $query->where('transaction_code', $transactionCode);
+        })
+            ->with(['transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile'])
+            ->first();
+
+        return Inertia::render('courier/pages/delivery-history/pages/detail', [
+            'data' => $data,
+        ]);
+    }
 }
