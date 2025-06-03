@@ -9,6 +9,7 @@ use App\Models\Courier;
 use App\Models\CourierAssignment;
 use App\Models\CourierAssignmentRejection;
 use App\Models\CourierWallet;
+use App\Models\CourierWalletHistory;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use Illuminate\Http\RedirectResponse;
@@ -192,6 +193,13 @@ class CourierAssigmentController extends Controller
                     'balance' => $deliveryFee,
                 ]);
             }
+
+            CourierWalletHistory::create([
+                'courier_id' => $courier->id,
+                'transaction_id' => $transaction->id,
+                'amount' => $deliveryFee,
+                'earned_at' => now(),
+            ]);
         }
 
         return redirect()->route('courier.myDeliveries')->with('success', 'Order selesai dan bukti pengantaran tersimpan.');
