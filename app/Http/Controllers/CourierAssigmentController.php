@@ -8,6 +8,7 @@ use App\Enums\OrderTypeEnum;
 use App\Models\Courier;
 use App\Models\CourierAssignment;
 use App\Models\CourierAssignmentRejection;
+use App\Models\CourierWallet;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use Illuminate\Http\RedirectResponse;
@@ -97,13 +98,7 @@ class CourierAssigmentController extends Controller
             ->whereHas('transaction.latestOrderStatus', function ($query) {
                 $query->where('status', '!=', OrderStatusEnum::COMPLETED);
             })
-            ->with([
-                'transaction',
-                'transaction.transactionItems',
-                'transaction.latestOrderStatus',
-                'transaction.merchant',
-                'transaction.merchant.storeProfile'
-            ])
+            ->with(['transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile'])
             ->get();
 
         return Inertia::render('courier/pages/my-deliveries/index', [
@@ -182,6 +177,23 @@ class CourierAssigmentController extends Controller
             'status' => OrderStatusEnum::COMPLETED->value,
         ]);
 
+        $courier = $data->courier;
+        $transaction = $data->transaction;
+        $deliveryFee = $transaction->delivery_fee;
+
+        if ($deliveryFee > 0) {
+            $courierWallet = $courier->courierWallet;
+
+            if ($courierWallet) {
+                $courierWallet->increment('balance', $deliveryFee);
+            } else {
+                CourierWallet::create([
+                    'courier_id' => $courier->id,
+                    'balance' => $deliveryFee,
+                ]);
+            }
+        }
+
         return redirect()->route('courier.myDeliveries')->with('success', 'Order selesai dan bukti pengantaran tersimpan.');
     }
 
@@ -195,13 +207,7 @@ class CourierAssigmentController extends Controller
             ->whereHas('transaction.latestOrderStatus', function ($query) {
                 $query->where('status', OrderStatusEnum::COMPLETED);
             })
-            ->with([
-                'transaction',
-                'transaction.transactionItems',
-                'transaction.latestOrderStatus',
-                'transaction.merchant',
-                'transaction.merchant.storeProfile'
-            ])
+            ->with(['transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile'])
             ->get();
 
         return Inertia::render('courier/pages/delivery-history/index', [

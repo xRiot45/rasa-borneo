@@ -7,6 +7,7 @@ use App\Enums\VehicleTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Courier extends Model
@@ -52,8 +53,8 @@ class Courier extends Model
         return $this->hasMany(CourierAssignmentRejection::class);
     }
 
-    public function courierWallet(): HasMany
+    public function courierWallet(): HasOne
     {
-        return $this->hasMany(CourierWallet::class);
+        return $this->hasOne(CourierWallet::class);
     }
 }
