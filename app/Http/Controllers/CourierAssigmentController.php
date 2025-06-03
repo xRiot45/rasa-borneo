@@ -135,6 +135,7 @@ class CourierAssigmentController extends Controller
         }
 
         $data->update([
+            'status' => CourierAssignmentStatusEnum::DELIVERING,
             'delivered_at' => now(),
         ]);
 
@@ -172,6 +173,7 @@ class CourierAssigmentController extends Controller
         }
 
         $data->update([
+            'status' => CourierAssignmentStatusEnum::COMPLETED,
             'completed_at' => now(),
         ]);
 

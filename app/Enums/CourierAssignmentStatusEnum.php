@@ -12,6 +12,10 @@ enum CourierAssignmentStatusEnum: string
 
     case CANCELED = 'dibatalkan';
 
+    case DELIVERING = 'diantar';
+
+    case COMPLETED = 'selesai';
+
     public static function values(): array
     {
         return array_map(fn($enum) => $enum->value, self::cases());
