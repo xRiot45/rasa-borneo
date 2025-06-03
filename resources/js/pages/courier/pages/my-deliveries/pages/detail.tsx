@@ -1,7 +1,9 @@
+import FileDropzone from '@/components/file-dropzone';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
@@ -10,7 +12,7 @@ import { MyDeliveries } from '@/models/courier-assignment';
 import { formatCurrency } from '@/utils/format-currency';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
-import { Head, router } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { StickyNote } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -19,8 +21,22 @@ interface Props {
     data: MyDeliveries;
 }
 
+type UploadProofOfDeliveryForm = {
+    proof_of_delivery: string | File | null;
+};
+
 export default function MyDeliveriesDetailPage({ data }: Props) {
+    const {
+        data: formData,
+        setData,
+        post,
+        processing,
+    } = useForm<UploadProofOfDeliveryForm>({
+        proof_of_delivery: null,
+    });
+
     const [showDialogConfirmOrderReadyToDelivery, setShowDialogConfirmOrderReadyToDelivery] = useState<boolean>(false);
+    const [showDialogConfirmOrderCompleteDelivery, setShowDialogConfirmOrderCompleteDelivery] = useState<boolean>(false);
 
     const transaction = data.transaction;
     const merchant = transaction.merchant;
@@ -29,34 +45,67 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
     const latitude = merchant?.store_profile?.latitude ? parseFloat(merchant?.store_profile?.latitude) : 0;
     const longitude = merchant?.store_profile?.longitude ? parseFloat(merchant?.store_profile?.longitude) : 0;
 
+    const handleFileChange = (file: File | null) => {
+        setData('proof_of_delivery', file);
+    };
+
+    const handleOrderCompleteDelivery = (e: React.FormEvent) => {
+        e.preventDefault();
+        setShowDialogConfirmOrderCompleteDelivery(false);
+
+        const formDataAction = new FormData();
+        if (formData.proof_of_delivery) {
+            formDataAction.append('proof_of_delivery', formData.proof_of_delivery);
+        }
+
+        post(route('courier.orderCompleteDelivery', { transactionCode: transaction.transaction_code }), {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Pengantaran Pesanan Selesai',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: () => {
+                toast.error('Error', {
+                    description: 'Pengantaran Pesanan Gagal',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+        });
+    };
+
     const handleOrderReadyToDelivery = () => {
         setShowDialogConfirmOrderReadyToDelivery(false);
 
-        router.post(
-            route('courier.orderReadyToDelivery', { transactionCode: transaction.transaction_code }),
-            {},
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    toast.success('Success', {
-                        description: 'Pesanan siap untuk diantar',
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
-                    });
-                },
-                onError: () => {
-                    toast.error('Error', {
-                        description: 'Permintaan pengantaran gagal diterima',
-                        action: {
-                            label: 'Tutup',
-                            onClick: () => toast.dismiss(),
-                        },
-                    });
-                },
+        post(route('courier.orderReadyToDelivery', { transactionCode: transaction.transaction_code }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Pesanan siap untuk diantar',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
             },
-        );
+            onError: () => {
+                toast.error('Error', {
+                    description: 'Permintaan pengantaran gagal diterima',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+        });
     };
 
     return (
@@ -226,29 +275,67 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                         </CardContent>
                     </Card>
 
-                    <div className="mt-6 flex items-center justify-end">
-                        {/* Tombol untuk buka dialog */}
-                        <Button className="w-full cursor-pointer py-6 sm:w-auto" onClick={() => setShowDialogConfirmOrderReadyToDelivery(true)}>
-                            Pesanan Siap Diantar
-                            <Icon icon={'grommet-icons:deliver'} className="text-background" />
-                        </Button>
-                    </div>
+                    {data?.transaction?.latest_order_status?.status !== OrderStatusEnum.COMPLETED && (
+                        <div className="mt-6 flex items-center justify-end">
+                            {data?.transaction?.latest_order_status?.status === OrderStatusEnum.READY_FOR_DELIVERY ? (
+                                <Button
+                                    className="w-full cursor-pointer py-6 sm:w-auto"
+                                    onClick={() => setShowDialogConfirmOrderCompleteDelivery(true)}
+                                >
+                                    Selesaikan Pesanan
+                                    <Icon icon={'fluent-mdl2:completed-solid'} className="text-background" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    className="w-full cursor-pointer py-6 sm:w-auto"
+                                    onClick={() => setShowDialogConfirmOrderReadyToDelivery(true)}
+                                >
+                                    Pesanan Siap Diantar
+                                    <Icon icon={'grommet-icons:deliver'} className="text-background" />
+                                </Button>
+                            )}
+                        </div>
+                    )}
 
-                    {/* Dialog konfirmasi */}
+                    {/* Dialog konfirmasi Pesanan Siap Diantar */}
                     <Dialog open={showDialogConfirmOrderReadyToDelivery} onOpenChange={setShowDialogConfirmOrderReadyToDelivery}>
                         <DialogContent className="sm:max-w-xl">
                             <DialogHeader>
                                 <DialogTitle>Konfirmasi Pengantaran</DialogTitle>
                                 <DialogDescription>Apakah kamu yakin pesanan sudah siap untuk diantar ke pelanggan?</DialogDescription>
                             </DialogHeader>
-                            <div className="mt-4 flex justify-end gap-3">
+                            <DialogFooter>
                                 <Button variant="outline" onClick={() => setShowDialogConfirmOrderReadyToDelivery(false)} className="cursor-pointer">
                                     Batal
                                 </Button>
-                                <Button onClick={handleOrderReadyToDelivery} className="cursor-pointer">
+                                <Button onClick={handleOrderReadyToDelivery} className="cursor-pointer" disabled={processing}>
                                     Ya, Sudah Siap
                                 </Button>
-                            </div>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Dialog konfirmasi Pesanan Selesai */}
+                    <Dialog open={showDialogConfirmOrderCompleteDelivery} onOpenChange={setShowDialogConfirmOrderCompleteDelivery}>
+                        <DialogContent className="sm:max-w-xl">
+                            <DialogHeader>
+                                <DialogTitle>Konfirmasi Pengantaran Selesai</DialogTitle>
+                                <DialogDescription>Apakah kamu yakin pesanan sudah selesai diantar ke pelanggan?</DialogDescription>
+                            </DialogHeader>
+
+                            <Label className="mt-4">
+                                Upload Bukti Pengiriman <strong className="text-red-500">*</strong>
+                            </Label>
+                            <FileDropzone onFileChange={handleFileChange} />
+
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setShowDialogConfirmOrderCompleteDelivery(false)} className="cursor-pointer">
+                                    Batal
+                                </Button>
+                                <Button onClick={handleOrderCompleteDelivery} className="cursor-pointer" disabled={!formData.proof_of_delivery}>
+                                    Ya, Selesaikan Pengantaran
+                                </Button>
+                            </DialogFooter>
                         </DialogContent>
                     </Dialog>
                 </main>

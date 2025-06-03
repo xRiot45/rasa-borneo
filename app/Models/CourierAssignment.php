@@ -16,6 +16,7 @@ class CourierAssignment extends Model
         'status',
         'accepted_at',
         'delivered_at',
+        'completed_at',
         'proof_of_delivery'
     ];
 
@@ -23,6 +24,7 @@ class CourierAssignment extends Model
         'status' => CourierAssignmentStatusEnum::class,
         'accepted_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'completed_at' => 'datetime',
     ];
 
     public function transaction(): BelongsTo

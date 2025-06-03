@@ -412,6 +412,8 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     Route::get('/courier/my-deliveries/{transactionCode}', [CourierAssigmentController::class, 'myDeliveriesDetail'])->name('courier.myDeliveriesDetail');
     Route::post('/courier/my-deliveries/{transactionCode}/ready-to-delivery', [CourierAssigmentController::class, 'orderReadyToDelivery'])
         ->name('courier.orderReadyToDelivery');
+    Route::post('/courier/my-deliveries/{transactionCode}/order-delivery-completed', [CourierAssigmentController::class, 'orderCompleteDelivery'])
+        ->name('courier.orderCompleteDelivery');
 });
 
 require __DIR__ . '/settings.php';

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('status', [CourierAssignmentStatusEnum::values()])->default(CourierAssignmentStatusEnum::PENDING);
             $table->dateTime('accepted_at')->nullable();
             $table->dateTime('delivered_at')->nullable();
+            $table->dateTime('completed_at')->nullable();
             $table->text('proof_of_delivery')->nullable();
             $table->timestamps();
         });

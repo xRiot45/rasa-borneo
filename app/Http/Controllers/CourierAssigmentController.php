@@ -134,4 +134,41 @@ class CourierAssigmentController extends Controller
 
         return redirect()->route('courier.myDeliveries')->with('success', 'Order siap diantar.');
     }
+
+    public function orderCompleteDelivery(Request $request, string $transactionCode): RedirectResponse
+    {
+        $request->validate([
+            'proof_of_delivery' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $data = CourierAssignment::whereHas('transaction', function ($query) use ($transactionCode) {
+            $query->where('transaction_code', $transactionCode);
+        })->first();
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'Courier assignment not found.');
+        }
+
+        if ($request->hasFile('proof_of_delivery') && $request->file('proof_of_delivery')->isValid()) {
+            $file = $request->file('proof_of_delivery');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('proof_of_delivery', $filename, 'public');
+
+            $data->proof_of_delivery = '/storage/' . $path;
+            $data->save();
+        } else {
+            return redirect()->back()->with('error', 'Foto bukti pengantaran wajib diupload dan valid.');
+        }
+
+        $data->update([
+            'completed_at' => now(),
+        ]);
+
+        OrderStatus::create([
+            'transaction_id' => $data->transaction->id,
+            'status' => OrderStatusEnum::COMPLETED->value,
+        ]);
+
+        return redirect()->route('courier.myDeliveries')->with('success', 'Order selesai dan bukti pengantaran tersimpan.');
+    }
 }
