@@ -5,19 +5,53 @@ import CourierLayout from '@/layouts/courier/layout';
 import { SharedData } from '@/types';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { Switch } from '@radix-ui/react-switch';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     balance: number;
     earnings: { daily: number; weekly: number; monthly: number };
+    courier: {
+        is_online: boolean;
+    };
 }
 
-export default function CourierPage({ balance, earnings: { daily, weekly, monthly } }: Props) {
+export default function CourierPage({ balance, earnings: { daily, weekly, monthly }, courier: { is_online } }: Props) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
-    const [isOnline, setIsOnline] = useState<boolean>(false);
+    const [isOnline, setIsOnline] = useState<boolean>(is_online);
+
+    const handleOnlineStatusChange = () => {
+        router.post(
+            route('courier.toggleOnlineStatus'),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsOnline((prev) => !prev);
+
+                    toast.success('Success', {
+                        description: `${!isOnline ? 'Anda Sudah Online!' : 'Anda Sudah Offline!'}`,
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: () => {
+                    toast.error('Error', {
+                        description: 'Status online gagal diubah',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+            },
+        );
+    };
 
     return (
         <>
@@ -31,7 +65,7 @@ export default function CourierPage({ balance, earnings: { daily, weekly, monthl
                         </div>
                         <Switch
                             checked={isOnline}
-                            onCheckedChange={setIsOnline}
+                            onCheckedChange={handleOnlineStatusChange}
                             className={`relative inline-flex h-8 w-22 cursor-pointer items-center rounded-full transition-colors duration-500 ease-in-out ${
                                 isOnline ? 'bg-black' : 'bg-gray-400 pl-2'
                             }`}

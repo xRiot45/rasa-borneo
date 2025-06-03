@@ -400,7 +400,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // COURIER ROUTES
 Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
+    // Home
     Route::get('/courier/home', [CourierController::class, 'indexCourier'])->name('courier.indexCourier');
+    Route::post('/courier/toggle-online-status', [CourierAssigmentController::class, 'toggleOnlineStatus'])->name('courier.toggleOnlineStatus');
 
     // Delivery Request
     Route::get('/courier/delivery-requests', [CourierAssigmentController::class, 'deliveryRequest'])->name('courier.deliveryRequest');

@@ -60,6 +60,9 @@ class CourierController extends Controller
                 'weekly' => $weeklyEarnings,
                 'monthly' => $monthlyEarnings,
             ],
+            'courier' => [
+                'is_online' => $courier->is_online
+            ]
         ]);
     }
 

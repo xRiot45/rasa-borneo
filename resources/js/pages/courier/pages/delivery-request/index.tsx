@@ -220,8 +220,8 @@ export default function OrderRequestPage({ orders }: Props) {
                         </div>
                     ) : (
                         <EmptyData
-                            title="Tidak Ada Permintaan Pengantaran"
-                            description=" Tidak ada permintaan pengantaran saat ini. Silakan coba lagi nanti."
+                            title="Belum Ada Permintaan"
+                            description="Permintaan pengantaran akan muncul di sini saat tersedia atau saat Anda aktif online."
                         />
                     )}
 

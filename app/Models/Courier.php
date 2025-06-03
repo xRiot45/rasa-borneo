@@ -33,6 +33,8 @@ class Courier extends Model
     ];
 
     protected $casts = [
+        'is_online' => 'boolean',
+        'is_verified' => 'boolean',
         'vehicle_type' => VehicleTypeEnum::class,
         'gender' => GenderEnum::class,
         'birthdate' => 'date:Y-m-d',

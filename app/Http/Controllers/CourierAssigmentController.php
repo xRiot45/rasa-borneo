@@ -20,10 +20,30 @@ use Inertia\Response as InertiaResponse;
 
 class CourierAssigmentController extends Controller
 {
+    public function toggleOnlineStatus(): RedirectResponse
+    {
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+
+        $courier->is_online = !$courier->is_online;
+        $courier->save();
+
+        return back()->with('success', 'Status online diperbarui.');
+    }
+
     public function deliveryRequest(): InertiaResponse
     {
         $user = Auth::user();
         $courier = Courier::where('user_id', $user->id)->first();
+
+        // Cek apakah kurir sedang online
+        if (!$courier->is_online) {
+            return Inertia::render('courier/pages/delivery-request/index', [
+                'orders' => [],
+                'message' => 'Aktifkan status Online untuk melihat permintaan pengantaran.',
+            ]);
+        }
+
         $courierId = $courier->id;
 
         $assignedTransactionIds = CourierAssignment::pluck('transaction_id')->toArray();
@@ -47,8 +67,13 @@ class CourierAssigmentController extends Controller
     {
         $user = Auth::user();
         $courier = Courier::where('user_id', $user->id)->first();
-        $courierId = $courier->id;
 
+        // Cek apakah kurir sedang online
+        if (!$courier->is_online) {
+            return back()->with('error', 'Kamu harus online untuk menerima tugas.');
+        }
+
+        $courierId = $courier->id;
         $transactionId = $request->transaction_id;
         $alreadyAssigned = CourierAssignment::where('transaction_id', $transactionId)->exists();
 
