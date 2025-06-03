@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\CourierAssignmentStatusEnum;
 use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
+use App\Enums\PaymentMethodEnum;
 use App\Models\Courier;
 use App\Models\CourierAssignment;
 use App\Models\CourierAssignmentRejection;
@@ -207,7 +208,7 @@ class CourierAssigmentController extends Controller
         $transaction = $data->transaction;
         $deliveryFee = $transaction->delivery_fee;
 
-        if ($deliveryFee > 0) {
+        if ($deliveryFee > 0 && $transaction->payment_method === PaymentMethodEnum::CASHLESS) {
             $courierWallet = $courier->courierWallet;
 
             if ($courierWallet) {
