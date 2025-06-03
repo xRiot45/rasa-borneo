@@ -16,6 +16,7 @@ class CourierAssignment extends Model
         'status',
         'accepted_at',
         'delivered_at',
+        'proof_of_delivery'
     ];
 
     protected $casts = [
