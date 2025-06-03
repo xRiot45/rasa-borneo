@@ -8,5 +8,4 @@ export interface MyDeliveries {
     accepted_at?: string;
     status: CourierAssignmentStatusEnum;
     transaction: Transaction;
-    
 }
