@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CourierRequest;
 use App\Mail\CourierRegisteredMail;
 use App\Models\Courier;
+use App\Models\CourierWallet;
+use App\Models\CourierWalletHistory;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -25,7 +28,39 @@ class CourierController extends Controller
 
     public function indexCourier(): InertiaResponse
     {
-        return Inertia::render('courier/index');
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->firstOrFail();
+        $courierId = $courier->id;
+
+        // Ambil saldo dari tabel courier_wallets berdasarkan courier_id
+        $wallet = CourierWallet::where('courier_id', $courierId)->first();
+
+        // Waktu untuk filter
+        $today = Carbon::today();
+        $startOfWeek = Carbon::now()->startOfWeek(); // Mulai minggu (Senin)
+        $startOfMonth = Carbon::now()->startOfMonth();
+
+        // Pendapatan Harian
+        $dailyEarnings = CourierWalletHistory::where('courier_id', $courierId)->whereDate('earned_at', $today)->sum('amount');
+
+        // Pendapatan Mingguan
+        $weeklyEarnings = CourierWalletHistory::where('courier_id', $courierId)
+            ->whereBetween('earned_at', [$startOfWeek, Carbon::now()])
+            ->sum('amount');
+
+        // Pendapatan Bulanan
+        $monthlyEarnings = CourierWalletHistory::where('courier_id', $courierId)
+            ->whereBetween('earned_at', [$startOfMonth, Carbon::now()])
+            ->sum('amount');
+
+        return Inertia::render('courier/index', [
+            'balance' => $wallet->balance ?? 0,
+            'earnings' => [
+                'daily' => $dailyEarnings,
+                'weekly' => $weeklyEarnings,
+                'monthly' => $monthlyEarnings,
+            ],
+        ]);
     }
 
     public function create(): InertiaResponse

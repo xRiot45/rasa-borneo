@@ -3,12 +3,18 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import CourierLayout from '@/layouts/courier/layout';
 import { SharedData } from '@/types';
+import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
 import { Head, usePage } from '@inertiajs/react';
 import { Switch } from '@radix-ui/react-switch';
 import { useState } from 'react';
 
-export default function CourierPage() {
+interface Props {
+    balance: number;
+    earnings: { daily: number; weekly: number; monthly: number };
+}
+
+export default function CourierPage({ balance, earnings: { daily, weekly, monthly } }: Props) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const [isOnline, setIsOnline] = useState<boolean>(false);
@@ -55,8 +61,8 @@ export default function CourierPage() {
                             <div className="flex items-center gap-6">
                                 <Icon icon="solar:wallet-money-bold-duotone" className="text-5xl" />
                                 <div>
-                                    <h2 className="text-sm font-light">Dompet Kurir</h2>
-                                    <p className="mt-1 text-2xl font-bold">Rp.420.000</p>
+                                    <h2 className="text-sm font-medium">Dompet Anda</h2>
+                                    <p className="mt-1 text-2xl font-bold">{formatCurrency(balance)}</p>
                                 </div>
                             </div>
                             <Badge className="rounded-md text-xs font-medium">
@@ -71,9 +77,9 @@ export default function CourierPage() {
                         {/* Balance Details */}
                         <div className="grid grid-cols-3 divide-x divide-gray-200 text-center dark:divide-gray-700">
                             {[
-                                { label: 'Hari Ini', amount: 'Rp20.000', icon: 'mdi:calendar-today' },
-                                { label: 'Minggu Ini', amount: 'Rp100.000', icon: 'mdi:calendar-week' },
-                                { label: 'Bulan Ini', amount: 'Rp300.000', icon: 'mdi:calendar-month' },
+                                { label: 'Hari Ini', amount: formatCurrency(daily), icon: 'mdi:calendar-today' },
+                                { label: 'Minggu Ini', amount: formatCurrency(weekly), icon: 'mdi:calendar-week' },
+                                { label: 'Bulan Ini', amount: formatCurrency(monthly), icon: 'mdi:calendar-month' },
                             ].map(({ label, amount, icon }, idx) => (
                                 <div key={label} className={`flex flex-col items-center px-6 py-4 ${idx !== 0 ? 'pl-8' : ''}`}>
                                     <Icon icon={icon} className="mb-2 text-2xl sm:text-3xl" />
