@@ -184,4 +184,28 @@ class CourierAssigmentController extends Controller
 
         return redirect()->route('courier.myDeliveries')->with('success', 'Order selesai dan bukti pengantaran tersimpan.');
     }
+
+    public function deliveryHistory(): InertiaResponse
+    {
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+        $courierId = $courier->id;
+
+        $deliveryHistory = CourierAssignment::where('courier_id', $courierId)
+            ->whereHas('transaction.latestOrderStatus', function ($query) {
+                $query->where('status', OrderStatusEnum::COMPLETED);
+            })
+            ->with([
+                'transaction',
+                'transaction.transactionItems',
+                'transaction.latestOrderStatus',
+                'transaction.merchant',
+                'transaction.merchant.storeProfile'
+            ])
+            ->get();
+
+        return Inertia::render('courier/pages/delivery-history/index', [
+            'deliveryHistory' => $deliveryHistory,
+        ]);
+    }
 }

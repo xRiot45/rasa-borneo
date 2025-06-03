@@ -414,6 +414,7 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
         ->name('courier.orderReadyToDelivery');
     Route::post('/courier/my-deliveries/{transactionCode}/order-delivery-completed', [CourierAssigmentController::class, 'orderCompleteDelivery'])
         ->name('courier.orderCompleteDelivery');
+    Route::get('/courier/delivery-history', [CourierAssigmentController::class, 'deliveryHistory'])->name('courier.deliveryHistory');
 });
 
 require __DIR__ . '/settings.php';
