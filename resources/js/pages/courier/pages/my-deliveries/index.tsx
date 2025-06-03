@@ -57,7 +57,10 @@ export default function MyDeliveriesPage({ myDeliveries }: Props) {
                                         <div className="flex flex-col gap-2 sm:mt-2 sm:items-end">
                                             <p className="mt-1 text-sm font-medium">{formatDate(delivery?.transaction?.checked_out_at ?? '')}</p>
                                             <OrderStatusBadge status={delivery?.transaction?.latest_order_status.status as OrderStatusEnum} />
-                                            <Link href={route('courier.myDeliveriesDetail', delivery.id ?? '')} className="cursor-pointer">
+                                            <Link
+                                                href={route('courier.myDeliveriesDetail', delivery?.transaction?.transaction_code ?? '')}
+                                                className="cursor-pointer"
+                                            >
                                                 <Button variant="default" size="sm" className="mt-6 w-full cursor-pointer py-5">
                                                     Lihat Detail Pesanan
                                                     <Icon icon={'mdi:eye'} className="text-background" />

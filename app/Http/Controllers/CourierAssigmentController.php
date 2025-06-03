@@ -101,12 +101,16 @@ class CourierAssigmentController extends Controller
         ]);
     }
 
-    public function myDeliveriesDetail(int $id): InertiaResponse
+    public function myDeliveriesDetail(string $transactionCode): InertiaResponse
     {
-        $myDeliveriesDetail = CourierAssignment::where('id', $id)->with('transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile')->first();
+        $data = CourierAssignment::whereHas('transaction', function ($query) use ($transactionCode) {
+            $query->where('transaction_code', $transactionCode);
+        })
+            ->with(['transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile'])
+            ->first();
 
         return Inertia::render('courier/pages/my-deliveries/pages/detail', [
-            'myDeliveriesDetail' => $myDeliveriesDetail,
+            'data' => $data,
         ]);
     }
 }
