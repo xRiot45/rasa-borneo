@@ -141,4 +141,9 @@ class Transaction extends Model
     {
         return $this->hasOne(CourierAssignmentRejection::class);
     }
+
+    public function courierWalletHistory(): HasMany
+    {
+        return $this->hasMany(CourierWalletHistory::class);
+    }
 }

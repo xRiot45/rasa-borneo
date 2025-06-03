@@ -57,4 +57,9 @@ class Courier extends Model
     {
         return $this->hasOne(CourierWallet::class);
     }
+
+    public function courierWalletHistories(): HasMany
+    {
+        return $this->hasMany(CourierWalletHistory::class);
+    }
 }
