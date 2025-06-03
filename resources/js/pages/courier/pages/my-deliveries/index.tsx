@@ -8,7 +8,7 @@ import CourierLayout from '@/layouts/courier/layout';
 import { MyDeliveries } from '@/models/courier-assignment';
 import { formatDate } from '@/utils/format-date';
 import { Icon } from '@iconify/react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 interface Props {
     myDeliveries: MyDeliveries[];
@@ -44,6 +44,7 @@ export default function MyDeliveriesPage({ myDeliveries }: Props) {
                                                 className="h-20 w-20 rounded-lg border object-cover"
                                             />
                                             <div className="flex flex-col items-start space-y-1">
+                                                <p className="text-muted-foreground text-sm font-medium">{delivery?.transaction?.transaction_code}</p>
                                                 <h3 className="text-md font-bold">{delivery?.transaction?.merchant?.business_name}</h3>
                                                 <p className="text-muted-foreground text-sm">
                                                     {delivery?.transaction?.merchant?.business_category?.name}
@@ -56,10 +57,12 @@ export default function MyDeliveriesPage({ myDeliveries }: Props) {
                                         <div className="flex flex-col gap-2 sm:mt-2 sm:items-end">
                                             <p className="mt-1 text-sm font-medium">{formatDate(delivery?.transaction?.checked_out_at ?? '')}</p>
                                             <OrderStatusBadge status={delivery?.transaction?.latest_order_status.status as OrderStatusEnum} />
-                                            <Button variant="default" size="sm" className="mt-6 cursor-pointer py-5">
-                                                Lihat Detail Pesanan
-                                                <Icon icon={'mdi:eye'} className="text-background" />
-                                            </Button>
+                                            <Link href={route('courier.myDeliveriesDetail', delivery.id ?? '')} className="cursor-pointer">
+                                                <Button variant="default" size="sm" className="mt-6 w-full cursor-pointer py-5">
+                                                    Lihat Detail Pesanan
+                                                    <Icon icon={'mdi:eye'} className="text-background" />
+                                                </Button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </CardHeader>

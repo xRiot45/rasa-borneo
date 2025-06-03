@@ -100,4 +100,13 @@ class CourierAssigmentController extends Controller
             'myDeliveries' => $myDeliveries,
         ]);
     }
+
+    public function myDeliveriesDetail(int $id): InertiaResponse
+    {
+        $myDeliveriesDetail = CourierAssignment::where('id', $id)->with('transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile')->first();
+
+        return Inertia::render('courier/pages/my-deliveries/pages/detail', [
+            'myDeliveriesDetail' => $myDeliveriesDetail,
+        ]);
+    }
 }
