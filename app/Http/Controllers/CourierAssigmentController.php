@@ -87,4 +87,17 @@ class CourierAssigmentController extends Controller
 
         return back()->with('success', 'Permintaan pengantaran berhasil ditolak.');
     }
+
+    public function myDeliveries(): InertiaResponse
+    {
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+        $courierId = $courier->id;
+
+        $myDeliveries = CourierAssignment::where('courier_id', $courierId)->with('transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile')->get();
+
+        return Inertia::render('courier/pages/my-deliveries/index', [
+            'myDeliveries' => $myDeliveries,
+        ]);
+    }
 }

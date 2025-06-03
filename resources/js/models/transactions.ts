@@ -59,6 +59,7 @@ export interface Transaction {
     transaction_items: TransactionItem[];
     order_status: OrderStatus[];
     merchant: Merchant;
+    latest_order_status: OrderStatus;
 }
 
 export interface TransactionForm {
