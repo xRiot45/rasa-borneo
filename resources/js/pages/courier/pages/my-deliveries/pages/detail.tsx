@@ -3,10 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import CourierLayout from '@/layouts/courier/layout';
 import { MyDeliveries } from '@/models/courier-assignment';
 import { formatCurrency } from '@/utils/format-currency';
+import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import { StickyNote } from 'lucide-react';
@@ -36,6 +38,19 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                     <div className="my-6">
                         <h2 className="text-lg font-bold">Detail Pengantaran</h2>
                         <p className="text-muted-foreground text-sm">Lihat detail lengkap pesanan yang sedang kamu antar ke pelanggan.</p>
+
+                        {/* Tambahkan di sini */}
+                        <div className="mt-2 flex items-center justify-between gap-4">
+                            <p className="font-medium">
+                                <span className="text-primary">{transaction.transaction_code}</span>
+                            </p>
+                            <Badge
+                                variant="outline"
+                                className={`rounded-sm capitalize ${orderStatusMap[transaction.latest_order_status.status as OrderStatusEnum].className}`}
+                            >
+                                {transaction.latest_order_status.status}
+                            </Badge>
+                        </div>
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-2">
