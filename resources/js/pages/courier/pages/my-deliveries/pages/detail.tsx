@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import CourierLayout from '@/layouts/courier/layout';
@@ -18,6 +19,9 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
     const transaction = data.transaction;
     const merchant = transaction.merchant;
     const items = transaction.transaction_items;
+
+    const latitude = merchant?.store_profile?.latitude ? parseFloat(merchant?.store_profile?.latitude) : 0;
+    const longitude = merchant?.store_profile?.longitude ? parseFloat(merchant?.store_profile?.longitude) : 0;
 
     return (
         <>
@@ -67,9 +71,28 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                                     </div>
                                 </div>
 
-                                <Button className="w-full cursor-pointer py-5.5 text-sm">
-                                    Lihat Lokasi Toko <Icon icon="mdi:map-marker" className="ml-2 h-4 w-4" />
-                                </Button>
+                                <Dialog>
+                                    <DialogTrigger className="w-full">
+                                        <Button className="w-full cursor-pointer py-5.5 text-sm">
+                                            Lihat Lokasi Toko <Icon icon="mdi:map-marker" className="mr-1 h-4 w-4" />
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-4xl">
+                                        <DialogHeader className="text-start">
+                                            <DialogTitle>Lokasi Toko</DialogTitle>
+                                            <DialogDescription>{merchant?.business_address}</DialogDescription>
+                                        </DialogHeader>
+
+                                        <div className="h-[500px] w-full">
+                                            <iframe
+                                                width="100%"
+                                                height="100%"
+                                                title="Peta Lokasi"
+                                                src={`https://www.openstreetmap.org/export/embed.html?bbox=${longitude - 0.005}%2C${latitude - 0.005}%2C${longitude + 0.005}%2C${latitude + 0.005}&layer=mapnik&marker=${latitude}%2C${longitude}`}
+                                            ></iframe>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
                             </CardContent>
                         </Card>
                     </div>
