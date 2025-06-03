@@ -14,6 +14,7 @@ class Withdraw extends Model
 
     protected $fillable = [
         'merchant_id',
+        'courier_id',
         'withdraw_code',
         'amount',
         'bank_code',

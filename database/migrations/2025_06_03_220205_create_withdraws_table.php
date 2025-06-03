@@ -7,11 +7,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('withdraws', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('merchant_id')->constrained('merchants');
+            $table->foreignId('merchant_id')->nullable()->constrained('merchants');
+            $table->foreignId('courier_id')->nullable()->constrained('couriers');
             $table->string('withdraw_code', 50)->unique();
             $table->integer('amount');
             $table->string('bank_code');
