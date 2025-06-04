@@ -1,8 +1,10 @@
+import ReviewCard from '@/components/review-card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { MerchantReview } from '@/models/reviews/merchant_review';
 import { Icon } from '@iconify/react';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
@@ -10,6 +12,7 @@ import { toast } from 'sonner';
 
 interface Props {
     merchantId: number;
+    data: MerchantReview[];
 }
 
 type ReviewForm = {
@@ -17,10 +20,17 @@ type ReviewForm = {
     comment: string;
 };
 
-const TabReviewContent: React.FC<Props> = ({ merchantId }) => {
+const TabReviewContent: React.FC<Props> = ({ merchantId, data }) => {
     const [hoverRating, setHoverRating] = useState<number>(0);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const { data, setData, post, processing, errors, reset } = useForm<Required<ReviewForm>>({
+    const {
+        data: formData,
+        setData,
+        post,
+        processing,
+        errors,
+        reset,
+    } = useForm<Required<ReviewForm>>({
         rating: 0,
         comment: '',
     });
@@ -93,7 +103,7 @@ const TabReviewContent: React.FC<Props> = ({ merchantId }) => {
                                             icon="material-symbols:star"
                                             className={cn(
                                                 'h-8 w-8 cursor-pointer transition-colors',
-                                                (hoverRating || data.rating) >= star ? 'text-yellow-400' : 'text-gray-300',
+                                                (hoverRating || formData.rating) >= star ? 'text-yellow-400' : 'text-gray-300',
                                             )}
                                         />
                                     </button>
@@ -106,7 +116,7 @@ const TabReviewContent: React.FC<Props> = ({ merchantId }) => {
                                 <Label>Ulasan Anda</Label>
                                 <Textarea
                                     placeholder="Tulis ulasanmu di sini..."
-                                    value={data.comment}
+                                    value={formData.comment}
                                     onChange={(e) => setData('comment', e.target.value)}
                                     className="mt-2 min-h-[120px]"
                                 />
@@ -124,6 +134,17 @@ const TabReviewContent: React.FC<Props> = ({ merchantId }) => {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
+                </div>
+                <div className="mt-6 grid gap-4 md:grid-cols-2">
+                    {data.map((review) => (
+                        <ReviewCard
+                            key={review.id}
+                            name={review.customer.user.full_name}
+                            avatar={review.customer?.profile_image}
+                            rating={review.rating}
+                            comment={review.comment}
+                        />
+                    ))}
                 </div>
             </main>
         </>

@@ -1,6 +1,7 @@
 import { BusinessCategory } from './business-category';
 import { MenuCategory } from './menu-category';
 import { MenuItem } from './menu-item';
+import { MerchantReview } from './reviews/merchant_review';
 import { StoreGallery } from './store-management/store-gallery';
 import { StoreOperatingHour } from './store-management/store-operating-hour';
 import { StoreProfile } from './store-management/store-profile';
@@ -47,4 +48,5 @@ export interface Merchant {
 
     menu_categories: MenuCategory[];
     menu_items: MenuItem[];
+    reviews: MerchantReview[];
 }

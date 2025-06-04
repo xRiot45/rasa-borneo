@@ -24,7 +24,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function WithdrawPage({ withdrawalMerchants, withdrawalCouriers }: Props) {
-    console.log(withdrawalCouriers);
     return (
         <>
             <Head title="Penarikan Dana" />

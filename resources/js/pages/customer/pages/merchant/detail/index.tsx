@@ -375,7 +375,7 @@ export default function MerchantDetailPage({ data }: Props) {
 
                                 {/* Tabs Review */}
                                 <TabsContent value="review" className="mt-10">
-                                    <TabReviewContent merchantId={data?.id} />
+                                    <TabReviewContent merchantId={data?.id} data={data?.reviews?.map((review) => review) || []} />
                                 </TabsContent>
                             </Tabs>
                         </div>
