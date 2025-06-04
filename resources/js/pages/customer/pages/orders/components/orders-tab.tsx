@@ -3,7 +3,7 @@ import OrderProgressStatus from '@/components/order-progress-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { Order } from '@/models/order';
 import { formatCurrency } from '@/utils/format-currency';
@@ -21,11 +21,17 @@ interface Props {
 
 const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) => {
     const [showDialogOrderProgressStatus, setShowDialogOrderProgressStatus] = useState<boolean>(false);
+    const [showDialogReviewOrder, setShowDialogReviewOrder] = useState<boolean>(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const handleTrackOrder = (order: Order) => {
         setSelectedOrder(order);
         setShowDialogOrderProgressStatus(true);
+    };
+
+    const handleReviewOrder = (order: Order) => {
+        setSelectedOrder(order);
+        setShowDialogReviewOrder(true);
     };
 
     return (
@@ -139,6 +145,14 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                                                     Lacak Status Pesanan
                                                     <Icon icon="pajamas:status-closed" className="h-5 w-5" />
                                                 </Button>
+                                                <Button
+                                                    variant="secondary"
+                                                    className="flex w-auto cursor-pointer items-center justify-center gap-2 px-6 text-sm font-medium"
+                                                    onClick={() => handleReviewOrder(order)}
+                                                >
+                                                    Review Pesanan
+                                                    <Icon icon="material-symbols:rate-review-outline" className="h-5 w-5" />
+                                                </Button>
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -226,6 +240,7 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                     </div>
                 </TabsContent>
 
+                {/* Dialog Order Progress Status */}
                 <Dialog open={showDialogOrderProgressStatus} onOpenChange={setShowDialogOrderProgressStatus}>
                     <DialogContent className="sm:max-w-5xl">
                         <DialogHeader>
@@ -236,6 +251,18 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                             transactionCode={selectedOrder?.transaction_code ?? ''}
                             orderStatus={selectedOrder?.order_status ?? []}
                         />
+                    </DialogContent>
+                </Dialog>
+
+                {/* Dialog Review Order */}
+                <Dialog open={showDialogReviewOrder} onOpenChange={setShowDialogReviewOrder}>
+                    <DialogContent className="sm:max-w-3xl">
+                        <DialogHeader>
+                            <DialogTitle>Tambah Ulasan untuk Pesanan Ini</DialogTitle>
+                            <DialogDescription>
+                                Berikan pendapatmu tentang pengalaman pesanan ini. Ulasanmu akan membantu pembeli lain dalam membuat keputusan.
+                            </DialogDescription>
+                        </DialogHeader>
                     </DialogContent>
                 </Dialog>
             </Tabs>

@@ -136,20 +136,23 @@ const TabReviewContent: React.FC<Props> = ({ merchantId, data }) => {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
-                    {data.map((review) => (
-                        <ReviewCard
-                            key={review.id}
-                            name={review.customer.user.full_name}
-                            avatar={review.customer?.profile_image}
-                            rating={review.rating}
-                            comment={review.comment}
-                        />
-                    ))}
+                <div className="mt-6">
+                    {data.length === 0 ? (
+                        <EmptyData title="Belum ada ulasan" description="Toko ini belum memiliki ulasan, tambahkan ulasanmu sekarang" />
+                    ) : (
+                        <div className="grid gap-4 md:grid-cols-2">
+                            {data.map((review) => (
+                                <ReviewCard
+                                    key={review.id}
+                                    name={review.customer?.user?.full_name || 'Anonim'}
+                                    avatar={review.customer?.profile_image || undefined}
+                                    rating={review.rating}
+                                    comment={review.comment}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
-                {data.length === 0 && (
-                    <EmptyData title="Belum ada ulasan" description="Toko ini belum memiliki ulasan, tambahkan ulasanmu sekarang" />
-                )}
             </main>
         </>
     );
