@@ -6,7 +6,8 @@ use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
 use App\Enums\WithdrawStatusEnum;
 use App\Http\Requests\WithdrawRequest;
-use App\Mail\WithdrawTransferProofMail;
+use App\Mail\CourierWithdrawalProofMail;
+use App\Mail\MerchantWithdrawalProofMail;
 use App\Models\Courier;
 use App\Models\CourierWallet;
 use App\Models\Merchant;
@@ -141,13 +142,13 @@ class WithdrawController extends Controller
         return redirect()->route('courier.indexCourier')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
 
-    public function storeAdmin(Request $request, int $withdrawId): RedirectResponse
+    public function processWithdrawalProof(Request $request, int $withdrawId): RedirectResponse
     {
         $request->validate([
             'transfer_proof' => 'required|image|max:2048',
         ]);
 
-        $withdraw = Withdraw::with('merchant.user')->findOrFail($withdrawId);
+        $withdraw = Withdraw::with(['merchant.user', 'courier.user'])->findOrFail($withdrawId);
 
         if ($request->hasFile('transfer_proof') && $request->file('transfer_proof')->isValid()) {
             $file = $request->file('transfer_proof');
@@ -161,8 +162,15 @@ class WithdrawController extends Controller
             ]);
         }
 
-        $merchantEmail = $withdraw->merchant->user->email;
-        Mail::to($merchantEmail)->send(new WithdrawTransferProofMail($withdraw));
+        if ($withdraw->merchant && $withdraw->merchant->user) {
+            $merchantEmail = $withdraw->merchant->user->email;
+            Mail::to($merchantEmail)->send(new MerchantWithdrawalProofMail($withdraw));
+        }
+
+        if ($withdraw->courier && $withdraw->courier->user) {
+            $courierEmail = $withdraw->courier->user->email;
+            Mail::to($courierEmail)->send(new CourierWithdrawalProofMail($withdraw));
+        }
 
         return redirect()->route('admin.withdraw.indexAdmin')->with('success', 'Bukti transfer berhasil diupload dan email notifikasi terkirim.');
     }

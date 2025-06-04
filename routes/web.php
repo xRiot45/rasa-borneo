@@ -160,7 +160,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->group(function () {
                 Route::get('/', 'indexAdmin')->name('admin.withdraw.indexAdmin');
                 Route::put('/update-status/{withdrawId}', 'updateStatus')->name('admin.withdraw.updateStatus');
-                Route::post('/store-admin/{withdrawId}', 'storeAdmin')->name('admin.withdraw.storeAdmin');
+                Route::post('/process-withdrawal-proof/{withdrawId}', 'processWithdrawalProof')->name('admin.withdraw.processWithdrawalProof');
             });
     });
 });

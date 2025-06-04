@@ -8,7 +8,8 @@
   </p>
 
   <p class="mb-6">
-    Pengajuan penarikan dana Anda dengan nomor <strong>#{{ $withdraw_code }}</strong> telah berhasil
+    Pengajuan penarikan dana Anda dengan kode penarikan <strong>#{{ $withdraw_code }}</strong> telah
+    berhasil
     diproses dan dana telah ditransfer.
   </p>
 

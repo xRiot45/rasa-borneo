@@ -7,31 +7,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class WithdrawTransferProofMail extends Mailable
+class CourierWithdrawalProofMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $withdraw;
-    public $messageText;
 
     public function __construct(Withdraw $withdraw)
     {
         $this->withdraw = $withdraw;
     }
 
-    // public function build(): self
-    // {
-    //     return $this->subject('Bukti Transfer Penarikan Dana')
-    //         ->markdown('emails.withdraw.transfer-proof')
-    //         ->attachFromStorage($this->withdraw->transfer_proof, 'bukti-transfer.jpg', [
-    //             'mime' => 'image/jpeg',
-    //         ]);
-    // }
     public function build(): self
     {
         return $this->subject('Bukti Transfer Penarikan Dana')
-            ->markdown('emails.withdraw.transfer-proof', [
-                'merchantName' => $this->withdraw->merchant->business_name,
+            ->markdown('emails.withdraw.courier-withdrawal-proof', [
+                'courierName' => $this->withdraw->courier->user->full_name,
                 'withdraw_code' => $this->withdraw->withdraw_code,
                 'amount' => $this->withdraw->amount,
                 'transferred_at' => $this->withdraw->transferred_at,

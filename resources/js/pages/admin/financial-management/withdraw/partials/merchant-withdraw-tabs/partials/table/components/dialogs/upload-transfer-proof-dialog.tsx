@@ -30,11 +30,11 @@ const UploadTransferProofDialog: React.FC<Props> = ({ open, onOpenChange, withdr
             formData.append('transfer_proof', data.transfer_proof);
         }
 
-        post(route('admin.withdraw.storeAdmin', { id: withdrawId }), {
+        post(route('admin.withdraw.processWithdrawalProof', { id: withdrawId }), {
             forceFormData: true,
             onSuccess: () => {
                 toast.success('Success', {
-                    description: 'Bukti transfer berhasil diunggah',
+                    description: 'Bukti transfer berhasil dikirim',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
