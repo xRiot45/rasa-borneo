@@ -1,10 +1,13 @@
 import { WithdrawStatusEnum } from '@/enums/withdraw-status';
+import { Courier } from '../courier';
 import { Merchant } from '../merchant';
 
 export interface Withdraw {
     id: number;
     merchant_id: number;
+    courier_id: number;
     merchant: Merchant;
+    courier: Courier;
     withdraw_code: string;
     amount: number;
     bank_code: string;

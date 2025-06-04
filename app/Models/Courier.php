@@ -64,4 +64,9 @@ class Courier extends Model
     {
         return $this->hasMany(CourierWalletHistory::class);
     }
+
+    public function withdraws(): HasMany
+    {
+        return $this->hasMany(Withdraw::class);
+    }
 }

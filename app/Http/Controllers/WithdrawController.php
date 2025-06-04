@@ -64,9 +64,13 @@ class WithdrawController extends Controller
 
     public function indexAdmin(): InertiaResponse
     {
-        $withdraws = Withdraw::with('merchant')->orderBy('created_at', 'desc')->get();
+        $withdrawalMerchants = Withdraw::with('merchant')->whereNotNull('merchant_id')->orderBy('created_at', 'desc')->get();
+
+        $withdrawalCouriers = Withdraw::with('courier.user')->whereNotNull('courier_id')->orderBy('created_at', 'desc')->get();
+
         return Inertia::render('admin/financial-management/withdraw/index', [
-            'data' => $withdraws,
+            'withdrawalMerchants' => $withdrawalMerchants,
+            'withdrawalCouriers' => $withdrawalCouriers,
         ]);
     }
 

@@ -1,16 +1,15 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/layouts/admin/layout';
 import { Withdraw } from '@/models/financial-management/withdraw';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import ButtonPartials from './partials/buttons';
-import WithdrawTable from './partials/table';
-import { columns } from './partials/table/columns';
+import CourierWithdrawTab from './partials/courier-withdraw-tabs';
+import MerchantWithdrawTab from './partials/merchant-withdraw-tabs';
 
 interface Props {
-    data: Withdraw[];
-    totalRevenue: number;
-    totalWithdrawn: number;
-    remainingBalance: number;
+    withdrawalMerchants: Withdraw[];
+    withdrawalCouriers: Withdraw[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,7 +23,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function WithdrawPage({ data }: Props) {
+export default function WithdrawPage({ withdrawalMerchants, withdrawalCouriers }: Props) {
+    console.log(withdrawalCouriers);
     return (
         <>
             <Head title="Penarikan Dana" />
@@ -37,9 +37,28 @@ export default function WithdrawPage({ data }: Props) {
                     <ButtonPartials />
                 </div>
 
-                <div className="p-4">
-                    <WithdrawTable data={data} columns={columns} />
-                </div>
+                <Tabs defaultValue="withdrawalMerchants">
+                    <TabsList className="border-muted gap-4 border-b px-0">
+                        {[
+                            { value: 'withdrawalMerchants', label: 'Penarikan Merchant' },
+                            { value: 'withdrawalCouriers', label: 'Penarikan Kurir' },
+                        ].map((tab) => (
+                            <div key={tab.value} className="relative">
+                                <TabsTrigger value={tab.value} className="cursor-pointer">
+                                    {tab.label}
+                                </TabsTrigger>
+                            </div>
+                        ))}
+                    </TabsList>
+
+                    <TabsContent value="withdrawalMerchants" className="mt-8">
+                        <MerchantWithdrawTab data={withdrawalMerchants} />
+                    </TabsContent>
+
+                    <TabsContent value="withdrawalCouriers" className="mt-8">
+                        <CourierWithdrawTab data={withdrawalCouriers} />
+                    </TabsContent>
+                </Tabs>
             </AdminLayout>
         </>
     );
