@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CourierLayout from '@/layouts/courier/layout';
 import { SharedData } from '@/types';
 import { formatCurrency } from '@/utils/format-currency';
@@ -22,6 +23,7 @@ export default function CourierPage({ balance, earnings: { daily, weekly, monthl
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const [isOnline, setIsOnline] = useState<boolean>(is_online);
+    const [showDialogWithdraw, setShowDialogWithdraw] = useState<boolean>(false);
 
     const handleOnlineStatusChange = () => {
         router.post(
@@ -53,11 +55,15 @@ export default function CourierPage({ balance, earnings: { daily, weekly, monthl
         );
     };
 
+    const handleShowDialogWithdraw = () => {
+        setShowDialogWithdraw(true);
+    };
+
     return (
         <>
             <Head title="Beranda" />
             <CourierLayout>
-                <div className="mt-22 space-y-6">
+                <main className="mt-22 space-y-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-lg font-bold">{`Halo, ${auth.user.full_name}`}</h2>
@@ -125,8 +131,11 @@ export default function CourierPage({ balance, earnings: { daily, weekly, monthl
 
                         {/* Buttons */}
                         <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                            <Button className="w-full cursor-pointer rounded-md px-8 py-6 font-semibold shadow-none transition">
-                                Tarik Saldo
+                            <Button
+                                className="w-full cursor-pointer rounded-md px-8 py-6 font-semibold shadow-none transition"
+                                onClick={handleShowDialogWithdraw}
+                            >
+                                Ajukan Penarikan Dana
                                 <Icon icon="ph:hand-withdraw" className="ml-2 text-2xl" />
                             </Button>
                             <Button variant="outline" className="w-full cursor-pointer rounded-lg py-6 font-semibold shadow-none transition">
@@ -135,7 +144,17 @@ export default function CourierPage({ balance, earnings: { daily, weekly, monthl
                             </Button>
                         </div>
                     </Card>
-                </div>
+
+                    {/* Dialog Withdraw */}
+                    <Dialog open={showDialogWithdraw} onOpenChange={setShowDialogWithdraw}>
+                        <DialogContent className="sm:max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Ajukan Penarikan Dana</DialogTitle>
+                                <DialogDescription>Lengkapi form permintaan penarikan dan saldo akan ditransfer ke rekening Anda.</DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                </main>
             </CourierLayout>
         </>
     );
