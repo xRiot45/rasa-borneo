@@ -14,6 +14,7 @@ use App\Http\Controllers\ExpenseReportController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuItemController;
+use App\Http\Controllers\MenuItemReviewController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MerchantReviewController;
 use App\Http\Controllers\OrderController;
@@ -399,8 +400,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/order/show/{transactionCode}', [OrderController::class, 'showOrderDetailCustomer'])->name('order-list.showOrderDetailCustomer');
 
     // Review Merchant
-    // Route::get('/review/merchant/{merchant}', [ReviewController::class, 'create'])->name('review.create');
-    Route::post('/review/merchant/{merchantId}', [MerchantReviewController::class, 'storeReview'])->name('review.storeReview');
+    Route::post('/review/merchant/{merchantId}', [MerchantReviewController::class, 'storeReview'])->name('merchant.review.storeReview');
+
+    // Review Menu Item
+    Route::post('/review/menu-item/{menuItemId}', [MenuItemReviewController::class, 'storeReview'])->name('menu_item.review.storeReview');
 });
 
 // COURIER ROUTES

@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { MerchantReview } from '@/models/reviews/merchant_review';
+import { MerchantReview, ReviewForm } from '@/models/reviews/merchant_review';
 import { Icon } from '@iconify/react';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
@@ -15,11 +15,6 @@ interface Props {
     merchantId: number;
     data: MerchantReview[];
 }
-
-type ReviewForm = {
-    rating: number;
-    comment: string;
-};
 
 const TabReviewContent: React.FC<Props> = ({ merchantId, data }) => {
     const [hoverRating, setHoverRating] = useState<number>(0);
@@ -37,7 +32,7 @@ const TabReviewContent: React.FC<Props> = ({ merchantId, data }) => {
     });
 
     const handleSubmit = () => {
-        post(route('review.storeReview', { merchantId: merchantId }), {
+        post(route('merchant.review.storeReview', { merchantId: merchantId }), {
             onSuccess: () => {
                 reset();
                 setOpenDialog(false);

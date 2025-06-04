@@ -10,3 +10,8 @@ export interface MerchantReview {
     created_at: string;
     updated_at: string;
 }
+
+export type ReviewForm = {
+    rating: number;
+    comment: string;
+};

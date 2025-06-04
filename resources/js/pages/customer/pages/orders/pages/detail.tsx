@@ -1,19 +1,27 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
 import CustomerLayout from '@/layouts/customer/layout';
+import { cn } from '@/lib/utils';
 import { Order } from '@/models/order';
+import { ReviewForm } from '@/models/reviews/merchant_review';
 import { TransactionItem } from '@/models/transactions';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
-import { Head } from '@inertiajs/react';
-import { useRef } from 'react';
+import { Icon } from '@iconify/react';
+import { Head, useForm } from '@inertiajs/react';
+import { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { toast } from 'sonner';
 import ButtonPartials from '../components/button-partials';
 
 interface Props {
@@ -21,6 +29,22 @@ interface Props {
 }
 
 export default function OrderDetailPage({ order }: Props) {
+    const [hoverRating, setHoverRating] = useState<number>(0);
+    const [showDialogReviewOrder, setShowDialogReviewOrder] = useState<boolean>(false);
+    const [selectedMenuItem, setSelectedMenuItem] = useState<number>(0);
+
+    const {
+        data: formData,
+        setData,
+        post,
+        processing,
+        errors,
+        reset,
+    } = useForm<Required<ReviewForm>>({
+        rating: 0,
+        comment: '',
+    });
+
     const {
         transaction_code,
         orderer_name,
@@ -55,6 +79,39 @@ export default function OrderDetailPage({ order }: Props) {
 
     const statusKey = payment_status as PaymentStatusEnum;
     const badgeClass = paymentStatusColorMap[statusKey] ?? 'bg-gray-300 text-black';
+
+    const handleReviewOrder = (menuItemId: number) => {
+        setSelectedMenuItem(menuItemId);
+        setShowDialogReviewOrder(true);
+    };
+
+    const handleOrderReview = () => {
+        post(route('menu_item.review.storeReview', { menuItemId: selectedMenuItem }), {
+            onSuccess: () => {
+                reset();
+                setShowDialogReviewOrder(false);
+                toast.success('Success', {
+                    description: 'Ulasan berhasil dikirim',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                reset();
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
 
     return (
         <>
@@ -176,6 +233,7 @@ export default function OrderDetailPage({ order }: Props) {
                                                         <TableHead className="text-center whitespace-nowrap">Harga</TableHead>
                                                         <TableHead className="text-center whitespace-nowrap">Subtotal</TableHead>
                                                         <TableHead className="text-center whitespace-nowrap">Catatan</TableHead>
+                                                        <TableHead className="text-center whitespace-nowrap">Ulasan</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -198,6 +256,12 @@ export default function OrderDetailPage({ order }: Props) {
                                                             </TableCell>
                                                             <TableCell className="text-center text-sm">{formatCurrency(item.subtotal)}</TableCell>
                                                             <TableCell className="text-center text-sm">{item.note || '-'}</TableCell>
+                                                            <TableCell className="text-center text-sm">
+                                                                <Button className="py-4" onClick={() => handleReviewOrder(item.menu_item_id)}>
+                                                                    Beri Ulasan
+                                                                    <Icon icon="material-symbols:rate-review-outline" className="h-5 w-5" />
+                                                                </Button>
+                                                            </TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
@@ -254,6 +318,63 @@ export default function OrderDetailPage({ order }: Props) {
                             </section>
                         </div>
                     </div>
+
+                    {/* Dialog Review Order */}
+                    <Dialog open={showDialogReviewOrder} onOpenChange={setShowDialogReviewOrder}>
+                        <DialogContent className="sm:max-w-3xl">
+                            <DialogHeader>
+                                <DialogTitle>Tambah Ulasan untuk Pesanan Ini</DialogTitle>
+                                <DialogDescription>
+                                    Berikan pendapatmu tentang pengalaman pesanan ini. Ulasanmu akan membantu pembeli lain dalam membuat keputusan.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            {/* Rating */}
+                            <div className="mt-4 flex items-center space-x-2">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => setData('rating', star)}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                        className="focus:outline-none"
+                                    >
+                                        <Icon
+                                            icon="material-symbols:star"
+                                            className={cn(
+                                                'h-8 w-8 cursor-pointer transition-colors',
+                                                (hoverRating || formData.rating) >= star ? 'text-yellow-400' : 'text-gray-300',
+                                            )}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                            {errors.rating && <p className="mt-1 text-sm text-red-500">{errors.rating}</p>}
+
+                            {/* Textarea */}
+                            <div className="mt-4">
+                                <Label>Ulasan Anda</Label>
+                                <Textarea
+                                    placeholder="Tulis ulasanmu di sini..."
+                                    value={formData.comment}
+                                    onChange={(e) => setData('comment', e.target.value)}
+                                    className="mt-2 min-h-[120px]"
+                                />
+                                {errors.comment && <p className="mt-1 text-sm text-red-500">{errors.comment}</p>}
+                            </div>
+
+                            {/* Submit Button */}
+                            <DialogFooter className="mt-4 flex justify-end">
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Batal</Button>
+                                </DialogTrigger>
+                                <Button onClick={handleOrderReview} disabled={processing}>
+                                    {processing ? 'Mengirim...' : 'Kirim Ulasan'}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </main>
             </CustomerLayout>
         </>
