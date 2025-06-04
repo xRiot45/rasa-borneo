@@ -53,7 +53,7 @@ export default function MerchantDetailPage({ data }: Props) {
                                     className="h-auto w-full rounded-xl object-cover"
                                 />
 
-                                <div className="absolute top-6 right-6 w-72 rounded-lg bg-gradient-to-r from-white to-orange-50 p-5 shadow-xl ring-1 ring-orange-100">
+                                {/* <div className="absolute top-6 right-6 w-72 rounded-lg bg-gradient-to-r from-white to-orange-50 p-5 shadow-xl ring-1 ring-orange-100">
                                     <div className="flex items-center gap-2">
                                         <Badge variant="outline" className="border-orange-500 text-[10px] text-orange-500">
                                             Kode Kupon
@@ -75,7 +75,7 @@ export default function MerchantDetailPage({ data }: Props) {
                                         <span className="italic">* S&K berlaku</span>
                                         <button className="font-medium text-orange-600 hover:underline">Gunakan</button>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                             {/* Right Info */}
