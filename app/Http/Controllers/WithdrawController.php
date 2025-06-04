@@ -127,17 +127,13 @@ class WithdrawController extends Controller
         $courier = Courier::where('user_id', $user->id)->first();
         $courierId = $courier->id;
 
-        $balances = CourierWallet::where('courier_id', $courierId)->first();
+        $wallet = CourierWallet::where('courier_id', $courierId)->first();
 
-        if ($validated['amount'] > $balances->balance) {
+        if ($validated['amount'] > $wallet->balance) {
             return back()->withErrors(['amount' => 'Jumlah penarikan melebihi saldo yang tersedia.']);
         }
 
-        Withdraw::create(
-            array_merge($validated, [
-                'courier_id' => $courierId,
-            ]),
-        );
+        Withdraw::create(array_merge($validated, ['courier_id' => $courierId]));
 
         return redirect()->route('courier.indexCourier')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
@@ -150,10 +146,24 @@ class WithdrawController extends Controller
 
         $withdraw = Withdraw::with(['merchant.user', 'courier.user'])->findOrFail($withdrawId);
 
+
         if ($request->hasFile('transfer_proof') && $request->file('transfer_proof')->isValid()) {
             $file = $request->file('transfer_proof');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('withdraw_proofs', $filename, 'public');
+
+            if ($withdraw->status !== WithdrawStatusEnum::TRANSFERED) {
+                $wallet = CourierWallet::where('courier_id', $withdraw->courier_id)->first();
+
+                if ($wallet) {
+                    if ($wallet->balance < $withdraw->amount) {
+                        return back()->withErrors(['error' => 'Saldo courier tidak mencukupi untuk pengurangan.']);
+                    }
+
+                    $wallet->balance -= $withdraw->amount;
+                    $wallet->save();
+                }
+            }
 
             $withdraw->update([
                 'transfer_proof' => '/storage/' . $path,

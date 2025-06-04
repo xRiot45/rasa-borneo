@@ -200,7 +200,7 @@ export default function WithdrawPage() {
                         </div>
 
                         <div className="mt-4 flex justify-end space-x-3">
-                            <Link href={route('merchant.withdraw.indexMerchant')} className="cursor-pointer">
+                            <Link href={route('courier.indexCourier')} className="cursor-pointer">
                                 <Button variant="destructive">
                                     Batalkan <Icon icon="iconoir:cancel" />
                                 </Button>
