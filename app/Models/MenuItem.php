@@ -74,4 +74,9 @@ class MenuItem extends Model
     {
         return $this->hasMany(Wishlist::class);
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(MenuItemReview::class);
+    }
 }

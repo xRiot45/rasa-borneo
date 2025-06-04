@@ -138,4 +138,9 @@ class Merchant extends Model
     {
         return $this->hasMany(ExpenseReportCategory::class);
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(MerchantReview::class);
+    }
 }
