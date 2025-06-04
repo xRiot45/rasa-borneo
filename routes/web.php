@@ -418,6 +418,10 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     // Delivery History
     Route::get('/courier/delivery-history', [CourierAssigmentController::class, 'deliveryHistory'])->name('courier.deliveryHistory');
     Route::get('/courier/delivery-history/{transactionCode}', [CourierAssigmentController::class, 'detailDeliveryHistory'])->name('courier.detailDeliveryHistory');
+
+    // Withdraw
+    Route::get('/courier/withdraw', [WithdrawController::class, 'showCourierWithdrawForm'])->name('courier.withdraw.showCourierWithdrawForm');
+    Route::post('/courier/withdraw', [WithdrawController::class, 'store'])->name('courier.withdraw.store');
 });
 
 require __DIR__ . '/settings.php';

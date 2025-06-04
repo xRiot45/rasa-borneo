@@ -78,6 +78,11 @@ class WithdrawController extends Controller
         ]);
     }
 
+    public function showCourierWithdrawForm(): InertiaResponse
+    {
+        return Inertia::render('courier/pages/withdraw/index');
+    }
+
     public function store(WithdrawRequest $request): RedirectResponse
     {
         $validated = $request->validated();
@@ -106,6 +111,8 @@ class WithdrawController extends Controller
 
         return redirect()->route('merchant.withdraw.indexMerchant')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
+
+    // public function storeCourier(WithdrawRequest $request): RedirectResponse {}
 
     public function storeAdmin(Request $request, int $withdrawId): RedirectResponse
     {
