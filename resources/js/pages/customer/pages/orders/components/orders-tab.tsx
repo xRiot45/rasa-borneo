@@ -1,4 +1,4 @@
-import EmptyImage from '@/assets/errors/empty.svg';
+import EmptyData from '@/components/empty-img';
 import OrderProgressStatus from '@/components/order-progress-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -50,19 +50,10 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                 <TabsContent value="ordersCheckout" className="mt-10">
                     <div className="mt-6 grid gap-4">
                         {checkedOutOrders.length === 0 ? (
-                            <div className="flex flex-col">
-                                <div className="flex grow items-center px-6 xl:px-10">
-                                    <div className="mx-auto text-center">
-                                        <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
-                                        <h1 className="mb-1 text-[22px] font-bold text-gray-700 dark:text-gray-100">
-                                            Pesanan Yang Sudah Diselesaikan Tidak Ada
-                                        </h1>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Pesanan yang sudah diselesaikan saat ini sedang kosong
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <EmptyData
+                                title="Pesanan Yang Sudah Diselesaikan Kosong"
+                                description="Pesanan yang sudah diselesaikan saat ini sedang kosong"
+                            />
                         ) : (
                             checkedOutOrders.map((order) => {
                                 const items = order.transaction_items;
@@ -161,19 +152,10 @@ const OrdersTabs: React.FC<Props> = ({ checkedOutOrders, notCheckedOutOrders }) 
                 <TabsContent value="ordersNotCheckout" className="mt-10">
                     <div className="mt-6 grid gap-4">
                         {notCheckedOutOrders.length === 0 ? (
-                            <div className="flex flex-col">
-                                <div className="flex grow items-center px-6 xl:px-10">
-                                    <div className="mx-auto text-center">
-                                        <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
-                                        <h1 className="mb-1 text-[22px] font-bold text-gray-700 dark:text-gray-100">
-                                            Pesanan Yang Belum Diselesaikan Tidak Ada
-                                        </h1>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Pesanan yang belum diselesaikan saat ini sedang kosong
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <EmptyData
+                                title="Pesanan Yang Belum Diselesaikan Kosong"
+                                description="Pesanan yang belum diselesaikan saat ini sedang kosong"
+                            />
                         ) : (
                             notCheckedOutOrders.map((order) => {
                                 const items = order.transaction_items;
