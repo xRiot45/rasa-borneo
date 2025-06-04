@@ -271,6 +271,20 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                                 Lihat Merchant
                                             </TooltipContent>
                                         </Tooltip>
+
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Link
+                                                    href={route('menu_item.review.showReviewForCustomer', selectedMenu.id)}
+                                                    className="mx-auto flex aspect-square w-12 items-center justify-center rounded-full border p-4"
+                                                >
+                                                    <Icon icon="carbon:review" className="h-4 w-4 text-xl" />
+                                                </Link>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="top" className="rounded-md px-3 py-1 text-xs">
+                                                Lihat Ulasan
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </TooltipProvider>
 
                                     <Button

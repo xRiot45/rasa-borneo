@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\MenuItem;
 use App\Models\MenuItemReview;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class MenuItemReviewController extends Controller
 {
@@ -29,5 +32,14 @@ class MenuItemReviewController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Review menu item berhasil!');
+    }
+
+    public function showReviewForCustomer(int $menuItemId): InertiaResponse
+    {
+        $menuItem = MenuItem::with('reviews', 'reviews.customer.user')->findOrFail($menuItemId);
+
+        return Inertia::render('customer/pages/menu/pages/review', [
+            'data' => $menuItem->toArray(),
+        ]);
     }
 }
