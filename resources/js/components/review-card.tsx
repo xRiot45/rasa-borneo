@@ -18,8 +18,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ name, avatar, rating, comment }
                     {avatar ? <AvatarImage src={avatar} alt={name} /> : <AvatarFallback>{name.charAt(0)}</AvatarFallback>}
                 </Avatar>
                 <div>
-                    <Label className="text-base font-medium">{name}</Label>
-                    <div className="flex items-center space-x-1">
+                    <Label className="text-sm font-medium">{name}</Label>
+                    <div className="mt-1 flex items-center space-x-1">
                         <span className="text-sm font-medium">{rating}</span>
                         <div className="flex items-center gap-1 text-yellow-500">
                             {Array.from({ length: 5 }, (_, i) => (

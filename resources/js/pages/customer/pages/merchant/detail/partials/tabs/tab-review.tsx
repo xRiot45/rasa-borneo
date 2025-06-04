@@ -1,3 +1,4 @@
+import EmptyData from '@/components/empty-img';
 import ReviewCard from '@/components/review-card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -146,6 +147,9 @@ const TabReviewContent: React.FC<Props> = ({ merchantId, data }) => {
                         />
                     ))}
                 </div>
+                {data.length === 0 && (
+                    <EmptyData title="Belum ada ulasan" description="Toko ini belum memiliki ulasan, tambahkan ulasanmu sekarang" />
+                )}
             </main>
         </>
     );
