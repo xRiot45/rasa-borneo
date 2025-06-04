@@ -15,6 +15,7 @@ use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\MerchantReviewController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfitReportController;
@@ -396,6 +397,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Order List
     Route::get('/orders', [OrderController::class, 'customerOrders'])->name('order-list.customerOrders');
     Route::get('/order/show/{transactionCode}', [OrderController::class, 'showOrderDetailCustomer'])->name('order-list.showOrderDetailCustomer');
+
+    // Review Merchant
+    // Route::get('/review/merchant/{merchant}', [ReviewController::class, 'create'])->name('review.create');
+    Route::post('/review/merchant/{merchantId}', [MerchantReviewController::class, 'storeReview'])->name('review.storeReview');
 });
 
 // COURIER ROUTES

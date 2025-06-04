@@ -1,19 +1,131 @@
-import EmptyImage from '@/assets/errors/empty.svg';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { Icon } from '@iconify/react';
+import { useForm } from '@inertiajs/react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-const TabReviewContent = () => {
+interface Props {
+    merchantId: number;
+}
+
+type ReviewForm = {
+    rating: number;
+    comment: string;
+};
+
+const TabReviewContent: React.FC<Props> = ({ merchantId }) => {
+    const [hoverRating, setHoverRating] = useState<number>(0);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const { data, setData, post, processing, errors, reset } = useForm<Required<ReviewForm>>({
+        rating: 0,
+        comment: '',
+    });
+
+    const handleSubmit = () => {
+        post(route('review.storeReview', { merchantId: merchantId }), {
+            onSuccess: () => {
+                reset();
+                setOpenDialog(false);
+                toast.success('Success', {
+                    description: 'Ulasan berhasil dikirim',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (errors) => {
+                reset();
+                Object.keys(errors).forEach((key) => {
+                    toast.error('Error', {
+                        description: errors[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
     return (
         <>
-            <div className="flex flex-col">
-                <div className="flex grow items-center px-6 xl:px-10">
-                    <div className="mx-auto text-center">
-                        <img src={EmptyImage} alt="Error" className="mx-auto mb-8 w-full max-w-lg lg:mb-12 2xl:mb-16" />
-                        <h1 className="text-[22px] font-bold text-gray-700 dark:text-gray-100">Tidak Ada Review</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Review tidak tersedia untuk saat ini, silahkan kembali beberapa saat lagi.
-                        </p>
+            <main>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-lg font-bold">Ulasan Toko</h2>
+                        <p className="text-muted-foreground text-sm">Ulasan yang telah diberikan</p>
                     </div>
+
+                    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                        <DialogTrigger>
+                            <Button className="cursor-pointer">
+                                Tambah Ulasan
+                                <Icon icon="material-symbols:rate-review" />
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-3xl">
+                            <DialogHeader>
+                                <DialogTitle>Tambah Ulasan untuk Toko Ini</DialogTitle>
+                                <DialogDescription>
+                                    Berikan pendapatmu tentang pengalaman berbelanja di toko ini. Ulasanmu akan membantu pembeli lain dalam membuat
+                                    keputusan.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            {/* Rating */}
+                            <div className="mt-4 flex items-center space-x-2">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => setData('rating', star)}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                        className="focus:outline-none"
+                                    >
+                                        <Icon
+                                            icon="material-symbols:star"
+                                            className={cn(
+                                                'h-8 w-8 cursor-pointer transition-colors',
+                                                (hoverRating || data.rating) >= star ? 'text-yellow-400' : 'text-gray-300',
+                                            )}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                            {errors.rating && <p className="mt-1 text-sm text-red-500">{errors.rating}</p>}
+
+                            {/* Textarea */}
+                            <div className="mt-4">
+                                <Label>Ulasan Anda</Label>
+                                <Textarea
+                                    placeholder="Tulis ulasanmu di sini..."
+                                    value={data.comment}
+                                    onChange={(e) => setData('comment', e.target.value)}
+                                    className="mt-2 min-h-[120px]"
+                                />
+                                {errors.comment && <p className="mt-1 text-sm text-red-500">{errors.comment}</p>}
+                            </div>
+
+                            {/* Submit Button */}
+                            <DialogFooter className="mt-4 flex justify-end">
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Batal</Button>
+                                </DialogTrigger>
+                                <Button onClick={handleSubmit} disabled={processing}>
+                                    {processing ? 'Mengirim...' : 'Kirim Ulasan'}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
-            </div>
+            </main>
         </>
     );
 };
