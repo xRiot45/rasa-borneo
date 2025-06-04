@@ -146,4 +146,9 @@ class Transaction extends Model
     {
         return $this->hasMany(CourierWalletHistory::class);
     }
+
+    public function menuItemReviews(): HasMany
+    {
+        return $this->hasMany(MenuItemReview::class);
+    }
 }

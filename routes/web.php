@@ -403,7 +403,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/review/merchant/{merchantId}', [MerchantReviewController::class, 'storeReview'])->name('merchant.review.storeReview');
 
     // Review Menu Item
-    Route::post('/review/menu-item/{menuItemId}', [MenuItemReviewController::class, 'storeReview'])->name('menu_item.review.storeReview');
+    Route::post('/review/{transactionId}/{menuItemId}', [MenuItemReviewController::class, 'storeReview'])->name('menu_item.review.storeReview');
 });
 
 // COURIER ROUTES

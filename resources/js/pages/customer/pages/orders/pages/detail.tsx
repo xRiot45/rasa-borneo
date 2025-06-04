@@ -86,7 +86,7 @@ export default function OrderDetailPage({ order }: Props) {
     };
 
     const handleOrderReview = () => {
-        post(route('menu_item.review.storeReview', { menuItemId: selectedMenuItem }), {
+        post(route('menu_item.review.storeReview', { transactionId: order.id, menuItemId: selectedMenuItem }), {
             onSuccess: () => {
                 reset();
                 setShowDialogReviewOrder(false);
@@ -257,10 +257,23 @@ export default function OrderDetailPage({ order }: Props) {
                                                             <TableCell className="text-center text-sm">{formatCurrency(item.subtotal)}</TableCell>
                                                             <TableCell className="text-center text-sm">{item.note || '-'}</TableCell>
                                                             <TableCell className="text-center text-sm">
-                                                                <Button className="py-4" onClick={() => handleReviewOrder(item.menu_item_id)}>
-                                                                    Beri Ulasan
-                                                                    <Icon icon="material-symbols:rate-review-outline" className="h-5 w-5" />
-                                                                </Button>
+                                                                {!item?.already_reviewed ? (
+                                                                    <Button
+                                                                        className="cursor-pointer py-4"
+                                                                        onClick={() => handleReviewOrder(item.menu_item_id)}
+                                                                    >
+                                                                        Beri Ulasan
+                                                                        <Icon icon="material-symbols:rate-review-outline" className="h-5 w-5" />
+                                                                    </Button>
+                                                                ) : (
+                                                                    <Button
+                                                                        className="border-green-600 bg-green-100 py-4 text-green-600 disabled:cursor-not-allowed disabled:opacity-100"
+                                                                        disabled
+                                                                    >
+                                                                        Sudah Diulas
+                                                                        <Icon icon="fluent-mdl2:completed-solid" className="h-5 w-5" />
+                                                                    </Button>
+                                                                )}
                                                             </TableCell>
                                                         </TableRow>
                                                     ))}

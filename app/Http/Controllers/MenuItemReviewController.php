@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\MenuItemReview;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MenuItemReviewController extends Controller
 {
-    public function storeReview(Request $request, int $menuItemId)
+    public function storeReview(Request $request, int $transactionId, int $menuItemId): RedirectResponse
     {
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
@@ -22,6 +23,7 @@ class MenuItemReviewController extends Controller
         MenuItemReview::create([
             'customer_id' => $customer->id,
             'menu_item_id' => $menuItemId,
+            'transaction_id' => $transactionId,
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
         ]);

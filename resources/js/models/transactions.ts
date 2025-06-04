@@ -16,6 +16,7 @@ export interface TransactionItem {
     quantity: number;
     note: string | null;
     subtotal: number;
+    already_reviewed?: boolean;
     created_at: string;
     updated_at: string;
 }

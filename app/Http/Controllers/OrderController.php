@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
 use App\Models\Customer;
+use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
@@ -85,6 +86,17 @@ class OrderController extends Controller
         $order = Order::where('transaction_code', $transactionCode)
             ->with(['transactionItems', 'customer', 'orderStatus'])
             ->firstOrFail();
+
+        $reviewedMenuItemIds = MenuItemReview::where('customer_id', $order->customer_id)
+            ->whereIn('menu_item_id', $order->transactionItems->pluck('menu_item_id'))
+            ->pluck('menu_item_id')
+            ->toArray();
+
+        // Tandai tiap item apakah sudah direview
+        $order->transactionItems->transform(function ($item) use ($reviewedMenuItemIds) {
+            $item->already_reviewed = in_array($item->menu_item_id, haystack: $reviewedMenuItemIds);
+            return $item;
+        });
 
         return Inertia::render('customer/pages/orders/pages/detail', [
             'order' => $order,

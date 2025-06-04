@@ -11,6 +11,7 @@ class MenuItemReview extends Model
 
     protected $fillable = [
         'customer_id',
+        'transaction_id',
         'menu_item_id',
         'rating',
         'comment',
@@ -24,5 +25,10 @@ class MenuItemReview extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class);
     }
 }
