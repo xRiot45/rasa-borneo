@@ -7,6 +7,8 @@ use App\Enums\PaymentStatusEnum;
 use App\Enums\WithdrawStatusEnum;
 use App\Http\Requests\WithdrawRequest;
 use App\Mail\WithdrawTransferProofMail;
+use App\Models\Courier;
+use App\Models\CourierWallet;
 use App\Models\Merchant;
 use App\Models\Transaction;
 use App\Models\Withdraw;
@@ -112,7 +114,28 @@ class WithdrawController extends Controller
         return redirect()->route('merchant.withdraw.indexMerchant')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
 
-    // public function storeCourier(WithdrawRequest $request): RedirectResponse {}
+    public function requestWithdrawCourier(WithdrawRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+        $courierId = $courier->id;
+
+        $balances = CourierWallet::where('courier_id', $courierId)->first();
+
+        if ($validated['amount'] > $balances->balance) {
+            return back()->withErrors(['amount' => 'Jumlah penarikan melebihi saldo yang tersedia.']);
+        }
+
+        Withdraw::create(
+            array_merge($validated, [
+                'courier_id' => $courierId,
+            ]),
+        );
+
+        return redirect()->route('courier.indexCourier')->with('success', 'Pengajuan Penarikan Dana Berhasil');
+    }
 
     public function storeAdmin(Request $request, int $withdrawId): RedirectResponse
     {
@@ -148,11 +171,7 @@ class WithdrawController extends Controller
 
         $withdraw = Withdraw::findOrFail($withdrawId);
 
-        if (in_array($withdraw->status, [
-            WithdrawStatusEnum::REJECTED,
-            WithdrawStatusEnum::CANCELED,
-            WithdrawStatusEnum::TRANSFERED,
-        ])) {
+        if (in_array($withdraw->status, [WithdrawStatusEnum::REJECTED, WithdrawStatusEnum::CANCELED, WithdrawStatusEnum::TRANSFERED])) {
             return back()->with('error', 'Status tidak dapat diubah karena withdraw sudah memiliki status akhir.');
         }
 
@@ -181,7 +200,6 @@ class WithdrawController extends Controller
 
         return back()->with('success', 'Status penarikan berhasil diperbarui.');
     }
-
 
     public function cancelledWithdraw(int $withdrawId): RedirectResponse
     {

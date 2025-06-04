@@ -421,7 +421,7 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
 
     // Withdraw
     Route::get('/courier/withdraw', [WithdrawController::class, 'showCourierWithdrawForm'])->name('courier.withdraw.showCourierWithdrawForm');
-    Route::post('/courier/withdraw', [WithdrawController::class, 'store'])->name('courier.withdraw.store');
+    Route::post('/courier/withdraw', [WithdrawController::class, 'requestWithdrawCourier'])->name('courier.withdraw.requestWithdrawCourier');
 });
 
 require __DIR__ . '/settings.php';

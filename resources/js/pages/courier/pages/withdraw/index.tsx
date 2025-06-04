@@ -41,7 +41,7 @@ export default function WithdrawPage() {
     };
 
     const handleSubmit = () => {
-        post(route('merchant.withdraw.store'), {
+        post(route('courier.withdraw.requestWithdrawCourier'), {
             onSuccess: () => {
                 setShowDialogConfirm(false);
                 toast.success('Success', {
@@ -220,7 +220,7 @@ export default function WithdrawPage() {
                                     <strong className="text-black dark:text-white">{formatCurrency(data.amount)}</strong>? <br />
                                     <span className="text-muted-foreground text-sm">
                                         Pastikan data yang Anda masukkan sudah benar.{' '}
-                                        <strong className="text-red-500">Proses ini tidak dapat diubah setelah diajukan.</strong>
+                                        <strong className="text-red-500">Proses ini tidak dapat diubah dan dibatalkan setelah diajukan.</strong>
                                     </span>
                                 </DialogDescription>
                             </DialogHeader>
