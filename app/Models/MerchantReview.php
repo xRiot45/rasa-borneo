@@ -20,4 +20,9 @@ class MerchantReview extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
+    }
 }

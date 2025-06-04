@@ -52,4 +52,14 @@ class Customer extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function merchantReviews(): HasMany
+    {
+        return $this->hasMany(MerchantReview::class);
+    }
+
+    public function menuItemReviews(): HasMany
+    {
+        return $this->hasMany(MenuItemReview::class);
+    }
 }

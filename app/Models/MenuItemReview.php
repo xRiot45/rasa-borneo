@@ -20,4 +20,9 @@ class MenuItemReview extends Model
     {
         return $this->belongsTo(MenuItem::class);
     }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }
