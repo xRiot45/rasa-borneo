@@ -117,14 +117,14 @@ const mainNavItems: NavGroup[] = [
         group: 'INTERAKSI PELANGGAN',
         items: [
             {
-                title: 'Ulasan Pelanggan',
-                href: '/merchant/reviews',
+                title: 'Ulasan Menu',
+                href: '/merchant/customer-interaction/reviews-menu',
                 icon: 'mdi:star-circle',
             },
             {
-                title: 'Pesan Masuk',
-                href: '/merchant/messages',
-                icon: 'mdi:chat',
+                title: 'Ulasan Toko',
+                href: '/merchant/customer-interaction/reviews-store',
+                icon: 'hugeicons:store-verified-02',
             },
         ],
     },
