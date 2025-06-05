@@ -66,16 +66,21 @@ const mainNavItems: NavGroup[] = [
             },
         ],
     },
-    // {
-    //     group: 'LAPORAN & ANALITIK',
-    //     items: [
-    //         {
-    //             title: 'Laporan & Analitik',
-    //             href: '/admin/reports',
-    //             icon: 'mdi:chart-line',
-    //         },
-    //     ],
-    // },
+    {
+        group: 'INTERAKSI PELANGGAN',
+        items: [
+            {
+                title: 'Ulasan Menu',
+                href: '/admin/customer-interaction/menu-review',
+                icon: 'mdi:star-circle',
+            },
+            {
+                title: 'Ulasan Toko',
+                href: '/admin/customer-interaction/merchant-review',
+                icon: 'hugeicons:store-verified-02',
+            },
+        ],
+    },
     {
         group: 'KEUANGAN',
         items: [
