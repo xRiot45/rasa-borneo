@@ -242,6 +242,7 @@ class CourierAssigmentController extends Controller
                 $query->where('status', OrderStatusEnum::COMPLETED);
             })
             ->with(['transaction', 'transaction.transactionItems', 'transaction.latestOrderStatus', 'transaction.merchant', 'transaction.merchant.storeProfile'])
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('courier/pages/delivery-history/index', [
