@@ -57,6 +57,7 @@ class CourierAssigmentController extends Controller
             })
             ->whereNotIn('id', $assignedTransactionIds)
             ->whereNotIn('id', $rejectedTransactionIds)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('courier/pages/delivery-request/index', [
