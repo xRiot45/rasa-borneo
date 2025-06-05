@@ -46,4 +46,10 @@ class MerchantReviewController extends Controller
             'merchantReviews' => $merchantReviews
         ]);
     }
+
+    public function destroy(int $merchantReviewId): RedirectResponse
+    {
+        MerchantReview::destroy($merchantReviewId);
+        return redirect()->back()->with('success', 'Review merchant berhasil dihapus!');
+    }
 }
