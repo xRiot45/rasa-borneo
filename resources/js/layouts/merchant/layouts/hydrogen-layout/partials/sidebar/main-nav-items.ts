@@ -136,26 +136,26 @@ const mainNavItems: NavGroup[] = [
                 href: '/merchant/account-settings',
                 icon: 'mdi:account-cog',
             },
-            {
-                title: 'Pengaturan Notifikasi',
-                href: '/merchant/notification-settings',
-                icon: 'mdi:bell-ring',
-            },
-            {
-                title: 'Laporan & Analitik',
-                href: '/merchant/reports',
-                icon: 'mdi:chart-line',
-            },
-            {
-                title: 'Manajemen Karyawan',
-                href: '/merchant/employees',
-                icon: 'mdi:account-group',
-            },
-            {
-                title: 'Keamanan & Privasi',
-                href: '/merchant/security',
-                icon: 'mdi:shield-lock',
-            },
+            // {
+            //     title: 'Pengaturan Notifikasi',
+            //     href: '/merchant/notification-settings',
+            //     icon: 'mdi:bell-ring',
+            // },
+            // {
+            //     title: 'Laporan & Analitik',
+            //     href: '/merchant/reports',
+            //     icon: 'mdi:chart-line',
+            // },
+            // {
+            //     title: 'Manajemen Karyawan',
+            //     href: '/merchant/employees',
+            //     icon: 'mdi:account-group',
+            // },
+            // {
+            //     title: 'Keamanan & Privasi',
+            //     href: '/merchant/security',
+            //     icon: 'mdi:shield-lock',
+            // },
         ],
     },
 ];
