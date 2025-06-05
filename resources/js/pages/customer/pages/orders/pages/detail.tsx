@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import { OrderStatusEnum } from '@/enums/order-status';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
@@ -73,6 +74,7 @@ export default function OrderDetailPage({ order }: Props) {
         final_total,
         delivery_fee,
         checked_out_at,
+        latest_order_status,
     } = order;
 
     const contentRef = useRef<HTMLDivElement>(null);
@@ -234,7 +236,9 @@ export default function OrderDetailPage({ order }: Props) {
                                                         <TableHead className="text-center whitespace-nowrap">Harga</TableHead>
                                                         <TableHead className="text-center whitespace-nowrap">Subtotal</TableHead>
                                                         <TableHead className="text-center whitespace-nowrap">Catatan</TableHead>
-                                                        <TableHead className="text-center whitespace-nowrap">Ulasan</TableHead>
+                                                        {latest_order_status?.status === OrderStatusEnum.COMPLETED && (
+                                                            <TableHead className="text-center whitespace-nowrap">Ulasan</TableHead>
+                                                        )}
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -257,25 +261,27 @@ export default function OrderDetailPage({ order }: Props) {
                                                             </TableCell>
                                                             <TableCell className="text-center text-sm">{formatCurrency(item.subtotal)}</TableCell>
                                                             <TableCell className="text-center text-sm">{item.note || '-'}</TableCell>
-                                                            <TableCell className="text-center text-sm">
-                                                                {!item?.already_reviewed ? (
-                                                                    <Button
-                                                                        className="cursor-pointer py-4"
-                                                                        onClick={() => handleReviewOrder(item.menu_item_id)}
-                                                                    >
-                                                                        Beri Ulasan
-                                                                        <Icon icon="material-symbols:rate-review-outline" className="h-5 w-5" />
-                                                                    </Button>
-                                                                ) : (
-                                                                    <Button
-                                                                        className="border-green-600 bg-green-100 py-4 text-green-600 disabled:cursor-not-allowed disabled:opacity-100"
-                                                                        disabled
-                                                                    >
-                                                                        Sudah Diulas
-                                                                        <Icon icon="fluent-mdl2:completed-solid" className="h-5 w-5" />
-                                                                    </Button>
-                                                                )}
-                                                            </TableCell>
+                                                            {latest_order_status?.status === OrderStatusEnum.COMPLETED && (
+                                                                <TableCell className="text-center text-sm">
+                                                                    {!item?.already_reviewed ? (
+                                                                        <Button
+                                                                            className="cursor-pointer py-4"
+                                                                            onClick={() => handleReviewOrder(item.menu_item_id)}
+                                                                        >
+                                                                            Beri Ulasan
+                                                                            <Icon icon="material-symbols:rate-review-outline" className="h-5 w-5" />
+                                                                        </Button>
+                                                                    ) : (
+                                                                        <Button
+                                                                            className="border-green-600 bg-green-100 py-4 text-green-600 disabled:cursor-not-allowed disabled:opacity-100"
+                                                                            disabled
+                                                                        >
+                                                                            Sudah Diulas
+                                                                            <Icon icon="fluent-mdl2:completed-solid" className="h-5 w-5" />
+                                                                        </Button>
+                                                                    )}
+                                                                </TableCell>
+                                                            )}
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>

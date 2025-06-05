@@ -93,11 +93,12 @@ class OrderController extends Controller
             ->pluck('menu_item_id')
             ->toArray();
 
-        // Tandai tiap item apakah sudah direview
         $order->transactionItems->transform(function ($item) use ($reviewedMenuItemIds) {
             $item->already_reviewed = in_array($item->menu_item_id, haystack: $reviewedMenuItemIds);
             return $item;
         });
+
+        $order->latest_order_status = $order->orderStatus->last();
 
         return Inertia::render('customer/pages/orders/pages/detail', [
             'order' => $order,
