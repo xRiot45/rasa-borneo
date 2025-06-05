@@ -66,16 +66,16 @@ const mainNavItems: NavGroup[] = [
             },
         ],
     },
-    {
-        group: 'LAPORAN & ANALITIK',
-        items: [
-            {
-                title: 'Laporan & Analitik',
-                href: '/admin/reports',
-                icon: 'mdi:chart-line',
-            },
-        ],
-    },
+    // {
+    //     group: 'LAPORAN & ANALITIK',
+    //     items: [
+    //         {
+    //             title: 'Laporan & Analitik',
+    //             href: '/admin/reports',
+    //             icon: 'mdi:chart-line',
+    //         },
+    //     ],
+    // },
     {
         group: 'KEUANGAN',
         items: [
@@ -105,36 +105,36 @@ const mainNavItems: NavGroup[] = [
                 href: '/admin/system-settings',
                 icon: 'mdi:settings',
             },
-            {
-                title: 'Pengaturan Pembayaran',
-                href: '/admin/payment-settings',
-                icon: 'mdi:credit-card-check',
-            },
-            {
-                title: 'Keamanan & Privasi',
-                href: '/admin/security-privacy',
-                icon: 'mdi:shield-lock',
-            },
-            {
-                title: 'Pengaturan Notifikasi & Email',
-                href: '/admin/notification-settings',
-                icon: 'mdi:bell-ring',
-            },
-            {
-                title: 'Manajemen Konten',
-                href: '/admin/content-management',
-                icon: 'mdi:folder-edit',
-            },
+            // {
+            //     title: 'Pengaturan Pembayaran',
+            //     href: '/admin/payment-settings',
+            //     icon: 'mdi:credit-card-check',
+            // },
+            // {
+            //     title: 'Keamanan & Privasi',
+            //     href: '/admin/security-privacy',
+            //     icon: 'mdi:shield-lock',
+            // },
+            // {
+            //     title: 'Pengaturan Notifikasi & Email',
+            //     href: '/admin/notification-settings',
+            //     icon: 'mdi:bell-ring',
+            // },
+            // {
+            //     title: 'Manajemen Konten',
+            //     href: '/admin/content-management',
+            //     icon: 'mdi:folder-edit',
+            // },
             {
                 title: 'Pengaturan Tarif',
                 href: '/admin/discount-settings',
                 icon: 'mdi:tag-multiple',
             },
-            {
-                title: 'Log Aktivitas',
-                href: '/admin/activity-log',
-                icon: 'mdi:history',
-            },
+            // {
+            //     title: 'Log Aktivitas',
+            //     href: '/admin/activity-log',
+            //     icon: 'mdi:history',
+            // },
             {
                 title: 'Backup & Pemulihan Data',
                 href: '/admin/data-backup',
