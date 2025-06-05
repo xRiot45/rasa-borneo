@@ -350,6 +350,14 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.menu-review.indexMerchant');
                 Route::delete('/destroy/{id}', 'destroy')->name('merchant.menu-review.destroy');
             });
+
+        // Merchant Review
+        Route::prefix('/merchant-review')
+            ->controller(MerchantReviewController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.merchant-review.indexMerchant');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.merchant-review.destroy');
+            });
     });
 });
 

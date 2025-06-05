@@ -10,3 +10,12 @@ export interface MenuReview {
     created_at?: string;
     updated_at?: string;
 }
+
+export interface MerchantReview {
+    id: number;
+    comment: string;
+    rating: number;
+    customer: Customer;
+    created_at?: string;
+    updated_at?: string;
+}

@@ -123,7 +123,7 @@ const mainNavItems: NavGroup[] = [
             },
             {
                 title: 'Ulasan Toko',
-                href: '/merchant/customer-interaction/store-review',
+                href: '/merchant/customer-interaction/merchant-review',
                 icon: 'hugeicons:store-verified-02',
             },
         ],
