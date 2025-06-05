@@ -118,12 +118,12 @@ const mainNavItems: NavGroup[] = [
         items: [
             {
                 title: 'Ulasan Menu',
-                href: '/merchant/customer-interaction/reviews-menu',
+                href: '/merchant/customer-interaction/menu-review',
                 icon: 'mdi:star-circle',
             },
             {
                 title: 'Ulasan Toko',
-                href: '/merchant/customer-interaction/reviews-store',
+                href: '/merchant/customer-interaction/store-review',
                 icon: 'hugeicons:store-verified-02',
             },
         ],

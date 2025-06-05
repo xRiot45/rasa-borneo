@@ -340,6 +340,16 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/show/{id}', 'show')->name('merchant.profit-report.show');
             });
     });
+
+    // Customer Interaction
+    Route::prefix('/merchant/customer-interaction')->group(function () {
+        // Menu Review
+        Route::prefix('/menu-review')
+            ->controller(MenuItemReviewController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.menu-review.indexMerchant');
+            });
+    });
 });
 
 // CUSTOMER ROUTES

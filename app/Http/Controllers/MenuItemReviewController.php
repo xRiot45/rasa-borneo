@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\MenuItem;
 use App\Models\MenuItemReview;
+use App\Models\Merchant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +50,23 @@ class MenuItemReviewController extends Controller
 
         return Inertia::render('customer/pages/menu/pages/review', [
             'data' => $menuItem->toArray(),
+        ]);
+    }
+
+    public function indexMerchant(): InertiaResponse
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+
+        $menuReviews = MenuItemReview::with('customer.user', 'menuItem.menuCategory')
+            ->whereHas('menuItem', function ($query) use ($merchant) {
+                $query->where('merchant_id', $merchant->id);
+            })
+            ->get();
+
+
+        return Inertia::render('merchant/customer-interaction/menu-review/index', [
+            'menuReviews' => $menuReviews
         ]);
     }
 }
