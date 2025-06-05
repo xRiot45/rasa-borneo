@@ -16,7 +16,7 @@ export interface Courier {
     driving_license_photo: string;
     license_plate: string;
     is_online: number;
-    is_verified: number;
+    is_verified: boolean;
 
     created_at?: string;
     updated_at?: string;

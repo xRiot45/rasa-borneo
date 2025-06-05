@@ -56,7 +56,8 @@ export const columns: ColumnDef<Courier>[] = [
         accessorKey: 'is_verified',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Status Verifikasi" />,
         cell: ({ row }) => {
-            const isVerified = row.original.is_verified === 1;
+            const isVerified = row.original.is_verified === true;
+            console.log(isVerified);
             return (
                 <Badge className={isVerified ? 'rounded-sm border-blue-600 bg-blue-100 text-blue-600' : 'border-red-600 bg-red-100 text-red-600'}>
                     {isVerified ? 'Terverifikasi' : 'Belum Diverifikasi'}
