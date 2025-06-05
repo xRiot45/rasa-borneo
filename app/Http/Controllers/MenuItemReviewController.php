@@ -69,4 +69,10 @@ class MenuItemReviewController extends Controller
             'menuReviews' => $menuReviews
         ]);
     }
+
+    public function destroy(int $menuReviewId): RedirectResponse
+    {
+        MenuItemReview::find($menuReviewId)->delete();
+        return redirect()->back()->with('success', 'Review menu item berhasil dihapus!');
+    }
 }

@@ -1,8 +1,9 @@
 import { MenuReview } from '@/models/merchant/customer_interaction';
 import { formatDate } from '@/utils/format-date';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import { Star } from 'lucide-react';
 import { DataTableColumnHeader } from './components/data-table-column-header';
+import { DataTableRowActions } from './components/data-table-row-actions';
 
 export const columns: ColumnDef<MenuReview>[] = [
     {
@@ -81,5 +82,12 @@ export const columns: ColumnDef<MenuReview>[] = [
         cell: ({ row }) => <span className="text-sm">{formatDate(row.original.created_at ?? '')}</span>,
         enableSorting: true,
         enableHiding: true,
+    },
+    {
+        id: 'actions',
+        accessorKey: 'actions',
+        header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
+        cell: ({ row }) => <DataTableRowActions row={row as Row<MenuReview>} />,
+        enableHiding: false,
     },
 ];
