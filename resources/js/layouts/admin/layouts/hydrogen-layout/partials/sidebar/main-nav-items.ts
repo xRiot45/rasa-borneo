@@ -67,6 +67,21 @@ const mainNavItems: NavGroup[] = [
         ],
     },
     {
+        group: 'MANAJEMEN PESANAN',
+        items: [
+            {
+                title: 'Pesanan Masuk',
+                href: '/admin/order-management/incoming-order',
+                icon: 'mdi:order-bool-descending',
+            },
+            {
+                title: 'Riwayat Pesanan',
+                href: '/admin/order-management/order-history',
+                icon: 'mdi:history',
+            },
+        ],
+    },
+    {
         group: 'INTERAKSI PELANGGAN',
         items: [
             {
