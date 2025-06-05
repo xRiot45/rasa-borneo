@@ -23,6 +23,15 @@ class MenuItemReviewController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
 
+        $existingReview = MenuItemReview::where('customer_id', $customer->id)
+            ->where('menu_item_id', $menuItemId)
+            ->where('transaction_id', $transactionId)
+            ->first();
+
+        if ($existingReview) {
+            return redirect()->back()->with('error', 'Anda sudah memberikan review untuk menu ini.');
+        }
+
         MenuItemReview::create([
             'customer_id' => $customer->id,
             'menu_item_id' => $menuItemId,

@@ -88,6 +88,7 @@ class OrderController extends Controller
             ->firstOrFail();
 
         $reviewedMenuItemIds = MenuItemReview::where('customer_id', $order->customer_id)
+            ->where('transaction_id', $order->id)
             ->whereIn('menu_item_id', $order->transactionItems->pluck('menu_item_id'))
             ->pluck('menu_item_id')
             ->toArray();
