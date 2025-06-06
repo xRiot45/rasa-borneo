@@ -14,6 +14,12 @@ export default function ButtonPartials() {
                     <span>Tambah Laporan Pengeluaran</span> <Icon icon={'heroicons:plus'} className="text-background" />
                 </Button>
             </Link>
+            <a href={route('merchant.expense-report.exportAll')}>
+                <Button className="cursor-pointer bg-green-600 hover:bg-green-700">
+                    <span>Export Ke CSV</span>
+                    <Icon icon={'teenyicons:csv-solid'} className="text-background" />
+                </Button>
+            </a>
         </div>
     );
 }

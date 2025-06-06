@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExpenseReportExportAll;
 use App\Http\Requests\ExpenseReportRequest;
 use App\Models\ExpenseReport;
 use App\Models\ExpenseReportCategory;
@@ -12,6 +13,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExpenseReportController extends Controller
 {
@@ -139,5 +142,13 @@ class ExpenseReportController extends Controller
         $expenseReport->delete();
 
         return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Dihapus');
+    }
+
+    public function exportAll(): BinaryFileResponse
+
+    {
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->first();
+        return Excel::download(new ExpenseReportExportAll($merchant->id), 'Semua Laporan Pengeluaran.csv');
     }
 }
