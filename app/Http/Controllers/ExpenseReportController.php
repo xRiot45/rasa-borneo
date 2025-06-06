@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExpenseReportExportAll;
+use App\Exports\ExpenseReportExportByDate;
 use App\Http\Requests\ExpenseReportRequest;
 use App\Models\ExpenseReport;
 use App\Models\ExpenseReportCategory;
@@ -34,7 +35,7 @@ class ExpenseReportController extends Controller
         ];
         return Inertia::render('merchant/financial-management/expense-report/list-expense-report/index', [
             'expenseReports' => $expenseReports,
-            'expenseSummary' => $expenseSummary
+            'expenseSummary' => $expenseSummary,
         ]);
     }
 
@@ -112,9 +113,7 @@ class ExpenseReportController extends Controller
 
         $totalExpense = collect($validated['items'])->sum('amount');
 
-        $expenseReport = ExpenseReport::where('id', $id)
-            ->where('merchant_id', $merchantId)
-            ->firstOrFail();
+        $expenseReport = ExpenseReport::where('id', $id)->where('merchant_id', $merchantId)->firstOrFail();
 
         $expenseReport->update([
             'report_date' => $validated['report_date'],
@@ -145,10 +144,14 @@ class ExpenseReportController extends Controller
     }
 
     public function exportAll(): BinaryFileResponse
-
     {
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->first();
         return Excel::download(new ExpenseReportExportAll($merchant->id), 'Semua Laporan Pengeluaran.csv');
+    }
+
+    public function exportByDate(string $reportDate): BinaryFileResponse
+    {
+        return Excel::download(new ExpenseReportExportByDate($reportDate), 'Laporan Pengeluaran ' . $reportDate . '.csv');
     }
 }

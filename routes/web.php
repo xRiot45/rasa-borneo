@@ -320,6 +320,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::put('/edit/{id}', 'update')->name('merchant.expense-report.update');
                 Route::delete('/destroy/{id}', 'destroy')->name('merchant.expense-report.destroy');
                 Route::get('/export/all', 'exportAll')->name('merchant.expense-report.exportAll');
+                Route::get('/export/{reportDate}', 'exportByDate')->name(name: 'merchant.expense-report.exportByDate');
             });
 
         // Expense Report Category

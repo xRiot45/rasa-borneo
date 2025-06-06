@@ -63,6 +63,19 @@ export function DataTableRowActions({ row }: { row: Row<ExpenseReport> }) {
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
+                    <DropdownMenuItem asChild className="p-4">
+                        <a
+                            href={route('merchant.expense-report.exportByDate', row.original.report_date)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-3"
+                        >
+                            Export Ke CSV
+                            <DropdownMenuShortcut>
+                                <Icon icon={'teenyicons:csv-solid'} />
+                            </DropdownMenuShortcut>
+                        </a>
+                    </DropdownMenuItem>
                     <Link href={route('merchant.expense-report.edit', { id: row.original.id })}>
                         <DropdownMenuItem className="cursor-pointer p-3">
                             Edit Laporan
