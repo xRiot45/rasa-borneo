@@ -28,7 +28,7 @@ export function DataTableRowActions({ row }: { row: Row<RevenueReport> }) {
 
                     <DropdownMenuItem asChild className="p-4">
                         <a
-                            href={route('merchant.revenue-report.export', row.original.report_date)}
+                            href={route('merchant.revenue-report.exportByDate', row.original.report_date)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-3"

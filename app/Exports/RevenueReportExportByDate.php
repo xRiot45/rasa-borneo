@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class RevenueReportExport implements FromArray, WithHeadings, WithEvents, WithTitle
+class RevenueReportExportByDate implements FromArray, WithHeadings, WithEvents, WithTitle
 {
     protected $reportDate;
     protected $summaryData;
