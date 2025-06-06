@@ -6,7 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
-use Illuminate\Support\Facades\Schedule;
+use Illuminate\Console\Scheduling\Schedule;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,9 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 
-    // ->withSchedule(function (Schedule $schedule) {
-    //     $schedule->command('app:revenue-report-generate-command')->everySecond();
-    // })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('app:revenue-report-generate-command')->dailyAt('00:00');
+        $schedule->command('app:deactivate-expired-coupons')->dailyAt('00:00');
+    })
+
 
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(except: ['appearance']);
