@@ -10,6 +10,7 @@ use App\Models\Fee;
 use App\Models\Table;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,9 @@ class CheckoutController extends Controller
         $customerId = $customer->id;
 
         $transaction = Transaction::with('transactionItems', 'coupon')->where('transaction_code', $transactionCode)->first();
-        $coupons = Coupon::where('is_active', true)->where('merchant_id', $transaction->merchant_id)->get();
+        // $coupons = Coupon::where('is_active', true)->where('merchant_id', $transaction->merchant_id)->get();
+        $coupons = Coupon::where('is_active', true)->where('merchant_id', $transaction->merchant_id)->whereDate('start_date', '<=', Carbon::now())->whereDate('end_date', '>=', Carbon::now())->get();
+
         $tables = Table::where('merchant_id', $transaction->merchant_id)->get();
         $fees = Fee::whereIn('type', ['delivery_fee', 'application_service_fee'])
             ->get()
