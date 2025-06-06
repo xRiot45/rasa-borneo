@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReportTypeEnum;
+use App\Exports\ProfitReportExport;
 use App\Models\ExpenseReport;
 use App\Models\Merchant;
 use App\Models\ProfitReport;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ProfitReportController extends Controller
 {
@@ -73,7 +76,6 @@ class ProfitReportController extends Controller
             'reportDetails' => $reportDetails,
         ]);
     }
-
 
     public function store(Request $request): RedirectResponse
     {
@@ -136,5 +138,10 @@ class ProfitReportController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Laporan berhasil dibuat.');
+    }
+
+    public function export(): BinaryFileResponse
+    {
+        return Excel::download(new ProfitReportExport(), 'Laporan Laba.xlsx');
     }
 }

@@ -6,6 +6,7 @@ import { ReportTypeEnum } from '@/enums/report-type';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { ProfitReport } from '@/models/financial-management/profit-report';
 import { BreadcrumbItem } from '@/types';
+import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
@@ -104,27 +105,37 @@ export default function ProfitReportPage({ profitReports }: Props) {
             <Head title="Laporan Laba" />
             <MerchantLayout breadcrumbs={breadcrumbs}>
                 <main className="p-4">
-                    <div className="mb-2 flex flex-wrap items-center justify-between space-y-2">
+                    <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h2 className="text-2xl font-black tracking-tight text-gray-700 dark:text-gray-200">Laporan Laba</h2>
                             <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola laporan laba toko anda</p>
                         </div>
-                        <Select onValueChange={onSelectItem} value={selectedValue}>
-                            <SelectTrigger className="h-12 rounded-lg border px-4 text-white shadow-none transition focus:ring-2 sm:w-[400px]">
-                                <SelectValue placeholder="Buat Laporan Anda" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-lg border border-gray-200 shadow-none">
-                                <SelectGroup>
-                                    <SelectLabel className="text-xs tracking-wider text-gray-500 uppercase">Pilih Jenis Laporan</SelectLabel>
-                                    {Object.entries(reportTypeLabels).map(([value, label]) => (
-                                        <SelectItem key={value} value={value} className="cursor-pointer p-4">
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+
+                        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+                            <Select onValueChange={onSelectItem} value={selectedValue}>
+                                <SelectTrigger className="h-10 w-full rounded-lg border px-4 text-white shadow-none transition focus:ring-2 sm:w-[400px]">
+                                    <SelectValue placeholder="Buat Laporan Anda" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-lg border border-gray-200 shadow-none">
+                                    <SelectGroup>
+                                        <SelectLabel className="text-xs tracking-wider text-gray-500 uppercase">Pilih Jenis Laporan</SelectLabel>
+                                        {Object.entries(reportTypeLabels).map(([value, label]) => (
+                                            <SelectItem key={value} value={value} className="cursor-pointer p-4">
+                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                {label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+
+                            <a href={route('merchant.profit-report.export')} className="w-full sm:w-auto">
+                                <Button className="w-full bg-green-600 hover:bg-green-700 sm:w-auto">
+                                    <span>Export Ke CSV</span>
+                                    <Icon icon={'teenyicons:csv-solid'} className="text-background" />
+                                </Button>
+                            </a>
+                        </div>
                     </div>
 
                     {selectedValue === ReportTypeEnum.CUSTOM && (
