@@ -8,6 +8,12 @@ export default function ButtonPartials() {
                 <span>Refresh Halaman</span>
                 <Icon icon={'material-symbols:refresh'} className="text-background" />
             </Button>
+            <a href={route('merchant.revenue-report.exportAll')}>
+                <Button className="cursor-pointer bg-green-600 hover:bg-green-700">
+                    <span>Export Ke CSV</span>
+                    <Icon icon={'teenyicons:csv-solid'} className="text-background" />
+                </Button>
+            </a>
         </div>
     );
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
 use App\Exports\RevenueReportExport;
+use App\Exports\RevenueReportExportAll;
 use App\Exports\RevenueReportExportByDate;
 use App\Models\Merchant;
 use App\Models\Order;
@@ -89,5 +90,10 @@ class RevenueReportController extends Controller
     public function exportByDate($reportDate): BinaryFileResponse
     {
         return Excel::download(new RevenueReportExportByDate($reportDate), "Laporan Pendapatan - {$reportDate}.csv");
+    }
+
+    public function exportAll(): BinaryFileResponse
+    {
+        return Excel::download(new RevenueReportExportAll(), "Semua Laporan Pendapatan.csv");
     }
 }

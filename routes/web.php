@@ -304,6 +304,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.revenue-report.indexMerchant');
                 Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.revenue-report.detailReport');
+                Route::get('/export/all', 'exportAll')->name('merchant.revenue-report.exportAll');
                 Route::get('/export/{reportDate}', 'exportByDate')->name('merchant.revenue-report.exportByDate');
             });
 
