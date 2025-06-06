@@ -22,6 +22,7 @@ interface Props {
 }
 
 export default function MerchantDetailPage({ data }: Props) {
+    console.log(data);
     const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
     const menuCategories = data?.menu_categories;
 
