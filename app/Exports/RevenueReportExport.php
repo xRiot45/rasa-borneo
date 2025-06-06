@@ -6,11 +6,9 @@ use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
 use App\Models\RevenueReport;
 use App\Models\Transaction;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -30,9 +28,7 @@ class RevenueReportExport implements FromArray, WithHeadings, WithEvents, WithTi
         $merchantId = $user->merchant->id;
 
         // Summary Data
-        $report = RevenueReport::where('merchant_id', $merchantId)
-            ->where('report_date', $reportDate)
-            ->first();
+        $report = RevenueReport::where('merchant_id', $merchantId)->where('report_date', $reportDate)->first();
 
         $this->summaryData = [
             'Tanggal Laporan' => $reportDate,
@@ -58,42 +54,25 @@ class RevenueReportExport implements FromArray, WithHeadings, WithEvents, WithTi
     {
         $rows = [];
 
-        // Tambahkan ringkasan laporan
+        // Header Baris 1
         $rows[] = [
             'Tanggal Laporan',
             'Total Transaksi Yang Berhasil',
-            'Total Pendapatan'
+            'Total Pendapatan',
+            'Transaksi',
+            '',
+            '',
+            '',
+            '',
+            '', // D1 - I1 merged
         ];
 
-        $rows[] = [
-            $this->summaryData['Tanggal Laporan'],
-            $this->summaryData['Total Transaksi Yang Berhasil'],
-            $this->summaryData['Total Pendapatan']
-        ];
+        // Header Baris 2
+        $rows[] = ['', '', '', 'Kode Transaksi', 'Tanggal & Waktu Pemesanan', 'Metode Pemesanan', 'Metode Pembayaran', 'Status Pembayaran', 'Status Pesanan'];
 
-        // Tambahkan baris kosong sebagai pemisah
-        $rows[] = [];
-
-        // Tambahkan header transaksi
-        $rows[] = [
-            'Kode Transaksi',
-            'Tanggal & Waktu Pemesanan',
-            'Metode Pemesanan',
-            'Metode Pembayaran',
-            'Status Pembayaran',
-            'Status Pesanan'
-        ];
-
-        // Tambahkan data transaksi
+        // Data transaksi
         foreach ($this->transactions as $trx) {
-            $rows[] = [
-                $trx->code,
-                $trx->checked_out_at->timezone(config('app.timezone'))->format('Y-m-d H:i:s'),
-                $trx->order_type->value ?? '-',
-                $trx->payment_method->value ?? '-',
-                $trx->payment_status->value,
-                $trx->latestOrderStatus->status ?? 'N/A',
-            ];
+            $rows[] = [$this->summaryData['Tanggal Laporan'], $this->summaryData['Total Transaksi Yang Berhasil'] . ' Transaksi', 'Rp. ' . number_format($this->summaryData['Total Pendapatan'], 0, ',', '.'), $trx->transaction_code, $trx->checked_out_at->timezone(config('app.timezone'))->format('Y-m-d H:i:s'), $trx->order_type->value ?? '-', $trx->payment_method->value ?? '-', $trx->payment_status->value, $trx->latestOrderStatus->status ?? 'N/A'];
         }
 
         return $rows;
@@ -101,7 +80,6 @@ class RevenueReportExport implements FromArray, WithHeadings, WithEvents, WithTi
 
     public function headings(): array
     {
-        // Tidak diperlukan karena sudah ditangani dalam array()
         return [];
     }
 
@@ -109,9 +87,40 @@ class RevenueReportExport implements FromArray, WithHeadings, WithEvents, WithTi
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                // Opsional: bold untuk heading
-                $event->sheet->getStyle('A1:C1')->getFont()->setBold(true);
-                $event->sheet->getStyle('A4:F4')->getFont()->setBold(true);
+                $sheet = $event->sheet;
+
+                $transactionCount = count($this->transactions);
+                $dataStartRow = 3;
+                $dataEndRow = $dataStartRow + $transactionCount - 1;
+
+                $sheet->mergeCells('A1:A2');
+                $sheet->mergeCells('B1:B2');
+                $sheet->mergeCells('C1:C2');
+                $sheet->mergeCells('D1:I1');
+
+                if ($transactionCount > 0) {
+                    $sheet->mergeCells("A{$dataStartRow}:A{$dataEndRow}");
+                    $sheet->mergeCells("B{$dataStartRow}:B{$dataEndRow}");
+                    $sheet->mergeCells("C{$dataStartRow}:C{$dataEndRow}");
+                }
+
+                $sheet->getStyle('A1:I2')->getFont()->setBold(true);
+
+                foreach (range('A', 'I') as $col) {
+                    $sheet->getColumnDimension($col)->setAutoSize(true);
+                }
+
+                $sheet
+                    ->getStyle("A1:I{$dataEndRow}")
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+                $sheet
+                    ->getStyle("A1:I{$dataEndRow}")
+                    ->getAlignment()
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             },
         ];
     }
