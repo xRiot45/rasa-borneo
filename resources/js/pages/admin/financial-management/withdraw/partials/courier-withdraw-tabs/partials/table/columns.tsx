@@ -1,8 +1,11 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { WithdrawStatusEnum } from '@/enums/withdraw-status';
 import { Withdraw } from '@/models/financial-management/withdraw';
 import { formatCurrency } from '@/utils/format-currency';
 import { withdrawStatusColorMap } from '@/utils/withdraw-status-color';
+import { Icon } from '@iconify/react';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
@@ -61,6 +64,39 @@ export const columns: ColumnDef<Withdraw>[] = [
         accessorKey: 'bank_account_name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Pemilik Rekening" />,
         cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_account_name')}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        id: 'transfer_proof',
+        accessorKey: 'transfer_proof',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Bukti Transfer" />,
+        cell: ({ row }) => {
+            const proofUrl = row.getValue('transfer_proof') as string | null;
+
+            const isAvailable = !!proofUrl;
+
+            return (
+                <div className="pt-2">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="cursor-pointer" disabled={!isAvailable}>
+                                Lihat Bukti Transfer
+                                <Icon icon="material-symbols:open-in-new-rounded" className="ml-2" />
+                            </Button>
+                        </DialogTrigger>
+                        {isAvailable && (
+                            <DialogContent className="max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle>Bukti Transfer</DialogTitle>
+                                </DialogHeader>
+                                <img src={proofUrl} alt="Bukti Transfer" className="h-auto w-full rounded-md object-contain" />
+                            </DialogContent>
+                        )}
+                    </Dialog>
+                </div>
+            );
+        },
         enableSorting: false,
         enableHiding: false,
     },
