@@ -36,8 +36,8 @@ export const columns: ColumnDef<Coupon>[] = [
                     variant="outline"
                     className={
                         type === CouponTypeEnum.PERCENTAGE
-                            ? 'rounded-sm border-none bg-blue-500 text-white'
-                            : 'rounded-sm border-none bg-green-500 text-white'
+                            ? 'rounded-sm border border-blue-600 bg-blue-100 text-blue-600'
+                            : 'rounded-sm border border-green-600 bg-green-100 text-green-600'
                     }
                 >
                     {type === CouponTypeEnum.PERCENTAGE ? 'Persentase' : 'Potongan'}
@@ -84,22 +84,6 @@ export const columns: ColumnDef<Coupon>[] = [
         enableHiding: true,
         enableSorting: true,
     },
-    // {
-    //     id: 'created_at',
-    //     accessorKey: 'created_at',
-    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Dibuat Pada" />,
-    //     cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('created_at'))}</span>,
-    //     enableHiding: true,
-    //     enableSorting: true,
-    // },
-    // {
-    //     id: 'updated_at',
-    //     accessorKey: 'updated_at',
-    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Diubah Pada" />,
-    //     cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('updated_at'))}</span>,
-    //     enableHiding: true,
-    //     enableSorting: true,
-    // },
     {
         id: 'is_active',
         accessorKey: 'is_active',
@@ -109,7 +93,11 @@ export const columns: ColumnDef<Coupon>[] = [
             return (
                 <Badge
                     variant="outline"
-                    className={isActive ? 'rounded-sm border-none bg-green-500 text-white' : 'rounded-sm border-none bg-red-500 text-white'}
+                    className={
+                        isActive
+                            ? 'rounded-sm border border-green-600 bg-green-100 text-green-600'
+                            : 'rounded-sm border border-red-600 bg-red-100 text-red-600'
+                    }
                 >
                     {isActive ? 'Aktif' : 'Tidak Aktif'}
                 </Badge>
