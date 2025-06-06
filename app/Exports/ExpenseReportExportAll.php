@@ -46,20 +46,19 @@ class ExpenseReportExportAll implements FromArray
             $summary = $group['summary'];
             $items = $group['items'];
 
-            // Tambahkan pemisah jika ganti tanggal
+            // Tambahkan pemisah jika tanggal berubah
             if ($lastDate !== null && $summary['Tanggal Laporan'] !== $lastDate) {
-                $rows[] = [' ']; // Pemisah antar laporan
-                $rows[] = [' ']; // Tambahan spasi
+                $rows[] = [' ']; // Baris kosong sebagai pemisah
+                $rows[] = [' '];
             }
             $lastDate = $summary['Tanggal Laporan'];
 
             // Header laporan
             $rows[] = ['Laporan Pengeluaran - ' . $summary['Tanggal Laporan']];
             $rows[] = ['Deskripsi', $summary['Deskripsi Pengeluaran']];
-            $rows[] = ['Total Pengeluaran', 'Rp. ' . number_format($summary['Total Pengeluaran'], 0, ',', '.')];
             $rows[] = []; // Spacer
 
-            // Header Detail
+            // Header detail item
             $rows[] = ['No', 'Nama Pengeluaran', 'Kategori', 'Deskripsi', 'Jumlah Pengeluaran'];
 
             foreach ($items as $index => $item) {
@@ -72,7 +71,10 @@ class ExpenseReportExportAll implements FromArray
                 ];
             }
 
-            $rows[] = []; // Spacer setelah detail item
+            // Spacer dan total pengeluaran di akhir
+            $rows[] = [''];
+            $rows[] = ['Total Pengeluaran', 'Rp. ' . number_format($summary['Total Pengeluaran'], 0, ',', '.')];
+            $rows[] = []; // Spacer setelah total
         }
 
         return $rows;
