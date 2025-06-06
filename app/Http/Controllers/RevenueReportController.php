@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
+use App\Exports\RevenueReportExport;
 use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\RevenueReport;
@@ -12,6 +13,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RevenueReportController extends Controller
 {
@@ -80,5 +83,10 @@ class RevenueReportController extends Controller
             'report' => $revenueReport,
             'transactions' => $transactions,
         ]);
+    }
+
+    public function export($reportDate): BinaryFileResponse
+    {
+        return Excel::download(new RevenueReportExport($reportDate), "revenue-report-{$reportDate}.csv");
     }
 }

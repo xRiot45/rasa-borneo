@@ -134,7 +134,7 @@ class RevenueReportGenerateCommand extends Command
 
                 RevenueReport::create([
                     'merchant_id' => $merchantId,
-                    'report_date' => $startOfDay->toDateString(),
+                    'report_date' => $currentDate->toDateString(),
                     'report_type' => ReportTypeEnum::DAILY,
                     'total_transaction' => $totalTransactions,
                     'total_revenue' => $totalRevenue,

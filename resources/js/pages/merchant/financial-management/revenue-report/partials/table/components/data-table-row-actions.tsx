@@ -17,14 +17,28 @@ export function DataTableRowActions({ row }: { row: Row<RevenueReport> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('merchant.revenue-report.detailReport', { reportDate: row.original.report_date })}>
-                        <DropdownMenuItem className="cursor-pointer p-3">
+                    <DropdownMenuItem asChild className="p-4">
+                        <Link href={route('merchant.revenue-report.detailReport', { reportDate: row.original.report_date })} className="p-3">
                             Lihat Detail Laporan
                             <DropdownMenuShortcut>
                                 <Icon icon={'material-symbols:open-in-new'} />
                             </DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                    </Link>
+                        </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem asChild className="p-4">
+                        <a
+                            href={route('merchant.revenue-report.export', row.original.report_date)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-3"
+                        >
+                            Export Ke CSV
+                            <DropdownMenuShortcut>
+                                <Icon icon={'teenyicons:csv-solid'} />
+                            </DropdownMenuShortcut>
+                        </a>
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
