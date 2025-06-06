@@ -138,6 +138,17 @@ class WithdrawController extends Controller
         return redirect()->route('courier.indexCourier')->with('success', 'Pengajuan Penarikan Dana Berhasil');
     }
 
+    public function withdrawHistoryCourier(): InertiaResponse
+    {
+        $user = Auth::user();
+        $courier = Courier::where('user_id', $user->id)->first();
+        $withdraws = Withdraw::where('courier_id', $courier->id)->orderBy('created_at', 'desc')->get();
+
+        return Inertia::render('courier/pages/withdraw-history/index', [
+            'data' => $withdraws,
+        ]);
+    }
+
     public function processWithdrawalProof(Request $request, int $withdrawId): RedirectResponse
     {
         $request->validate([

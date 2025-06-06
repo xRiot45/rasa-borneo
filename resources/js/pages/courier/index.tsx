@@ -131,10 +131,12 @@ export default function CourierPage({ balance, earnings: { daily, weekly, monthl
                                     <Icon icon="ph:hand-withdraw" className="ml-2 text-2xl" />
                                 </Button>
                             </Link>
-                            <Button variant="outline" className="w-full cursor-pointer rounded-lg py-6 font-semibold shadow-none transition">
-                                Riwayat
-                                <Icon icon="material-symbols:history" className="ml-2 text-2xl" />
-                            </Button>
+                            <Link href={route('courier.withdraw.withdrawHistoryCourier')} className="w-full">
+                                <Button variant="outline" className="w-full cursor-pointer rounded-lg py-6 font-semibold shadow-none transition">
+                                    Riwayat Penarikan Dana
+                                    <Icon icon="material-symbols:history" className="ml-2 text-2xl" />
+                                </Button>
+                            </Link>
                         </div>
                     </Card>
                 </main>

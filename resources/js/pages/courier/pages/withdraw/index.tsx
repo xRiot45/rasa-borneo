@@ -114,7 +114,7 @@ export default function WithdrawPage() {
                                     {/* Input pencarian */}
 
                                     <Select onValueChange={(val) => setData('bank_code', val)} value={data.bank_code}>
-                                        <SelectTrigger className="w-full rounded-lg py-6">
+                                        <SelectTrigger className="mt-4 w-full rounded-lg py-6 shadow-none">
                                             <SelectValue placeholder="Pilih Bank Anda" />
                                         </SelectTrigger>
                                         <SelectContent className="max-h-[300px] overflow-y-auto">

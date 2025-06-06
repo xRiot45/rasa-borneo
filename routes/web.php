@@ -450,6 +450,7 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     // Withdraw
     Route::get('/courier/withdraw', [WithdrawController::class, 'showCourierWithdrawForm'])->name('courier.withdraw.showCourierWithdrawForm');
     Route::post('/courier/withdraw', [WithdrawController::class, 'requestWithdrawCourier'])->name('courier.withdraw.requestWithdrawCourier');
+    Route::get('/courier/withdraw/history', [WithdrawController::class, 'withdrawHistoryCourier'])->name('courier.withdraw.withdrawHistoryCourier');
 });
 
 require __DIR__ . '/settings.php';
