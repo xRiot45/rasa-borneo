@@ -87,6 +87,6 @@ class RevenueReportController extends Controller
 
     public function export($reportDate): BinaryFileResponse
     {
-        return Excel::download(new RevenueReportExport($reportDate), "revenue-report-{$reportDate}.csv");
+        return Excel::download(new RevenueReportExport($reportDate), "Laporan Pendapatan - {$reportDate}.csv");
     }
 }
