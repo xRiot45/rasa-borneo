@@ -71,7 +71,7 @@ class RevenueReportExportAll implements FromArray, WithHeadings, WithEvents, Wit
                 'Tanggal Laporan',
                 'Total Transaksi Yang Berhasil',
                 'Total Pendapatan',
-                'Transaksi',
+                'Detail Laporan',
                 '',
                 '',
                 '',
