@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
 import CustomerLayout from '@/layouts/customer/layout';
 import { Merchant } from '@/models/merchant';
 import { Icon } from '@iconify/react';
@@ -118,19 +118,7 @@ export default function MerchantDetailPage({ data }: Props) {
                                 {/* Wishlist, Share & Button see google map */}
                                 <div className="mt-6 flex w-full items-center gap-4">
                                     <div className="flex gap-2">
-                                        {/* Wishlist */}
                                         <TooltipProvider delayDuration={0}>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <div className="mx-auto flex aspect-square h-12 w-12 cursor-pointer items-center justify-center rounded-full border p-4">
-                                                        <Icon icon="icon-park-outline:like" className="h-4 w-4 text-xl" />
-                                                    </div>
-                                                </TooltipTrigger>
-                                                <TooltipContent side="top" className="rounded-md px-3 py-1 text-xs">
-                                                    <p>Tambahkan ke Wishlist</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-
                                             {/* Share Button inside Dialog */}
                                             <Tooltip>
                                                 <Dialog>
