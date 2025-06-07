@@ -337,7 +337,11 @@ export default function MerchantDetailPage({ data }: Props) {
 
                                 {/* Tabs Menu */}
                                 <TabsContent value="menu" className="mt-10">
-                                    <TabMenuContent data={data?.menu_items?.map((item) => item) || []} menuCategories={menuCategories} storeOperatingHours={storeOperatingHours} />
+                                    <TabMenuContent
+                                        data={data?.menu_items?.map((item) => item) || []}
+                                        menuCategories={menuCategories}
+                                        storeOperatingHours={storeOperatingHours}
+                                    />
                                 </TabsContent>
 
                                 {/* Tabs Gallery */}
