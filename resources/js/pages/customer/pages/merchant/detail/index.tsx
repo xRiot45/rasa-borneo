@@ -84,12 +84,9 @@ export default function MerchantDetailPage({ data }: Props) {
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm">
-                                            <Badge className="rounded-sm bg-green-600 text-white">4.7 ★</Badge>
+                                            <Badge className="rounded-sm border-green-600 bg-green-100 text-green-600">4.7 ★</Badge>
                                             <Link href="#" className="text-xs text-blue-600">
-                                                3 Ratings
-                                            </Link>
-                                            <Link href="#" className="text-xs text-blue-600">
-                                                3 Reviews
+                                                3 Ratings & Review Dari Pelanggan
                                             </Link>
                                         </div>
                                     </div>
