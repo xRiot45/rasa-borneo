@@ -11,15 +11,10 @@ const rightNavItems: NavItem[] = [
         href: '/wishlist',
         icon: 'material-symbols:favorite-outline',
     },
-    {
-        title: 'Notifikasi',
-        href: '/notifications',
-        icon: 'mdi:bell-outline',
-    },
     // {
-    //     title: 'Bantuan',
-    //     href: '/help',
-    //     icon: 'mdi:chat-question-outline',
+    //     title: 'Notifikasi',
+    //     href: '/notifications',
+    //     icon: 'mdi:bell-outline',
     // },
 ];
 

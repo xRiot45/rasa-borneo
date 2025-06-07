@@ -80,25 +80,6 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
                         </div>
                     ) : (
                         <div className="ml-auto flex items-center space-x-3">
-                            <div className="flex items-center space-x-3 md:hidden">
-                                <TooltipProvider delayDuration={0}>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Link
-                                                href={rightNavItems[2].href}
-                                                className="group text-accent-foreground ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                                            >
-                                                <span className="sr-only">{rightNavItems[2].title}</span>
-                                                <Icon icon={rightNavItems[2].icon} className="size-5 opacity-80 group-hover:opacity-100" />
-                                            </Link>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>{rightNavItems[2].title}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </div>
-
                             {!isMobile && (
                                 <div className="relative flex items-center space-x-1">
                                     <div className="flex">
