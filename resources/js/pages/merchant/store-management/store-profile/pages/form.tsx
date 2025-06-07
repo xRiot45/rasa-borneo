@@ -1,5 +1,6 @@
 import FileDropzone from '@/components/file-dropzone';
 import InputError from '@/components/input-error';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,8 +10,9 @@ import { StoreProfile, StoreProfileForm } from '@/models/store-management/store-
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { AlertCircleIcon, LoaderCircle } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { toast } from 'sonner';
 
 interface Props {
@@ -34,6 +36,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function FormPage({ storeProfile }: Props) {
     const isEdit = !!storeProfile?.id;
+    const [position, setPosition] = useState<[number, number]>(() => {
+        if (storeProfile?.latitude && storeProfile?.longitude) {
+            return [Number(storeProfile.latitude), Number(storeProfile.longitude)];
+        }
+        return [51.505, -0.09];
+    });
 
     const { data, setData, post, processing, errors } = useForm<Required<StoreProfileForm>>({
         logo_photo: storeProfile?.logo_photo ?? null,
@@ -132,6 +140,25 @@ export default function FormPage({ storeProfile }: Props) {
             });
         }
     };
+
+    useEffect(() => {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setPosition([position.coords.latitude, position.coords.longitude]);
+                },
+                (error) => {
+                    console.error('Geolocation error:', error);
+                    setPosition([51.505, -0.09]);
+                },
+            );
+        }
+    }, []);
+
+    useEffect(() => {
+        setData('latitude', String(position[0]));
+        setData('longitude', String(position[1]));
+    }, [position, setData]);
 
     return (
         <>
@@ -282,15 +309,19 @@ export default function FormPage({ storeProfile }: Props) {
 
                     {/* Latitude & Longitude */}
                     <Card className="grid gap-6 p-8 shadow-none">
-                        <h1 className="flex items-center justify-between text-xl font-black tracking-tight text-gray-700 dark:text-gray-200">
-                            Lokasi Toko
-                            <Link
-                                href="https://youtu.be/MZUl8h18z3s"
-                                className="text-xs text-blue-500 transition duration-300 ease-in-out hover:text-blue-700 focus:outline-none"
-                            >
-                                Tutorial Menentukan Kordinat Toko
-                            </Link>
-                        </h1>
+                        <div className="mb-4">
+                            <h1 className="flex items-center justify-between text-xl font-black tracking-tight text-gray-700 dark:text-gray-200">
+                                Lokasi Toko
+                            </h1>
+
+                            <Alert variant="destructive" className="mt-4 border-red-500">
+                                <AlertCircleIcon />
+                                <AlertTitle>Cara Pemindahan Marker</AlertTitle>
+                                <AlertDescription>
+                                    <p> Untuk memindahkan marker pada peta, geser icon map terlebih dahulu ke lokasi yang diinginkan.</p>
+                                </AlertDescription>
+                            </Alert>
+                        </div>
 
                         <div className="grid gap-4 lg:grid-cols-2">
                             {/* Latitude */}
@@ -302,6 +333,7 @@ export default function FormPage({ storeProfile }: Props) {
                                         type="text"
                                         placeholder="latitude"
                                         value={data.latitude}
+                                        readOnly
                                         onChange={(e) => setData('latitude', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none"
                                     />
@@ -322,6 +354,7 @@ export default function FormPage({ storeProfile }: Props) {
                                         type="text"
                                         placeholder="Longitude"
                                         value={data.longitude}
+                                        readOnly
                                         onChange={(e) => setData('longitude', e.target.value)}
                                         className="rounded-xl py-6 pl-10 shadow-none"
                                     />
@@ -331,6 +364,29 @@ export default function FormPage({ storeProfile }: Props) {
                                     />
                                 </div>
                                 <InputError message={errors.longitude} className="mt-2" />
+                            </div>
+
+                            {/* Map */}
+                            <div className="col-span-2">
+                                <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: '400px', width: '100%' }}>
+                                    <TileLayer
+                                        attribution='&copy; <a href="https://www.esri.com/">Esri</a>, Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                    />
+                                    <Marker
+                                        position={position}
+                                        draggable={true}
+                                        eventHandlers={{
+                                            dragend: (e) => {
+                                                const marker = e.target;
+                                                const latLng = marker.getLatLng();
+                                                setPosition([latLng.lat, latLng.lng]);
+                                            },
+                                        }}
+                                    >
+                                        <Popup>Geser marker untuk menentukan lokasi toko</Popup>
+                                    </Marker>
+                                </MapContainer>
                             </div>
                         </div>
                     </Card>
