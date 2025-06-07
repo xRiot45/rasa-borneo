@@ -22,9 +22,9 @@ interface Props {
 }
 
 export default function MerchantDetailPage({ data }: Props) {
-    console.log(data);
     const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
     const menuCategories = data?.menu_categories;
+    const storeOperatingHours = data?.store_operating_hours;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(shareUrl);
@@ -53,30 +53,6 @@ export default function MerchantDetailPage({ data }: Props) {
                                     alt="Promo"
                                     className="h-auto w-full rounded-xl object-cover"
                                 />
-
-                                {/* <div className="absolute top-6 right-6 w-72 rounded-lg bg-gradient-to-r from-white to-orange-50 p-5 shadow-xl ring-1 ring-orange-100">
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="border-orange-500 text-[10px] text-orange-500">
-                                            Kode Kupon
-                                        </Badge>
-                                        <span className="text-xs text-gray-500">Berlaku hingga 1 Des 2025</span>
-                                    </div>
-
-                                    <div className="mt-3 flex items-center justify-between">
-                                        <div>
-                                            <h1 className="text-lg leading-tight font-extrabold text-orange-600">Diskon 50%</h1>
-                                            <p className="text-muted-foreground text-xs">untuk semua produk</p>
-                                        </div>
-                                        <div className="flex items-center justify-center rounded-lg border border-dashed border-orange-300 bg-orange-100 px-3 py-1 text-sm font-medium text-orange-600">
-                                            free50
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                                        <span className="italic">* S&K berlaku</span>
-                                        <button className="font-medium text-orange-600 hover:underline">Gunakan</button>
-                                    </div>
-                                </div> */}
                             </div>
 
                             {/* Right Info */}
@@ -361,7 +337,7 @@ export default function MerchantDetailPage({ data }: Props) {
 
                                 {/* Tabs Menu */}
                                 <TabsContent value="menu" className="mt-10">
-                                    <TabMenuContent data={data?.menu_items?.map((item) => item) || []} menuCategories={menuCategories} />
+                                    <TabMenuContent data={data?.menu_items?.map((item) => item) || []} menuCategories={menuCategories} storeOperatingHours={storeOperatingHours} />
                                 </TabsContent>
 
                                 {/* Tabs Gallery */}

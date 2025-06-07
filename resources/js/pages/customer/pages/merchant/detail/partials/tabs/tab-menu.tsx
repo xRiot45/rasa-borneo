@@ -7,16 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { MenuCategory } from '@/models/menu-category';
 import { MenuItem } from '@/models/menu-item';
+import { StoreOperatingHour } from '@/models/store-management/store-operating-hour';
 import CardMenuItem from '@/pages/customer/components/card-menu-items';
+import { isMerchantClosedNow } from '@/utils/isMerchantClosedNow';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 
 interface Props {
     data: MenuItem[];
     menuCategories: MenuCategory[];
+    storeOperatingHours: StoreOperatingHour[];
 }
 
-const TabMenuContent: React.FC<Props> = ({ data, menuCategories }) => {
+const TabMenuContent: React.FC<Props> = ({ data, menuCategories, storeOperatingHours }) => {
     const [search, setSearch] = useState<string>('');
     const [category, setCategory] = useState<string>('');
     const [recommendedOnly, setRecommendedOnly] = useState<boolean>(false);
@@ -26,6 +29,8 @@ const TabMenuContent: React.FC<Props> = ({ data, menuCategories }) => {
     const [tempCategory, setTempCategory] = useState<string>('');
     const [tempRecommendedOnly, setTempRecommendedOnly] = useState<boolean>(false);
     const [tempSortOrder, setTempSortOrder] = useState<string>('asc');
+
+    const isMenuDisabled = isMerchantClosedNow(storeOperatingHours);
 
     const applyFilters = () => {
         setSearch(tempSearch);
@@ -140,7 +145,7 @@ const TabMenuContent: React.FC<Props> = ({ data, menuCategories }) => {
 
                 {filteredItems.length ? (
                     <>
-                        <CardMenuItem data={filteredItems} />
+                        <CardMenuItem data={filteredItems} isMenuDisabled={isMenuDisabled} />
                     </>
                 ) : (
                     <EmptyData

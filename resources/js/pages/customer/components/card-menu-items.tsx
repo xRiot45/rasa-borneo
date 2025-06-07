@@ -14,9 +14,10 @@ import { toast } from 'sonner';
 
 interface Props {
     data: MenuItem[];
+    isMenuDisabled?: boolean;
 }
 
-const CardMenuItem: React.FC<Props> = ({ data }) => {
+const CardMenuItem: React.FC<Props> = ({ data, isMenuDisabled }) => {
     const isLoading = !data;
     const { isLoggedIn } = useAuth();
     const { wishlist } = usePage<{ wishlist: number[] }>().props;
@@ -290,9 +291,10 @@ const CardMenuItem: React.FC<Props> = ({ data }) => {
                                     <Button
                                         onClick={() => handleAddMenuToCart(selectedMenu)}
                                         className="w-full cursor-pointer border-none py-6 shadow-none"
+                                        disabled={isMenuDisabled}
                                     >
-                                        Tambah menu ke keranjang
-                                        <Icon icon="mdi:cart-outline" className="mr-1" />
+                                        {isMenuDisabled ? 'Toko Sedang Tutup' : 'Tambah menu ke keranjang'}
+                                        <Icon icon={isMenuDisabled ? 'mdi:clock-alert-outline' : 'mdi:cart-plus'} className="mr-1" />
                                     </Button>
                                 </DialogFooter>
                             </>
