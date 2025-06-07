@@ -26,6 +26,11 @@ export default function MerchantDetailPage({ data }: Props) {
     const menuCategories = data?.menu_categories;
     const storeOperatingHours = data?.store_operating_hours;
 
+    // Rating & Review
+    const totalRating = data?.reviews.reduce((total, review) => total + review.rating, 0);
+    const averageRating = data?.reviews.length > 0 ? totalRating / data?.reviews.length : 0;
+    const totalReview = data?.reviews.length;
+
     const handleCopy = () => {
         navigator.clipboard.writeText(shareUrl);
         toast.success('Tautan berhasil disalin');
@@ -84,9 +89,9 @@ export default function MerchantDetailPage({ data }: Props) {
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm">
-                                            <Badge className="rounded-sm border-green-600 bg-green-100 text-green-600">4.7 ★</Badge>
+                                            <Badge className="rounded-sm border-green-600 bg-green-100 text-green-600">{averageRating}★</Badge>
                                             <Link href="#" className="text-xs text-blue-600">
-                                                3 Review / Ulasan Dari Pelanggan
+                                                {totalReview} Review / Ulasan Dari Pelanggan
                                             </Link>
                                         </div>
                                     </div>
