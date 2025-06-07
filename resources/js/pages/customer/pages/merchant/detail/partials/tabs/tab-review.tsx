@@ -143,6 +143,7 @@ const TabReviewContent: React.FC<Props> = ({ merchantId, data }) => {
                                     avatar={review.customer?.profile_image || undefined}
                                     rating={review.rating}
                                     comment={review.comment}
+                                    created_at={review.created_at}
                                 />
                             ))}
                         </div>

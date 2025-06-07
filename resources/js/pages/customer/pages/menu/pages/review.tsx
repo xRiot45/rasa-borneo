@@ -34,6 +34,7 @@ export default function ReviewMenuItemPage({ data }: Props) {
                                             avatar={review.customer?.profile_image || undefined}
                                             rating={review.rating}
                                             comment={review.comment}
+                                            created_at={review.created_at}
                                         />
                                     );
                                 })}
