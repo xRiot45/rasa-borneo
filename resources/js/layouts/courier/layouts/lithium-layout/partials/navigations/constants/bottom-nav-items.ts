@@ -19,11 +19,6 @@ const bottomNavItems = [
         href: '/courier/delivery-history',
         icon: 'material-symbols:check-circle-rounded',
     },
-    {
-        title: 'Notifikasi',
-        href: '/courier/notifications',
-        icon: 'mdi:bell-outline',
-    },
 ];
 
 export default bottomNavItems;
