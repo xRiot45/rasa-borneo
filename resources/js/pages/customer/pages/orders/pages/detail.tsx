@@ -30,7 +30,6 @@ interface Props {
 }
 
 export default function OrderDetailPage({ order }: Props) {
-    console.log(order);
     const [hoverRating, setHoverRating] = useState<number>(0);
     const [showDialogReviewOrder, setShowDialogReviewOrder] = useState<boolean>(false);
     const [selectedMenuItem, setSelectedMenuItem] = useState<number>(0);

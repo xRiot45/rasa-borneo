@@ -22,7 +22,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function MerchantReviewPage({ merchantReviews }: Props) {
-    console.log(merchantReviews);
     return (
         <>
             <Head title="Ulasan Toko" />

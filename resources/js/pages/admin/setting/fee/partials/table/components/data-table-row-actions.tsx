@@ -30,8 +30,7 @@ export function DataTableRowActions({ row }: { row: Row<FeeItem> }) {
                         },
                     });
                 },
-                onError: (errors) => {
-                    console.log(errors);
+                onError: () => {
                     toast.error('Failed', {
                         description: 'Fee gagal diupdate',
                         action: {

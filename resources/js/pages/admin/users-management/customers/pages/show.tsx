@@ -30,7 +30,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CustomerDetailPage({ data }: CustomerDetailPageProps) {
-    console.log(data);
     return (
         <>
             <AdminLayout breadcrumbs={breadcrumbs}>
