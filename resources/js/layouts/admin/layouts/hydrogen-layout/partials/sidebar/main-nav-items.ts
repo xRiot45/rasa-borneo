@@ -146,8 +146,8 @@ const mainNavItems: NavGroup[] = [
             //     icon: 'mdi:folder-edit',
             // },
             {
-                title: 'Pengaturan Tarif',
-                href: '/admin/discount-settings',
+                title: 'Pengaturan Biaya',
+                href: '/admin/setting/fee',
                 icon: 'mdi:tag-multiple',
             },
             // {

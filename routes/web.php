@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseReportCategoryController;
 use App\Http\Controllers\ExpenseReportController;
+use App\Http\Controllers\FeeController;
 use App\Http\Controllers\ManageRolePermissionController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuItemController;
@@ -165,6 +166,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/process-withdrawal-proof/{withdrawId}', 'processWithdrawalProof')->name('admin.withdraw.processWithdrawalProof');
             });
     });
+
+    // Setting
+
+    // Fee
+    Route::prefix('/admin/setting/fee')
+        ->controller(FeeController::class)
+        ->group(function () {
+            Route::get('/', 'indexAdmin')->name('admin.setting.fee.indexAdmin');
+            Route::put('/{id}', 'update')->name('admin.setting.fee.update');
+        });
 });
 
 // MERCHANT ROUTES
