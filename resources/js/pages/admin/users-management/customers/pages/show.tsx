@@ -30,6 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CustomerDetailPage({ data }: CustomerDetailPageProps) {
+    console.log(data);
     return (
         <>
             <AdminLayout breadcrumbs={breadcrumbs}>
@@ -40,7 +41,7 @@ export default function CustomerDetailPage({ data }: CustomerDetailPageProps) {
                         <Icon icon={'material-symbols:arrow-back-rounded'} className="mr-2" />
                         Kembali ke halaman sebelumnya
                     </Button>
-                    <Card className="mx-auto mt-6 w-full px-4 shadow-none">
+                    <Card className="mx-auto mt-6 w-full rounded-xl px-4 py-8 shadow-none">
                         <CardHeader>
                             <CardTitle className="text-2xl">Detail Customer</CardTitle>
                         </CardHeader>
@@ -49,6 +50,10 @@ export default function CustomerDetailPage({ data }: CustomerDetailPageProps) {
                             <div>
                                 <h2 className="mb-2 text-lg font-semibold">Identitas Pengguna</h2>
                                 <div className="grid grid-cols-2 gap-4">
+                                    {data?.profile_image && (
+                                        <img src={`${data.profile_image}`} alt="Foto Profil" className="h-20 w-20 rounded-full border object-cover" />
+                                    )}
+
                                     <div>
                                         <Label className="font-semibold">Nama Lengkap</Label>
                                         <p>{data?.user?.full_name || '-'}</p>

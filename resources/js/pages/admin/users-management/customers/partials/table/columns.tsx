@@ -4,6 +4,7 @@ import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export const columns: ColumnDef<Customer>[] = [
     {
@@ -21,7 +22,20 @@ export const columns: ColumnDef<Customer>[] = [
         id: 'user.full_name',
         accessorKey: 'user.full_name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Lengkap" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('user.full_name')}</span>,
+        cell: ({ row }) => {
+            const fullName = row.getValue('user.full_name') as string;
+            const profileImage = row.original.profile_image;
+
+            return (
+                <div className="flex max-w-36 items-center gap-3">
+                    <Avatar className="h-9 w-9">
+                        <AvatarImage src={profileImage || undefined} alt={fullName} />
+                        <AvatarFallback>{fullName?.charAt(0) || '?'}</AvatarFallback>
+                    </Avatar>
+                    <span>{fullName}</span>
+                </div>
+            );
+        },
         meta: {
             className: cn('pe-22'),
         },
@@ -72,20 +86,20 @@ export const columns: ColumnDef<Customer>[] = [
         enableHiding: true,
         enableSorting: true,
     },
-    {
-        id: 'deleted_at',
-        accessorKey: 'deleted_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Dihapus Pada" />,
-        cell: ({ row }) => {
-            const deletedAt = row.getValue('deleted_at');
-            return <span className="max-w-36">{deletedAt ? formatDate(String(deletedAt)) : '-'}</span>;
-        },
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableHiding: true,
-        enableSorting: true,
-    },
+    // {
+    //     id: 'deleted_at',
+    //     accessorKey: 'deleted_at',
+    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Dihapus Pada" />,
+    //     cell: ({ row }) => {
+    //         const deletedAt = row.getValue('deleted_at');
+    //         return <span className="max-w-36">{deletedAt ? formatDate(String(deletedAt)) : '-'}</span>;
+    //     },
+    //     meta: {
+    //         className: cn('pe-22'),
+    //     },
+    //     enableHiding: true,
+    //     enableSorting: true,
+    // },
     {
         id: 'actions',
         accessorKey: 'actions',
