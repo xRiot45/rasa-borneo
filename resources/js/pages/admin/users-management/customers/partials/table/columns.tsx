@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Customer } from '@/models/customer';
-import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
@@ -63,28 +62,6 @@ export const columns: ColumnDef<Customer>[] = [
         },
         enableSorting: false,
         enableHiding: false,
-    },
-    {
-        id: 'created_at',
-        accessorKey: 'created_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Mendaftar Pada" />,
-        cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('created_at'))}</span>,
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableSorting: true,
-        enableHiding: true,
-    },
-    {
-        id: 'updated_at',
-        accessorKey: 'updated_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Diubah Pada" />,
-        cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('updated_at'))}</span>,
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableHiding: true,
-        enableSorting: true,
     },
     {
         id: 'actions',

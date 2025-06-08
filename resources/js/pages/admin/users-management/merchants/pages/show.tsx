@@ -40,7 +40,7 @@ export default function MerchantDetailPage({ data }: MerchantDetailPageProps) {
                         <Icon icon={'material-symbols:arrow-back-rounded'} className="mr-2" />
                         Kembali ke halaman sebelumnya
                     </Button>
-                    <Card className="mx-auto mt-6 w-full px-4 shadow-none">
+                    <Card className="mx-auto mt-6 w-full rounded-xl px-4 py-8 shadow-none">
                         <CardHeader>
                             <CardTitle className="text-2xl">Detail Merchant</CardTitle>
                         </CardHeader>
@@ -67,7 +67,13 @@ export default function MerchantDetailPage({ data }: MerchantDetailPageProps) {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <Label className="font-semibold">Status Verifikasi : </Label>
-                                        <Badge className={data.is_verified ? 'bg-blue-600 text-white' : 'bg-red-600 text-white'}>
+                                        <Badge
+                                            className={
+                                                data.is_verified
+                                                    ? 'rounded-sm border-blue-500 bg-blue-100 text-blue-500'
+                                                    : 'rounded-sm border-red-500 bg-red-100 text-red-500'
+                                            }
+                                        >
                                             {data.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
                                         </Badge>
                                     </div>

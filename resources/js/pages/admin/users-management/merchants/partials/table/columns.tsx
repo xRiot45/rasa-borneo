@@ -1,7 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Merchant } from '@/models/merchant';
-import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
@@ -83,7 +82,7 @@ export const columns: ColumnDef<Merchant>[] = [
         cell: ({ row }) => {
             const isVerified = row.original.is_verified === 1;
             return (
-                <Badge className={isVerified ? 'bg-blue-600 text-white' : 'bg-red-600 text-white'}>
+                <Badge className={isVerified ? 'rounded-sm border-blue-500 bg-blue-100 text-blue-500' : 'border-red-500 bg-red-100 text-red-500'}>
                     {isVerified ? 'Terverifikasi' : 'Belum Diverifikasi'}
                 </Badge>
             );
@@ -97,42 +96,6 @@ export const columns: ColumnDef<Merchant>[] = [
         },
         enableHiding: false,
         enableSorting: false,
-    },
-    {
-        id: 'created_at',
-        accessorKey: 'created_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Mendaftar Pada" />,
-        cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('created_at'))}</span>,
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableHiding: true,
-        enableSorting: true,
-    },
-    {
-        id: 'updated_at',
-        accessorKey: 'updated_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Diubah Pada" />,
-        cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('updated_at'))}</span>,
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableHiding: true,
-        enableSorting: true,
-    },
-    {
-        id: 'deleted_at',
-        accessorKey: 'deleted_at',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Dihapus Pada" />,
-        cell: ({ row }) => {
-            const deletedAt = row.getValue('deleted_at');
-            return <span className="max-w-36">{deletedAt ? formatDate(String(deletedAt)) : '-'}</span>;
-        },
-        meta: {
-            className: cn('pe-22'),
-        },
-        enableHiding: true,
-        enableSorting: true,
     },
     {
         id: 'actions',
