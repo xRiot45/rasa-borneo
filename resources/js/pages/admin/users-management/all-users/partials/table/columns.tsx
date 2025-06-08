@@ -45,16 +45,17 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             const roles: string[] = row.getValue('roles') || [];
             const roleColors: Record<string, string> = {
-                admin: 'bg-green-500',
-                customer: 'bg-blue-500',
-                merchant: 'bg-cyan-500',
+                admin: 'bg-green-100 border-green-600 text-green-600',
+                customer: 'bg-blue-100 border-blue-600 text-blue-600',
+                merchant: 'bg-cyan-100 border-cyan-600 text-cyan-600',
+                courier: 'bg-amber-100 border-amber-600 text-amber-600',
             };
 
             if (!Array.isArray(roles) || roles.length === 0) return <Badge className="bg-gray-500 shadow-none">-</Badge>;
             return (
                 <div className="flex gap-1">
                     {roles.map((role) => (
-                        <Badge key={role} className={`capitalize ${roleColors[role] || 'bg-gray-500'} shadow-none`}>
+                        <Badge key={role} className={`capitalize ${roleColors[role] || 'bg-gray-500'} rounded-sm shadow-none`}>
                             {role}
                         </Badge>
                     ))}
