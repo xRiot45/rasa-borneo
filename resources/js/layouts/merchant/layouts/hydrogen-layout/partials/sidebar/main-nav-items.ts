@@ -55,7 +55,7 @@ const mainNavItems: NavGroup[] = [
                 icon: 'mdi:image-multiple',
             },
             {
-                title: 'Jam Operasi Toko',
+                title: 'Jam Operasional Toko',
                 href: '/merchant/store-management/store-operating-hour',
                 icon: 'mdi:clock',
             },
