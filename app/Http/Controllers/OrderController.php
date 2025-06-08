@@ -76,7 +76,7 @@ class OrderController extends Controller
             ->with(['transactionItems', 'customer', 'orderStatus'])
             ->firstOrFail();
 
-        return Inertia::render('merchant/order-management/order-detail/index', [
+        return Inertia::render('merchant/order-management/shared/order-detail/index', [
             'order' => $order,
         ]);
     }

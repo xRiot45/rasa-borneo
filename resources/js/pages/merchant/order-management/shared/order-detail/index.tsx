@@ -190,7 +190,7 @@ export default function OrderDetailPage({ order }: Props) {
                                                     <strong>Metode Pembayaran : </strong>
                                                     <Badge
                                                         variant="default"
-                                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === payment_method ? 'bg-green-600' : 'bg-blue-600'}`}
+                                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === payment_method ? 'border-green-500 bg-green-100 text-green-600' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
                                                     >
                                                         {payment_method?.toUpperCase()}
                                                     </Badge>
