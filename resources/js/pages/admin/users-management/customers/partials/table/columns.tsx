@@ -1,10 +1,10 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Customer } from '@/models/customer';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export const columns: ColumnDef<Customer>[] = [
     {
@@ -86,20 +86,6 @@ export const columns: ColumnDef<Customer>[] = [
         enableHiding: true,
         enableSorting: true,
     },
-    // {
-    //     id: 'deleted_at',
-    //     accessorKey: 'deleted_at',
-    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Dihapus Pada" />,
-    //     cell: ({ row }) => {
-    //         const deletedAt = row.getValue('deleted_at');
-    //         return <span className="max-w-36">{deletedAt ? formatDate(String(deletedAt)) : '-'}</span>;
-    //     },
-    //     meta: {
-    //         className: cn('pe-22'),
-    //     },
-    //     enableHiding: true,
-    //     enableSorting: true,
-    // },
     {
         id: 'actions',
         accessorKey: 'actions',
