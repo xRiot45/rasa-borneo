@@ -1,16 +1,34 @@
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/customer/layout';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { GenderEnum } from '@/enums/gender-enum';
+import { useInitials } from '@/hooks/use-initials';
+import CustomerLayout from '@/layouts/customer/layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { cn } from '@/lib/utils';
+import { Customer } from '@/models/customer';
+import { CustomerProfileForm } from '@/models/settings/customer-setting';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { formattedDateForInput } from '@/utils/format-date';
 import { Transition } from '@headlessui/react';
 import { Icon } from '@iconify/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { CalendarIcon } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
+import { toast } from 'sonner';
+
+interface Props {
+    mustVerifyEmail: boolean;
+    status?: string;
+    customer: Customer;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,67 +37,231 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface ProfileForm {
-    full_name: string;
-    email: string;
-}
+export default function Profile({ mustVerifyEmail, status, customer }: Props) {
+    const page = usePage<SharedData>();
+    const { auth } = page.props;
+    const getInitials = useInitials();
 
-export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
-    const { auth } = usePage<SharedData>().props;
-
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
-        full_name: auth.user.full_name,
-        email: auth.user.email,
+    const { data, setData, errors, processing, recentlySuccessful, setError } = useForm<CustomerProfileForm>({
+        full_name: customer?.user?.full_name,
+        email: customer?.user?.email,
+        phone_number: customer?.user?.phone_number,
+        birthplace: customer?.birthplace,
+        birthdate: customer?.birthdate ? new Date(customer.birthdate) : null,
+        profile_image: customer?.profile_image ? new File([customer?.profile_image], 'profile_image', { type: 'image/jpeg' }) : null,
+        gender: customer?.gender,
     });
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+    const [inputValue, setInputValue] = useState(() => {
+        return data?.birthdate instanceof Date && !isNaN(data?.birthdate.getTime()) ? data.birthdate.toISOString().split('T')[0] : '';
+    });
+    const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
 
-        patch(route('profile.update'), {
-            preserveScroll: true,
+    const handleInputBirthdate = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+        const parsedData = new Date(event.target.value);
+        if (!isNaN(parsedData.getTime())) {
+            setData('birthdate', parsedData);
+        }
+    };
+
+    const handleFileChange = (file: File | null) => {
+        if (file) {
+            setProfileImagePreview(URL.createObjectURL(file));
+            setData('profile_image', file);
+        }
+    };
+
+    const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('full_name', data.full_name ?? '');
+        formData.append('email', data.email ?? '');
+        formData.append('phone_number', data.phone_number ?? '');
+
+        if (data.profile_image instanceof File && data.profile_image.size > 0) {
+            formData.append('profile_image', data.profile_image);
+        }
+
+        formData.append('birthplace', data.birthplace ?? '');
+        formData.append('birthdate', data.birthdate ? String(formattedDateForInput(data.birthdate)) : '');
+        formData.append('gender', data.gender ?? '');
+
+        router.post(route('customer.profile.update_profile', { id: customer?.id }), formData, {
+            forceFormData: true,
+            preserveState: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Data Anda Berhasil Diedit!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+
+                router.reload();
+            },
+            onError: (errors) => {
+                console.log(errors);
+                Object.entries(errors).forEach(([key, value]) => {
+                    setError(key as keyof CustomerProfileForm, value);
+                });
+                toast.error('Failed', {
+                    description: errors.message || 'Gagal Mengedit Data Anda',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
         });
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <CustomerLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
-
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Informasi Akun" description="Perbarui informasi profil akun dan alamat email Anda." />
+                    <HeadingSmall title="Informasi Pribadi" description="Update data pribadi anda" />
 
-                    <form onSubmit={submit} className="space-y-6">
-                        <div className="grid gap-2">
+                    <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+                        <div className="mt-10 flex flex-col items-center justify-center">
+                            <div className="relative">
+                                <Avatar className="h-28 w-28 overflow-hidden rounded-full">
+                                    <AvatarImage className="h-full w-full object-cover" src={profileImagePreview ?? ''} alt={auth.user.full_name} />
+                                    <AvatarFallback>{getInitials(auth.user.full_name)}</AvatarFallback>
+                                </Avatar>
+
+                                <Label
+                                    htmlFor="file-input"
+                                    className="absolute right-0 bottom-0 cursor-pointer rounded-full bg-black p-2 transition-all hover:bg-gray-600 dark:bg-white hover:dark:bg-gray-600"
+                                >
+                                    <Icon icon="tabler:camera-filled" className="h-5 w-5 text-white dark:text-black" />
+                                    <Input
+                                        id="file-input"
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                                    />
+                                </Label>
+                            </div>
+
+                            <h1 className="mt-5 mb-1 text-lg font-bold text-gray-800 dark:text-white">{data?.full_name}</h1>
+                            <span className="text-sm text-gray-500 dark:text-white">{data?.email}</span>
+                        </div>
+
+                        <div id="full_name">
                             <Label htmlFor="full_name">Nama Lengkap</Label>
-
                             <Input
                                 id="full_name"
-                                className="mt-1 block w-full rounded-lg py-6"
-                                value={data.full_name}
+                                className={cn('mt-1', errors.full_name && 'border border-red-500')}
+                                value={data?.full_name}
                                 onChange={(e) => setData('full_name', e.target.value)}
-                                required
                                 autoComplete="full_name"
                                 placeholder="Masukkan nama lengkap anda"
                             />
-
-                            <InputError className="mt-2" message={errors.full_name} />
+                            <InputError className="mt-1" message={errors.full_name} />
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
-
+                        <div id="email">
+                            <Label htmlFor="email">Alamat Email</Label>
                             <Input
                                 id="email"
                                 type="email"
-                                className="mt-1 block w-full rounded-lg py-6"
+                                className={cn('mt-1', errors.email && 'border border-red-500')}
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
-                                required
-                                autoComplete="username"
-                                placeholder="Email address"
+                                autoComplete="email"
+                                placeholder="Masukkan alamat email anda"
+                                disabled
+                            />
+                            <InputError className="mt-1" message={errors.email} />
+                        </div>
+
+                        <div id="phone_number">
+                            <Label htmlFor="phone_number">Nomor Telepon</Label>
+                            <Input
+                                id="phone_number"
+                                type="number"
+                                value={data.phone_number}
+                                onChange={(e) => setData('phone_number', e.target.value)}
+                                autoComplete="phone_number"
+                                placeholder="Masukkan nomor telepon anda"
+                                className={cn('mt-1', errors.phone_number && 'border border-red-500')}
+                            />
+                            <InputError className="mt-1" message={errors.phone_number} />
+                        </div>
+
+                        <div id="birthplace">
+                            <Label htmlFor="full_name">Tempat Lahir</Label>
+                            <Input
+                                id="birthplace"
+                                type="text"
+                                autoComplete="birthplace"
+                                value={data.birthplace}
+                                onChange={(e) => setData('birthplace', e.target.value)}
+                                placeholder="Masukkan Tempat Lahir"
+                                className="mt-1 block w-full"
                             />
 
-                            <InputError className="mt-2" message={errors.email} />
+                            <InputError className="mt-1" message={errors.birthplace} />
+                        </div>
+
+                        <div id="birthdate" className="flex flex-col">
+                            <Label htmlFor="birthdate">Tanggal Lahir</Label>
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button type="button" variant="outline" className="mt-2.5 w-full">
+                                        {data.birthdate instanceof Date && !isNaN(data.birthdate.getTime()) ? (
+                                            <span>{data.birthdate.toDateString()}</span>
+                                        ) : (
+                                            <span className="text-sm text-gray-400">Masukkan Tanggal Lahir</span>
+                                        )}
+                                        <CalendarIcon className="ml-auto h-5 w-5 text-gray-500" />
+                                    </Button>
+                                </PopoverTrigger>
+
+                                <PopoverContent className="w-auto p-2">
+                                    <Input
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={handleInputBirthdate}
+                                        className="mb-2 py-6 text-center"
+                                        placeholder="Masukkan Tanggal Lahir"
+                                    />
+
+                                    <Calendar
+                                        mode="single"
+                                        selected={data.birthdate ?? new Date()}
+                                        onSelect={(date) => {
+                                            setData('birthdate', date ?? null);
+                                            setInputValue(date ? date.toISOString().split('T')[0] : '');
+                                        }}
+                                        disabled={(date) => date > new Date()}
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <InputError className="mt-1" message={errors.birthdate} />
+                        </div>
+
+                        <div id="gender">
+                            <Label htmlFor="gender">Jenis Kelamin</Label>
+                            <Select onValueChange={(value) => setData('gender', value as GenderEnum)}>
+                                <SelectTrigger className="mt-2 w-full">
+                                    <SelectValue placeholder={data.gender || 'Pilih Jenis Kelamin'} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.values(GenderEnum).map((value) => (
+                                        <SelectItem key={value} value={value} className="capitalize">
+                                            {value}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.gender} className="mt-2" />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
@@ -105,10 +287,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing} className="w-full py-6">
-                                Simpan Perubahan
-                                <Icon icon="heroicons-outline:check" className="ml-2 h-4 w-4" />
-                            </Button>
+                            <Button disabled={processing}>Update Profile</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -125,6 +304,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                 <DeleteUser />
             </SettingsLayout>
-        </AppLayout>
+        </CustomerLayout>
     );
 }

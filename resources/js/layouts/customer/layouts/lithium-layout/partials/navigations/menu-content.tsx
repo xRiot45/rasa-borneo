@@ -47,7 +47,7 @@ export function CustomerMenuContent({ user }: Props) {
                 )}
 
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route('customer.setting.edit')} as="button" prefetch onClick={cleanup}>
                         <Icon icon="lets-icons:setting-fill" className="mr-2" />
                         Pengaturan
                     </Link>

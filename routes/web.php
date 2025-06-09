@@ -23,6 +23,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Settings\CustomerProfileController;
 use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
@@ -440,6 +441,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Review Menu Item
     Route::get('/review/{menuItemId}', [MenuItemReviewController::class, 'showReviewForCustomer'])->name('menu_item.review.showReviewForCustomer');
     Route::post('/review/{transactionId}/{menuItemId}', [MenuItemReviewController::class, 'storeReview'])->name('menu_item.review.storeReview');
+
+    // Setting
+    Route::get('/settings/profile', [CustomerProfileController::class, 'edit'])->name('customer.setting.edit');
+    Route::put('/settings/profile/', [CustomerProfileController::class, 'update'])->name('customer.setting.update');
 });
 
 // COURIER ROUTES
