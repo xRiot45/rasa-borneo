@@ -1,12 +1,12 @@
+import { Badge } from '@/components/ui/badge';
+import { ReportTypeEnum } from '@/enums/report-type';
 import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { formatCurrency } from '@/utils/format-currency';
+import { reportTypeColorMap } from '@/utils/report-type-color-map';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
-import { ReportTypeEnum } from '@/enums/report-type';
-import { reportTypeColorMap } from '@/utils/report-type-color-map';
-import { Badge } from '@/components/ui/badge';
 
 export const columns: ColumnDef<RevenueReport>[] = [
     {
