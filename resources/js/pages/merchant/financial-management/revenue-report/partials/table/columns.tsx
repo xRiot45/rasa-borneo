@@ -4,6 +4,9 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
+import { ReportTypeEnum } from '@/enums/report-type';
+import { reportTypeColorMap } from '@/utils/report-type-color-map';
+import { Badge } from '@/components/ui/badge';
 
 export const columns: ColumnDef<RevenueReport>[] = [
     {
@@ -38,6 +41,25 @@ export const columns: ColumnDef<RevenueReport>[] = [
         },
         enableHiding: true,
         enableSorting: true,
+    },
+    {
+        id: 'report_type',
+        accessorKey: 'report_type',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Tipe Laporan" />,
+        cell: ({ row }) => {
+            const type = row.getValue('report_type') as ReportTypeEnum;
+            const colorClass = reportTypeColorMap[type] || 'bg-gray-100 border border-gray-600 text-gray-600';
+            const label = {
+                [ReportTypeEnum.DAILY]: 'Harian',
+                [ReportTypeEnum.WEEKLY]: 'Mingguan',
+                [ReportTypeEnum.MONTHLY]: 'Bulanan',
+                [ReportTypeEnum.CUSTOM]: 'Custom',
+            }[type];
+
+            return <Badge className={`rounded-sm px-2 py-1 text-xs ${colorClass}`}>{label}</Badge>;
+        },
+        enableHiding: true,
+        enableSorting: false,
     },
     {
         id: 'total_revenue',
