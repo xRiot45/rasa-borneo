@@ -23,6 +23,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Settings\CourierPasswordController;
+use App\Http\Controllers\Settings\CourierProfileController;
 use App\Http\Controllers\Settings\CustomerPasswordController;
 use App\Http\Controllers\Settings\CustomerProfileController;
 use App\Http\Controllers\Settings\MerchantPasswordController;
@@ -385,6 +387,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         // Profile
         Route::get('/profile', [MerchantProfileController::class, 'edit'])->name('merchant.setting.edit');
         Route::put('/profile', [MerchantProfileController::class, 'update'])->name('merchant.setting.update');
+        Route::delete('/profile', [MerchantProfileController::class, 'destroy'])->name('merchant.profile.destroy');
 
         // Appearance
         Route::get('/appearance', function () {
@@ -464,8 +467,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Setting
     Route::get('/settings/profile', [CustomerProfileController::class, 'edit'])->name('customer.setting.edit');
     Route::put('/settings/profile', [CustomerProfileController::class, 'update'])->name('customer.setting.update');
+    Route::delete('/settings/profile', [CourierProfileController::class, 'destroy'])->name('customer.profile.destroy');
+
     Route::get('/settings/password', [CustomerPasswordController::class, 'edit'])->name('customer.password.edit');
     Route::put('/settings/password', [CustomerPasswordController::class, 'update'])->name('customer.password.update');
+
     Route::get('/settings/appearance', function () {
         return Inertia::render('customer/pages/settings/appearance');
     })->name('appearance');
@@ -496,6 +502,18 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     Route::get('/courier/withdraw', [WithdrawController::class, 'showCourierWithdrawForm'])->name('courier.withdraw.showCourierWithdrawForm');
     Route::post('/courier/withdraw', [WithdrawController::class, 'requestWithdrawCourier'])->name('courier.withdraw.requestWithdrawCourier');
     Route::get('/courier/withdraw/history', [WithdrawController::class, 'withdrawHistoryCourier'])->name('courier.withdraw.withdrawHistoryCourier');
+
+    // Setting
+    Route::get('/courier/settings/profile', [CourierProfileController::class, 'edit'])->name('courier.setting.edit');
+    Route::put('/courier/settings/profile', [CourierProfileController::class, 'update'])->name('courier.setting.update');
+    Route::delete('/courier/settings/profile', [CourierProfileController::class, 'destroy'])->name('courier.profile.destroy');
+
+    Route::get('/courier/settings/password', [CourierPasswordController::class, 'edit'])->name('courier.password.edit');
+    Route::put('/courier/settings/password', [CourierPasswordController::class, 'update'])->name('courier.password.update');
+
+    Route::get('/courier/settings/appearance', function () {
+        return Inertia::render('courier/pages/settings/appearance');
+    })->name('appearance');
 });
 
 require __DIR__ . '/settings.php';

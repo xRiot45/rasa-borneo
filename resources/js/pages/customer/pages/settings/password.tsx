@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/customer/layout';
-import SettingsLayout from '@/layouts/settings/layout';
+import CustomerSettingsLayout from '@/layouts/settings/customer-setting-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Icon } from '@iconify/react';
@@ -52,7 +52,7 @@ export default function Password() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
 
-            <SettingsLayout>
+            <CustomerSettingsLayout>
                 <div className="space-y-6">
                     <HeadingSmall
                         title="Perbaharui Password"
@@ -126,7 +126,7 @@ export default function Password() {
                         </div>
                     </form>
                 </div>
-            </SettingsLayout>
+            </CustomerSettingsLayout>
         </AppLayout>
     );
 }

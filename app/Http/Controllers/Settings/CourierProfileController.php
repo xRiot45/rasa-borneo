@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
-class MerchantProfileController extends Controller
+class CourierProfileController extends Controller
 {
     public function edit(Request $request): InertiaResponse
     {
-        return Inertia::render('merchant/settings/profile', [
+        return Inertia::render('courier/pages/settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);
@@ -31,7 +31,7 @@ class MerchantProfileController extends Controller
 
         $request->user()->save();
 
-        return to_route('merchant.setting.edit');
+        return to_route('courier.profile.edit');
     }
 
     public function destroy(Request $request): RedirectResponse

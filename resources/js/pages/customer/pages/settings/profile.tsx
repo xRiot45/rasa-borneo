@@ -1,4 +1,3 @@
-import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { GenderEnum } from '@/enums/gender-enum';
 import { useInitials } from '@/hooks/use-initials';
 import CustomerLayout from '@/layouts/customer/layout';
-import SettingsLayout from '@/layouts/settings/layout';
+import CustomerSettingsLayout from '@/layouts/settings/customer-setting-layout';
 import { cn } from '@/lib/utils';
 import { Customer } from '@/models/customer';
 import { CustomerProfileForm } from '@/models/settings/customer-setting';
@@ -23,6 +22,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { CalendarIcon, Loader } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
+import DeleteUser from './components/delete-user';
 
 interface Props {
     mustVerifyEmail: boolean;
@@ -125,7 +125,7 @@ export default function Profile({ mustVerifyEmail, status, customer }: Props) {
         <>
             <Head title="Profile settings" />
             <CustomerLayout breadcrumbs={breadcrumbs}>
-                <SettingsLayout>
+                <CustomerSettingsLayout>
                     <main className="w-full space-y-6">
                         <HeadingSmall title="Informasi Pribadi" description="Update data pribadi anda" />
 
@@ -320,7 +320,7 @@ export default function Profile({ mustVerifyEmail, status, customer }: Props) {
                     </main>
 
                     <DeleteUser />
-                </SettingsLayout>
+                </CustomerSettingsLayout>
             </CustomerLayout>
         </>
     );

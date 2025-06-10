@@ -1,11 +1,9 @@
-import { Head } from '@inertiajs/react';
-
 import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
-import { type BreadcrumbItem } from '@/types';
-
 import AppLayout from '@/layouts/customer/layout';
-import SettingsLayout from '@/layouts/settings/layout';
+import CourierSettingsLayout from '@/layouts/settings/courier-setting-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,12 +17,12 @@ export default function Appearance() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pengaturan Tampilan" />
 
-            <SettingsLayout>
+            <CourierSettingsLayout>
                 <div className="space-y-6">
                     <HeadingSmall title="Tampilan" description="Perbarui pengaturan tampilan akun Anda" />
                     <AppearanceTabs />
                 </div>
-            </SettingsLayout>
+            </CourierSettingsLayout>
         </AppLayout>
     );
 }

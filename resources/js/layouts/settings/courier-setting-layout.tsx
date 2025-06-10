@@ -10,22 +10,22 @@ import { type PropsWithChildren } from 'react';
 const sidebarNavItems: NavItem[] = [
     {
         title: 'Profile',
-        href: '/settings/profile',
+        href: '/courier/settings/profile',
         icon: 'mdi:account',
     },
     {
         title: 'Password',
-        href: '/settings/password',
+        href: '/courier/settings/password',
         icon: 'mdi:lock',
     },
     {
         title: 'Tampilan',
-        href: '/settings/appearance',
+        href: '/courier/settings/appearance',
         icon: 'mdi:palette',
     },
 ];
 
-export default function SettingsLayout({ children }: PropsWithChildren) {
+export default function CourierSettingsLayout({ children }: PropsWithChildren) {
     if (typeof window === 'undefined') {
         return null;
     }

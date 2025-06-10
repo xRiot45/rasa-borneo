@@ -11,11 +11,11 @@ use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
-class MerchantPasswordController extends Controller
+class CourierPasswordController extends Controller
 {
     public function edit(Request $request): InertiaResponse
     {
-        return Inertia::render('merchant/settings/password', [
+        return Inertia::render('courier/pages/settings/password', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);

@@ -37,31 +37,9 @@ export function CustomerMenuContent({ user }: Props) {
                 )}
 
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route('courier.setting.edit')} as="button" prefetch onClick={cleanup}>
                         <Icon icon="lets-icons:setting-fill" className="mr-2" />
                         Pengaturan
-                    </Link>
-                </DropdownMenuItem>
-                {user?.roles[0] === 'customer' && (
-                    <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                        <Link className="block w-full" href={route('address-list.index')} as="button" prefetch onClick={cleanup}>
-                            <Icon icon="entypo:address" className="mr-2" />
-                            Daftar Alamat Saya
-                        </Link>
-                    </DropdownMenuItem>
-                )}
-                {user?.roles[0] === 'customer' && (
-                    <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                        <Link className="block w-full" href={route('order-list.customerOrders')} as="button" prefetch onClick={cleanup}>
-                            <Icon icon="material-symbols:receipt-long" className="mr-2" />
-                            Pesanan Saya
-                        </Link>
-                    </DropdownMenuItem>
-                )}
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
-                        <Icon icon="mdi:chat-question-outline" className="mr-2" />
-                        Bantuan
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
