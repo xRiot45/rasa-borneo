@@ -8,7 +8,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import CustomerLayout from '@/layouts/customer/layout';
+import CourierLayout from '@/layouts/courier/layout';
 import CourierSettingsLayout from '@/layouts/settings/courier-setting-layout';
 import DeleteUser from './components/delete-user';
 
@@ -41,7 +41,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
     };
 
     return (
-        <CustomerLayout breadcrumbs={breadcrumbs}>
+        <CourierLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
 
             <CourierSettingsLayout>
@@ -122,6 +122,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                 <DeleteUser />
             </CourierSettingsLayout>
-        </CustomerLayout>
+        </CourierLayout>
     );
 }

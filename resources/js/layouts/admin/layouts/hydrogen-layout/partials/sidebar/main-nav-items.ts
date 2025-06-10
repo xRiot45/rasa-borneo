@@ -104,26 +104,30 @@ const mainNavItems: NavGroup[] = [
                 href: '/admin/financial-management/withdraw',
                 icon: 'mdi:cash-minus',
             },
-            // (opsional di masa depan) bisa tambahkan:
-            // {
-            //     title: 'Deposit',
-            //     href: '/admin/deposits',
-            //     icon: 'mdi:cash-plus',
-            // },
-            // {
-            //     title: 'Transaksi Keuangan',
-            //     href: '/admin/transactions',
-            //     icon: 'mdi:swap-horizontal',
-            // },
         ],
     },
     {
         group: 'PENGATURAN',
         items: [
             {
-                title: 'Pengaturan Sistem',
-                href: '/admin/system-settings',
-                icon: 'mdi:settings',
+                title: 'Biaya',
+                href: '/admin/settings/fee',
+                icon: 'mdi:tag-multiple',
+            },
+            {
+                title: 'Profile',
+                href: '/admin/settings/profile',
+                icon: 'mdi:account-cog',
+            },
+            {
+                title: 'Tampilan Web',
+                href: '/admin/settings/appearance',
+                icon: 'material-symbols:light-mode',
+            },
+            {
+                title: 'Password',
+                href: '/admin/settings/password',
+                icon: 'mdi:lock',
             },
             // {
             //     title: 'Pengaturan Pembayaran',
@@ -145,21 +149,16 @@ const mainNavItems: NavGroup[] = [
             //     href: '/admin/content-management',
             //     icon: 'mdi:folder-edit',
             // },
-            {
-                title: 'Pengaturan Biaya',
-                href: '/admin/setting/fee',
-                icon: 'mdi:tag-multiple',
-            },
             // {
             //     title: 'Log Aktivitas',
             //     href: '/admin/activity-log',
             //     icon: 'mdi:history',
             // },
-            {
-                title: 'Backup & Pemulihan Data',
-                href: '/admin/data-backup',
-                icon: 'mdi:database-refresh',
-            },
+            // {
+            //     title: 'Backup & Pemulihan Data',
+            //     href: '/admin/data-backup',
+            //     icon: 'mdi:database-refresh',
+            // },
         ],
     },
 ];

@@ -23,6 +23,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Settings\AdminPasswordController;
+use App\Http\Controllers\Settings\AdminProfileController;
 use App\Http\Controllers\Settings\CourierPasswordController;
 use App\Http\Controllers\Settings\CourierProfileController;
 use App\Http\Controllers\Settings\CustomerPasswordController;
@@ -173,15 +175,36 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             });
     });
 
-    // Setting
-
+    // --- Setting ---
     // Fee
-    Route::prefix('/admin/setting/fee')
+    Route::prefix('/admin/settings/fee')
         ->controller(FeeController::class)
         ->group(function () {
             Route::get('/', 'indexAdmin')->name('admin.setting.fee.indexAdmin');
             Route::put('/{id}', 'update')->name('admin.setting.fee.update');
         });
+
+    // Profile
+    Route::prefix('/admin/settings/profile')
+        ->controller(AdminProfileController::class)
+        ->group(function () {
+            Route::get('/', 'edit')->name('admin.setting.profile.edit');
+            Route::put('/', 'update')->name('admin.setting.profile.update');
+            Route::delete('/', 'destroy')->name('admin.setting.profile.destroy');
+        });
+
+    // Password
+    Route::prefix('/admin/settings/password')
+        ->controller(AdminPasswordController::class)
+        ->group(function () {
+            Route::get('/', 'edit')->name('admin.password.edit');
+            Route::put('/', 'update')->name('admin.password.update');
+        });
+
+    // Appearance
+    Route::get('/admin/settings/appearance', function () {
+        return Inertia::render('admin/settings/appearance');
+    })->name('appearance');
 });
 
 // MERCHANT ROUTES

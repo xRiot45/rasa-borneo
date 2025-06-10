@@ -1,6 +1,6 @@
 import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
-import AppLayout from '@/layouts/customer/layout';
+import CourierLayout from '@/layouts/courier/layout';
 import CourierSettingsLayout from '@/layouts/settings/courier-setting-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Appearance() {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <CourierLayout breadcrumbs={breadcrumbs}>
             <Head title="Pengaturan Tampilan" />
 
             <CourierSettingsLayout>
@@ -23,6 +23,6 @@ export default function Appearance() {
                     <AppearanceTabs />
                 </div>
             </CourierSettingsLayout>
-        </AppLayout>
+        </CourierLayout>
     );
 }

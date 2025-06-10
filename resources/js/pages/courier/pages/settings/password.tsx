@@ -3,7 +3,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/customer/layout';
+import CourierLayout from '@/layouts/courier/layout';
 import CourierSettingsLayout from '@/layouts/settings/courier-setting-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
@@ -49,7 +49,7 @@ export default function Password() {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <CourierLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
 
             <CourierSettingsLayout>
@@ -127,6 +127,6 @@ export default function Password() {
                     </form>
                 </div>
             </CourierSettingsLayout>
-        </AppLayout>
+        </CourierLayout>
     );
 }
