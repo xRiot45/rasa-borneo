@@ -24,6 +24,8 @@ use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Settings\CustomerProfileController;
+use App\Http\Controllers\Settings\MerchantPasswordController;
+use App\Http\Controllers\Settings\MerchantProfileController;
 use App\Http\Controllers\StoreGalleryController;
 use App\Http\Controllers\StoreOperatingHourController;
 use App\Http\Controllers\StoreProfileController;
@@ -375,6 +377,22 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.merchant-review.indexMerchant');
                 Route::delete('/destroy/{id}', 'destroy')->name('merchant.merchant-review.destroy');
             });
+    });
+
+    // Settings
+    Route::prefix('/merchant/settings')->group(function () {
+        // Profile
+        Route::get('/profile', [MerchantProfileController::class, 'edit'])->name('merchant.setting.edit');
+        Route::put('/profile', [MerchantProfileController::class, 'update'])->name('merchant.setting.update');
+
+        // Appearance
+        Route::get('/appearance', function () {
+            return Inertia::render('merchant/settings/appearance');
+        })->name('appearance');
+
+        // Password
+        Route::get('/password', [MerchantPasswordController::class, 'edit'])->name('merchant.password.edit');
+        Route::put('/password', [MerchantPasswordController::class, 'update'])->name('merchant.password.update');
     });
 });
 
