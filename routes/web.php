@@ -23,6 +23,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Settings\CustomerPasswordController;
 use App\Http\Controllers\Settings\CustomerProfileController;
 use App\Http\Controllers\Settings\MerchantPasswordController;
 use App\Http\Controllers\Settings\MerchantProfileController;
@@ -462,7 +463,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Setting
     Route::get('/settings/profile', [CustomerProfileController::class, 'edit'])->name('customer.setting.edit');
-    Route::put('/settings/profile/', [CustomerProfileController::class, 'update'])->name('customer.setting.update');
+    Route::put('/settings/profile', [CustomerProfileController::class, 'update'])->name('customer.setting.update');
+    Route::get('/settings/password', [CustomerPasswordController::class, 'edit'])->name('customer.password.edit');
+    Route::put('/settings/password', [CustomerPasswordController::class, 'update'])->name('customer.password.update');
+    Route::get('/settings/appearance', function () {
+        return Inertia::render('customer/pages/settings/appearance');
+    })->name('appearance');
 });
 
 // COURIER ROUTES
