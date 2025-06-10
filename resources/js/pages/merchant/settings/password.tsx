@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import MerchantLayout from '@/layouts/merchant/layout';
+import { cn } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Icon } from '@iconify/react';
 import { Head, useForm } from '@inertiajs/react';
+import { Loader } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -70,9 +71,9 @@ export default function Password() {
                                 value={data.current_password}
                                 onChange={(e) => setData('current_password', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full rounded-xl py-6"
+                                className={cn('mt-2 rounded-lg py-6 shadow-none', errors.current_password && 'border border-red-500')}
                                 autoComplete="current-password"
-                                placeholder="Current password"
+                                placeholder="Password saat ini"
                             />
 
                             <InputError message={errors.current_password} />
@@ -86,9 +87,9 @@ export default function Password() {
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full rounded-xl py-6"
+                                className={cn('mt-2 rounded-lg py-6 shadow-none', errors.password && 'border border-red-500')}
                                 autoComplete="new-password"
-                                placeholder="New password"
+                                placeholder="Password baru"
                             />
 
                             <InputError message={errors.password} />
@@ -102,9 +103,9 @@ export default function Password() {
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full rounded-xl py-6"
+                                className={cn('mt-2 rounded-lg py-6 shadow-none', errors.password_confirmation && 'border border-red-500')}
                                 autoComplete="new-password"
-                                placeholder="Confirm password"
+                                placeholder="Konfirmasi password"
                             />
 
                             <InputError message={errors.password_confirmation} />
@@ -113,7 +114,7 @@ export default function Password() {
                         <div className="flex items-center gap-4">
                             <Button disabled={processing} className="w-full cursor-pointer py-6">
                                 Simpan Perubahan
-                                <Icon icon={'heroicons:check'} className="text-background" />
+                                {processing && <Loader className="ml-2 h-5 w-5" />}
                             </Button>
 
                             <Transition

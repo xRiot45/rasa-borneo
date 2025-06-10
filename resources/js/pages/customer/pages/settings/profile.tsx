@@ -302,7 +302,7 @@ export default function Profile({ mustVerifyEmail, status, customer }: Props) {
 
                             <div className="flex items-center gap-4">
                                 <Button disabled={processing} className="w-full rounded-lg py-6">
-                                    Update Profile
+                                    Simpan Perubahan
                                     {processing && <Loader className="ml-2 h-5 w-5" />}
                                 </Button>
 

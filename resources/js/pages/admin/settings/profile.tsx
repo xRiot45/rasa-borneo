@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AdminLayout from '@/layouts/admin/layout';
+import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Loader } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import DeleteUser from './components/delete-user';
 
@@ -59,7 +61,7 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
 
                         <Input
                             id="full_name"
-                            className="mt-1 block w-full"
+                            className={cn('mt-2 rounded-lg py-6 shadow-none', errors.full_name && 'border border-red-500')}
                             value={data.full_name}
                             onChange={(e) => setData('full_name', e.target.value)}
                             required
@@ -76,7 +78,7 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
                         <Input
                             id="email"
                             type="email"
-                            className="mt-1 block w-full"
+                            className={cn('mt-2 rounded-lg py-6 shadow-none', errors.email && 'border border-red-500')}
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             required
@@ -110,7 +112,10 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
                     )}
 
                     <div className="flex items-center gap-4">
-                        <Button disabled={processing}>Save</Button>
+                        <Button disabled={processing} className="w-full cursor-pointer py-6">
+                            Simpan Perubahan
+                            {processing && <Loader className="ml-2 h-5 w-5" />}
+                        </Button>
 
                         <Transition
                             show={recentlySuccessful}

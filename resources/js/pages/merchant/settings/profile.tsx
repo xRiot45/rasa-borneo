@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Loader } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import DeleteUser from './components/delete-user';
 
@@ -112,7 +113,10 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
                     )}
 
                     <div className="flex items-center gap-4">
-                        <Button disabled={processing}>Simpan Perubahan</Button>
+                        <Button disabled={processing}>
+                            Simpan Perubahan
+                            {processing && <Loader className="ml-2 h-5 w-5" />}
+                        </Button>
 
                         <Transition
                             show={recentlySuccessful}

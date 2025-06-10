@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import CourierLayout from '@/layouts/courier/layout';
 import CourierSettingsLayout from '@/layouts/settings/courier-setting-layout';
+import { cn } from '@/lib/utils';
+import { Loader } from 'lucide-react';
 import DeleteUser from './components/delete-user';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -54,7 +56,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                             <Input
                                 id="full_name"
-                                className="mt-1 block w-full"
+                                className={cn('mt-2 rounded-lg py-6 shadow-none', errors.full_name && 'border border-red-500')}
                                 value={data.full_name}
                                 onChange={(e) => setData('full_name', e.target.value)}
                                 required
@@ -71,7 +73,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Input
                                 id="email"
                                 type="email"
-                                className="mt-1 block w-full"
+                                className={cn('mt-2 rounded-lg py-6 shadow-none', errors.email && 'border border-red-500')}
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
@@ -105,7 +107,10 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save</Button>
+                            <Button disabled={processing} className="w-full rounded-lg py-6">
+                                Simpan Perubahan
+                                {processing && <Loader className="ml-2 h-5 w-5" />}
+                            </Button>
 
                             <Transition
                                 show={recentlySuccessful}
