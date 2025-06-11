@@ -17,7 +17,7 @@ export function DataTableRowActions({ row }: { row: Row<Order> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('merchant.order.show', row.original.transaction_code)} className="cursor-pointer">
+                    <Link href={route('admin.order.show', row.original.transaction_code)} className="cursor-pointer">
                         <DropdownMenuItem className="cursor-pointer p-3">
                             Lihat Detail Pesanan
                             <DropdownMenuShortcut>

@@ -191,6 +191,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->group(function () {
                 Route::get('/', 'orderHistoryAdmin')->name('admin.order-history.index');
             });
+
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('/show-order/{transactionCode}', 'showOrderDetailAdmin')->name('admin.order.show');
+        });
     });
 
     // --- Setting ---

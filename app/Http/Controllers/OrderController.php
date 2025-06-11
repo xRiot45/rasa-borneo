@@ -116,6 +116,17 @@ class OrderController extends Controller
         ]);
     }
 
+    public function showOrderDetailAdmin(string $transactionCode): InertiaResponse
+    {
+        $order = Order::where('transaction_code', $transactionCode)
+            ->with(['transactionItems', 'customer', 'orderStatus'])
+            ->firstOrFail();
+
+        return Inertia::render('admin/order-management/shared/order-detail/index', [
+            'order' => $order,
+        ]);
+    }
+
     public function showOrderDetailMerchant(string $transactionCode): InertiaResponse
     {
         $order = Order::where('transaction_code', $transactionCode)
