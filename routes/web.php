@@ -175,6 +175,24 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             });
     });
 
+    // Order Management
+    Route::prefix('/admin/order-management')->group(function () {
+        // Incoming Order
+        Route::prefix('/incoming-order')
+            ->controller(OrderController::class)
+            ->group(function () {
+                Route::get('/', 'incomingOrderAdmin')->name('admin.incoming-order.index');
+                Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('admin.incoming-order.updateOrderStatus');
+            });
+
+        // Order History
+        Route::prefix('/order-history')
+            ->controller(OrderController::class)
+            ->group(function () {
+                Route::get('/', 'orderHistoryAdmin')->name('admin.order-history.index');
+            });
+    });
+
     // --- Setting ---
     // Fee
     Route::prefix('/admin/settings/fee')
@@ -310,7 +328,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         Route::prefix('/incoming-order')
             ->controller(OrderController::class)
             ->group(function () {
-                Route::get('/', 'incomingOrder')->name('merchant.incoming-order.index');
+                Route::get('/', 'incomingOrderMerchant')->name('merchant.incoming-order.index');
                 Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('merchant.incoming-order.updateOrderStatus');
             });
 
@@ -318,7 +336,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         Route::prefix('/order-history')
             ->controller(OrderController::class)
             ->group(function () {
-                Route::get('/', 'orderHistory')->name('merchant.order-history.index');
+                Route::get('/', 'orderHistoryMerchant')->name('merchant.order-history.index');
             });
 
         Route::controller(OrderController::class)->group(function () {

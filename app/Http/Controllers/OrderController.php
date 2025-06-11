@@ -16,7 +16,53 @@ use Inertia\Response as InertiaResponse;
 
 class OrderController extends Controller
 {
-    public function incomingOrder(): InertiaResponse
+    public function incomingOrderAdmin(): InertiaResponse
+    {
+        $dineInOrders = Order::whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::DINEIN->value)
+            ->whereHas('latestOrderStatus', function ($query) {
+                $query->where('status', '!=', OrderStatusEnum::COMPLETED->value);
+            })
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $takeAwayOrders = Order::whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::TAKEAWAY->value)
+            ->whereHas('latestOrderStatus', function ($query) {
+                $query->where('status', '!=', OrderStatusEnum::COMPLETED->value);
+            })
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $deliveryOrders = Order::whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::DELIVERY->value)
+            ->whereHas('latestOrderStatus', function ($query) {
+                $query->where('status', '!=', OrderStatusEnum::COMPLETED->value);
+            })
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $pickupOrders = Order::whereNotNull('checked_out_at')
+            ->where('order_type', OrderTypeEnum::PICKUP->value)
+            ->whereHas('latestOrderStatus', function ($query) {
+                $query->where('status', '!=', OrderStatusEnum::COMPLETED->value);
+            })
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return Inertia::render('admin/order-management/incoming-orders/index', [
+            'dineInOrders' => $dineInOrders,
+            'takeAwayOrders' => $takeAwayOrders,
+            'deliveryOrders' => $deliveryOrders,
+            'pickupOrders' => $pickupOrders,
+        ]);
+    }
+
+    public function incomingOrderMerchant(): InertiaResponse
     {
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->first();
@@ -126,7 +172,21 @@ class OrderController extends Controller
         return redirect()->route('merchant.incoming-order.index')->with('success', 'Status berhasil diperbarui.');
     }
 
-    public function orderHistory(): InertiaResponse
+    public function orderHistoryAdmin(): InertiaResponse
+    {
+        $orders = Order::whereHas('latestOrderStatus', function ($query) {
+            $query->where('status', OrderStatusEnum::COMPLETED->value);
+        })
+            ->with(['transactionItems', 'latestOrderStatus', 'merchant'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return Inertia::render('admin/order-management/order-history/index', [
+            'orders' => $orders,
+        ]);
+    }
+
+    public function orderHistoryMerchant(): InertiaResponse
     {
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->first();
