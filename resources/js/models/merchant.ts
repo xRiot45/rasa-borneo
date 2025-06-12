@@ -12,7 +12,7 @@ export interface Merchant {
     id: number;
     user: User;
     user_id: number;
-    id_card_photo: string | null;
+    id_card_photo: File | null;
 
     // Informasi Bisnis
     business_name: string;
@@ -60,8 +60,8 @@ export type MerchantForm = {
     phone_number: string;
 
     // Merchant fields
-    id_card_photo: File | null;
     business_name: string;
+    id_card_photo: File | null;
     business_phone: string;
     business_email: string;
     postal_code: string;

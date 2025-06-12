@@ -144,6 +144,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/', 'index')->name('admin.merchants.index');
                 Route::get('/create', 'create')->name('admin.merchants.create');
                 Route::post('/create', 'store')->name('admin.merchants.store');
+                Route::get('/edit/{id}', 'edit')->name('admin.merchants.edit');
+                Route::put('/edit/{id}', 'update')->name('admin.merchants.update');
                 Route::get('/show/{id}', 'show')->name('admin.merchants.show');
                 Route::put('/verify/{id}', 'verifyMerchant')->name('admin.merchants.verify');
                 Route::delete('/soft-delete/{merchant}', 'softDelete')->name('admin.merchants.softDelete');
@@ -158,6 +160,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/', 'indexAdmin')->name('admin.couriers.index');
                 Route::get('/create', 'create')->name('admin.couriers.create');
                 Route::post('/create', 'store')->name('admin.couriers.store');
+                // Route::get('/edit/{id}', 'edit')->name('admin.couriers.edit');
                 Route::get('/show/{id}', 'show')->name('admin.couriers.show');
                 Route::delete('/soft-delete/{courier}', 'softDelete')->name('admin.couriers.softDelete');
                 Route::delete('/force-delete/{courier}', 'forceDelete')->name('admin.couriers.forceDelete');

@@ -10,13 +10,17 @@ import AdminLayout from '@/layouts/admin/layout';
 import { cn } from '@/lib/utils';
 import { Bank } from '@/models/bank';
 import { BusinessCategory } from '@/models/business-category';
-import { MerchantForm } from '@/models/merchant';
+import { Merchant, MerchantForm } from '@/models/merchant';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+
+interface Props {
+    merchant: Merchant;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -33,40 +37,31 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function FormPage() {
+export default function FormPage({ merchant }: Props) {
+    const isEdit = !!merchant?.id;
+
     const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
     const { banks } = usePage<{ banks: Bank[] }>().props;
     const [search, setSearch] = useState<string>('');
 
     const { data, setData, post, processing, errors } = useForm<Required<MerchantForm>>({
-        // Akun
-        full_name: '',
-        email: '',
+        full_name: isEdit ? merchant?.user?.full_name : '',
+        email: isEdit ? merchant?.user?.email : '',
         password: '12345678',
         password_confirmation: '12345678',
-        phone_number: '',
-
-        // Merchant
-        id_card_photo: null,
-
-        //
-        business_name: '',
-        business_phone: '',
-        business_email: '',
-        business_category_id: 0,
-
-        //
-        postal_code: '',
-        tax_identification_number: '',
-
-        //
-        business_address: '',
-        business_description: '',
-
-        //
-        bank_code: '',
-        bank_account_number: '',
-        bank_account_name: '',
+        phone_number: isEdit ? merchant?.user?.phone_number : '',
+        id_card_photo: isEdit ? merchant?.id_card_photo : null,
+        business_name: isEdit ? merchant?.business_name : '',
+        business_phone: isEdit ? merchant?.business_phone : '',
+        business_email: isEdit ? merchant?.business_email : '',
+        business_category_id: isEdit ? merchant?.business_category_id : 0,
+        postal_code: isEdit ? merchant?.postal_code : '',
+        tax_identification_number: isEdit ? merchant?.tax_identification_number : '',
+        business_address: isEdit ? merchant?.business_address : '',
+        business_description: isEdit ? merchant?.business_description : '',
+        bank_code: isEdit ? merchant?.bank_code : '',
+        bank_account_number: isEdit ? merchant?.bank_account_number : '',
+        bank_account_name: isEdit ? merchant?.bank_account_name : '',
     });
 
     const filteredBanks = useMemo(() => {
@@ -86,7 +81,7 @@ export default function FormPage() {
 
         const formData = new FormData();
         Object.entries(data).forEach(([key, value]) => {
-            if (key !== 'id_card_photo' && key !== 'profile_image' && key !== 'driving_license_photo') {
+            if (key !== 'id_card_photo') {
                 if (typeof value === 'number') {
                     formData.append(key, String(value));
                 } else if (value instanceof Date) {
@@ -101,37 +96,66 @@ export default function FormPage() {
             formData.append('id_card_photo', data.id_card_photo);
         }
 
-        post(route('admin.merchants.store'), {
-            forceFormData: true,
-            onSuccess: () => {
-                toast.success('Success', {
-                    description: 'Merchant Berhasil Ditambahkan!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-            onError: (error) => {
-                console.log(error);
-                Object.keys(error).forEach((key) => {
-                    toast.error('Error', {
-                        description: error[key],
+        if (isEdit) {
+            formData.append('_method', 'put');
+            router.post(route('admin.merchants.update', merchant.user.id), formData, {
+                forceFormData: true,
+                preserveState: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Merchant Berhasil Diubah!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
-                });
-            },
-        });
+                },
+                onError: (error) => {
+                    console.log(error);
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        } else {
+            post(route('admin.merchants.store'), {
+                forceFormData: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Merchant Berhasil Ditambahkan!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    console.log(error);
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        }
     };
 
     return (
         <>
-            <Head title="Form Page" />
+            <Head title={isEdit ? 'Edit Merchant' : 'Tambah Merchant'} />
             <AdminLayout breadcrumbs={breadcrumbs}>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <main className="space-y-6 p-4">
                         {/* Form Akun Kurir */}
                         <Card className="rounded-xl py-8 shadow-none">
@@ -255,7 +279,8 @@ export default function FormPage() {
                                         </Label>
                                         <FileDropzone
                                             onFileChange={(file) => handleFileChange('id_card_photo', file)}
-                                            error={errors?.id_card_photo}
+                                            error={errors.id_card_photo}
+                                            initialImage={data.id_card_photo instanceof File ? undefined : data.id_card_photo}
                                         />
                                         <InputError message={errors?.id_card_photo} className="mt-2" />
                                     </div>
@@ -322,7 +347,10 @@ export default function FormPage() {
                                         <Label htmlFor="business_category_id">
                                             Kategori Bisnis <strong className="text-red-500">*</strong>
                                         </Label>
-                                        <Select onValueChange={(e) => setData('business_category_id', Number(e))}>
+                                        <Select
+                                            onValueChange={(e) => setData('business_category_id', Number(e))}
+                                            value={String(data.business_category_id)}
+                                        >
                                             <SelectTrigger className="mt-2 w-full py-6">
                                                 <SelectValue placeholder="Pilih Kategori Bisnis" />
                                             </SelectTrigger>
@@ -509,7 +537,7 @@ export default function FormPage() {
                             </Link>
                             <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Tambah Merchant <Icon icon="heroicons:plus" />
+                                {isEdit ? 'Simpan Perubahan' : 'Tambah Merchant'} <Icon icon={isEdit ? 'material-symbols:save' : 'heroicons:plus'} />
                             </Button>
                         </div>
                     </main>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\MerchantRegisterRequest;
+use App\Http\Requests\UpdateMerchantRequest;
 use App\Mail\MerchantRegisteredMail;
 use App\Models\BusinessCategory;
 use App\Models\Merchant;
@@ -53,6 +54,7 @@ class MerchantController extends Controller
     {
         $validated = $request->validated();
         $defaultPassword = '12345678';
+
         $user = User::create([
             'full_name' => $validated['full_name'],
             'email' => $validated['email'],
@@ -65,19 +67,20 @@ class MerchantController extends Controller
                 'email_verified_at' => now(),
             ])
             ->save();
+
         $user->assignRole('merchant');
 
-        if ($request->hasFile('id_card_photo') && $request->file('id_card_photo')->isValid()) {
-            $file = $request->file('id_card_photo');
+        $fileField = 'id_card_photo';
+        if ($request->hasFile($fileField) && $request->file($fileField)->isValid()) {
+            $file = $request->file($fileField);
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('foto_ktp', $filename, 'public');
+            $folderPath = 'merchant_assets/' . $fileField;
+            $path = $file->storeAs($folderPath, $filename, 'public');
 
-            $validated['id_card_photo'] = '/' . 'storage/' . $path;
+            $validated[$fileField] = '/storage/' . $path;
         }
 
         $bankCode = $validated['bank_code'];
-
-        // Cek jika bank code atau bank name kosong
         if (!$bankCode) {
             return back()->withErrors(['bank' => 'Bank tidak valid']);
         }
@@ -101,7 +104,62 @@ class MerchantController extends Controller
 
         Mail::to($user->email)->send(new MerchantRegisteredMail($user, $defaultPassword));
 
-        return redirect()->route('admin.merchants.index')->with(['success' => 'Register merchant successfully']);
+        return redirect()
+            ->route('admin.merchants.index')
+            ->with(['success' => 'Register merchant successfully']);
+    }
+
+    public function edit(int $id): InertiaResponse
+    {
+        $merchant = Merchant::withTrashed()->findOrFail($id);
+        $merchant->load('user');
+        return Inertia::render('admin/users-management/merchants/pages/form', [
+            'merchant' => $merchant,
+        ]);
+    }
+
+    public function update(UpdateMerchantRequest $request, int $id): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $user = User::findOrFail($id);
+        $merchant = $user->merchant;
+
+        if (!$merchant) {
+            return back()->withErrors(['merchant' => 'Data merchant tidak ditemukan.']);
+        }
+
+        $userData = collect($validated)
+            ->only(['full_name', 'email', 'phone_number'])
+            ->toArray();
+        if (!empty($userData)) {
+            $user->update($userData);
+        }
+
+        $fileField = 'id_card_photo';
+
+        if ($request->hasFile($fileField) && $request->file($fileField)->isValid()) {
+            if ($merchant->$fileField && Storage::disk('public')->exists(str_replace('/storage/', '', $merchant->$fileField))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $merchant->$fileField));
+            }
+
+            $file = $request->file($fileField);
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $folderPath = 'merchant_assets/' . $fileField;
+            $path = $file->storeAs($folderPath, $filename, 'public');
+
+            $validated[$fileField] = '/storage/' . $path;
+        }
+
+        $merchantData = collect($validated)
+            ->except(['full_name', 'email', 'phone_number'])
+            ->toArray();
+        $merchant->update($merchantData);
+
+        return redirect()
+            ->route('admin.merchants.index')
+            ->with(['success' => 'Data merchant berhasil diperbarui.']);
     }
 
     public function merchant_categories(): InertiaResponse
