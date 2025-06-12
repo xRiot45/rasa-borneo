@@ -11,6 +11,7 @@ use App\Mail\MerchantWithdrawalProofMail;
 use App\Models\Courier;
 use App\Models\CourierWallet;
 use App\Models\Merchant;
+use App\Models\MerchantWallet;
 use App\Models\Transaction;
 use App\Models\Withdraw;
 use Illuminate\Http\RedirectResponse;
@@ -22,44 +23,22 @@ use Inertia\Response as InertiaResponse;
 
 class WithdrawController extends Controller
 {
-    private function calculateMerchantBalance(int $merchantId): array
-    {
-        // Hitung total pendapatan cashless yang sudah dibayar
-        $subtotal = Transaction::where('merchant_id', $merchantId)->where('payment_method', PaymentMethodEnum::CASHLESS)->where('payment_status', PaymentStatusEnum::PAID)->sum('subtotal_transaction_item');
-
-        $totalDiscount = Transaction::where('merchant_id', $merchantId)->where('payment_method', PaymentMethodEnum::CASHLESS)->where('payment_status', PaymentStatusEnum::PAID)->sum('discount_total');
-
-        $totalRevenue = $subtotal - $totalDiscount;
-
-        $totalWithdrawn = Withdraw::where('merchant_id', $merchantId)
-            ->whereNotIn('status', [WithdrawStatusEnum::REJECTED, WithdrawStatusEnum::CANCELED])
-            ->sum('amount');
-
-        $remainingBalance = $totalRevenue - $totalWithdrawn;
-
-        return [
-            'subtotal' => $subtotal,
-            'totalDiscount' => $totalDiscount,
-            'totalRevenue' => $totalRevenue,
-            'totalWithdrawn' => $totalWithdrawn,
-            'remainingBalance' => $remainingBalance,
-        ];
-    }
-
     public function indexMerchant(): InertiaResponse
     {
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $balances = $this->calculateMerchantBalance($merchantId);
+        $wallet = MerchantWallet::where('merchant_id', $merchantId)->first();
+        $balances = $wallet->balance;
+
         $withdraws = Withdraw::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
+        $totalWithdrawn = Withdraw::where('merchant_id', $merchantId)->sum('amount');
 
         return Inertia::render('merchant/financial-management/withdraw/index', [
             'data' => $withdraws,
-            'totalRevenue' => $balances['totalRevenue'],
-            'totalWithdrawn' => $balances['totalWithdrawn'],
-            'remainingBalance' => $balances['remainingBalance'],
+            'balances' => $balances,
+            'total_withdrawn' => $totalWithdrawn,
         ]);
     }
 
@@ -75,7 +54,7 @@ class WithdrawController extends Controller
         ]);
     }
 
-    public function create(): InertiaResponse
+    public function showMerchantWithdrawForm(): InertiaResponse
     {
         $user = Auth::user();
         $merchantBank = Merchant::where('user_id', $user->id)->select('bank_code', 'bank_account_number', 'bank_account_name')->first();
@@ -90,7 +69,7 @@ class WithdrawController extends Controller
         return Inertia::render('courier/pages/withdraw/index');
     }
 
-    public function store(WithdrawRequest $request): RedirectResponse
+    public function requestWithdrawMerchant(WithdrawRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -98,9 +77,9 @@ class WithdrawController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $balances = $this->calculateMerchantBalance($merchantId);
+        $wallet = MerchantWallet::where('merchant_id', $merchantId)->first();
 
-        if ($validated['amount'] > $balances['remainingBalance']) {
+        if ($validated['amount'] > $wallet->balance) {
             return back()->withErrors(['amount' => 'Jumlah penarikan melebihi saldo yang tersedia.']);
         }
 
@@ -157,22 +136,29 @@ class WithdrawController extends Controller
 
         $withdraw = Withdraw::with(['merchant.user', 'courier.user'])->findOrFail($withdrawId);
 
-
         if ($request->hasFile('transfer_proof') && $request->file('transfer_proof')->isValid()) {
             $file = $request->file('transfer_proof');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('withdraw_proofs', $filename, 'public');
 
             if ($withdraw->status !== WithdrawStatusEnum::TRANSFERED) {
-                $wallet = CourierWallet::where('courier_id', $withdraw->courier_id)->first();
+                $walletCourier = CourierWallet::where('courier_id', $withdraw->courier_id)->first();
+                $walletMerchant = MerchantWallet::where('merchant_id', $withdraw->merchant_id)->first();
 
-                if ($wallet) {
-                    if ($wallet->balance < $withdraw->amount) {
+                if ($walletCourier) {
+                    if ($walletCourier->balance < $withdraw->amount) {
                         return back()->withErrors(['error' => 'Saldo courier tidak mencukupi untuk pengurangan.']);
                     }
 
-                    $wallet->balance -= $withdraw->amount;
-                    $wallet->save();
+                    $walletCourier->balance -= $withdraw->amount;
+                    $walletCourier->save();
+                } elseif ($walletMerchant) {
+                    if ($walletMerchant->balance < $withdraw->amount) {
+                        return back()->withErrors(['error' => 'Saldo merchant tidak mencukupi untuk pengurangan.']);
+                    }
+
+                    $walletMerchant->balance -= $withdraw->amount;
+                    $walletMerchant->save();
                 }
             }
 

@@ -73,7 +73,7 @@ export default function FormPage({ merchantBank }: Props) {
     };
 
     const handleSubmit = () => {
-        post(route('merchant.withdraw.store'), {
+        post(route('merchant.withdraw.requestWithdrawMerchant'), {
             onSuccess: () => {
                 setShowDialogConfirm(false);
                 toast.success('Success', {

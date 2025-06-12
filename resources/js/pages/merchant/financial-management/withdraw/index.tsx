@@ -10,9 +10,8 @@ import { columns } from './partials/table/columns';
 
 interface Props {
     data: Withdraw[];
-    totalRevenue: number;
-    totalWithdrawn: number;
-    remainingBalance: number;
+    balances: number;
+    total_withdrawn: number;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -26,7 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function WithdrawPage({ data, totalRevenue, totalWithdrawn, remainingBalance }: Props) {
+export default function WithdrawPage({ data, balances, total_withdrawn }: Props) {
     return (
         <>
             <Head title="Penarikan Dana" />
@@ -39,26 +38,19 @@ export default function WithdrawPage({ data, totalRevenue, totalWithdrawn, remai
                     <ButtonPartials />
                 </div>
 
-                <div className="grid gap-4 p-4 lg:grid-cols-3">
+                <div className="grid gap-4 p-4 lg:grid-cols-2">
                     <CardSummaryStatistics
                         title="Total Pendapatan"
-                        data={formatCurrency(totalRevenue)}
+                        data={formatCurrency(balances)}
                         description="Total pendapatan bersih dari transaksi cashless yang telah dibayar (termasuk diskon yang dikurangi)"
                         icon="bx:money"
                     />
 
                     <CardSummaryStatistics
-                        title="Total Penarikan"
-                        data={formatCurrency(totalWithdrawn)}
-                        description="Total dana yang telah diajukan dan berhasil ditarik oleh merchant"
-                        icon="ph:hand-withdraw"
-                    />
-
-                    <CardSummaryStatistics
-                        title="Sisa Saldo"
-                        data={formatCurrency(remainingBalance)}
-                        description="Saldo yang masih tersedia dan belum ditarik oleh merchant"
-                        icon="ph:hand-withdraw"
+                        title="Total Penarikan Dana"
+                        data={formatCurrency(total_withdrawn)}
+                        description="Total penarikan dana yang telah diajukan"
+                        icon="bx:money"
                     />
                 </div>
 
