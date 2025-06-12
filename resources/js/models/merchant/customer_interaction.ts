@@ -1,8 +1,10 @@
 import { Customer } from '../customer';
 import { MenuItem } from '../menu-item';
+import { Merchant } from '../merchant';
 
 export interface MenuReview {
     id: number;
+    merchant: Merchant;
     comment: string;
     rating: number;
     menu_item: MenuItem;
@@ -13,6 +15,7 @@ export interface MenuReview {
 
 export interface MerchantReview {
     id: number;
+    merchant: Merchant;
     comment: string;
     rating: number;
     customer: Customer;

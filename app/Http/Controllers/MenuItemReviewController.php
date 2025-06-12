@@ -70,6 +70,16 @@ class MenuItemReviewController extends Controller
         ]);
     }
 
+    public function indexAdmin(): InertiaResponse
+    {
+        $menuReviews = MenuItemReview::with('customer.user', 'menuItem.menuCategory', 'menuItem.merchant')
+            ->get();
+
+        return Inertia::render('admin/customer-interaction/menu-review/index', [
+            'menuReviews' => $menuReviews
+        ]);
+    }
+
     public function destroy(int $menuReviewId): RedirectResponse
     {
         MenuItemReview::find($menuReviewId)->delete();

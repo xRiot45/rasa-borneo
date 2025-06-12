@@ -106,7 +106,6 @@ export default function Profile({ mustVerifyEmail, status, customer }: Props) {
                 reset();
             },
             onError: (errors) => {
-                console.log(errors);
                 Object.entries(errors).forEach(([key, value]) => {
                     setError(key as keyof CustomerProfileForm, value);
                 });

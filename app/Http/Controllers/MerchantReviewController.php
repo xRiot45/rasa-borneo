@@ -47,6 +47,16 @@ class MerchantReviewController extends Controller
         ]);
     }
 
+    public function indexAdmin(): InertiaResponse
+    {
+        $merchantReviews = MerchantReview::with('customer.user', 'merchant.user')
+            ->get();
+
+        return Inertia::render('admin/customer-interaction/merchant-review/index', [
+            'merchantReviews' => $merchantReviews
+        ]);
+    }
+
     public function destroy(int $merchantReviewId): RedirectResponse
     {
         MerchantReview::destroy($merchantReviewId);

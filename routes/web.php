@@ -197,6 +197,25 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         });
     });
 
+    // Customer Interaction
+    Route::prefix('/admin/customer-interaction')->group(function () {
+        // Menu Review
+        Route::prefix('/menu-review')
+            ->controller(MenuItemReviewController::class)
+            ->group(function () {
+                Route::get('/', 'indexAdmin')->name('merchant.menu-review.indexAdmin');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.menu-review.destroy');
+            });
+
+        // Merchant Review
+        Route::prefix('/merchant-review')
+            ->controller(MerchantReviewController::class)
+            ->group(function () {
+                Route::get('/', 'indexAdmin')->name('merchant.merchant-review.indexAdmin');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.merchant-review.destroy');
+            });
+    });
+
     // --- Setting ---
     // Fee
     Route::prefix('/admin/settings/fee')
