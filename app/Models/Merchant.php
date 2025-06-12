@@ -143,4 +143,9 @@ class Merchant extends Model
     {
         return $this->hasMany(MerchantReview::class);
     }
+
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(MerchantWallet::class);
+    }
 }
