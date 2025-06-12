@@ -50,6 +50,11 @@ const mainNavItems: NavGroup[] = [
                 icon: 'la:users',
             },
             {
+                title: 'Admin',
+                href: '/admin/users-management/admins',
+                icon: 'ri:admin-fill',
+            },
+            {
                 title: 'Customer / Pelanggan',
                 href: '/admin/users-management/customers',
                 icon: 'carbon:customer',

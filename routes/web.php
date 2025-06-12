@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -124,6 +125,18 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('admin.all-users.edit');
                 Route::put('/edit/{id}', 'update')->name('admin.all-users.update');
                 Route::delete('/delete/{id}', 'destroy')->name('admin.all-users.destroy');
+            });
+
+        // Admin
+        Route::prefix('/admins')
+            ->controller(AdminController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('admin.admins.index');
+                Route::get('/create', 'create')->name('admin.admins.create');
+                Route::post('/create', 'store')->name('admin.admins.store');
+                Route::get('/edit/{id}', 'edit')->name('admin.admins.edit');
+                Route::put('/edit/{id}', 'update')->name('admin.admins.update');
+                Route::delete('/{id}', 'destroy')->name('admin.admins.destroy');
             });
 
         // Customer
