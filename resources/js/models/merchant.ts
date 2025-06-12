@@ -50,3 +50,26 @@ export interface Merchant {
     menu_items: MenuItem[];
     reviews: MerchantReview[];
 }
+
+export type MerchantForm = {
+    // User fields
+    full_name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    phone_number: string;
+
+    // Merchant fields
+    id_card_photo: File | null;
+    business_name: string;
+    business_phone: string;
+    business_email: string;
+    postal_code: string;
+    business_description: string;
+    business_address: string;
+    business_category_id: number;
+    bank_code: string;
+    bank_account_number: string;
+    bank_account_name: string;
+    tax_identification_number: string;
+};

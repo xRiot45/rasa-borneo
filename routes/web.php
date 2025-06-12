@@ -142,6 +142,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(MerchantController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('admin.merchants.index');
+                Route::get('/create', 'create')->name('admin.merchants.create');
+                Route::post('/create', 'store')->name('admin.merchants.store');
                 Route::get('/show/{id}', 'show')->name('admin.merchants.show');
                 Route::put('/verify/{id}', 'verifyMerchant')->name('admin.merchants.verify');
                 Route::delete('/soft-delete/{merchant}', 'softDelete')->name('admin.merchants.softDelete');
