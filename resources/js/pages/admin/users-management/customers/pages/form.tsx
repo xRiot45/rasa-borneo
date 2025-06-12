@@ -226,8 +226,8 @@ export default function FormPage({ customer }: Props) {
                                         <Input
                                             id="password"
                                             type="password"
-                                            required
                                             value={data.password}
+                                            required={isEdit ? false : true}
                                             onChange={(e) => setData('password', e.target.value)}
                                             placeholder="Masukkan password customer"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
@@ -243,7 +243,7 @@ export default function FormPage({ customer }: Props) {
                                         <Input
                                             id="password_confirmation"
                                             type="password"
-                                            required
+                                            required={isEdit ? false : true}
                                             value={data.password_confirmation}
                                             onChange={(e) => setData('password_confirmation', e.target.value)}
                                             placeholder="Masukkan konfirmasi password customer"

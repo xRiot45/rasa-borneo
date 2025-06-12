@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\CustomerRegisterRequest;
+use App\Http\Requests\CustomerUpdateRequest;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -75,6 +76,47 @@ class CustomerController extends Controller
         return Inertia::render('admin/users-management/customers/pages/form', [
             'customer' => $customer,
         ]);
+    }
+
+    public function update(CustomerUpdateRequest $request, int $id): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $user = User::findOrFail($id);
+        $customer = $user->customer;
+
+        $user = $customer->user;
+        $user->update([
+            'full_name' => $validated['full_name'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'],
+            'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
+        ]);
+
+        $fileField = 'profile_image';
+        if ($request->hasFile($fileField) && $request->file($fileField)->isValid()) {
+            if ($customer->profile_image) {
+                $oldPath = str_replace('/storage/', '', $customer->profile_image);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            $file = $request->file($fileField);
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $folderPath = 'customer_assets/' . $fileField;
+            $path = $file->storeAs($folderPath, $filename, 'public');
+            $validated[$fileField] = '/storage/' . $path;
+        }
+
+        $customer->update([
+            'birthplace' => $validated['birthplace'],
+            'birthdate' => $validated['birthdate'],
+            'gender' => $validated['gender'],
+            'profile_image' => $validated['profile_image'] ?? $customer->profile_image,
+        ]);
+
+        return redirect()
+            ->route('admin.customers.index')
+            ->with(['success' => 'Customer berhasil diperbarui']);
     }
 
     public function show(Customer $customer): InertiaResponse
