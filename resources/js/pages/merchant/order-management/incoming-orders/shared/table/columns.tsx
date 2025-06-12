@@ -44,27 +44,6 @@ export const columns: ColumnDef<Order>[] = [
         enableHiding: true,
         enableSorting: true,
     },
-    // {
-    //     id: 'orderer_info',
-    //     header: ({ column }) => <DataTableColumnHeader column={column} title="Informasi Pemesan" />,
-    //     cell: ({ row }) => {
-    //         const name = row.original.orderer_name;
-    //         const phone = row.original.orderer_phone_number;
-    //         return (
-    //             <div className="space-y-1 text-sm">
-    //                 <h1 className="font-medium">{name}</h1>
-    //                 <span className="text-sm">{phone}</span>
-    //             </div>
-    //         );
-    //     },
-    //     filterFn: (row, _columnId, filterValue) => {
-    //         const name = row.original.orderer_name?.toLowerCase() ?? '';
-    //         const phone = row.original.orderer_phone_number?.toLowerCase() ?? '';
-    //         return name.includes(filterValue.toLowerCase()) || phone.includes(filterValue.toLowerCase());
-    //     },
-    //     enableSorting: false,
-    //     enableHiding: false,
-    // },
     {
         id: 'order_type',
         accessorKey: 'order_type',
@@ -83,7 +62,9 @@ export const columns: ColumnDef<Order>[] = [
         cell: ({ row }) => {
             const method = row.getValue('payment_method');
             const color =
-                method === PaymentMethodEnum.CASH ? 'bg-green-600 text-white border-none font-bold' : 'bg-blue-600 text-white border-none font-bold';
+                method === PaymentMethodEnum.CASH
+                    ? 'bg-green-100 text-green-600 border-green-600 font-bold'
+                    : 'bg-blue-100 text-blue-600 border-blue-600 font-bold';
 
             return (
                 <Badge variant="outline" className={`${color} rounded-sm`}>
