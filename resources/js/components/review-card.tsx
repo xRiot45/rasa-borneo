@@ -15,8 +15,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ name, avatar, rating, comment, 
     return (
         <Card className="rounded-xl py-6 shadow-none">
             <CardHeader className="flex flex-row items-start space-x-2">
-                <Avatar className="h-12 w-12">
-                    {avatar ? <AvatarImage src={avatar} alt={name} /> : <AvatarFallback>{name.charAt(0)}</AvatarFallback>}
+                <Avatar className="h-12 w-12 object-contain">
+                    {avatar ? <AvatarImage src={avatar} alt={name} className="object-center" /> : <AvatarFallback>{name.charAt(0)}</AvatarFallback>}
                 </Avatar>
                 <div>
                     <Label className="text-sm font-medium">{name}</Label>
