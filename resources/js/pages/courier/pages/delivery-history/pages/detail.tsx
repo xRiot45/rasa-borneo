@@ -159,7 +159,7 @@ export default function DeliveryHistoryDetail({ data }: Props) {
                                     <span>Metode Pembayaran</span>
                                     <Badge
                                         variant="default"
-                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === transaction?.payment_method ? 'text-gren-600 border-green-600 bg-green-100' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
+                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === transaction?.payment_method ? 'text-green-600 border-green-600 bg-green-100' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
                                     >
                                         {transaction?.payment_method}
                                     </Badge>
@@ -177,9 +177,9 @@ export default function DeliveryHistoryDetail({ data }: Props) {
                                     <span>{formatCurrency(transaction?.application_service_fee)}</span>
                                 </div>
                                 {data?.transaction?.discount_total > 0 && (
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between !text-red-500">
                                         <span>Diskon</span>
-                                        <span>{formatCurrency(data.transaction.discount_total)}</span>
+                                        <span>-{formatCurrency(data.transaction.discount_total)}</span>
                                     </div>
                                 )}
 
