@@ -12,6 +12,7 @@ use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
 use App\Models\Fee;
+use App\Models\MerchantWallet;
 use App\Models\OrderStatus;
 use App\Models\Table;
 use App\Models\Transaction;
@@ -329,6 +330,18 @@ class TransactionController extends Controller
                 'payment_reference' => $paymentReference,
                 'checked_out_at' => now(),
             ]);
+
+            $merchant = $transaction->merchant;
+            if ($merchant) {
+                $wallet = MerchantWallet::firstOrCreate(
+                    ['merchant_id' => $merchant->id],
+                    ['balance' => 0]
+                );
+
+                $merchantAmount = $transaction->subtotal_transaction_item - $transaction->discount_total;
+
+                $wallet->increment('balance', $merchantAmount);
+            }
         } elseif (in_array($transactionStatus, ['cancel', 'expire', 'deny'])) {
             $transaction->update([
                 'payment_status' => PaymentStatusEnum::FAILED,
