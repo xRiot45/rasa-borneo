@@ -159,7 +159,7 @@ export default function DeliveryHistoryDetail({ data }: Props) {
                                     <span>Metode Pembayaran</span>
                                     <Badge
                                         variant="default"
-                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === transaction?.payment_method ? 'text-green-600 border-green-600 bg-green-100' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
+                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === transaction?.payment_method ? 'border-green-600 bg-green-100 text-green-600' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
                                     >
                                         {transaction?.payment_method}
                                     </Badge>
