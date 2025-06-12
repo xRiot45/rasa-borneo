@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\CourierRegisterRequest;
 use App\Http\Requests\CourierRequest;
+use App\Http\Requests\UpdateCourierRequest;
 use App\Mail\CourierRegisteredMail;
 use App\Models\Courier;
 use App\Models\CourierWallet;
@@ -11,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -61,8 +64,8 @@ class CourierController extends Controller
                 'monthly' => $monthlyEarnings,
             ],
             'courier' => [
-                'is_online' => $courier->is_online
-            ]
+                'is_online' => $courier->is_online,
+            ],
         ]);
     }
 
@@ -71,7 +74,7 @@ class CourierController extends Controller
         return Inertia::render('admin/users-management/couriers/pages/form');
     }
 
-    public function store(CourierRequest $request): RedirectResponse
+    public function store(CourierRegisterRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -90,7 +93,6 @@ class CourierController extends Controller
             ->save();
         $user->assignRole('courier');
 
-        // Handle upload gambar
         $fileFields = ['id_card_photo', 'profile_image', 'driving_license_photo'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field) && $request->file($field)->isValid()) {
@@ -122,6 +124,65 @@ class CourierController extends Controller
         return redirect()
             ->route('admin.couriers.index')
             ->with(['success' => 'Courier berhasil ditambahkan']);
+    }
+
+    public function edit(int $id): InertiaResponse
+    {
+        $courier = Courier::withTrashed()->findOrFail($id);
+        $courier->load('user');
+        return Inertia::render('admin/users-management/couriers/pages/form', [
+            'courier' => $courier,
+        ]);
+    }
+
+    public function update(UpdateCourierRequest $request, int $id): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $user = User::findOrFail($id);
+        $courier = $user->courier;
+
+        if (!$courier) {
+            return back()->withErrors(['courier' => 'Data courier tidak ditemukan.']);
+        }
+
+        $userData = collect($validated)
+            ->only(['full_name', 'email', 'phone_number'])
+            ->toArray();
+
+        if (!empty($validated['password'])) {
+            $userData['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($userData);
+
+        $fileFields = ['id_card_photo', 'profile_image', 'driving_license_photo'];
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field) && $request->file($field)->isValid()) {
+                if ($courier->$field && Storage::disk('public')->exists(str_replace('/storage/', '', $courier->$field))) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $courier->$field));
+                }
+
+                $file = $request->file($field);
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs("courier_assets/{$field}", $filename, 'public');
+                $validated[$field] = '/storage/' . $path;
+            }
+        }
+
+        $courierData = collect($validated)
+            ->except(['full_name', 'email', 'phone_number', 'password'])
+            ->toArray();
+
+        if (isset($courierData['birthdate'])) {
+            $courierData['birthdate'] = Carbon::parse($courierData['birthdate'])->format('Y-m-d');
+        }
+
+        $courier->update($courierData);
+
+        return redirect()
+            ->route('admin.couriers.index')
+            ->with(['success' => 'Data courier berhasil diperbarui.']);
     }
 
     public function show(int $id): InertiaResponse

@@ -34,12 +34,12 @@ export interface CourierForm {
     // Courier fields
     vehicle_type: VehicleTypeEnum;
     national_id: string;
-    id_card_photo?: File | null; // nullable image
+    id_card_photo?: string | File | null; // nullable image
     age: number | string;
     birthplace: string;
     birthdate: Date | null;
-    profile_image?: File | null; // nullable image
+    profile_image?: string | File | null; // nullable image
     gender: GenderEnum;
-    driving_license_photo?: File | null; // nullable image
+    driving_license_photo?: string | File | null; // nullable image
     license_plate: string;
 }

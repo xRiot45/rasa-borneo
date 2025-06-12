@@ -25,7 +25,7 @@ class UpdateMerchantRequest extends FormRequest
                 'lowercase',
                 'email',
                 'max:255',
-
+                Rule::unique('users', 'email')->ignore($this->route('id')),
             ],
             'phone_number' => 'sometimes|required|string|min:12|max:255',
             'password' => 'nullable|string|min:8|confirmed',

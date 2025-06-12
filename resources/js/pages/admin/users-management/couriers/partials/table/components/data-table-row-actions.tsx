@@ -110,6 +110,15 @@ export function DataTableRowActions({ row }: { row: Row<Courier> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
+                    <Link href={route('admin.couriers.edit', { id: row.original.id })} className="cursor-pointer">
+                        <DropdownMenuItem className="cursor-pointer p-3">
+                            Edit Kurir
+                            <DropdownMenuShortcut>
+                                <Icon icon={'heroicons:eye'} />
+                            </DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>
+
                     {!deletedAtAlreadyExist && (
                         <Link href={route('admin.couriers.show', { id: row.original.id })} className="cursor-pointer">
                             <DropdownMenuItem className="cursor-pointer p-3">

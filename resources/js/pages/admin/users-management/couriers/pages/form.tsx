@@ -11,13 +11,17 @@ import { GenderEnum } from '@/enums/gender-enum';
 import { VehicleTypeEnum } from '@/enums/vehicle-type';
 import AdminLayout from '@/layouts/admin/layout';
 import { cn } from '@/lib/utils';
-import { CourierForm } from '@/models/courier';
+import { Courier, CourierForm } from '@/models/courier';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { CalendarIcon, LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+
+interface Props {
+    courier: Courier;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -34,26 +38,27 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function FormPage() {
+export default function FormPage({ courier }: Props) {
+    const isEdit = !!courier?.id;
+
     const { data, setData, post, processing, errors } = useForm<Required<CourierForm>>({
-        // Akun
-        full_name: '',
-        email: '',
-        password: '12345678',
-        password_confirmation: '12345678',
+        full_name: isEdit ? courier?.user?.full_name : '',
+        email: isEdit ? courier?.user?.email : '',
+        password: '',
+        password_confirmation: '',
 
         // Kurir
-        phone_number: '',
-        vehicle_type: VehicleTypeEnum.MOTORCYCLE,
-        national_id: '',
-        id_card_photo: null,
-        age: '',
-        birthplace: '',
-        birthdate: null,
-        profile_image: null,
-        gender: GenderEnum.MALE,
-        driving_license_photo: null,
-        license_plate: '',
+        phone_number: isEdit ? courier?.user?.phone_number : '',
+        vehicle_type: isEdit ? courier?.vehicle_type : VehicleTypeEnum.MOTORCYCLE,
+        national_id: isEdit ? courier?.national_id : '',
+        id_card_photo: isEdit ? courier?.id_card_photo : null,
+        age: isEdit ? courier?.age : 0,
+        birthplace: isEdit ? courier?.birthplace : '',
+        birthdate: isEdit ? new Date(courier?.birthdate) : new Date(),
+        profile_image: isEdit ? courier?.profile_image : null,
+        gender: isEdit ? courier?.gender : GenderEnum.MALE,
+        driving_license_photo: isEdit ? courier?.driving_license_photo : null,
+        license_plate: isEdit ? courier?.license_plate : '',
     });
 
     const [inputValue, setInputValue] = useState(() => {
@@ -104,34 +109,64 @@ export default function FormPage() {
             formData.append('driving_license_photo', data.driving_license_photo);
         }
 
-        post(route('admin.couriers.store'), {
-            forceFormData: true,
-            onSuccess: () => {
-                toast.success('Success', {
-                    description: 'Kurir Berhasil Ditambahkan!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-            onError: (error) => {
-                Object.keys(error).forEach((key) => {
-                    toast.error('Error', {
-                        description: error[key],
+        if (isEdit) {
+            formData.append('_method', 'put');
+            router.post(route('admin.couriers.update', courier.user.id), formData, {
+                forceFormData: true,
+                preserveState: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Data Kurir Berhasil Diubah!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
-                });
-            },
-        });
+                },
+                onError: (error) => {
+                    console.log(error);
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        } else {
+            post(route('admin.merchants.store'), {
+                forceFormData: true,
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Merchant Berhasil Ditambahkan!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    console.log(error);
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        }
     };
 
     return (
         <>
-            <Head title="Form Kurir" />
+            <Head title={isEdit ? 'Edit Kurir' : 'Tambah Kurir'} />
             <AdminLayout breadcrumbs={breadcrumbs}>
                 <form onSubmit={handleSubmit}>
                     <main className="space-y-6 p-4">
@@ -208,10 +243,8 @@ export default function FormPage() {
                                         <Input
                                             id="password"
                                             type="password"
-                                            required
                                             value={data.password}
                                             onChange={(e) => setData('password', e.target.value)}
-                                            disabled
                                             placeholder="Masukkan password kurir"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
                                         />
@@ -226,10 +259,8 @@ export default function FormPage() {
                                         <Input
                                             id="password_confirmation"
                                             type="password"
-                                            required
                                             value={data.password_confirmation}
                                             onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            disabled
                                             placeholder="Masukkan konfirmasi password kurir"
                                             className={cn(
                                                 'mt-1 rounded-xl px-4 py-6 shadow-none',
@@ -283,6 +314,7 @@ export default function FormPage() {
                                             <FileDropzone
                                                 onFileChange={(file) => handleFileChange('id_card_photo', file)}
                                                 error={errors?.id_card_photo}
+                                                initialImage={data.id_card_photo instanceof File ? undefined : data.id_card_photo}
                                             />
                                             <InputError message={errors?.id_card_photo} className="mt-2" />
                                         </div>
@@ -295,6 +327,7 @@ export default function FormPage() {
                                             <FileDropzone
                                                 onFileChange={(file) => handleFileChange('profile_image', file)}
                                                 error={errors?.profile_image}
+                                                initialImage={data.profile_image instanceof File ? undefined : data.profile_image}
                                             />
                                             <InputError className="mt-2" />
                                         </div>
@@ -374,7 +407,7 @@ export default function FormPage() {
                                             <Label htmlFor="gender">
                                                 Jenis Kelamin <strong className="text-red-500">*</strong>
                                             </Label>
-                                            <Select onValueChange={(value) => setData('gender', value as GenderEnum)}>
+                                            <Select onValueChange={(value) => setData('gender', value as GenderEnum)} value={data.gender}>
                                                 <SelectTrigger className="w-full rounded-lg px-4 py-6 shadow-none">
                                                     <SelectValue placeholder="Pilih Jenis Kelamin" />
                                                 </SelectTrigger>
@@ -428,7 +461,10 @@ export default function FormPage() {
                                             <Label htmlFor="gender">
                                                 Jenis Kendaraan <strong className="text-red-500">*</strong>
                                             </Label>
-                                            <Select onValueChange={(value) => setData('vehicle_type', value as VehicleTypeEnum)}>
+                                            <Select
+                                                onValueChange={(value) => setData('vehicle_type', value as VehicleTypeEnum)}
+                                                value={data.vehicle_type}
+                                            >
                                                 <SelectTrigger className="w-full rounded-lg px-4 py-6 shadow-none">
                                                     <SelectValue placeholder="Pilih Jenis Kendaraan" />
                                                 </SelectTrigger>
@@ -475,6 +511,7 @@ export default function FormPage() {
                                     <FileDropzone
                                         onFileChange={(file) => handleFileChange('driving_license_photo', file)}
                                         error={errors?.driving_license_photo}
+                                        initialImage={data.driving_license_photo instanceof File ? undefined : data.driving_license_photo}
                                     />
                                     <InputError message={errors?.driving_license_photo} className="mt-2" />
                                 </div>
@@ -490,7 +527,7 @@ export default function FormPage() {
                             </Link>
                             <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Tambah Kurir <Icon icon="heroicons:plus" />
+                                {isEdit ? 'Simpan Perubahan' : 'Tambah Kurir'} <Icon icon={isEdit ? 'heroicons:check' : 'heroicons:plus'} />
                             </Button>
                         </div>
                     </main>
