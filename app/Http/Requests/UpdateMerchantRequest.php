@@ -28,6 +28,7 @@ class UpdateMerchantRequest extends FormRequest
 
             ],
             'phone_number' => 'sometimes|required|string|min:12|max:255',
+            'password' => 'nullable|string|min:8|confirmed',
 
             // Data Merchant
             'id_card_photo' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',

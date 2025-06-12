@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Notifications\MerchantVerifiedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -20,7 +21,7 @@ class MerchantController extends Controller
 {
     public function index(): InertiaResponse
     {
-        $merchants = Merchant::withTrashed()->with('businessCategory')->get();
+        $merchants = Merchant::withTrashed()->with('businessCategory')->orderBy('created_at', 'desc')->get();
         return Inertia::render('admin/users-management/merchants/index', [
             'data' => $merchants,
         ]);
@@ -132,9 +133,12 @@ class MerchantController extends Controller
         $userData = collect($validated)
             ->only(['full_name', 'email', 'phone_number'])
             ->toArray();
-        if (!empty($userData)) {
-            $user->update($userData);
+
+        if (!empty($validated['password'])) {
+            $userData['password'] = Hash::make($validated['password']);
         }
+
+        $user->update($userData);
 
         $fileField = 'id_card_photo';
 
@@ -153,8 +157,9 @@ class MerchantController extends Controller
         }
 
         $merchantData = collect($validated)
-            ->except(['full_name', 'email', 'phone_number'])
+            ->except(['full_name', 'email', 'phone_number', 'password'])
             ->toArray();
+
         $merchant->update($merchantData);
 
         return redirect()

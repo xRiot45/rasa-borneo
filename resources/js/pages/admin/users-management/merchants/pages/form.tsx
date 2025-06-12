@@ -47,8 +47,8 @@ export default function FormPage({ merchant }: Props) {
     const { data, setData, post, processing, errors } = useForm<Required<MerchantForm>>({
         full_name: isEdit ? merchant?.user?.full_name : '',
         email: isEdit ? merchant?.user?.email : '',
-        password: '12345678',
-        password_confirmation: '12345678',
+        password: '',
+        password_confirmation: '',
         phone_number: isEdit ? merchant?.user?.phone_number : '',
         id_card_photo: isEdit ? merchant?.id_card_photo : null,
         business_name: isEdit ? merchant?.business_name : '',
@@ -177,7 +177,7 @@ export default function FormPage({ merchant }: Props) {
                                             value={data.full_name}
                                             onChange={(e) => setData('full_name', e.target.value)}
                                             disabled={processing}
-                                            placeholder="Masukkan nama lengkap kurir"
+                                            placeholder="Masukkan nama lengkap merchant"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.full_name && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.full_name} className="mt-2" />
@@ -195,7 +195,7 @@ export default function FormPage({ merchant }: Props) {
                                             value={data.email}
                                             onChange={(e) => setData('email', e.target.value)}
                                             disabled={processing}
-                                            placeholder="Masukkan email kurir"
+                                            placeholder="Masukkan email merchant"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.email && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.email} className="mt-2" />
@@ -213,7 +213,7 @@ export default function FormPage({ merchant }: Props) {
                                             value={data.phone_number}
                                             onChange={(e) => setData('phone_number', e.target.value)}
                                             disabled={processing}
-                                            placeholder="Masukkan nomor telepon kurir"
+                                            placeholder="Masukkan nomor telepon merchant"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.phone_number && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.phone_number} className="mt-2" />
@@ -233,8 +233,7 @@ export default function FormPage({ merchant }: Props) {
                                             required
                                             value={data.password}
                                             onChange={(e) => setData('password', e.target.value)}
-                                            readOnly
-                                            placeholder="Masukkan password kurir"
+                                            placeholder="Masukkan password merchant"
                                             className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.password} className="mt-2" />
@@ -251,8 +250,7 @@ export default function FormPage({ merchant }: Props) {
                                             required
                                             value={data.password_confirmation}
                                             onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            readOnly
-                                            placeholder="Masukkan konfirmasi password kurir"
+                                            placeholder="Masukkan konfirmasi password merchant"
                                             className={cn(
                                                 'mt-1 rounded-xl px-4 py-6 shadow-none',
                                                 errors.password_confirmation && 'border border-red-500',
