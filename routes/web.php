@@ -131,6 +131,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(CustomerController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('admin.customers.index');
+                Route::get('/create', 'create')->name('admin.customers.create');
+                Route::post('/create', 'store')->name('admin.customers.store');
+                Route::get('/edit/{id}', 'edit')->name('admin.customers.edit');
+                Route::put('/edit/{id}', 'update')->name('admin.customers.update');
                 Route::get('/show/{customer}', 'show')->name('admin.customers.show');
                 Route::delete('/soft-delete/{customer}', 'softDelete')->name('admin.customers.softDelete');
                 Route::delete('/force-delete/{customer}', 'forceDelete')->name('admin.customers.forceDelete');

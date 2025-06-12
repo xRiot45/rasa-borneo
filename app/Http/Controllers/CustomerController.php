@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\CustomerRegisterRequest;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
 class CustomerController extends Controller
 {
-    public function index(): Response
+    public function index(): InertiaResponse
+
     {
         $customers = Customer::withTrashed()->with('user')->get();
         return Inertia::render('admin/users-management/customers/index', [
@@ -19,7 +23,62 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function show(Customer $customer): Response
+    public function create(): InertiaResponse
+    {
+        return Inertia::render('admin/users-management/customers/pages/form');
+    }
+
+    public function store(CustomerRegisterRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        $user = User::create([
+            'full_name' => $validated['full_name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'phone_number' => $validated['phone_number'],
+        ]);
+
+        $user
+            ->forceFill([
+                'email_verified_at' => now(),
+            ])
+            ->save();
+        $user->assignRole('customer');
+
+        $fileField = 'profile_image';
+        if ($request->hasFile($fileField) && $request->file($fileField)->isValid()) {
+            $file = $request->file($fileField);
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $folderPath = 'customer_assets/' . $fileField;
+            $path = $file->storeAs($folderPath, $filename, 'public');
+
+            $validated[$fileField] = '/storage/' . $path;
+        }
+
+        Customer::create([
+            'user_id' => $user->id,
+            'birthplace' => $validated['birthplace'],
+            'birthdate' => $validated['birthdate'],
+            'profile_image' => $validated['profile_image'] ?? null,
+            'gender' => $validated['gender'],
+        ]);
+
+        return redirect()
+            ->route('admin.customers.index')
+            ->with(['success' => 'Customer berhasil ditambahkan']);
+    }
+
+    public function edit(int $id): InertiaResponse
+    {
+        $customer = Customer::withTrashed()->findOrFail($id);
+        $customer->load('user');
+        return Inertia::render('admin/users-management/customers/pages/form', [
+            'customer' => $customer,
+        ]);
+    }
+
+    public function show(Customer $customer): InertiaResponse
+
     {
         $customer->load('user');
         return Inertia::render('admin/users-management/customers/pages/show', [
