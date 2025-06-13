@@ -1,8 +1,10 @@
+import { Courier } from '@/models/courier';
 import { Customer } from '@/models/customer';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
+    courier: Courier;
 }
 
 export interface BreadcrumbItem {
@@ -40,6 +42,7 @@ export interface User {
     created_at: string;
     updated_at: string;
     customer?: Customer;
+    courier?: Courier;
     roles: string[];
     [key: string]: unknown;
 }

@@ -1,5 +1,6 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { UserInfo } from '@/components/user-info';
+import { useInitials } from '@/hooks/use-initials';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Icon } from '@iconify/react';
@@ -9,14 +10,24 @@ interface Props {
     user: User;
 }
 
-export function CustomerMenuContent({ user }: Props) {
+export function MenuContent({ user }: Props) {
     const cleanup = useMobileNavigation();
+    const getInitials = useInitials();
 
     return (
         <>
             <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 p-2 text-left text-sm">
-                    <UserInfo user={user} showEmail={true} />
+                    <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                        <AvatarImage src={`${user?.courier?.profile_image}`} alt={user.full_name} />
+                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                            {getInitials(user.full_name)}
+                        </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">{user.full_name}</span>
+                        <span className="text-muted-foreground truncate text-xs">{user.email}</span>
+                    </div>
                 </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

@@ -6,12 +6,13 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuT
 import { useInitials } from '@/hooks/use-initials';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { Courier } from '@/models/courier';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Icon } from '@iconify/react';
 import { Link, usePage } from '@inertiajs/react';
 import Logo from '../logo';
 import mainNavItems from './constants/main-nav-items';
-import { CustomerMenuContent } from './menu-content';
+import { MenuContent } from './menu-content';
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
@@ -83,7 +84,7 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
                                     <Button variant="ghost" className="size-10 cursor-pointer rounded-full p-1">
                                         <Avatar className="size-8 overflow-hidden rounded-full">
                                             <AvatarImage
-                                                src={`${auth.user?.customer?.profile_image}`}
+                                                src={`${(auth.user?.courier as Courier)?.profile_image}`}
                                                 alt={auth.user.full_name}
                                                 className="h-full w-full object-cover"
                                             />
@@ -94,7 +95,7 @@ export function TopNavigation({ breadcrumbs = [] }: AppHeaderProps) {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-72" align="end">
-                                    <CustomerMenuContent user={auth.user} />
+                                    <MenuContent user={auth.user} />
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
