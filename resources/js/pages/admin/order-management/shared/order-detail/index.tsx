@@ -10,7 +10,7 @@ import { OrderStatusEnum } from '@/enums/order-status';
 import { OrderTypeEnum } from '@/enums/order-type';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
-import MerchantLayout from '@/layouts/merchant/layout';
+import AdminLayout from '@/layouts/admin/layout';
 import { Order } from '@/models/order';
 import { TransactionItem } from '@/models/transactions';
 import { BreadcrumbItem } from '@/types';
@@ -138,7 +138,7 @@ export default function OrderDetailPage({ order }: Props) {
     return (
         <>
             <Head title="Detail Pesanan" />
-            <MerchantLayout breadcrumbs={breadcrumbs}>
+            <AdminLayout breadcrumbs={breadcrumbs}>
                 <div className="space-y-6 p-6">
                     <ButtonPartials handlePrint={handlePrint} />
 
@@ -391,7 +391,7 @@ export default function OrderDetailPage({ order }: Props) {
                         )}
                     </div>
                 </div>
-            </MerchantLayout>
+            </AdminLayout>
         </>
     );
 }
