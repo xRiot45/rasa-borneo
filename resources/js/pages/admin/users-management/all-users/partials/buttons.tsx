@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
-import { Link } from '@inertiajs/react';
 
 export default function ButtonPartials() {
     return (
@@ -9,11 +8,11 @@ export default function ButtonPartials() {
                 <span>Refresh Halaman</span>
                 <Icon icon={'material-symbols:refresh'} className="text-background" />
             </Button>
-            <Link href={route('admin.all-users.create')}>
+            {/* <Link href={route('admin.all-users.create')}>
                 <Button className="cursor-pointer">
                     <span>Tambah Pengguna</span> <Icon icon={'heroicons:plus'} className="text-background" />
                 </Button>
-            </Link>
+            </Link> */}
         </div>
     );
 }

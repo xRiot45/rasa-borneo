@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { formatDate } from '@/utils/format-date';
-import { ColumnDef, Row } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from './components/data-table-column-header';
-import { DataTableRowActions } from './components/data-table-row-actions';
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -11,6 +11,9 @@ export const columns: ColumnDef<User>[] = [
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        meta: {
+            className: cn('py-4 ps-6'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -77,11 +80,11 @@ export const columns: ColumnDef<User>[] = [
         enableHiding: true,
         enableSorting: true,
     },
-    {
-        id: 'actions',
-        accessorKey: 'actions',
-        header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
-        cell: ({ row }) => <DataTableRowActions row={row as Row<User>} />,
-        enableHiding: false,
-    },
+    // {
+    //     id: 'actions',
+    //     accessorKey: 'actions',
+    //     header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
+    //     cell: ({ row }) => <DataTableRowActions row={row as Row<User>} />,
+    //     enableHiding: false,
+    // },
 ];
