@@ -2,7 +2,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AdminLayout from '@/layouts/admin/layout';
+import MerchantLayout from '@/layouts/merchant/layout';
 import { cn } from '@/lib/utils';
 import { MenuCategory, MenuCategoryForm } from '@/models/menu-category';
 import { BreadcrumbItem } from '@/types';
@@ -67,7 +67,7 @@ export default function EditPage({ data }: { data: MenuCategory }) {
     };
 
     return (
-        <AdminLayout breadcrumbs={breadcrumbs}>
+        <MerchantLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Kategori Menu" />
             <form onSubmit={submit} className="p-4">
                 <Label htmlFor="name">Nama Kategori Menu</Label>
@@ -96,6 +96,6 @@ export default function EditPage({ data }: { data: MenuCategory }) {
                     </Button>
                 </div>
             </form>
-        </AdminLayout>
+        </MerchantLayout>
     );
 }
