@@ -156,7 +156,7 @@ export default function FormPage({ customer }: Props) {
                         {/* Form Akun Customer */}
                         <Card className="rounded-xl py-8 shadow-none">
                             <CardHeader>
-                                <CardTitle className="text-xl">Akun Merchant</CardTitle>
+                                <CardTitle className="text-xl">Akun Customer</CardTitle>
                                 <CardDescription className="text-muted-foreground mt-0">Lengkapi data akun customer</CardDescription>
                             </CardHeader>
                             <CardContent className="mt-4 grid gap-y-6 sm:grid-cols-3 sm:gap-x-4">
@@ -367,7 +367,7 @@ export default function FormPage({ customer }: Props) {
                             </Link>
                             <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                {isEdit ? 'Simpan Perubahan' : 'Tambah Merchant'} <Icon icon={isEdit ? 'material-symbols:save' : 'heroicons:plus'} />
+                                {isEdit ? 'Simpan Perubahan' : 'Tambah Customer'} <Icon icon={isEdit ? 'material-symbols:save' : 'heroicons:plus'} />
                             </Button>
                         </div>
                     </main>
