@@ -68,12 +68,6 @@ export function CustomerMenuContent({ user }: Props) {
                         </Link>
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
-                    <Link className="block w-full" href={route('home')} as="button" prefetch onClick={cleanup}>
-                        <Icon icon="mdi:chat-question-outline" className="mr-2" />
-                        Bantuan
-                    </Link>
-                </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="cursor-pointer rounded-md p-3">
