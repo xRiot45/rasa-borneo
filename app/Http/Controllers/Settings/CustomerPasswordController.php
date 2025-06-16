@@ -15,7 +15,7 @@ class CustomerPasswordController extends Controller
 {
     public function edit(Request $request): InertiaResponse
     {
-        return Inertia::render('settings/password', [
+        return Inertia::render('customer/pages/settings/password', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);

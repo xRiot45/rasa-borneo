@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
+use App\Enums\PaymentStatusEnum;
 use App\Models\Customer;
 use App\Models\MenuItemReview;
 use App\Models\Merchant;
+use App\Models\MerchantWallet;
 use App\Models\Order;
+use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -181,6 +185,61 @@ class OrderController extends Controller
         ]);
 
         return redirect()->route('merchant.incoming-order.index')->with('success', 'Status berhasil diperbarui.');
+    }
+
+    public function checkStatus(string $transactionCode)
+    {
+        $serverKey = config('services.midtrans.server_key');
+        $isProduction = config('services.midtrans.is_production');
+        $baseUrl = $isProduction ? 'https://api.midtrans.com' : 'https://api.sandbox.midtrans.com';
+
+        $response = Http::withBasicAuth($serverKey, '')
+            ->accept('application/json')
+            ->get("{$baseUrl}/v2/{$transactionCode}/status");
+
+        if (!$response->successful()) {
+            return response()->json(['message' => 'Gagal mengambil status dari Midtrans'], 500);
+        }
+
+        $data = $response->json();
+        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        $transactionStatus = $data['transaction_status'];
+        $fraudStatus = $data['fraud_status'] ?? null;
+        $paymentReference = $data['transaction_id'] ?? null;
+
+        if (
+            in_array($transactionStatus, ['settlement', 'capture']) &&
+            ($fraudStatus === null || $fraudStatus === 'accept') &&
+            $transaction->payment_status !== PaymentStatusEnum::PAID
+        ) {
+            $transaction->update([
+                'payment_status' => PaymentStatusEnum::PAID,
+                'payment_reference' => $paymentReference,
+            ]);
+
+            $merchant = $transaction->merchant;
+            if ($merchant) {
+                $wallet = MerchantWallet::firstOrCreate(
+                    ['merchant_id' => $merchant->id],
+                    ['balance' => 0]
+                );
+
+                $merchantAmount = $transaction->subtotal_transaction_item - $transaction->discount_total;
+                $wallet->increment('balance', $merchantAmount);
+            }
+        } elseif (in_array($transactionStatus, ['cancel', 'expire', 'deny'])) {
+            $transaction->update([
+                'payment_status' => PaymentStatusEnum::FAILED,
+                'payment_reference' => $paymentReference,
+            ]);
+        }
+
+        return redirect()->back();
     }
 
     public function orderHistoryAdmin(): InertiaResponse

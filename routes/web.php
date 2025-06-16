@@ -376,6 +376,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->group(function () {
                 Route::get('/', 'incomingOrderMerchant')->name('merchant.incoming-order.index');
                 Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('merchant.incoming-order.updateOrderStatus');
+                Route::get('/check-status/{transactionCode}', 'checkStatus')->name('merchant.order.checkStatus');
             });
 
         // Order History

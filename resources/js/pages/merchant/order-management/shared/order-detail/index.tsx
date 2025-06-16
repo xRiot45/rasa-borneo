@@ -1,7 +1,7 @@
 import OrderProgressStatus from '@/components/order-progress-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
@@ -19,6 +19,7 @@ import { formatDate } from '@/utils/format-date';
 import { paymentStatusColorMap } from '@/utils/payment-status-color';
 import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
+import { RefreshCw } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { toast } from 'sonner';
@@ -119,6 +120,35 @@ export default function OrderDetailPage({ order }: Props) {
                     });
 
                     setShowDialogUpdateOrderStatus(false);
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
+    };
+
+    const handleCheckPaymenStatus = () => {
+        router.get(
+            route('merchant.order.checkStatus', transaction_code),
+            {},
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Pembayaran Berhasil Diperiksa!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
                 },
                 onError: (error) => {
                     Object.keys(error).forEach((key) => {
@@ -338,57 +368,95 @@ export default function OrderDetailPage({ order }: Props) {
 
                         {/* Sidebar (Update Status) */}
 
-                        {latestStatus !== OrderStatusEnum.COMPLETED && (
-                            <div className="md:col-span-1">
-                                <Card className="p-4 shadow-none">
-                                    <CardContent className="w-full space-y-4 p-4">
-                                        <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
-                                        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                                            <SelectTrigger className="w-full rounded-md py-6">
-                                                <SelectValue placeholder="Pilih status pesanan" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {availableStatuses.map((status) => (
-                                                    <SelectItem key={status} value={status} className="w-full cursor-pointer p-4 capitalize">
-                                                        {status}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <Button className="w-full cursor-pointer rounded-md py-6" onClick={confirmUpdateStatus}>
-                                            <Icon icon="mdi:reload" className="mr-2 h-4 w-4" />
-                                            Perbarui Status Pesanan
-                                        </Button>
-                                    </CardContent>
-                                </Card>
+                        <div>
+                            {latestStatus !== OrderStatusEnum.COMPLETED && (
+                                <div className="md:col-span-1">
+                                    <Card className="p-4 shadow-none">
+                                        <CardContent className="w-full space-y-4 p-4">
+                                            <h2 className="text-lg font-semibold">Perbarui Status Pesanan</h2>
+                                            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                                                <SelectTrigger className="w-full rounded-md py-6">
+                                                    <SelectValue placeholder="Pilih status pesanan" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {availableStatuses.map((status) => (
+                                                        <SelectItem key={status} value={status} className="w-full cursor-pointer p-4 capitalize">
+                                                            {status}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <Button className="w-full cursor-pointer rounded-md py-6" onClick={confirmUpdateStatus}>
+                                                <Icon icon="mdi:reload" className="mr-2 h-4 w-4" />
+                                                Perbarui Status Pesanan
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
 
-                                <Dialog open={showDialogUpdateOrderStatus} onOpenChange={setShowDialogUpdateOrderStatus}>
-                                    <DialogContent className="sm:max-w-xl">
-                                        <DialogHeader>
-                                            <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
-                                            <DialogDescription>
-                                                Ingin mengubah status pesanan menjadi{' '}
-                                                <strong className="font-bold text-black uppercase italic dark:text-white">{selectedStatus}?</strong>
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <DialogFooter className="mt-6">
-                                            <Button variant="destructive" onClick={() => setShowDialogUpdateOrderStatus(false)}>
-                                                Batal
-                                            </Button>
-                                            <Button
-                                                onClick={() => {
-                                                    setLatestStatus(selectedStatus);
-                                                    setShowDialogUpdateOrderStatus(false);
-                                                    handleUpdateStatus();
-                                                }}
-                                            >
-                                                Ya, Ubah Status Pesanan
-                                            </Button>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
-                            </div>
-                        )}
+                                    <Dialog open={showDialogUpdateOrderStatus} onOpenChange={setShowDialogUpdateOrderStatus}>
+                                        <DialogContent className="sm:max-w-xl">
+                                            <DialogHeader>
+                                                <DialogTitle>Apakah Kamu Yakin?</DialogTitle>
+                                                <DialogDescription>
+                                                    Ingin mengubah status pesanan menjadi{' '}
+                                                    <strong className="font-bold text-black uppercase italic dark:text-white">
+                                                        {selectedStatus}?
+                                                    </strong>
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter className="mt-6">
+                                                <Button variant="destructive" onClick={() => setShowDialogUpdateOrderStatus(false)}>
+                                                    Batal
+                                                </Button>
+                                                <Button
+                                                    onClick={() => {
+                                                        setLatestStatus(selectedStatus);
+                                                        setShowDialogUpdateOrderStatus(false);
+                                                        handleUpdateStatus();
+                                                    }}
+                                                >
+                                                    Ya, Ubah Status Pesanan
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+                                </div>
+                            )}
+
+                            {payment_status === PaymentStatusEnum.PENDING && (
+                                <div className="mt-4 md:col-span-1">
+                                    <Card className="w-full px-4 py-8 shadow-none">
+                                        <CardHeader>
+                                            <CardTitle className="text-lg">Status Pembayaran</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="flex flex-col gap-4">
+                                            <div className="space-y-4 text-sm">
+                                                <p>
+                                                    Kode Transaksi: <span className="font-semibold">{transaction_code}</span>
+                                                </p>
+                                                <p>
+                                                    Status Pembayaran :{' '}
+                                                    <span className="font-semibold">
+                                                        <Badge
+                                                            className={`rounded-sm capitalize ${paymentStatusColorMap[payment_status] ?? 'bg-muted text-muted-foreground'}`}
+                                                        >
+                                                            {payment_status}
+                                                        </Badge>
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            {payment_status === PaymentStatusEnum.PENDING && (
+                                                <Button className="w-full cursor-pointer rounded-md py-6" onClick={handleCheckPaymenStatus}>
+                                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                                    Cek Status Pembayaran
+                                                </Button>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </MerchantLayout>
