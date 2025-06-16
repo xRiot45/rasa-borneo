@@ -60,6 +60,7 @@ export default function RegisterPage() {
                 </RadioGroup>
 
                 <Button onClick={handleSubmit} disabled={!selectedRole} className="cursor-pointer bg-black py-6 transition-all dark:bg-white">
+                    <Icon icon="material-symbols:arrow-right-alt-rounded" className="h-6 w-6" />
                     Lanjutkan
                 </Button>
             </div>
