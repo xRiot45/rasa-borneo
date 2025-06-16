@@ -6,24 +6,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth/auth-layout';
 import { cn } from '@/lib/utils';
+import { LoginForm } from '@/models/auth/login';
 import { Icon } from '@iconify/react';
 import { Head, router, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 
-type LoginForm = {
-    email: string;
-    password: string;
-    remember: boolean;
-};
-
-interface LoginProps {
+interface Props {
     status?: string;
     canResetPassword: boolean;
 }
 
-export default function LoginPage({ status, canResetPassword }: LoginProps) {
+export default function LoginPage({ status, canResetPassword }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const { data, setData, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
@@ -47,15 +42,13 @@ export default function LoginPage({ status, canResetPassword }: LoginProps) {
                     });
                     reset();
                 },
-                onError: (error) => {
-                    Object.keys(error).forEach((key) => {
-                        toast.error('Error', {
-                            description: error[key],
-                            action: {
-                                label: 'Tutup',
-                                onClick: () => toast.dismiss(),
-                            },
-                        });
+                onError: () => {
+                    toast.success('Failed', {
+                        description: 'Email atau password yang anda masukkan salah!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
                     });
                 },
             },
@@ -75,7 +68,6 @@ export default function LoginPage({ status, canResetPassword }: LoginProps) {
                             type="email"
                             required
                             autoFocus
-                            tabIndex={1}
                             autoComplete="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
@@ -99,7 +91,6 @@ export default function LoginPage({ status, canResetPassword }: LoginProps) {
                                 id="password"
                                 type={showPassword ? 'text' : 'password'}
                                 required
-                                tabIndex={3}
                                 autoComplete="password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
