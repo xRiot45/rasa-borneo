@@ -22,6 +22,7 @@ use App\Http\Controllers\MerchantReviewController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfitReportController;
+use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\RevenueReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Settings\AdminPasswordController;
@@ -338,6 +339,13 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'index_merchant')->name('merchant.store-operating-hour.index_merchant');
                 Route::get('/create', 'create')->name('merchant.store-operating-hour.create');
                 Route::post('/store-or-update', 'storeOrUpdate')->name('merchant.store-operating-hour.storeOrUpdate');
+            });
+
+        // Qr Code
+        Route::prefix('/qr-code')
+            ->controller(QrCodeController::class)
+            ->group(function () {
+                Route::get('/', 'indexMerchant')->name('merchant.qr-code.indexMerchant');
             });
 
         // Table

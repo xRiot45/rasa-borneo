@@ -60,6 +60,11 @@ const mainNavItems: NavGroup[] = [
                 icon: 'mdi:clock',
             },
             {
+                title: 'Qr Code Toko',
+                href: '/merchant/store-management/qr-code',
+                icon: 'mdi:qrcode',
+            },
+            {
                 title: 'Meja',
                 href: '/merchant/store-management/table',
                 icon: 'mdi:table-chair',
