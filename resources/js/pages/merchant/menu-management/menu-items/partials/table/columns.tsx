@@ -37,6 +37,14 @@ export const columns: ColumnDef<MenuItem>[] = [
         enableHiding: false,
     },
     {
+        id: 'short_description',
+        accessorKey: 'short_description',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Deskripsi Singkat menu" />,
+        cell: ({ row }) => <span className="block font-medium">{row.getValue('short_description')}</span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
         id: 'menu_category',
         accessorKey: 'menu_category',
         accessorFn: (row) => row.menu_category?.name,
