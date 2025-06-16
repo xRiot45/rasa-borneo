@@ -1,39 +1,19 @@
-import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 import { Role } from '@/models/role';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
+import { DataTableColumnHeader } from './components/data-table-column-header';
+import { DataTableRowActions } from './components/data-table-row-actions';
 
 export const columns: ColumnDef<Role>[] = [
-    {
-        id: 'select',
-        accessorKey: 'id',
-        size: 20,
-        header: ({ table }) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-                className="translate-y-[2px]"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-                className="translate-y-[2px]"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
     {
         id: 'no',
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
