@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
             'admin' => Role::where('name', 'admin')->first(),
             'merchant' => Role::where('name', 'merchant')->first(),
             'customer' => Role::where('name', 'customer')->first(),
+            'courier' => Role::where('name', 'courier')->first(),
         ];
 
         foreach ($roles as $roleName => $role) {
@@ -31,24 +32,13 @@ class UserSeeder extends Seeder
                 'phone' => '081234567890',
                 'role' => 'admin',
             ],
-            [
-                'full_name' => 'Merchant Utama',
-                'email' => 'merchant@gmail.com',
-                'phone' => '082290920201',
-                'role' => 'merchant',
-            ],
-            [
-                'full_name' => 'Customer Utama',
-                'email' => 'customer@gmail.com',
-                'phone' => '081290920101',
-                'role' => 'customer',
-            ],
         ];
 
         foreach ($users as $userData) {
             $user = User::create([
                 'full_name' => $userData['full_name'],
                 'email' => $userData['email'],
+                'email_verified_at' => now(),
                 'password' => Hash::make('12345678'),
                 'phone_number' => $userData['phone'],
             ]);
