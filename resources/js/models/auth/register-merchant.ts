@@ -1,4 +1,5 @@
-export type RegisterFormStep1 = {
+// Step 1 - Informasi Akun Pengguna
+export type RegisterUserAccountInfo = {
     full_name: string;
     email: string;
     phone_number: string;
@@ -6,11 +7,13 @@ export type RegisterFormStep1 = {
     password_confirmation: string;
 };
 
-export type RegisterFormStep2 = {
+// Step 2 - Dokumen Identitas
+export type RegisterUserIdentityInfo = {
     id_card_photo: string | File | null;
 };
 
-export type RegisterFormStep3 = {
+// Step 3 - Informasi Bisnis
+export type RegisterBusinessInfo = {
     business_name: string;
     business_phone: string;
     business_email: string;
@@ -20,12 +23,14 @@ export type RegisterFormStep3 = {
     business_category_id: number;
 };
 
-export type RegisterFormStep4 = {
+// Step 4 - Informasi Rekening Bank
+export type RegisterBankAccountInfo = {
     bank_code: string;
     bank_account_number: string;
     bank_account_name: string;
 };
 
-export type RegisterFormStep5 = {
+// Step 5 - Informasi NPWP
+export type RegisterTaxInfo = {
     tax_identification_number: string;
 };

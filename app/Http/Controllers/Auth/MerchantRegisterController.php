@@ -25,24 +25,25 @@ class MerchantRegisterController extends Controller
 
         $user->assignRole('merchant');
 
+        $idCardPhotoPath = null;
+
         if ($request->hasFile('id_card_photo') && $request->file('id_card_photo')->isValid()) {
             $file = $request->file('id_card_photo');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('foto_ktp', $filename, 'public');
 
-            $validated['id_card_photo'] = '/' . 'storage/' . $path;
+            $path = $file->storeAs('merchant_assets/id_card_photo', $filename, 'public');
+            $idCardPhotoPath = '/storage/' . $path;
         }
 
         $bankCode = $validated['bank_code'];
 
-        // Cek jika bank code atau bank name kosong
         if (!$bankCode) {
             return back()->withErrors(['bank' => 'Bank tidak valid']);
         }
 
         Merchant::create([
             'user_id' => $user->id,
-            'id_card_photo' => $validated['id_card_photo'] ?? null,
+            'id_card_photo' => $idCardPhotoPath,
             'business_name' => $validated['business_name'],
             'business_phone' => $validated['business_phone'],
             'business_email' => $validated['business_email'],
@@ -56,6 +57,8 @@ class MerchantRegisterController extends Controller
             'tax_identification_number' => $validated['tax_identification_number'],
         ]);
 
-        return redirect()->route('login')->with(['success' => 'Register merchant successfully']);
+        return redirect()
+            ->route('login')
+            ->with(['success' => 'Register merchant successfully']);
     }
 }

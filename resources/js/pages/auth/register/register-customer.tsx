@@ -1,5 +1,4 @@
 import InputError from '@/components/input-error';
-import Stepper from '@/components/stepper';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -97,7 +96,39 @@ export default function RegisterCustomerPage() {
             >
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                     {/* Step Indicator */}
-                    <Stepper currentStep={step} steps={['Info Akun', 'Info Tambahan']} />
+                    <div className="mb-6 flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:justify-center sm:gap-10">
+                        {/* Step 1 */}
+                        <div className="flex flex-1 items-center gap-4 text-center sm:flex-col">
+                            <div
+                                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all ${
+                                    step >= 1
+                                        ? 'border-black bg-black text-white dark:bg-white dark:text-black'
+                                        : 'border-muted text-muted-foreground'
+                                }`}
+                            >
+                                1
+                            </div>
+                            <span className={`mt-2 text-sm ${step >= 1 ? 'font-medium text-black dark:text-white' : 'text-muted-foreground'}`}>
+                                Informasi Akun
+                            </span>
+                        </div>
+
+                        {/* Step 2 */}
+                        <div className="flex flex-1 items-center gap-4 text-center sm:flex-col">
+                            <div
+                                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all ${
+                                    step >= 2
+                                        ? 'border-black bg-black text-white dark:bg-white dark:text-black'
+                                        : 'border-muted text-muted-foreground'
+                                }`}
+                            >
+                                2
+                            </div>
+                            <span className={`mt-2 text-sm ${step >= 2 ? 'font-medium text-black dark:text-white' : 'text-muted-foreground'}`}>
+                                Informasi Tambahan
+                            </span>
+                        </div>
+                    </div>
 
                     {step === 1 && (
                         <>

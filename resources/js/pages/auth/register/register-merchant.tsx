@@ -10,43 +10,50 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import AuthLayout from '@/layouts/auth/auth-layout';
 import { cn } from '@/lib/utils';
-import { RegisterFormStep1, RegisterFormStep2, RegisterFormStep3, RegisterFormStep4, RegisterFormStep5 } from '@/models/auth/register-merchant';
+import {
+    RegisterBankAccountInfo,
+    RegisterBusinessInfo,
+    RegisterTaxInfo,
+    RegisterUserAccountInfo,
+    RegisterUserIdentityInfo,
+} from '@/models/auth/register-merchant';
 import { Bank } from '@/models/bank';
 import { BusinessCategory } from '@/models/business-category';
 import { Icon } from '@iconify/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function RegisterMerchantPage() {
-    const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
     const { banks } = usePage<{ banks: Bank[] }>().props;
+    const { businessCategories } = usePage<{ businessCategories: BusinessCategory[] }>().props;
 
     const [step, setStep] = useState<number>(1);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showPasswordConfirmation, setShowPasswordConfirmation] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>('');
 
     const { data, setData, post, processing, errors, reset } = useForm<
-        RegisterFormStep1 &
-            RegisterFormStep2 &
-            RegisterFormStep3 &
-            RegisterFormStep4 &
-            RegisterFormStep5 & {
+        RegisterUserAccountInfo &
+            RegisterUserIdentityInfo &
+            RegisterBusinessInfo &
+            RegisterBankAccountInfo &
+            RegisterTaxInfo & {
                 use_same_phone: boolean;
                 use_same_email: boolean;
             }
     >({
-        // Step 1
+        // Account Info
         full_name: '',
         email: '',
         phone_number: '',
         password: '',
         password_confirmation: '',
 
-        // Step 2
+        // Identity Info
         id_card_photo: null,
 
-        // Step 3
+        // Business Info
         business_name: '',
         business_phone: '',
         business_email: '',
@@ -55,12 +62,12 @@ export default function RegisterMerchantPage() {
         business_address: '',
         business_category_id: 0,
 
-        // Step 4
+        // Bank Info
         bank_code: '',
         bank_account_number: '',
         bank_account_name: '',
 
-        // Step 5
+        // Tax Info
         tax_identification_number: '',
 
         // New state properties for checkboxes
@@ -70,6 +77,10 @@ export default function RegisterMerchantPage() {
 
     const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+
+    const filteredBanks = useMemo(() => {
+        return banks.filter((bank) => `${bank.sandi_bank} - ${bank.nama_bank}`.toLowerCase().includes(search.toLowerCase()));
+    }, [search, banks]);
 
     const handleFileChange = (file: File | null) => {
         setData('id_card_photo', file);
@@ -165,7 +176,7 @@ export default function RegisterMerchantPage() {
         <AuthLayout title="Daftar Sebagai Penjual" description="Silahkan isi data usaha anda untuk melanjutkan dan menjual produk anda secara online">
             <Head title="Register" />
             {/* Step Indicator */}
-            <div className="mb-10 grid grid-cols-2 gap-10">
+            <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
                 {[
                     { stepNumber: 1, label: 'Infomasi Akun' },
                     { stepNumber: 2, label: 'Informasi Pribadi' },
@@ -173,7 +184,7 @@ export default function RegisterMerchantPage() {
                     { stepNumber: 4, label: 'Informasi Rekening Bank' },
                     { stepNumber: 5, label: 'Informasi Perpajakan' },
                 ].map(({ stepNumber, label }) => (
-                    <div key={stepNumber} className="flex flex-col items-center">
+                    <div key={stepNumber} className="flex items-center gap-4 sm:flex-col">
                         <div
                             className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all ${
                                 step >= stepNumber
@@ -195,7 +206,6 @@ export default function RegisterMerchantPage() {
                 {step === 1 && (
                     <>
                         <div className="grid gap-6">
-                            {/* Nama Lengkap */}
                             <div className="grid gap-2">
                                 <Label htmlFor="full_name">
                                     Nama Lengkap <strong className="text-red-500">*</strong>
@@ -205,18 +215,19 @@ export default function RegisterMerchantPage() {
                                     type="text"
                                     required
                                     autoFocus
-                                    tabIndex={1}
                                     autoComplete="full_name"
                                     value={data.full_name}
                                     onChange={(e) => setData('full_name', e.target.value)}
                                     disabled={processing}
                                     placeholder="Masukkan nama lengkap anda"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-md px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.full_name && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.full_name} className="mt-2" />
                             </div>
 
-                            {/* Email */}
                             <div className="grid gap-2">
                                 <Label htmlFor="email">
                                     Alamat Email <strong className="text-red-500">*</strong>
@@ -225,18 +236,19 @@ export default function RegisterMerchantPage() {
                                     id="email"
                                     type="email"
                                     required
-                                    tabIndex={2}
                                     autoComplete="email"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     disabled={processing}
-                                    placeholder="email@example.com"
-                                    className="rounded-xl px-4 py-6"
+                                    placeholder="Masukkan alamat email anda"
+                                    className={cn(
+                                        'mt-2 rounded-md px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.email && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
-                            {/* Nomor Telepon */}
                             <div className="grid gap-2">
                                 <Label htmlFor="phone_number">
                                     Nomor Telepon <strong className="text-red-500">*</strong>
@@ -245,38 +257,42 @@ export default function RegisterMerchantPage() {
                                     id="phone_number"
                                     type="number"
                                     required
-                                    tabIndex={2}
                                     autoComplete="phone_number"
                                     value={data.phone_number}
                                     onChange={(e) => setData('phone_number', e.target.value)}
                                     disabled={processing}
                                     placeholder="Masukkan nomor telepon anda"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-md px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.phone_number && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.phone_number} />
                             </div>
 
-                            {/* Password */}
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">
+                                    Password <strong className="text-red-500">*</strong>
+                                </Label>
                                 <div className="relative">
                                     <Input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         required
-                                        tabIndex={3}
                                         autoComplete="password"
                                         value={data.password}
                                         onChange={(e) => setData('password', e.target.value)}
                                         disabled={processing}
                                         placeholder="Masukkan password anda"
-                                        className={cn('mt-1 rounded-xl px-4 py-6 pr-12', errors.password && 'border border-red-500')}
+                                        className={cn(
+                                            'mt-2 rounded-md px-4 py-6 shadow-none placeholder:text-sm',
+                                            errors.password && 'border border-red-500',
+                                        )}
                                     />
                                     <Button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer"
-                                        tabIndex={-1}
+                                        className="absolute top-8 right-4 -translate-y-1/2 cursor-pointer rounded-md"
                                     >
                                         <Icon icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'} className="h-5 w-5" />
                                     </Button>
@@ -284,47 +300,49 @@ export default function RegisterMerchantPage() {
                                 <InputError message={errors.password} />
                             </div>
 
-                            {/* Konfirmasi Password */}
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">Konfirmasi Password</Label>
+                                <Label htmlFor="password_confirmation">
+                                    Konfirmasi Password <strong className="text-red-500">*</strong>
+                                </Label>
                                 <div className="relative">
                                     <Input
                                         id="password_confirmation"
                                         type={showPasswordConfirmation ? 'text' : 'password'}
                                         required
-                                        tabIndex={3}
                                         autoComplete="password_confirmation"
                                         value={data.password_confirmation}
                                         onChange={(e) => setData('password_confirmation', e.target.value)}
                                         disabled={processing}
-                                        placeholder="Konfirmasi Password anda"
-                                        className={cn('mt-1 rounded-xl px-4 py-6 pr-12', errors.password_confirmation && 'border border-red-500')}
+                                        placeholder="Konfirmasi password anda"
+                                        className={cn(
+                                            'mt-2 rounded-md px-4 py-6 shadow-none placeholder:text-sm',
+                                            errors.password_confirmation && 'border border-red-500',
+                                        )}
                                     />
                                     <Button
                                         type="button"
                                         onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-                                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer"
-                                        tabIndex={-1}
+                                        className="absolute top-8 right-4 -translate-y-1/2 cursor-pointer rounded-md"
                                     >
                                         <Icon icon={showPasswordConfirmation ? 'mdi:eye-off' : 'mdi:eye'} className="h-5 w-5" />
                                     </Button>
                                 </div>
                             </div>
 
-                            {/* Button */}
                             <Button
                                 type="button"
                                 onClick={nextStep}
                                 disabled={processing || !isStep1Valid}
                                 className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                             >
-                                Lanjut
+                                Lanjut ke langkah selanjutnya
+                                <Icon icon="mdi:arrow-right" className="ml-2 h-5 w-5" />
                             </Button>
                         </div>
                     </>
                 )}
 
-                {/* Step 2 => Informasi Pribadi Lainnya */}
+                {/* Step 2 => Informasi Pribadi */}
                 {step === 2 && (
                     <>
                         <div className="grid gap-6">
@@ -344,7 +362,8 @@ export default function RegisterMerchantPage() {
                                     disabled={processing || !isStep2Valid}
                                     className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                                 >
-                                    Lanjut
+                                    Lanjut ke langkah selanjutnya
+                                    <Icon icon="mdi:arrow-right" className="ml-2 h-5 w-5" />
                                 </Button>
                                 <Button type="button" onClick={prevStep} variant="outline" className="w-full cursor-pointer py-6">
                                     Kembali ke langkah sebelumnya
@@ -368,13 +387,15 @@ export default function RegisterMerchantPage() {
                                     type="text"
                                     required
                                     autoFocus
-                                    tabIndex={1}
                                     autoComplete="business_name"
                                     value={data.business_name}
                                     onChange={(e) => setData('business_name', e.target.value)}
                                     disabled={processing}
                                     placeholder="Cth : Rumah Makan Domoro"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.business_name && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.business_name} className="mt-2" />
                             </div>
@@ -394,11 +415,14 @@ export default function RegisterMerchantPage() {
                                     onChange={(e) => setData('business_phone', e.target.value)}
                                     disabled={processing}
                                     placeholder="Masukkan nomor telepon bisnis (Jika tidak ada, isi dengan nomor telepon pribadi)"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.business_phone && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.business_phone} />
 
-                                <div className="mt-2 flex items-center space-x-2">
+                                <div className="flex items-center space-x-2">
                                     <Checkbox
                                         id="use_same_phone"
                                         checked={data.use_same_phone}
@@ -409,7 +433,7 @@ export default function RegisterMerchantPage() {
                                         }}
                                         disabled={processing}
                                     />
-                                    <Label htmlFor="use_same_phone" className="text-[13px]">
+                                    <Label htmlFor="use_same_phone" className="text-muted-foreground text-[12px]">
                                         Gunakan nomor telepon yang sama dengan nomor telepon akun
                                     </Label>
                                 </div>
@@ -424,17 +448,19 @@ export default function RegisterMerchantPage() {
                                     id="business_email"
                                     type="email"
                                     required
-                                    tabIndex={2}
                                     autoComplete="business_email"
                                     value={data.business_email}
                                     onChange={(e) => setData('business_email', e.target.value)}
                                     disabled={processing}
                                     placeholder="Masukkan email bisnis (Jika tidak ada, isi dengan email pribadi)"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.business_email && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.email} />
 
-                                <div className="mt-2 flex items-center space-x-2">
+                                <div className="flex items-center space-x-2">
                                     <Checkbox
                                         id="use_same_email"
                                         checked={data.use_same_email}
@@ -445,7 +471,7 @@ export default function RegisterMerchantPage() {
                                         }}
                                         disabled={processing}
                                     />
-                                    <Label htmlFor="use_same_email" className="text-[13px]">
+                                    <Label htmlFor="use_same_email" className="text-muted-foreground text-[12px]">
                                         Gunakan email yang sama dengan email akun
                                     </Label>
                                 </div>
@@ -461,13 +487,15 @@ export default function RegisterMerchantPage() {
                                     type="text"
                                     required
                                     autoFocus
-                                    tabIndex={1}
                                     autoComplete="business_address"
                                     value={data.business_address}
                                     onChange={(e) => setData('business_address', e.target.value)}
                                     disabled={processing}
                                     placeholder="Cth : Jl. A.Yani"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.business_address && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.business_address} className="mt-2" />
                             </div>
@@ -478,12 +506,12 @@ export default function RegisterMerchantPage() {
                                     Kategori Bisnis <strong className="text-red-500">*</strong>
                                 </Label>
                                 <Select onValueChange={(e) => setData('business_category_id', Number(e))}>
-                                    <SelectTrigger className="mt-2 w-full py-6">
+                                    <SelectTrigger className="mt-2 w-full rounded-lg py-6 shadow-none">
                                         <SelectValue placeholder="Pilih Kategori Bisnis" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {businessCategories.map((item: BusinessCategory) => (
-                                            <SelectItem key={item.id} value={String(item.id)}>
+                                            <SelectItem key={item.id} value={String(item.id)} className="cursor-pointer p-4 capitalize">
                                                 {item.name}
                                             </SelectItem>
                                         ))}
@@ -501,13 +529,15 @@ export default function RegisterMerchantPage() {
                                     id="postal_code"
                                     type="number"
                                     required
-                                    tabIndex={2}
                                     autoComplete="postal_code"
                                     value={data.postal_code}
                                     onChange={(e) => setData('postal_code', e.target.value)}
                                     disabled={processing}
                                     placeholder="Masukkan Kode Pos"
-                                    className="rounded-xl px-4 py-6"
+                                    className={cn(
+                                        'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                        errors.postal_code && 'border border-red-500',
+                                    )}
                                 />
                                 <InputError message={errors.postal_code} />
                             </div>
@@ -523,7 +553,10 @@ export default function RegisterMerchantPage() {
                                     value={data?.business_description}
                                     onChange={(e) => setData('business_description', e.target.value)}
                                     placeholder="Deskripsi Bisnis anda"
-                                    className="min-h-[100px]"
+                                    className={cn(
+                                        'mt-2 min-h-[120px] rounded-lg shadow-none placeholder:text-sm',
+                                        errors.business_email && 'border border-red-500',
+                                    )}
                                 />
                             </div>
 
@@ -535,7 +568,8 @@ export default function RegisterMerchantPage() {
                                     disabled={processing || !isStep3Valid}
                                     className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                                 >
-                                    Lanjut
+                                    Lanjut ke langkah selanjutnya
+                                    <Icon icon="mdi:arrow-right" className="ml-2 h-5 w-5" />
                                 </Button>
                                 <Button type="button" onClick={prevStep} variant="outline" className="w-full cursor-pointer py-6">
                                     Kembali ke langkah sebelumnya
@@ -553,20 +587,32 @@ export default function RegisterMerchantPage() {
                             <Label htmlFor="bank_code">
                                 Pilih Bank <strong className="text-red-500">*</strong>
                             </Label>
-                            <Select onValueChange={(e) => setData('bank_code', e)}>
-                                <SelectTrigger className="mt-2 w-full py-6">
+                            <Select onValueChange={(val) => setData('bank_code', val)}>
+                                <SelectTrigger className="mt-2 w-full rounded-lg py-6 shadow-none">
                                     <SelectValue placeholder="Pilih Bank Anda" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    {banks.map((item: Bank) => (
-                                        <SelectItem
-                                            key={item.id}
-                                            value={String(item.sandi_bank + '-' + item.nama_bank)}
-                                            className="cursor-pointer gap-10"
-                                        >
-                                            {item.sandi_bank} - {item.nama_bank}
-                                        </SelectItem>
-                                    ))}
+                                <SelectContent className="max-h-[300px] overflow-y-auto">
+                                    <Input
+                                        placeholder="Cari bank..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="fixed top-0 z-50 mb-2 w-full bg-white py-6 shadow-none dark:bg-zinc-900"
+                                    />
+                                    <div className="mt-12">
+                                        {filteredBanks.length > 0 ? (
+                                            filteredBanks.map((item, index) => (
+                                                <SelectItem
+                                                    className="p-4"
+                                                    key={`${item.sandi_bank}-${item.nama_bank}-${index}`}
+                                                    value={`${item.sandi_bank}-${item.nama_bank}`}
+                                                >
+                                                    {item.sandi_bank} - {item.nama_bank}
+                                                </SelectItem>
+                                            ))
+                                        ) : (
+                                            <div className="p-4 text-center text-sm">Bank tidak ditemukan</div>
+                                        )}
+                                    </div>
                                 </SelectContent>
                             </Select>
                             <InputError message={''} className="mt-2" />
@@ -581,13 +627,15 @@ export default function RegisterMerchantPage() {
                                 id="bank_account_number"
                                 type="number"
                                 required
-                                tabIndex={2}
                                 autoComplete="bank_account_number"
                                 value={data.bank_account_number}
                                 onChange={(e) => setData('bank_account_number', e.target.value)}
                                 disabled={processing}
                                 placeholder="Masukkan nomor rekening anda"
-                                className="rounded-xl px-4 py-6"
+                                className={cn(
+                                    'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                    errors.bank_account_number && 'border border-red-500',
+                                )}
                             />
                             <InputError message={errors.bank_account_number} />
                         </div>
@@ -608,7 +656,10 @@ export default function RegisterMerchantPage() {
                                 onChange={(e) => setData('bank_account_name', e.target.value)}
                                 disabled={processing}
                                 placeholder="Masukkan nama pemilik rekening"
-                                className="rounded-xl px-4 py-6"
+                                className={cn(
+                                    'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                    errors.bank_account_name && 'border border-red-500',
+                                )}
                             />
                             <InputError message={errors.bank_account_name} className="mt-2" />
                         </div>
@@ -621,7 +672,8 @@ export default function RegisterMerchantPage() {
                                 disabled={processing || !isStep4Valid}
                                 className="w-full cursor-pointer bg-black py-6 transition-all dark:bg-white"
                             >
-                                Lanjut
+                                Lanjut ke langkah selanjutnya
+                                <Icon icon="mdi:arrow-right" className="ml-2 h-5 w-5" />
                             </Button>
                             <Button type="button" onClick={prevStep} variant="outline" className="w-full cursor-pointer py-6">
                                 Kembali ke langkah sebelumnya
@@ -640,15 +692,17 @@ export default function RegisterMerchantPage() {
                             </Label>
                             <Input
                                 id="tax_identification_number"
-                                type="number"
+                                type="text"
                                 required
-                                tabIndex={2}
                                 autoComplete="tax_identification_number"
                                 value={data.tax_identification_number}
                                 onChange={(e) => setData('tax_identification_number', e.target.value)}
                                 disabled={processing}
                                 placeholder="Isi 0 jika tidak memiliki NPWP"
-                                className="rounded-xl px-4 py-6"
+                                className={cn(
+                                    'mt-2 rounded-lg px-4 py-6 shadow-none placeholder:text-sm',
+                                    errors.tax_identification_number && 'border border-red-500',
+                                )}
                             />
                             <InputError message={errors.tax_identification_number} />
                         </div>
@@ -668,6 +722,7 @@ export default function RegisterMerchantPage() {
                                     disabled={processing || !isStep5Valid}
                                 >
                                     Selesaikan Pendaftaran
+                                    <Icon icon="mdi:register" className="mr-2 h-5 w-5" />
                                 </Button>
                             </ConfirmDialog>
 
