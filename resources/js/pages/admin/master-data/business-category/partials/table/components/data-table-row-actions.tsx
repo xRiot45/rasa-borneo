@@ -85,7 +85,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
             {
                 onSuccess: () => {
                     toast.success('Success', {
-                        description: 'Kategori Bisnis Berhasil Direstore!',
+                        description: 'Kategori Bisnis Berhasil Dipulihkan!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
@@ -117,8 +117,8 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('admin.business-category.edit', { id: row.original.id })} className="cursor-po">
-                        <DropdownMenuItem className="cursor-pointer">
+                    <Link href={route('admin.business-category.edit', { id: row.original.id })}>
+                        <DropdownMenuItem className="cursor-pointer p-3">
                             Edit Data
                             <DropdownMenuShortcut>
                                 <Icon icon={'material-symbols:edit'} />
@@ -130,7 +130,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-amber-600" onSelect={(e) => e.preventDefault()}>
                                         Hapus Data Sementara
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
@@ -161,7 +161,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
                         <>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="cursor-pointer !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-blue-500" onSelect={(e) => e.preventDefault()}>
                                         Pulihkan Data
                                         <DropdownMenuShortcut>
                                             <Icon icon={'material-symbols:delete'} className="!text-blue-500" />
@@ -190,7 +190,7 @@ export function DataTableRowActions({ row }: { row: Row<BusinessCategory> }) {
 
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
+                            <DropdownMenuItem className="cursor-pointer p-3 !text-red-500" onSelect={(e) => e.preventDefault()}>
                                 Hapus Data Permanen
                                 <DropdownMenuShortcut>
                                     <Icon icon={'material-symbols:delete'} className="!text-red-500" />
