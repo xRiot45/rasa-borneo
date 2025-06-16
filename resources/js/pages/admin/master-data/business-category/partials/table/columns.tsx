@@ -1,8 +1,9 @@
+import { cn } from '@/lib/utils';
 import { BusinessCategory } from '@/models/business-category';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
+import { DataTableColumnHeader } from './components/data-table-column-header';
+import { DataTableRowActions } from './components/data-table-row-actions';
 
 export const columns: ColumnDef<BusinessCategory>[] = [
     {
@@ -10,6 +11,9 @@ export const columns: ColumnDef<BusinessCategory>[] = [
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
