@@ -187,7 +187,7 @@ class OrderController extends Controller
         return redirect()->route('merchant.incoming-order.index')->with('success', 'Status berhasil diperbarui.');
     }
 
-    public function checkStatus(string $transactionCode)
+    public function checkPaymentStatus(string $transactionCode)
     {
         $serverKey = config('services.midtrans.server_key');
         $isProduction = config('services.midtrans.is_production');

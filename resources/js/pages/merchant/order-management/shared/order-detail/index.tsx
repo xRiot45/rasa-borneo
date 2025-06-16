@@ -138,12 +138,12 @@ export default function OrderDetailPage({ order }: Props) {
 
     const handleCheckPaymenStatus = () => {
         router.get(
-            route('merchant.order.checkStatus', transaction_code),
+            route('merchant.order.checkPaymentStatus', transaction_code),
             {},
             {
                 onSuccess: () => {
                     toast.success('Success', {
-                        description: 'Pembayaran Berhasil Diperiksa!',
+                        description: 'Status Pembayaran Berhasil Diperiksa!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
