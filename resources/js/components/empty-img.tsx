@@ -5,7 +5,7 @@ interface Props {
     description: string;
 }
 
-const EmptyData = ({ title, description }: Props) => {
+const EmptyData: React.FC<Props> = ({ title, description }) => {
     return (
         <>
             <div className="flex flex-col">
