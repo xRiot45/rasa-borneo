@@ -137,6 +137,7 @@ export default function LoginPage({ status, canResetPassword }: LoginProps) {
                         disabled={processing}
                     >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        {!processing && <Icon icon="mdi:login" className="h-4 w-4" />}
                         Log in
                     </Button>
                 </div>
