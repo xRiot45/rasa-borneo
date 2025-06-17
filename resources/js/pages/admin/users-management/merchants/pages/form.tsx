@@ -164,7 +164,6 @@ export default function FormPage({ merchant }: Props) {
                                 <CardDescription className="text-muted-foreground mt-0">Lengkapi data akun merchant</CardDescription>
                             </CardHeader>
                             <CardContent className="mt-4 grid gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-                                {/* Full Name */}
                                 <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
                                     <div>
                                         <Label htmlFor="full_name">
@@ -178,7 +177,7 @@ export default function FormPage({ merchant }: Props) {
                                             onChange={(e) => setData('full_name', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nama lengkap merchant"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.full_name && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.full_name && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.full_name} className="mt-2" />
                                     </div>
@@ -196,7 +195,7 @@ export default function FormPage({ merchant }: Props) {
                                             onChange={(e) => setData('email', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan email merchant"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.email && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.email && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.email} className="mt-2" />
                                     </div>
@@ -214,13 +213,12 @@ export default function FormPage({ merchant }: Props) {
                                             onChange={(e) => setData('phone_number', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nomor telepon merchant"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.phone_number && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.phone_number && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.phone_number} className="mt-2" />
                                     </div>
                                 </div>
 
-                                {/* Password dan Confirmation (Baris ke-2, col-span-3) */}
                                 <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                                     {/* Password */}
                                     <div>
@@ -230,11 +228,11 @@ export default function FormPage({ merchant }: Props) {
                                         <Input
                                             id="password"
                                             type="password"
-                                            required
+                                            required={isEdit ? false : true}
                                             value={data.password}
                                             onChange={(e) => setData('password', e.target.value)}
                                             placeholder="Masukkan password merchant"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.password} className="mt-2" />
                                     </div>
@@ -247,12 +245,12 @@ export default function FormPage({ merchant }: Props) {
                                         <Input
                                             id="password_confirmation"
                                             type="password"
-                                            required
+                                            required={isEdit ? false : true}
                                             value={data.password_confirmation}
                                             onChange={(e) => setData('password_confirmation', e.target.value)}
                                             placeholder="Masukkan konfirmasi password merchant"
                                             className={cn(
-                                                'mt-1 rounded-xl px-4 py-6 shadow-none',
+                                                'mt-2 rounded-xl px-4 py-6 shadow-none',
                                                 errors.password_confirmation && 'border border-red-500',
                                             )}
                                         />
@@ -299,7 +297,7 @@ export default function FormPage({ merchant }: Props) {
                                             onChange={(e) => setData('business_name', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nama bisnis"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.business_name && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.business_name && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.business_name} className="mt-2" />
                                     </div>
@@ -317,7 +315,7 @@ export default function FormPage({ merchant }: Props) {
                                             onChange={(e) => setData('business_email', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan email bisnis"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.business_email && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.business_email && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.business_email} className="mt-2" />
                                     </div>
@@ -335,7 +333,7 @@ export default function FormPage({ merchant }: Props) {
                                             onChange={(e) => setData('business_phone', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nomor telepon bisnis"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.business_phone && 'border border-red-500')}
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.business_phone && 'border border-red-500')}
                                         />
                                         <InputError message={errors?.business_phone} className="mt-2" />
                                     </div>
@@ -347,9 +345,9 @@ export default function FormPage({ merchant }: Props) {
                                         </Label>
                                         <Select
                                             onValueChange={(e) => setData('business_category_id', Number(e))}
-                                            value={String(data.business_category_id)}
+                                            value={data.business_category_id ? String(data.business_category_id) : ''} // ← Ini kunci placeholder muncul
                                         >
-                                            <SelectTrigger className="mt-2 w-full py-6">
+                                            <SelectTrigger className="mt-2 w-full py-6 shadow-none">
                                                 <SelectValue placeholder="Pilih Kategori Bisnis" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -384,7 +382,7 @@ export default function FormPage({ merchant }: Props) {
                                                     onChange={(e) => setSearch(e.target.value)}
                                                     className="fixed top-0 z-50 mb-2 w-full bg-white py-6 shadow-none dark:bg-zinc-900"
                                                 />
-                                                <div className="mt-12">
+                                                <div className="mt-22">
                                                     {filteredBanks.length > 0 ? (
                                                         filteredBanks.map((item, index) => (
                                                             <SelectItem
@@ -413,13 +411,15 @@ export default function FormPage({ merchant }: Props) {
                                             id="bank_account_number"
                                             type="number"
                                             required
-                                            tabIndex={2}
                                             autoComplete="bank_account_number"
                                             value={data.bank_account_number}
                                             onChange={(e) => setData('bank_account_number', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nomor rekening anda"
-                                            className="mt-2 rounded-lg px-4 py-6"
+                                            className={cn(
+                                                'mt-2 rounded-xl px-4 py-6 shadow-none',
+                                                errors.bank_account_number && 'border border-red-500',
+                                            )}
                                         />
                                         <InputError message={errors.bank_account_number} />
                                     </div>
@@ -434,13 +434,15 @@ export default function FormPage({ merchant }: Props) {
                                             type="text"
                                             required
                                             autoFocus
-                                            tabIndex={1}
                                             autoComplete="bank_account_name"
                                             value={data.bank_account_name}
                                             onChange={(e) => setData('bank_account_name', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan nama pemilik rekening"
-                                            className="mt-2 rounded-lg px-4 py-6"
+                                            className={cn(
+                                                'mt-2 rounded-xl px-4 py-6 shadow-none',
+                                                errors.bank_account_name && 'border border-red-500',
+                                            )}
                                         />
                                         <InputError message={errors.bank_account_name} className="mt-2" />
                                     </div>
@@ -456,13 +458,15 @@ export default function FormPage({ merchant }: Props) {
                                             id="tax_identification_number"
                                             type="number"
                                             required
-                                            tabIndex={2}
                                             autoComplete="tax_identification_number"
                                             value={data.tax_identification_number}
                                             onChange={(e) => setData('tax_identification_number', e.target.value)}
                                             disabled={processing}
                                             placeholder="Isi 0 jika tidak memiliki NPWP"
-                                            className="rounded-xl px-4 py-6"
+                                            className={cn(
+                                                'mt-2 rounded-xl px-4 py-6 shadow-none',
+                                                errors.tax_identification_number && 'border border-red-500',
+                                            )}
                                         />
                                         <InputError message={errors.tax_identification_number} />
                                     </div>
@@ -476,13 +480,12 @@ export default function FormPage({ merchant }: Props) {
                                             id="postal_code"
                                             type="number"
                                             required
-                                            tabIndex={2}
                                             autoComplete="postal_code"
                                             value={data.postal_code}
                                             onChange={(e) => setData('postal_code', e.target.value)}
                                             disabled={processing}
                                             placeholder="Masukkan Kode Pos"
-                                            className="mt-2 rounded-lg px-4 py-6"
+                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.postal_code && 'border border-red-500')}
                                         />
                                         <InputError message={errors.postal_code} />
                                     </div>
@@ -497,13 +500,15 @@ export default function FormPage({ merchant }: Props) {
                                             type="text"
                                             required
                                             autoFocus
-                                            tabIndex={1}
                                             autoComplete="business_address"
                                             value={data.business_address}
                                             onChange={(e) => setData('business_address', e.target.value)}
                                             disabled={processing}
                                             placeholder="Cth : Jl. A.Yani"
-                                            className="mt-2 rounded-lg px-4 py-6"
+                                            className={cn(
+                                                'mt-2 rounded-xl px-4 py-6 shadow-none',
+                                                errors.business_address && 'border border-red-500',
+                                            )}
                                         />
                                         <InputError message={errors.business_address} className="mt-2" />
                                     </div>
@@ -519,7 +524,10 @@ export default function FormPage({ merchant }: Props) {
                                             value={data?.business_description}
                                             onChange={(e) => setData('business_description', e.target.value)}
                                             placeholder="Deskripsi Bisnis anda"
-                                            className="mt-2 min-h-[100px]"
+                                            className={cn(
+                                                'mt-2 min-h-[150px] rounded-xl p-4 shadow-none',
+                                                errors.business_description && 'border border-red-500',
+                                            )}
                                         />
                                     </div>
                                 </div>

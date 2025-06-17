@@ -152,7 +152,7 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                         <DropdownMenuItem className="cursor-pointer p-3">
                             Edit Merchant
                             <DropdownMenuShortcut>
-                                <Icon icon={'material-symbols:storefront'} />
+                                <Icon icon={'heroicons:pencil'} />
                             </DropdownMenuShortcut>
                         </DropdownMenuItem>
                     </Link>
