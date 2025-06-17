@@ -163,9 +163,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::put('/edit/{id}', 'update')->name('admin.merchants.update');
                 Route::get('/show/{id}', 'show')->name('admin.merchants.show');
                 Route::put('/verify/{id}', 'verifyMerchant')->name('admin.merchants.verify');
-                Route::delete('/soft-delete/{merchant}', 'softDelete')->name('admin.merchants.softDelete');
-                Route::delete('/force-delete/{merchant}', 'forceDelete')->name('admin.merchants.forceDelete');
-                Route::patch('/restore/{merchant}', 'restore')->name('admin.merchants.restore');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('admin.merchants.softDelete');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('admin.merchants.forceDelete');
+                Route::patch('/restore/{id}', 'restore')->name('admin.merchants.restore');
             });
 
         // Couriers

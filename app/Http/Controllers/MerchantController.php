@@ -212,16 +212,19 @@ class MerchantController extends Controller
         return redirect()->back(303)->with('success', 'Usaha berhasil diverifikasi');
     }
 
-    public function softDelete(Merchant $merchant): RedirectResponse
+    public function softDelete($id): RedirectResponse
     {
-        $user = $merchant->user()->first();
+        $merchant = Merchant::withTrashed()->findOrFail($id);
 
+        $user = $merchant->user()->first();
         $user->delete();
         $merchant->delete();
+
         return redirect()
             ->back()
             ->with(['success' => 'Merchant berhasil dihapus sementara']);
     }
+
 
     public function forceDelete(int $id): RedirectResponse
     {

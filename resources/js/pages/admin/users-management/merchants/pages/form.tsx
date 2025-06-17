@@ -44,11 +44,9 @@ export default function FormPage({ merchant }: Props) {
     const { banks } = usePage<{ banks: Bank[] }>().props;
     const [search, setSearch] = useState<string>('');
 
-    const { data, setData, post, processing, errors } = useForm<Required<MerchantForm>>({
+    const defaultForm: Partial<MerchantForm> = {
         full_name: isEdit ? merchant?.user?.full_name : '',
         email: isEdit ? merchant?.user?.email : '',
-        password: '',
-        password_confirmation: '',
         phone_number: isEdit ? merchant?.user?.phone_number : '',
         id_card_photo: isEdit ? merchant?.id_card_photo : null,
         business_name: isEdit ? merchant?.business_name : '',
@@ -62,7 +60,14 @@ export default function FormPage({ merchant }: Props) {
         bank_code: isEdit ? merchant?.bank_code : '',
         bank_account_number: isEdit ? merchant?.bank_account_number : '',
         bank_account_name: isEdit ? merchant?.bank_account_name : '',
-    });
+    };
+
+    if (!isEdit) {
+        defaultForm.password = '';
+        defaultForm.password_confirmation = '';
+    }
+
+    const { data, setData, post, processing, errors } = useForm<Required<MerchantForm>>(defaultForm as Required<MerchantForm>);
 
     const filteredBanks = useMemo(() => {
         return banks.filter((bank) => `${bank.sandi_bank} - ${bank.nama_bank}`.toLowerCase().includes(search.toLowerCase()));
@@ -219,44 +224,46 @@ export default function FormPage({ merchant }: Props) {
                                     </div>
                                 </div>
 
-                                <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                                    {/* Password */}
-                                    <div>
-                                        <Label htmlFor="password">
-                                            Password <strong className="text-red-500">*</strong>
-                                        </Label>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            required={isEdit ? false : true}
-                                            value={data.password}
-                                            onChange={(e) => setData('password', e.target.value)}
-                                            placeholder="Masukkan password merchant"
-                                            className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
-                                        />
-                                        <InputError message={errors?.password} className="mt-2" />
-                                    </div>
+                                {isEdit && (
+                                    <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                                        {/* Password */}
+                                        <div>
+                                            <Label htmlFor="password">
+                                                Password <strong className="text-red-500">*</strong>
+                                            </Label>
+                                            <Input
+                                                id="password"
+                                                type="password"
+                                                required={isEdit ? false : true}
+                                                value={data.password}
+                                                onChange={(e) => setData('password', e.target.value)}
+                                                placeholder="Masukkan password merchant"
+                                                className={cn('mt-2 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
+                                            />
+                                            <InputError message={errors?.password} className="mt-2" />
+                                        </div>
 
-                                    {/* Konfirmasi Password */}
-                                    <div>
-                                        <Label htmlFor="password_confirmation">
-                                            Konfirmasi Password <strong className="text-red-500">*</strong>
-                                        </Label>
-                                        <Input
-                                            id="password_confirmation"
-                                            type="password"
-                                            required={isEdit ? false : true}
-                                            value={data.password_confirmation}
-                                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            placeholder="Masukkan konfirmasi password merchant"
-                                            className={cn(
-                                                'mt-2 rounded-xl px-4 py-6 shadow-none',
-                                                errors.password_confirmation && 'border border-red-500',
-                                            )}
-                                        />
-                                        <InputError message={errors?.password_confirmation} className="mt-2" />
+                                        {/* Konfirmasi Password */}
+                                        <div>
+                                            <Label htmlFor="password_confirmation">
+                                                Konfirmasi Password <strong className="text-red-500">*</strong>
+                                            </Label>
+                                            <Input
+                                                id="password_confirmation"
+                                                type="password"
+                                                required={isEdit ? false : true}
+                                                value={data.password_confirmation}
+                                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                                placeholder="Masukkan konfirmasi password merchant"
+                                                className={cn(
+                                                    'mt-2 rounded-xl px-4 py-6 shadow-none',
+                                                    errors.password_confirmation && 'border border-red-500',
+                                                )}
+                                            />
+                                            <InputError message={errors?.password_confirmation} className="mt-2" />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </CardContent>
                         </Card>
 

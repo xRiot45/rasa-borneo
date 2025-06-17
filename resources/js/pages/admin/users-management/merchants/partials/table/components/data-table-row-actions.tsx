@@ -157,16 +157,14 @@ export function DataTableRowActions({ row }: { row: Row<Merchant> }) {
                         </DropdownMenuItem>
                     </Link>
 
-                    {!deletedAtAlreadyExist && (
-                        <Link href={route('admin.merchants.show', { id: row.original.id })} className="cursor-po">
-                            <DropdownMenuItem className="cursor-pointer p-3">
-                                Lihat Detail Merchant
-                                <DropdownMenuShortcut>
-                                    <Icon icon={'material-symbols:storefront'} />
-                                </DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </Link>
-                    )}
+                    <Link href={route('admin.merchants.show', { id: row.original.id })} className="cursor-po">
+                        <DropdownMenuItem className="cursor-pointer p-3">
+                            Lihat Detail Merchant
+                            <DropdownMenuShortcut>
+                                <Icon icon={'material-symbols:storefront'} />
+                            </DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>
 
                     {/* Verify Merchant */}
                     {!merchantIsVerified && (

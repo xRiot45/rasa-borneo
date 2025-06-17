@@ -119,16 +119,14 @@ export function DataTableRowActions({ row }: { row: Row<Customer> }) {
                         </DropdownMenuItem>
                     </Link>
 
-                    {!deletedAtAlreadyExist && (
-                        <Link href={route('admin.customers.show', { id: row.original.id })} className="cursor-pointer">
-                            <DropdownMenuItem className="cursor-pointer p-3">
-                                Lihat Detail Customer
-                                <DropdownMenuShortcut>
-                                    <Icon icon={'carbon:customer'} />
-                                </DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </Link>
-                    )}
+                    <Link href={route('admin.customers.show', { id: row.original.id })} className="cursor-pointer">
+                        <DropdownMenuItem className="cursor-pointer p-3">
+                            Lihat Detail Customer
+                            <DropdownMenuShortcut>
+                                <Icon icon={'carbon:customer'} />
+                            </DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>
 
                     {/* Soft Delete */}
                     {!deletedAtAlreadyExist && (

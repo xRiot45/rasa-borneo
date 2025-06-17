@@ -106,7 +106,7 @@ export const columns: ColumnDef<Merchant>[] = [
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
         cell: ({ row }) => <DataTableRowActions row={row as Row<Merchant>} />,
         meta: {
-            className: cn('pe-22'),
+            className: cn('pe-20'),
         },
         enableHiding: false,
     },
