@@ -12,6 +12,10 @@ import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
+interface Props {
+    admin: Admin;
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Manajemen Pengguna',
@@ -27,7 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function FormPage({ admin }: { admin: Admin }) {
+export default function FormPage({ admin }: Props) {
     const isEdit = !!admin?.id;
 
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<AdminForm>>({
@@ -104,7 +108,7 @@ export default function FormPage({ admin }: { admin: Admin }) {
                             id="full_name"
                             type="text"
                             autoFocus
-                            tabIndex={1}
+                            required
                             autoComplete="full_name"
                             value={data.full_name}
                             onChange={(e) => setData('full_name', e.target.value)}
@@ -121,7 +125,7 @@ export default function FormPage({ admin }: { admin: Admin }) {
                         <Input
                             id="email"
                             type="email"
-                            tabIndex={2}
+                            required
                             autoComplete="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
@@ -138,7 +142,7 @@ export default function FormPage({ admin }: { admin: Admin }) {
                         <Input
                             id="phone_number"
                             type="number"
-                            tabIndex={3}
+                            required
                             autoComplete="phone_number"
                             value={data.phone_number}
                             onChange={(e) => setData('phone_number', e.target.value)}
@@ -156,7 +160,7 @@ export default function FormPage({ admin }: { admin: Admin }) {
                             <Input
                                 id="password"
                                 type="password"
-                                tabIndex={4}
+                                required={isEdit ? false : true}
                                 autoComplete="password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
@@ -173,7 +177,7 @@ export default function FormPage({ admin }: { admin: Admin }) {
                             <Input
                                 id="password_confirmation"
                                 type="password"
-                                tabIndex={5}
+                                required={isEdit ? false : true}
                                 autoComplete="password_confirmation"
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}

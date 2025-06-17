@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function index(): InertiaResponse
     {
-        $admins = User::role('admin')->get();
+        $admins = User::role('admin')->withTrashed()->get();
         return Inertia::render('admin/users-management/admins/index', [
             'admins' => $admins,
         ]);
@@ -80,11 +80,15 @@ class AdminController extends Controller
 
     public function forceDelete(int $id): RedirectResponse
     {
-        $admin = User::find($id);
-        $admin->forceDelete();
+        $admin = User::withTrashed()->find($id);
+        if (!$admin) {
+            abort(404, 'Data tidak ditemukan.');
+        }
 
+        $admin->forceDelete();
         return redirect()->route('admin.admins.index');
     }
+
 
     public function restore(int $id): RedirectResponse
     {

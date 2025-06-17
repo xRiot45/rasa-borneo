@@ -68,7 +68,7 @@ export default function CreatePage() {
                     id="name"
                     type="text"
                     autoFocus
-                    tabIndex={1}
+                    required
                     autoComplete="name"
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}

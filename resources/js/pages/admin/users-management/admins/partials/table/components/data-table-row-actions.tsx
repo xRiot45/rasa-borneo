@@ -54,6 +54,7 @@ export function DataTableRowActions({ row }: { row: Row<Admin> }) {
     };
 
     const handleForceDelete = (id: number) => {
+        console.log(id);
         router.delete(route('admin.admins.forceDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
