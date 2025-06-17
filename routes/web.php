@@ -120,12 +120,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::prefix('/all-users')
             ->controller(UserController::class)
             ->group(function () {
-                Route::get('/', 'index_all_users')->name('admin.all-users.index');
-                Route::get('/create', 'create')->name('admin.all-users.create');
-                Route::post('/create', 'store')->name('admin.all-users.store');
-                Route::get('/edit/{id}', 'edit')->name('admin.all-users.edit');
-                Route::put('/edit/{id}', 'update')->name('admin.all-users.update');
-                Route::delete('/delete/{id}', 'destroy')->name('admin.all-users.destroy');
+                Route::get('/', 'index')->name('admin.index');
             });
 
         // Admin
@@ -137,7 +132,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 Route::post('/create', 'store')->name('admin.admins.store');
                 Route::get('/edit/{id}', 'edit')->name('admin.admins.edit');
                 Route::put('/edit/{id}', 'update')->name('admin.admins.update');
-                Route::delete('/{id}', 'destroy')->name('admin.admins.destroy');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('admin.admins.softDelete');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('admin.admins.forceDelete');
+                Route::patch('/restore/{id}', 'restore')->name('admin.admins.restore');
             });
 
         // Customer

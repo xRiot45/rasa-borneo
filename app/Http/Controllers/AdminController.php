@@ -67,11 +67,33 @@ class AdminController extends Controller
         return redirect()->route('admin.admins.index');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function softDelete(int $id): RedirectResponse
+    {
+        $admin = User::findOrFail($id);
+        $admin->delete();
+        return redirect()
+            ->route('admin.admins.index')
+            ->with([
+                'success' => 'Delete admin successfully',
+            ]);
+    }
+
+    public function forceDelete(int $id): RedirectResponse
     {
         $admin = User::find($id);
-        $admin->delete();
+        $admin->forceDelete();
 
         return redirect()->route('admin.admins.index');
+    }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $admin = User::withTrashed()->findOrFail($id);
+        $admin->restore();
+        return redirect()
+            ->route('admin.admins.index')
+            ->with([
+                'success' => 'Restore admin successfully',
+            ]);
     }
 }

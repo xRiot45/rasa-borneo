@@ -44,21 +44,21 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         <div className="items-center justify-between lg:flex">
             <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                 <Input
-                    placeholder="Cari nama user..."
+                    placeholder="Cari nama..."
                     value={(table.getColumn('full_name')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('full_name')?.setFilterValue(event.target.value)}
                     className="h-8 w-full sm:w-[150px] lg:w-[250px]"
                 />
 
                 <Input
-                    placeholder="Cari email user..."
+                    placeholder="Cari email..."
                     value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
                     className="h-8 w-full sm:w-[150px] lg:w-[250px]"
                 />
 
                 <Input
-                    placeholder="Cari nomor telepon user..."
+                    placeholder="Cari nomor telepon..."
                     value={(table.getColumn('phone_number')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('phone_number')?.setFilterValue(event.target.value)}
                     className="h-8 w-full sm:w-[150px] lg:w-[250px]"
