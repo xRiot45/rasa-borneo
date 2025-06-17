@@ -273,6 +273,7 @@ export default function FormPage({ customer }: Props) {
                                     <Input
                                         id="birthplace"
                                         type="text"
+                                        required
                                         autoComplete="birthplace"
                                         value={data.birthplace}
                                         onChange={(e) => setData('birthplace', e.target.value)}
