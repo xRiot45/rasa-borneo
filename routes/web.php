@@ -284,7 +284,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/create', 'store')->name('merchant.menu-categories.store');
                 Route::get('/edit/{id}', 'edit')->name('merchant.menu-categories.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.menu-categories.update');
-                Route::delete('/soft-delete/{menuCategory}', 'softDelete')->name('merchant.menu-categories.softDelete');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.menu-categories.softDelete');
                 Route::patch('/restore/{id}', 'restore')->name('merchant.menu-categories.restore');
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-categories.forceDelete');
             });

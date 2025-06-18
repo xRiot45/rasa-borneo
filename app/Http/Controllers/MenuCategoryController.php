@@ -7,6 +7,7 @@ use App\Models\MenuCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -82,13 +83,16 @@ class MenuCategoryController extends Controller
 
         $menuCategory->update([
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
         ]);
+
 
         return redirect()->route('merchant.menu-categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function softDelete(MenuCategory $menuCategory): RedirectResponse
+    public function softDelete(int $id): RedirectResponse
     {
+        $menuCategory = MenuCategory::findOrFail($id);
         $menuCategory->delete();
         return redirect()
             ->back()
