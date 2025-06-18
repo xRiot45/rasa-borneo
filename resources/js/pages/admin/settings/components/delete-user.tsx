@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
+import { toast } from 'sonner';
 
 export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -14,10 +15,41 @@ export default function DeleteUser() {
     const deleteUser: FormEventHandler = (e) => {
         e.preventDefault();
 
-        destroy(route('courier.profile.destroy'), {
+        destroy(route('admin.setting.profile.destroy'), {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
-            onError: () => passwordInput.current?.focus(),
+            onSuccess: () => {
+                passwordInput.current?.focus();
+                toast.success('Success', {
+                    description: 'Akun Berhasil Dihapus!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                closeModal();
+            },
+            onError: (errors) => {
+                passwordInput.current?.focus();
+
+                if (errors.current_password) {
+                    toast.error('Password Salah', {
+                        description: errors.current_password,
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                } else {
+
+                    toast.error('Failed', {
+                        description: 'Akun gagal dihapus',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                }
+            },
             onFinish: () => reset(),
         });
     };
@@ -40,7 +72,7 @@ export default function DeleteUser() {
                     <DialogTrigger asChild>
                         <Button variant="destructive">Hapus Akun</Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="sm:max-w-2xl">
                         <DialogTitle>Apakah Anda yakin ingin menghapus akun Anda?</DialogTitle>
                         <DialogDescription>
                             Setelah akun Anda dihapus, semua sumber daya dan datanya juga akan dihapus secara permanen. Masukkan kata sandi Anda untuk
@@ -56,6 +88,7 @@ export default function DeleteUser() {
                                     id="password"
                                     type="password"
                                     name="password"
+                                    required
                                     ref={passwordInput}
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
