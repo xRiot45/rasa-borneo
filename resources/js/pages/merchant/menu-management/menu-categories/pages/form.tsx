@@ -98,12 +98,14 @@ export default function FormPage({ menuCategory }: Props) {
             <Head title={isEdit ? 'Edit Kategori Menu' : 'Tambah Kategori Menu'} />
             <MerchantLayout breadcrumbs={breadcrumbs}>
                 <form onSubmit={handleSubmit} className="p-4">
-                    <Label htmlFor="name">Nama Kategori Menu</Label>
+                    <Label htmlFor="name">
+                        Nama Kategori Menu <strong className="text-red-500">*</strong>
+                    </Label>
                     <Input
                         id="name"
                         type="text"
                         autoFocus
-                        tabIndex={1}
+                        required
                         autoComplete="name"
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
