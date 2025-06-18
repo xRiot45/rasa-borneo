@@ -20,7 +20,6 @@ class CourierRegisterRequest extends FormRequest
             // User fields
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone_number' => ['required', 'string', 'max:20'],
 
             // Courier fields
@@ -48,10 +47,6 @@ class CourierRegisterRequest extends FormRequest
             'email.email' => 'Format email tidak valid.',
             'email.max' => 'Email maksimal 255 karakter.',
             'email.unique' => 'Email sudah digunakan.',
-
-            'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 8 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
 
             'phone_number.required' => 'Nomor HP wajib diisi.',
             'phone_number.max' => 'Nomor HP maksimal 20 karakter.',

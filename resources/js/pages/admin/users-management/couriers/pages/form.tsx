@@ -41,13 +41,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function FormPage({ courier }: Props) {
     const isEdit = !!courier?.id;
 
-    const { data, setData, post, processing, errors } = useForm<Required<CourierForm>>({
+    const defaultForm: Partial<CourierForm> = {
         full_name: isEdit ? courier?.user?.full_name : '',
         email: isEdit ? courier?.user?.email : '',
-        password: '',
-        password_confirmation: '',
-
-        // Kurir
         phone_number: isEdit ? courier?.user?.phone_number : '',
         vehicle_type: isEdit ? courier?.vehicle_type : VehicleTypeEnum.MOTORCYCLE,
         national_id: isEdit ? courier?.national_id : '',
@@ -59,7 +55,14 @@ export default function FormPage({ courier }: Props) {
         gender: isEdit ? courier?.gender : GenderEnum.MALE,
         driving_license_photo: isEdit ? courier?.driving_license_photo : null,
         license_plate: isEdit ? courier?.license_plate : '',
-    });
+    };
+
+    if (isEdit) {
+        defaultForm.password = '';
+        defaultForm.password_confirmation = '';
+    }
+
+    const { data, setData, post, processing, errors } = useForm<Required<CourierForm>>(defaultForm as Required<CourierForm>);
 
     const [inputValue, setInputValue] = useState(() => {
         return data?.birthdate instanceof Date && !isNaN(data?.birthdate.getTime()) ? data.birthdate.toISOString().split('T')[0] : '';
@@ -137,7 +140,7 @@ export default function FormPage({ courier }: Props) {
                 },
             });
         } else {
-            post(route('admin.merchants.store'), {
+            post(route('admin.couriers.store'), {
                 forceFormData: true,
                 onSuccess: () => {
                     toast.success('Success', {
@@ -177,7 +180,6 @@ export default function FormPage({ courier }: Props) {
                                 <CardDescription className="text-muted-foreground mt-0">Lengkapi data akun kurir</CardDescription>
                             </CardHeader>
                             <CardContent className="mt-4 grid gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-                                {/* Full Name */}
                                 <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
                                     <div>
                                         <Label htmlFor="full_name">
@@ -233,43 +235,44 @@ export default function FormPage({ courier }: Props) {
                                     </div>
                                 </div>
 
-                                {/* Password dan Confirmation (Baris ke-2, col-span-3) */}
-                                <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                                    {/* Password */}
-                                    <div>
-                                        <Label htmlFor="password">
-                                            Password <strong className="text-red-500">*</strong>
-                                        </Label>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            value={data.password}
-                                            onChange={(e) => setData('password', e.target.value)}
-                                            placeholder="Masukkan password kurir"
-                                            className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
-                                        />
-                                        <InputError message={errors?.password} className="mt-2" />
-                                    </div>
+                                {isEdit && (
+                                    <div className="col-span-3 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                                        {/* Password */}
+                                        <div>
+                                            <Label htmlFor="password">
+                                                Password <strong className="text-red-500">*</strong>
+                                            </Label>
+                                            <Input
+                                                id="password"
+                                                type="password"
+                                                value={data.password}
+                                                onChange={(e) => setData('password', e.target.value)}
+                                                placeholder="Masukkan password kurir"
+                                                className={cn('mt-1 rounded-xl px-4 py-6 shadow-none', errors.password && 'border border-red-500')}
+                                            />
+                                            <InputError message={errors?.password} className="mt-2" />
+                                        </div>
 
-                                    {/* Konfirmasi Password */}
-                                    <div>
-                                        <Label htmlFor="password_confirmation">
-                                            Konfirmasi Password <strong className="text-red-500">*</strong>
-                                        </Label>
-                                        <Input
-                                            id="password_confirmation"
-                                            type="password"
-                                            value={data.password_confirmation}
-                                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            placeholder="Masukkan konfirmasi password kurir"
-                                            className={cn(
-                                                'mt-1 rounded-xl px-4 py-6 shadow-none',
-                                                errors.password_confirmation && 'border border-red-500',
-                                            )}
-                                        />
-                                        <InputError message={errors?.password_confirmation} className="mt-2" />
+                                        {/* Konfirmasi Password */}
+                                        <div>
+                                            <Label htmlFor="password_confirmation">
+                                                Konfirmasi Password <strong className="text-red-500">*</strong>
+                                            </Label>
+                                            <Input
+                                                id="password_confirmation"
+                                                type="password"
+                                                value={data.password_confirmation}
+                                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                                placeholder="Masukkan konfirmasi password kurir"
+                                                className={cn(
+                                                    'mt-1 rounded-xl px-4 py-6 shadow-none',
+                                                    errors.password_confirmation && 'border border-red-500',
+                                                )}
+                                            />
+                                            <InputError message={errors?.password_confirmation} className="mt-2" />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </CardContent>
                         </Card>
 
@@ -288,12 +291,10 @@ export default function FormPage({ courier }: Props) {
                                     <Input
                                         id="national_id"
                                         type="number"
-                                        autoFocus
                                         required
                                         inputMode="numeric"
                                         pattern="\d{16}"
                                         maxLength={16}
-                                        autoComplete="on"
                                         value={data.national_id}
                                         onChange={(e) => setData('national_id', e.target.value)}
                                         disabled={processing}
@@ -346,7 +347,6 @@ export default function FormPage({ courier }: Props) {
                                                 id="birthplace"
                                                 type="text"
                                                 required
-                                                autoComplete="on"
                                                 value={data.birthplace}
                                                 onChange={(e) => setData('birthplace', e.target.value)}
                                                 disabled={processing}

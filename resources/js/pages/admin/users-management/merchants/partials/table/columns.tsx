@@ -80,7 +80,7 @@ export const columns: ColumnDef<Merchant>[] = [
     },
     {
         id: 'merchant_status',
-
+        accessorKey: 'merchant_status',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Status Verifikasi" />,
         cell: ({ row }) => {
             const isVerified = row.original.is_verified === 1;
