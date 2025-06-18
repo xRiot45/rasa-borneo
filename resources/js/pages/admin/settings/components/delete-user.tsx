@@ -40,7 +40,6 @@ export default function DeleteUser() {
                         },
                     });
                 } else {
-
                     toast.error('Failed', {
                         description: 'Akun gagal dihapus',
                         action: {
