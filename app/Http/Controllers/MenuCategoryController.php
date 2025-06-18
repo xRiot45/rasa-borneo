@@ -26,7 +26,7 @@ class MenuCategoryController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('merchant/menu-management/menu-categories/pages/create');
+        return Inertia::render('merchant/menu-management/menu-categories/pages/form');
     }
 
     public function store(MenuCategoryRequest $request): RedirectResponse
@@ -50,19 +50,29 @@ class MenuCategoryController extends Controller
         return redirect()->route('merchant.menu-categories.index')->with('success', 'Category created successfully');
     }
 
-    public function edit(MenuCategory $menuCategory): Response
+    public function edit(int $id): Response
     {
-        return Inertia::render('merchant/menu-management/menu-categories/pages/edit', [
-            'data' => $menuCategory,
+        $menuCategory = MenuCategory::findOrFail($id);
+        return Inertia::render('merchant/menu-management/menu-categories/pages/form', [
+            'menuCategory' => $menuCategory,
         ]);
     }
 
-    public function update(MenuCategoryRequest $request, MenuCategory $menuCategory): RedirectResponse
+    public function update(MenuCategoryRequest $request, int $id): RedirectResponse
     {
         $authenticatedUser = Auth::user();
         $merchant = $authenticatedUser->merchant;
 
-        $menuCategoryAlreadyExist = MenuCategory::where('name', $request->name)->where('merchant_id', $merchant->id)->where('id', '!=', $menuCategory->id)->exists();
+        $menuCategory = MenuCategory::findOrFail($id);
+
+        if ($menuCategory->merchant_id != $merchant->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $menuCategoryAlreadyExist = MenuCategory::where('name', $request->name)
+            ->where('merchant_id', $merchant->id)
+            ->where('id', '!=', $menuCategory->id)
+            ->exists();
 
         if ($menuCategoryAlreadyExist) {
             throw ValidationException::withMessages([

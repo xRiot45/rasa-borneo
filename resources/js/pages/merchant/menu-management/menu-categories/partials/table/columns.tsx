@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { BusinessCategory } from '@/models/business-category';
 import { MenuCategory } from '@/models/menu-category';
 import { formatDate } from '@/utils/format-date';
@@ -11,6 +12,9 @@ export const columns: ColumnDef<BusinessCategory>[] = [
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },

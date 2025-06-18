@@ -110,7 +110,7 @@ export function DataTableRowActions({ row }: { row: Row<MenuCategory> }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
-                    <Link href={route('merchant.menu-categories.edit', { menuCategory: row.original.slug })} className="cursor-pointer">
+                    <Link href={route('merchant.menu-categories.edit', { id: row?.original?.id })} className="cursor-pointer">
                         <DropdownMenuItem className="cursor-pointer p-3">
                             Edit Data
                             <DropdownMenuShortcut>
