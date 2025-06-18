@@ -70,7 +70,7 @@ export function DataTableRowActions({ row }: { row: Row<FeeItem> }) {
                     </DialogHeader>
                     <div className="grid gap-2 py-4">
                         <Label className="text-sm font-medium capitalize">{row.original.type}</Label>
-                        <Input type="number" value={amount} onChange={(e) => setAmount(parseInt(e.target.value, 10) || 0)} />
+                        <Input type="number" value={amount} onChange={(e) => setAmount(parseInt(e.target.value, 10) || 0)} className="py-6 rounded-lg" />
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setShowDialog(false)}>
