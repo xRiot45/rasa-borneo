@@ -10,6 +10,7 @@ import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { Loader } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 import DeleteUser from './components/delete-user';
 
 interface Props {
@@ -36,7 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Profile({ mustVerifyEmail, status }: Props) {
     const { auth } = usePage<SharedData>().props;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
+    const { data, setData, put, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         full_name: auth.user.full_name,
         email: auth.user.email,
     });
@@ -44,8 +45,26 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'), {
+        put(route('admin.setting.profile.update'), {
             preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Profile Berhasil Diedit!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: () => {
+                toast.error('Failed', {
+                    description: 'Profile gagal diupdate',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
         });
     };
 
@@ -73,17 +92,19 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="email">Alamat email</Label>
 
                         <Input
                             id="email"
                             type="email"
                             className={cn('mt-2 rounded-lg py-6 shadow-none', errors.email && 'border border-red-500')}
                             value={data.email}
+                            readOnly
                             onChange={(e) => setData('email', e.target.value)}
                             required
-                            autoComplete="username"
-                            placeholder="Email address"
+                            disabled
+                            autoComplete="email"
+                            placeholder="Alamat email"
                         />
 
                         <InputError className="mt-2" message={errors.email} />
