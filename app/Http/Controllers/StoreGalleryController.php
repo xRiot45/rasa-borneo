@@ -58,7 +58,6 @@ class StoreGalleryController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {
-            // Hapus file lama jika ada
             if ($storeGallery->image_url) {
                 $oldImagePath = str_replace('/storage/', '', $storeGallery->image_url);
                 if (Storage::disk('public')->exists($oldImagePath)) {
@@ -66,7 +65,6 @@ class StoreGalleryController extends Controller
                 }
             }
 
-            // Upload file baru
             $file = $request->file('image_url');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('merchant_assets/store_gallery', $filename, 'public');
@@ -91,7 +89,6 @@ class StoreGalleryController extends Controller
     public function softDelete(int $id): RedirectResponse
     {
         StoreGallery::findOrFail($id)->delete();
-
         return redirect()
             ->back()
             ->with(['success' => 'Galeri Toko berhasil dihapus sementara']);
@@ -100,7 +97,6 @@ class StoreGalleryController extends Controller
     public function restore(int $id): RedirectResponse
     {
         StoreGallery::withTrashed()->findOrFail($id)->restore();
-
         return redirect()
             ->back()
             ->with(['success' => 'Galeri Toko berhasil dipulihkan']);

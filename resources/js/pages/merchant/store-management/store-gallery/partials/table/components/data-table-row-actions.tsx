@@ -21,8 +21,8 @@ import { toast } from 'sonner';
 export function DataTableRowActions({ row }: { row: Row<StoreGallery> }) {
     const deletedAtAlreadyExist = row.original.deleted_at !== null;
 
-    const handleSoftDelete = () => {
-        router.delete(route('merchant.store-gallery.softDelete', { id: row.original.id }), {
+    const handleSoftDelete = (id: number) => {
+        router.delete(route('merchant.store-gallery.softDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Galeri Toko Berhasil Dihapus Sementara!',
@@ -138,7 +138,10 @@ export function DataTableRowActions({ row }: { row: Row<StoreGallery> }) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleSoftDelete()} className="cursor-pointer bg-amber-600 transition-all">
+                                        <AlertDialogAction
+                                            onClick={() => handleSoftDelete(row?.original?.id)}
+                                            className="cursor-pointer bg-amber-600 transition-all"
+                                        >
                                             Hapus Sementara
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
