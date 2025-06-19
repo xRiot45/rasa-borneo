@@ -8,11 +8,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
 class StoreGalleryController extends Controller
 {
-    public function index_merchant(): Response
+    public function indexMerchant(): InertiaResponse
     {
         $authenticatedUser = Auth::user();
         $merchantId = $authenticatedUser->merchant->id;
@@ -23,7 +23,7 @@ class StoreGalleryController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(): InertiaResponse
     {
         return Inertia::render('merchant/store-management/store-gallery/pages/form');
     }
@@ -37,8 +37,8 @@ class StoreGalleryController extends Controller
 
         if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {
             $file = $request->file('image_url');
-            $filename = uniqid('store_gallery_') . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('store_gallery', $filename, 'public');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('merchant_assets/store_gallery', $filename, 'public');
 
             $validated['image_url'] = '/' . 'storage/' . $path;
         }
@@ -49,10 +49,44 @@ class StoreGalleryController extends Controller
             ]),
         );
 
-        return redirect()->route('merchant.store-gallery.index_merchant')->with('success', 'Data berhasil ditambahkan.');
+        return redirect()->route('merchant.store-gallery.indexMerchant')->with('success', 'Data berhasil ditambahkan.');
+    }
+
+    public function update(StoreGalleryRequest $request, int $id): RedirectResponse
+    {
+        $storeGallery = StoreGallery::findOrFail($id);
+        $validated = $request->validated();
+
+        if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {
+            // Hapus file lama jika ada
+            if ($storeGallery->image_url) {
+                $oldImagePath = str_replace('/storage/', '', $storeGallery->image_url);
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+            }
+
+            // Upload file baru
+            $file = $request->file('image_url');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('merchant_assets/store_gallery', $filename, 'public');
+
+            $validated['image_url'] = '/' . 'storage/' . $path;
+        }
+
+        $storeGallery->update($validated);
+
+        return redirect()->route('merchant.store-gallery.indexMerchant')->with('success', 'Data berhasil diperbarui.');
     }
 
 
+    public function edit(int $id): InertiaResponse
+    {
+        $storeGallery = StoreGallery::findOrFail($id);
+        return Inertia::render('merchant/store-management/store-gallery/pages/form', [
+            'storeGallery' => $storeGallery,
+        ]);
+    }
 
     public function softDelete(int $id): RedirectResponse
     {

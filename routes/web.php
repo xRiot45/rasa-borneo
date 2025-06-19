@@ -321,9 +321,11 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         Route::prefix('/store-gallery')
             ->controller(StoreGalleryController::class)
             ->group(function () {
-                Route::get('/', 'index_merchant')->name('merchant.store-gallery.index_merchant');
+                Route::get('/', 'indexMerchant')->name('merchant.store-gallery.indexMerchant');
                 Route::get('/create', 'create')->name('merchant.store-gallery.create');
                 Route::post('/create', 'store')->name('merchant.store-gallery.store');
+                Route::get('/edit/{id}', 'edit')->name('merchant.store-gallery.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.store-gallery.update');
                 Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.store-gallery.softDelete');
                 Route::patch('/restore/{id}', 'restore')->name('merchant.store-gallery.restore');
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.store-gallery.forceDelete');
