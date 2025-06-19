@@ -70,7 +70,7 @@ class MenuItemController extends Controller
         if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {
             $file = $request->file('image_url');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('foto_menu', $filename, 'public');
+            $path = $file->storeAs('merchant_assets/menu', $filename, 'public');
 
             $validated['image_url'] = '/' . 'storage/' . $path;
         }
@@ -114,7 +114,7 @@ class MenuItemController extends Controller
 
             $file = $request->file('image_url');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('foto_menu', $filename, 'public');
+            $path = $file->storeAs('merchant_assets/menu', $filename, 'public');
             $validated['image_url'] = '/storage/' . $path;
         }
 
