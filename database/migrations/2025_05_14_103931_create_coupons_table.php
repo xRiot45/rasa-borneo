@@ -10,14 +10,14 @@ return new class extends Migration {
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('merchant_id')->constrained('merchants')->onDelete('cascade'); // kupon dibuat oleh merchant tertentu
-            $table->string('code')->unique(); // Contoh: HEMAT20
-            $table->enum('type', CouponTypeEnum::values()); // Jenis diskon
-            $table->integer('discount'); // Nilai diskon (misal 20% atau 20000)
-            $table->integer('minimum_purchase'); // Minimal pembelian
-            $table->timestamp('start_date')->nullable(); // Tanggal mulai berlaku
-            $table->timestamp('end_date')->nullable(); // Tanggal berakhir
-            $table->boolean('is_active')->default(true); // Bisa di-nonaktifkan kapan saja oleh merchant
+            $table->foreignId('merchant_id')->constrained('merchants')->onDelete('cascade');
+            $table->string('code')->unique();
+            $table->enum('type', CouponTypeEnum::values());
+            $table->integer('discount');
+            $table->integer('minimum_purchase');
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

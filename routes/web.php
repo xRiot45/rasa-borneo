@@ -368,12 +368,14 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         Route::prefix('/coupons')
             ->controller(CouponController::class)
             ->group(function () {
-                Route::get('/', 'index_merchant')->name('merchant.coupon.index_merchant');
+                Route::get('/', 'indexMerchant')->name('merchant.coupon.indexMerchant');
                 Route::get('/create', 'create')->name('merchant.coupon.create');
                 Route::post('/create', 'store')->name('merchant.coupon.store');
                 Route::get('/edit/{id}', 'edit')->name('merchant.coupon.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.coupon.update');
-                Route::delete('/destroy/{id}', 'destroy')->name('merchant.coupon.destroy');
+                Route::delete('/soft-delete/{id}', 'softDelete')->name('merchant.coupon.softDelete');
+                Route::patch('/restore/{id}', 'restore')->name('merchant.coupon.restore');
+                Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.coupon.forceDelete');
             });
     });
 

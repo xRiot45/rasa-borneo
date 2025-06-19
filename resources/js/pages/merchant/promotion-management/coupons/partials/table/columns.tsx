@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { CouponTypeEnum } from '@/enums/coupon-type';
+import { cn } from '@/lib/utils';
 import { Coupon } from '@/models/coupon';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
@@ -12,7 +13,10 @@ export const columns: ColumnDef<Coupon>[] = [
         id: 'no',
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
-        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -105,6 +109,17 @@ export const columns: ColumnDef<Coupon>[] = [
         },
         enableHiding: false,
         enableSorting: false,
+    },
+    {
+        id: 'deleted_at',
+        accessorKey: 'deleted_at',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Dihapus Pada" />,
+        cell: ({ row }) => {
+            const deletedAt = row.getValue('deleted_at');
+            return <span className="max-w-36">{deletedAt ? formatDate(String(deletedAt)) : '-'}</span>;
+        },
+        enableHiding: true,
+        enableSorting: true,
     },
     {
         id: 'actions',

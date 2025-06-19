@@ -152,13 +152,11 @@ export default function FormPage({ coupon }: Props) {
                             <Input
                                 id="code"
                                 type="text"
-                                autoFocus
-                                tabIndex={1}
-                                autoComplete="code"
+                                required
                                 value={data.code}
                                 onChange={(e) => setData('code', e.target.value)}
                                 placeholder="Masukkan kode kupon"
-                                className={cn('mt-1 rounded-xl py-6', errors.code && 'border border-red-500')}
+                                className={cn('mt-2 rounded-xl px-4 py-6 shadow-none placeholder:text-sm', errors.code && 'border border-red-500')}
                                 maxLength={6}
                             />
                             <InputError message={errors.code} />
@@ -166,9 +164,11 @@ export default function FormPage({ coupon }: Props) {
 
                         {/* Tipe Kupon */}
                         <div className="grid gap-2">
-                            <Label htmlFor="type">Tipe Kupon</Label>
+                            <Label htmlFor="type">
+                                Tipe Kupon <strong className="text-red-500">*</strong>
+                            </Label>
                             <Select value={data.type ?? undefined} onValueChange={(value) => setData('type', value as CouponTypeEnum)}>
-                                <SelectTrigger className="w-full px-4 py-6">
+                                <SelectTrigger className="mt-1 w-full rounded-lg px-4 py-6 shadow-none">
                                     <SelectValue placeholder="Pilih Tipe Kupon" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -184,18 +184,18 @@ export default function FormPage({ coupon }: Props) {
 
                         {/* Jumlah Diskon */}
                         <div className="grid gap-1">
-                            <Label htmlFor="discount">Jumlah Discount</Label>
+                            <Label htmlFor="discount">
+                                Jumlah Discount <strong className="text-red-500">*</strong>
+                            </Label>
                             <Input
                                 id="discount"
                                 type="number"
                                 required
-                                tabIndex={2}
-                                autoComplete="discount"
                                 value={data.discount}
                                 onChange={(e) => setData('discount', parseInt(e.target.value))}
                                 disabled={processing}
                                 placeholder="Masukkan jumlah discount"
-                                className={cn('mt-1 rounded-xl px-4 py-6', errors.discount && 'border border-red-500')}
+                                className={cn('mt-2 rounded-xl px-4 py-6 shadow-none placeholder:text-sm', errors.code && 'border border-red-500')}
                             />
                             <InputError message={errors.discount} />
                         </div>
@@ -204,28 +204,30 @@ export default function FormPage({ coupon }: Props) {
                     <div className="grid gap-4 lg:grid-cols-3">
                         {/* Minimum Pembelian */}
                         <div className="grid gap-1">
-                            <Label htmlFor="minimum_purchase">Minimum Pembelian</Label>
+                            <Label htmlFor="minimum_purchase">
+                                Minimum Pembelian <strong className="text-red-500">*</strong>
+                            </Label>
                             <Input
                                 id="minimum_purchase"
                                 type="number"
                                 required
-                                tabIndex={2}
-                                autoComplete="minimum_purchase"
                                 value={data.minimum_purchase}
                                 onChange={(e) => setData('minimum_purchase', parseInt(e.target.value))}
                                 disabled={processing}
                                 placeholder="Masukkan jumlah minimum pembelian"
-                                className={cn('mt-1 rounded-xl px-4 py-6', errors.minimum_purchase && 'border border-red-500')}
+                                className={cn('mt-2 rounded-xl px-4 py-6 shadow-none placeholder:text-sm', errors.code && 'border border-red-500')}
                             />
                             <InputError message={errors.minimum_purchase} />
                         </div>
 
                         {/* Tanggal Mulai Kupon */}
                         <div className="grid gap-2">
-                            <Label htmlFor="start_date">Tanggal Mulai Kupon</Label>
+                            <Label htmlFor="start_date">
+                                Tanggal Mulai Kupon <strong className="text-red-500">*</strong>
+                            </Label>
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button type="button" variant="outline" className="w-full px-4 py-6">
+                                    <Button type="button" variant="outline" className="mt-1.5 w-full rounded-lg px-4 py-6 shadow-none">
                                         {data.start_date instanceof Date && !isNaN(data.start_date.getTime()) ? (
                                             <span>{data.start_date.toDateString()}</span>
                                         ) : (
@@ -265,10 +267,12 @@ export default function FormPage({ coupon }: Props) {
 
                         {/* Tanggal Berakhir Kupon */}
                         <div className="grid gap-2">
-                            <Label htmlFor="end_date">Tanggal Berakhir Kupon</Label>
+                            <Label htmlFor="end_date">
+                                Tanggal Berakhir Kupon <strong className="text-red-500">*</strong>
+                            </Label>
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button type="button" variant="outline" className="w-full px-4 py-6">
+                                    <Button type="button" variant="outline" className="mt-1.5 w-full rounded-lg px-4 py-6 shadow-none">
                                         {data.end_date instanceof Date && !isNaN(data.end_date.getTime()) ? (
                                             <span>{data.end_date.toDateString()}</span>
                                         ) : (
@@ -322,7 +326,7 @@ export default function FormPage({ coupon }: Props) {
 
                     {/* Button */}
                     <div className="mt-4 flex justify-end space-x-3">
-                        <Link href={route('merchant.coupon.index_merchant')} className="cursor-pointer">
+                        <Link href={route('merchant.coupon.indexMerchant')} className="cursor-pointer">
                             <Button variant="destructive">
                                 Batalkan <Icon icon="iconoir:cancel" />
                             </Button>

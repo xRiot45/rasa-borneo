@@ -19,7 +19,7 @@ class MerchantRegisterRequest extends FormRequest
             // Informasi Akun
             'full_name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'phone_number' => 'required|string|min:12|max:255',
 
             // Informasi Identitas
