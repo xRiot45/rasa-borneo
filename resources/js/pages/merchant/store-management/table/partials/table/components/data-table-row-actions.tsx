@@ -10,14 +10,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { TableModel } from '@/models/table';
 import { Icon } from '@iconify/react';
 import { Link, router } from '@inertiajs/react';
@@ -26,21 +19,77 @@ import { Row } from '@tanstack/react-table';
 import { toast } from 'sonner';
 
 export function DataTableRowActions({ row }: { row: Row<TableModel> }) {
-    const handleDelete = (menuCategoryId: number) => {
-        router.delete(route('merchant.table.destroy', { id: menuCategoryId }), {
+    const deletedAtAlreadyExist = row.original.deleted_at !== null;
+
+    const handleSoftDelete = (id: number) => {
+        router.delete(route('merchant.table.softDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
-                    description: 'Meja Berhasil Dihapus!',
+                    description: 'Meja Berhasil Dihapus Sementara!',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
                     },
                 });
             },
-            onError: (errors) => {
-                Object.keys(errors).forEach((key) => {
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
                     toast.error('Error', {
-                        description: errors[key],
+                        description: error[key],
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                });
+            },
+        });
+    };
+
+    const handleRestoreData = (id: number) => {
+        router.patch(
+            route('merchant.table.restore', { id }),
+            {},
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Kategori Menu Berhasil Direstore!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
+    };
+
+    const handleForceDelete = (id: number) => {
+        router.delete(route('merchant.table.forceDelete', { id }), {
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Meja Berhasil Dihapus Permanen!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: (error) => {
+                Object.keys(error).forEach((key) => {
+                    toast.error('Error', {
+                        description: error[key],
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
@@ -62,7 +111,7 @@ export function DataTableRowActions({ row }: { row: Row<TableModel> }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[260px]">
                     <Link href={route('merchant.table.edit', { id: row.original.id })} className="cursor-pointer">
-                        <DropdownMenuItem className="cursor-pointer">
+                        <DropdownMenuItem className="cursor-pointer p-3">
                             Edit Data
                             <DropdownMenuShortcut>
                                 <Icon icon={'material-symbols:edit'} />
@@ -70,29 +119,96 @@ export function DataTableRowActions({ row }: { row: Row<TableModel> }) {
                         </DropdownMenuItem>
                     </Link>
 
-                    <DropdownMenuSeparator />
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem className="cursor-pointer !text-red-500" onSelect={(e) => e.preventDefault()}>
-                                Hapus Data
-                                <DropdownMenuShortcut>
-                                    <Icon icon={'material-symbols:delete'} className="!text-red-500" />
-                                </DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Hapus Data</AlertDialogTitle>
-                                <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(row.original.id)} className="cursor-pointer bg-red-600 transition-all">
-                                    Hapus
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    {/* Soft Delete */}
+                    {!deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-amber-600" onSelect={(e) => e.preventDefault()}>
+                                        Hapus Data Sementara
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:auto-delete'} className="!text-amber-600" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Hapus Data Sementara</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleSoftDelete(row?.original?.id)}
+                                            className="cursor-pointer bg-amber-600 transition-all"
+                                        >
+                                            Hapus Sementara
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
+                    )}
+
+                    {/* Restore Data */}
+                    {deletedAtAlreadyExist && (
+                        <>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="cursor-pointer p-3 !text-blue-500" onSelect={(e) => e.preventDefault()}>
+                                        Pulihkan Data
+                                        <DropdownMenuShortcut>
+                                            <Icon icon={'material-symbols:delete'} className="!text-blue-500" />
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Pulihkan Data</AlertDialogTitle>
+                                        <AlertDialogDescription>Apakah Kamu Yakin Ingin Memulihkan Data ini?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleRestoreData(row.original.id)}
+                                            className="cursor-pointer bg-blue-600 transition-all"
+                                        >
+                                            Pulihkan
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
+                    )}
+
+                    {/* Hard Delete */}
+                    {deletedAtAlreadyExist && (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="cursor-pointer p-3 !text-red-500" onSelect={(e) => e.preventDefault()}>
+                                    Hapus Data Permanen
+                                    <DropdownMenuShortcut>
+                                        <Icon icon={'material-symbols:delete'} className="!text-red-500" />
+                                    </DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Hapus Data Permanen</AlertDialogTitle>
+                                    <AlertDialogDescription>Apakah Kamu Yakin Ingin Menghapus Data ini?</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={() => handleForceDelete(row?.original?.id)}
+                                        className="cursor-pointer bg-red-600 transition-all"
+                                    >
+                                        Hapus Permanen
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

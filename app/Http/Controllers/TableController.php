@@ -13,13 +13,13 @@ use Inertia\Response as InertiaResponse;
 
 class TableController extends Controller
 {
-    public function index_merchant(): InertiaResponse
+    public function indexMerchant(): InertiaResponse
     {
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $tables = Table::where('merchant_id', $merchantId)->get();
+        $tables = Table::withTrashed()->where('merchant_id', $merchantId)->get();
         return Inertia::render('merchant/store-management/table/index', [
             'data' => $tables,
         ]);
@@ -40,7 +40,7 @@ class TableController extends Controller
 
         Table::create(array_merge($validated, ['merchant_id' => $merchantId]));
 
-        return redirect()->route('merchant.table.index_merchant');
+        return redirect()->route('merchant.table.indexMerchant');
     }
 
     public function edit(int $id): InertiaResponse
@@ -56,13 +56,27 @@ class TableController extends Controller
         $validated = $request->validated();
         $table = Table::findOrFail($id);
         $table->update($validated);
-        return redirect()->route('merchant.table.index_merchant');
+        return redirect()->route('merchant.table.indexMerchant');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function softDelete(int $id): RedirectResponse
     {
         $table = Table::findOrFail($id);
         $table->delete();
-        return redirect()->route('merchant.table.index_merchant');
+        return redirect()->route('merchant.table.indexMerchant');
+    }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $table = Table::withTrashed()->findOrFail($id);
+        $table->restore();
+        return redirect()->route('merchant.table.indexMerchant');
+    }
+
+    public function forceDelete(int $id): RedirectResponse
+    {
+        $table = Table::onlyTrashed()->findOrFail($id);
+        $table->forceDelete();
+        return redirect()->route('merchant.table.indexMerchant');
     }
 }

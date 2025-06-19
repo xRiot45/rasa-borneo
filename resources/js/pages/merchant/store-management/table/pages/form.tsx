@@ -97,7 +97,7 @@ export default function MerchantTableForm({ table }: Props) {
             <Head title={isEdit ? 'Edit Meja' : 'Tambah Meja'} />
             <MerchantLayout breadcrumbs={breadcrumbs}>
                 <form onSubmit={handleSubmit} className="space-y-8 p-4">
-                    <div className="grid gap-4">
+                    <div className="grid gap-6">
                         <div className="grid gap-1">
                             <Label htmlFor="name">
                                 Nama / Nomor Meja <strong className="text-red-500">*</strong>
@@ -106,13 +106,11 @@ export default function MerchantTableForm({ table }: Props) {
                                 id="name"
                                 type="text"
                                 required
-                                tabIndex={2}
-                                autoComplete="name"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 disabled={processing}
                                 placeholder="Masukkan nama / nomor meja"
-                                className={cn('mt-1 rounded-xl px-4 py-6', errors.name && 'border border-red-500')}
+                                className={cn('mt-2 rounded-xl px-4 py-6 shadow-none placeholder:text-sm', errors.name && 'border border-red-500')}
                             />
                             <InputError message={errors.name} />
                         </div>
@@ -125,20 +123,21 @@ export default function MerchantTableForm({ table }: Props) {
                                 id="capacity"
                                 type="number"
                                 required
-                                tabIndex={2}
-                                autoComplete="capacity"
                                 value={data.capacity}
                                 onChange={(e) => setData('capacity', parseInt(e.target.value))}
                                 disabled={processing}
                                 placeholder="Masukkan kapasitas meja"
-                                className={cn('mt-1 rounded-xl px-4 py-6', errors.capacity && 'border border-red-500')}
+                                className={cn(
+                                    'mt-2 rounded-xl px-4 py-6 shadow-none placeholder:text-sm',
+                                    errors.capacity && 'border border-red-500',
+                                )}
                             />
                             <InputError message={errors.capacity} />
                         </div>
 
                         {/* Button */}
                         <div className="mt-4 flex justify-end space-x-3">
-                            <Link href={route('merchant.table.index_merchant')} className="cursor-pointer">
+                            <Link href={route('merchant.table.indexMerchant')} className="cursor-pointer">
                                 <Button variant="destructive">
                                     Batalkan <Icon icon="iconoir:cancel" />
                                 </Button>
