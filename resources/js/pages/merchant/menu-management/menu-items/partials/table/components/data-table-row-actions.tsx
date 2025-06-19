@@ -21,8 +21,8 @@ import { toast } from 'sonner';
 export function DataTableRowActions({ row }: { row: Row<MenuItem> }) {
     const deletedAtAlreadyExist = row.original.deleted_at !== null;
 
-    const handleSoftDelete = () => {
-        router.delete(route('merchant.menu-items.softDelete', { menuItem: row.original.slug }), {
+    const handleSoftDelete = (id: number) => {
+        router.delete(route('merchant.menu-items.softDelete', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Kategori Menu Berhasil Dihapus Sementara!',
@@ -138,7 +138,10 @@ export function DataTableRowActions({ row }: { row: Row<MenuItem> }) {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleSoftDelete()} className="cursor-pointer bg-amber-600 transition-all">
+                                        <AlertDialogAction
+                                            onClick={() => handleSoftDelete(row?.original.id)}
+                                            className="cursor-pointer bg-amber-600 transition-all"
+                                        >
                                             Hapus Sementara
                                         </AlertDialogAction>
                                     </AlertDialogFooter>

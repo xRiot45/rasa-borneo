@@ -149,8 +149,9 @@ class MenuItemController extends Controller
     }
 
 
-    public function softDelete(MenuItem $menuItem): RedirectResponse
+    public function softDelete(int $id): RedirectResponse
     {
+        $menuItem = MenuItem::findOrFail($id);
         $menuItem->delete();
         return redirect()
             ->back()
