@@ -69,10 +69,15 @@ class StoreProfileController extends Controller
     public function edit(int $id): Response
     {
         $storeProfile = StoreProfile::findOrFail($id);
+
+        $storeProfile->latitude = (string) $storeProfile->latitude;
+        $storeProfile->longitude = (string) $storeProfile->longitude;
+
         return Inertia::render('merchant/store-management/store-profile/pages/form', [
             'storeProfile' => $storeProfile,
         ]);
     }
+
 
     public function update(StoreProfileRequest $request, int $id): RedirectResponse
     {

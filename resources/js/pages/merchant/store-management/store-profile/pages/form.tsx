@@ -29,16 +29,21 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/merchant/store-management/store-profile',
     },
     {
-        title: 'Tambah / Edit Profile Toko',
+        title: 'Form Profile Toko',
         href: '#',
     },
 ];
 
 export default function FormPage({ storeProfile }: Props) {
     const isEdit = !!storeProfile?.id;
+
+    const parseCoordinate = (value: string | number | null): number => {
+        return value ? parseFloat(Number(value).toFixed(14)) : 0;
+    };
+
     const [position, setPosition] = useState<[number, number]>(() => {
         if (storeProfile?.latitude && storeProfile?.longitude) {
-            return [Number(storeProfile.latitude), Number(storeProfile.longitude)];
+            return [parseCoordinate(storeProfile.latitude), parseCoordinate(storeProfile.longitude)];
         }
         return [51.505, -0.09];
     });
@@ -57,6 +62,24 @@ export default function FormPage({ storeProfile }: Props) {
         founded_year: storeProfile?.founded_year ?? 0,
         number_of_employees: storeProfile?.number_of_employees ?? 0,
     });
+
+    useEffect(() => {
+        setData('latitude', position[0].toFixed(14));
+        setData('longitude', position[1].toFixed(14));
+    }, [position, setData]);
+
+    useEffect(() => {
+        if (!storeProfile?.latitude && 'geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    setPosition([pos.coords.latitude, pos.coords.longitude]);
+                },
+                () => {
+                    setPosition([51.505, -0.09]);
+                },
+            );
+        }
+    }, [storeProfile?.latitude]);
 
     const handleFileChange = (type: 'logo_photo' | 'cover_photo', file: File | null) => {
         if (file) {
@@ -140,25 +163,6 @@ export default function FormPage({ storeProfile }: Props) {
             });
         }
     };
-
-    useEffect(() => {
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setPosition([position.coords.latitude, position.coords.longitude]);
-                },
-                (error) => {
-                    console.error('Geolocation error:', error);
-                    setPosition([51.505, -0.09]);
-                },
-            );
-        }
-    }, []);
-
-    useEffect(() => {
-        setData('latitude', String(position[0]));
-        setData('longitude', String(position[1]));
-    }, [position, setData]);
 
     return (
         <>
@@ -381,6 +385,9 @@ export default function FormPage({ storeProfile }: Props) {
                                                 const marker = e.target;
                                                 const latLng = marker.getLatLng();
                                                 setPosition([latLng.lat, latLng.lng]);
+
+                                                setData('latitude', latLng.lat.toFixed(14));
+                                                setData('longitude', latLng.lng.toFixed(14));
                                             },
                                         }}
                                     >

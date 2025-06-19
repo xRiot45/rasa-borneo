@@ -14,8 +14,8 @@ export interface StoreProfile {
     whatsapp_url: string;
 
     // Store Location
-    latitude: string;
-    longitude: string;
+    latitude: number;
+    longitude: number;
 
     // Store Information
     founded_year: number;
