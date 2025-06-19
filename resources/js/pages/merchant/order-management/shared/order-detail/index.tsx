@@ -136,14 +136,43 @@ export default function OrderDetailPage({ order }: Props) {
         );
     };
 
-    const handleCheckPaymenStatus = () => {
+    const handleCheckPaymenStatusCashless = () => {
         router.get(
-            route('merchant.order.checkPaymentStatus', transaction_code),
+            route('merchant.order.checkPaymentStatusCashless', transaction_code),
             {},
             {
                 onSuccess: () => {
                     toast.success('Success', {
                         description: 'Status Pembayaran Berhasil Diperiksa!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            },
+        );
+    };
+
+    const handleConfirmPaymentCash = () => {
+        router.put(
+            route('merchant.order.confirmPaymentCash', transaction_code),
+            {},
+            {
+                onSuccess: () => {
+                    toast.success('Success', {
+                        description: 'Pembayaran Berhasil Dikonfirmasi!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
@@ -446,10 +475,17 @@ export default function OrderDetailPage({ order }: Props) {
                                                 </p>
                                             </div>
 
-                                            {payment_status === PaymentStatusEnum.PENDING && (
-                                                <Button className="w-full cursor-pointer rounded-md py-6" onClick={handleCheckPaymenStatus}>
-                                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                            {payment_status === PaymentStatusEnum.PENDING && payment_method === PaymentMethodEnum.CASHLESS && (
+                                                <Button className="w-full cursor-pointer rounded-md py-6" onClick={handleCheckPaymenStatusCashless}>
                                                     Cek Status Pembayaran
+                                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                                </Button>
+                                            )}
+
+                                            {payment_status === PaymentStatusEnum.PENDING && payment_method === PaymentMethodEnum.CASH && (
+                                                <Button className="w-full cursor-pointer rounded-md py-6" onClick={handleConfirmPaymentCash}>
+                                                    Konfirmasi Pembayaran
+                                                    <Icon icon="line-md:confirm" className="mr-2 h-4 w-4" />
                                                 </Button>
                                             )}
                                         </CardContent>

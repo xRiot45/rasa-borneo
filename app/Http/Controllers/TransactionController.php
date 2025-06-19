@@ -80,7 +80,7 @@ class TransactionController extends Controller
     private function getPaymentStatus(PaymentMethodEnum $method, ?float $cashReceived, float $finalTotal): PaymentStatusEnum
     {
         if ($method === PaymentMethodEnum::CASH && $cashReceived >= $finalTotal) {
-            return PaymentStatusEnum::PAID;
+            return PaymentStatusEnum::PENDING;
         }
         return PaymentStatusEnum::PENDING;
     }
@@ -303,7 +303,6 @@ class TransactionController extends Controller
 
     public function midtransNotification(Request $request): mixed
     {
-        // 1. Validasi Signature Key
         $serverKey = config('services.midtrans.server_key');
         $hashed = hash('sha512', $request->input('order_id') . $request->input('status_code') . $request->input('gross_amount') . $serverKey);
 
@@ -311,19 +310,15 @@ class TransactionController extends Controller
             return response()->json(['message' => 'Invalid Signature Key'], 403);
         }
 
-        // 2. Ambil transaksi berdasarkan kode
         $transaction = Transaction::where('transaction_code', $request['order_id'])->first();
 
-        // 3. Cek jika tidak ditemukan
         if (!$transaction) {
             return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
         }
 
-        // 4. Ambil status dan reference dari Midtrans
         $transactionStatus = $request['transaction_status'];
         $paymentReference = $request['transaction_id'] ?? null;
 
-        // 5. Update berdasarkan status Midtrans
         if (in_array($transactionStatus, ['settlement', 'capture']) && $transaction->payment_status !== PaymentStatusEnum::PAID) {
             $transaction->update([
                 'payment_status' => PaymentStatusEnum::PAID,

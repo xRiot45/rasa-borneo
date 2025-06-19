@@ -187,7 +187,7 @@ class OrderController extends Controller
         return redirect()->route('merchant.incoming-order.index')->with('success', 'Status berhasil diperbarui.');
     }
 
-    public function checkPaymentStatus(string $transactionCode)
+    public function checkPaymentStatusCashless(string $transactionCode)
     {
         $serverKey = config('services.midtrans.server_key');
         $isProduction = config('services.midtrans.is_production');
@@ -240,6 +240,21 @@ class OrderController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function confirmPaymentCash(string $transactionCode): RedirectResponse
+    {
+        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
+
+        if (!$transaction) {
+            return redirect()->back()->with('error', 'Transaksi tidak ditemukan');
+        }
+
+        $transaction->update([
+            'payment_status' => PaymentStatusEnum::PAID,
+        ]);
+
+        return redirect()->back()->with('success', 'Pembayaran berhasil! Terima kasih telah memesan.');
     }
 
     public function orderHistoryAdmin(): InertiaResponse
