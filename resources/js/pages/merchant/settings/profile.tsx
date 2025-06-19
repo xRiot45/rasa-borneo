@@ -10,6 +10,7 @@ import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { Loader } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 import DeleteUser from './components/delete-user';
 
 interface Props {
@@ -36,7 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Profile({ mustVerifyEmail, status }: Props) {
     const { auth } = usePage<SharedData>().props;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
+    const { data, setData, put, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         full_name: auth.user.full_name,
         email: auth.user.email,
     });
@@ -44,8 +45,26 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'), {
+        put(route('merchant.setting.update'), {
             preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Profile Berhasil Diedit!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
+            onError: () => {
+                toast.error('Failed', {
+                    description: 'Profile gagal diupdate',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+            },
         });
     };
 
@@ -83,7 +102,7 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             required
-                            autoComplete="username"
+                            readOnly
                             placeholder="Alamat email"
                         />
 

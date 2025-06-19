@@ -10,6 +10,7 @@ import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Loader } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -37,17 +38,24 @@ export default function Password() {
 
         put(route('merchant.password.update'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
-            onError: (errors) => {
-                if (errors.password) {
-                    reset('password', 'password_confirmation');
-                    passwordInput.current?.focus();
-                }
-
-                if (errors.current_password) {
-                    reset('current_password');
-                    currentPasswordInput.current?.focus();
-                }
+            onSuccess: () => {
+                toast.success('Success', {
+                    description: 'Password Berhasil Diedit!',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
+                reset();
+            },
+            onError: () => {
+                toast.error('Failed', {
+                    description: 'Password gagal diupdate',
+                    action: {
+                        label: 'Tutup',
+                        onClick: () => toast.dismiss(),
+                    },
+                });
             },
         });
     };
