@@ -11,9 +11,9 @@ import CustomerLayout from '@/layouts/customer/layout';
 import { Cart } from '@/models/cart';
 import { formatCurrency } from '@/utils/format-currency';
 import { Icon } from '@iconify/react';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { DialogTrigger } from '@radix-ui/react-dialog';
-import { Check, Minus, Plus, StickyNote, Trash2 } from 'lucide-react';
+import { Minus, Plus, StickyNote, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -211,7 +211,9 @@ export default function CartPage({ carts }: Props) {
                                                 />
                                                 <div>
                                                     <span className="text-muted-foreground text-sm">{carts?.items.length} Menu</span>
-                                                    <h3 className="text-lg font-bold">{carts?.merchant_name}</h3>
+                                                    <Link href={route('merchant.show', { merchant: carts?.merchant_slug })}>
+                                                        <h3 className="text-lg font-bold">{carts?.merchant_name}</h3>
+                                                    </Link>
                                                     <p className="text-muted-foreground text-sm">{carts?.merchant_category}</p>
                                                 </div>
                                             </div>
@@ -288,8 +290,8 @@ export default function CartPage({ carts }: Props) {
                                                                             className="cursor-pointer text-sm"
                                                                             onClick={() => {
                                                                                 setSelectedItemId(item.id);
-                                                                                setFormData({ note: item.note || '' }); // Set isi awal textarea
-                                                                                setOpenDialogNote(true); // Buka dialog
+                                                                                setFormData({ note: item.note || '' });
+                                                                                setOpenDialogNote(true);
                                                                             }}
                                                                         >
                                                                             <StickyNote className="mr-2 h-4 w-4" />
@@ -299,7 +301,7 @@ export default function CartPage({ carts }: Props) {
                                                                     <DialogContent className="sm:max-w-xl">
                                                                         <DialogHeader>
                                                                             <DialogTitle>
-                                                                                {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                                {formData?.note ? 'Edit Catatan' : 'Tambah Catatan'}
                                                                             </DialogTitle>
                                                                         </DialogHeader>
 
@@ -322,8 +324,8 @@ export default function CartPage({ carts }: Props) {
                                                                                     }
                                                                                 }}
                                                                             >
-                                                                                {item?.note ? 'Edit Catatan' : 'Tambah Catatan'}
-                                                                                <Check className="ml-2 h-4 w-4" />
+                                                                                {formData?.note ? 'Edit Catatan' : 'Tambah Catatan'}
+                                                                                <Icon icon={formData?.note ? 'heroicons:check' : 'heroicons:plus'} />
                                                                             </Button>
                                                                         </div>
                                                                     </DialogContent>
