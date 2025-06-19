@@ -13,7 +13,7 @@ export const columns: ColumnDef<MenuItem>[] = [
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
         meta: {
-            className: cn('ps-10'),
+            className: cn('p-4 ps-8'),
         },
         enableSorting: false,
         enableHiding: false,
@@ -21,26 +21,23 @@ export const columns: ColumnDef<MenuItem>[] = [
     {
         id: 'name',
         accessorKey: 'name',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Menu" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Menu" />,
         cell: ({ row }) => (
             <div className="flex items-center space-x-3">
                 <img src={`${row.original.image_url}`} alt={row.getValue('name')} className="h-16 w-16 rounded-md object-cover" />
                 <div>
-                    <span className="block font-medium">{row.getValue('name')}</span>
+                    <span>{row.getValue('name')}</span>
                 </div>
             </div>
         ),
-        meta: {
-            className: cn('pe-22 lg:pe-0'),
-        },
         enableSorting: false,
         enableHiding: false,
     },
     {
         id: 'short_description',
         accessorKey: 'short_description',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Deskripsi Singkat menu" />,
-        cell: ({ row }) => <span className="block font-medium">{row.getValue('short_description')}</span>,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Deskripsi Singkat" />,
+        cell: ({ row }) => <span>{row.getValue('short_description')}</span>,
         enableSorting: false,
         enableHiding: false,
     },
@@ -84,6 +81,24 @@ export const columns: ColumnDef<MenuItem>[] = [
         enableSorting: false,
         enableHiding: false,
     },
+    {
+        id: 'is_recommended',
+        accessorKey: 'is_recommended',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Rekomendasi" />,
+        cell: ({ row }) => {
+            const isRecommended = row.getValue('is_recommended');
+            return (
+                <Badge
+                    className={`${isRecommended ? 'border-blue-500 bg-blue-100 text-blue-600' : 'border-gray-500 bg-gray-100 text-gray-600'} rounded-sm capitalize shadow-none`}
+                >
+                    {isRecommended ? 'Direkomendasikan' : 'Tidak Direkomendasikan'}
+                </Badge>
+            );
+        },
+        enableHiding: true,
+        enableSorting: true,
+    },
+
     {
         id: 'actions',
         accessorKey: 'actions',

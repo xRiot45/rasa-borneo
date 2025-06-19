@@ -293,11 +293,11 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
         Route::prefix('/menu-items')
             ->controller(MenuItemController::class)
             ->group(function () {
-                Route::get('/', 'index_merchant')->name('merchant.menu-items.index');
+                Route::get('/', 'indexMerchant')->name('merchant.menu-items.index');
                 Route::get('/create', 'create')->name('merchant.menu-items.create');
                 Route::post('/create', 'store')->name('merchant.menu-items.store');
-                Route::get('/edit/{menuItem}', 'edit')->name('merchant.menu-items.edit');
-                Route::put('/edit/{menuItem}', 'update')->name('merchant.menu-items.update');
+                Route::get('/edit/{id}', 'edit')->name('merchant.menu-items.edit');
+                Route::put('/edit/{id}', 'update')->name('merchant.menu-items.update');
                 Route::delete('/soft-delete/{menuItem}', 'softDelete')->name('merchant.menu-items.softDelete');
                 Route::patch('/restore/{id}', 'restore')->name('merchant.menu-items.restore');
                 Route::delete('/force-delete/{id}', 'forceDelete')->name('merchant.menu-items.forceDelete');

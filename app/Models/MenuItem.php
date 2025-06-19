@@ -25,6 +25,7 @@ class MenuItem extends Model
         'menu_category_id',
         'merchant_id',
         'is_recommended',
+        'slug',
     ];
 
     protected $dates = ['deleted_at'];

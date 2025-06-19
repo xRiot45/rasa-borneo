@@ -15,12 +15,12 @@ use Inertia\Response;
 
 class MenuItemController extends Controller
 {
-    public function index_merchant(): Response
+    public function indexMerchant(): Response
     {
         $authenticatedUser = Auth::user();
         $merchantId = $authenticatedUser->merchant->id;
 
-        $menuItems = MenuItem::withTrashed()->where('merchant_id', $merchantId)->with('menuCategory')->get();
+        $menuItems = MenuItem::withTrashed()->where('merchant_id', $merchantId)->with('menuCategory')->orderBy('created_at', 'desc')->get();
         return Inertia::render('merchant/menu-management/menu-items/index', [
             'data' => $menuItems,
         ]);
@@ -57,7 +57,7 @@ class MenuItemController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('merchant/menu-management/menu-items/pages/create');
+        return Inertia::render('merchant/menu-management/menu-items/pages/form');
     }
 
     public function store(MenuItemRequest $request): RedirectResponse
@@ -91,17 +91,19 @@ class MenuItemController extends Controller
             ->with(['success' => 'Menu item berhasil ditambahkan']);
     }
 
-    public function edit(MenuItem $menuItem): Response
+    public function edit(int $id): Response
     {
-        return Inertia::render('merchant/menu-management/menu-items/pages/edit', [
+        $menuItem = MenuItem::findOrFail($id);
+        return Inertia::render('merchant/menu-management/menu-items/pages/form', [
             'menuItem' => $menuItem,
         ]);
     }
 
-    public function update(MenuItemRequest $request, MenuItem $menuItem): RedirectResponse
+    public function update(MenuItemRequest $request, int $id): RedirectResponse
     {
         $validated = $request->validated();
 
+        $menuItem = MenuItem::findOrFail($id);
         if ($request->hasFile('image_url') && $request->file('image_url')->isValid()) {
             if ($menuItem->image_url) {
                 $oldImagePath = str_replace('/storage/', '', $menuItem->image_url);
@@ -126,10 +128,13 @@ class MenuItemController extends Controller
             }
 
             $validated['slug'] = $slug;
+        } else {
+            $validated['slug'] = $menuItem->slug;
         }
 
         $menuItem->update([
             'name' => $validated['name'] ?? $menuItem->name,
+            'slug' => Str::slug($validated['name'] ?? $menuItem->name),
             'price' => $validated['price'] ?? $menuItem->price,
             'image_url' => $validated['image_url'] ?? $menuItem->image_url,
             'status' => $validated['status'] ?? $menuItem->status,
@@ -142,6 +147,7 @@ class MenuItemController extends Controller
             ->route('merchant.menu-items.index')
             ->with(['success' => 'Menu item berhasil diperbarui']);
     }
+
 
     public function softDelete(MenuItem $menuItem): RedirectResponse
     {
