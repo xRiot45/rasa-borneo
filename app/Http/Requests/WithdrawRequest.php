@@ -17,7 +17,7 @@ class WithdrawRequest extends FormRequest
         $useMerchantBank = $this->boolean('use_merchant_bank');
 
         return [
-            'amount' => ['required', 'integer', 'min:10000'],
+            'amount' => ['required', 'integer', 'min:100000'],
             'use_merchant_bank' => ['nullable', 'boolean'],
             'bank_code' => $useMerchantBank ? ['nullable'] : ['required', 'string'],
             'bank_account_number' => $useMerchantBank ? ['nullable'] : ['required', 'string'],

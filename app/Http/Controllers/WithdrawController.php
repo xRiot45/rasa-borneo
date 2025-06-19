@@ -30,7 +30,7 @@ class WithdrawController extends Controller
         $merchantId = $merchant->id;
 
         $wallet = MerchantWallet::where('merchant_id', $merchantId)->first();
-        $balances = $wallet->balance;
+        $balances = $wallet->balance ?? 0;
 
         $withdraws = Withdraw::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
         $totalWithdrawn = Withdraw::where('merchant_id', $merchantId)->sum('amount');
