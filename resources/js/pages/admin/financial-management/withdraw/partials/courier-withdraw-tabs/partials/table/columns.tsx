@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { WithdrawStatusEnum } from '@/enums/withdraw-status';
+import { cn } from '@/lib/utils';
 import { Withdraw } from '@/models/financial-management/withdraw';
 import { formatCurrency } from '@/utils/format-currency';
 import { withdrawStatusColorMap } from '@/utils/withdraw-status-color';
@@ -15,7 +16,10 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'no',
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
-        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -23,7 +27,7 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'withdraw_code',
         accessorKey: 'withdraw_code',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Kode Penarikan" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('withdraw_code')}</span>,
+        cell: ({ row }) => <span>{row.getValue('withdraw_code')}</span>,
         enableSorting: false,
         enableHiding: false,
     },
@@ -31,7 +35,7 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'courier.user.full_name',
         accessorKey: 'courier.user.full_name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Lengkap Kurir" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('courier.user.full_name') || '-'}</span>,
+        cell: ({ row }) => <span>{row.getValue('courier.user.full_name') || '-'}</span>,
         enableSorting: false,
         enableHiding: false,
     },
@@ -39,7 +43,7 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'amount',
         accessorKey: 'amount',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Jumlah Penarikan" />,
-        cell: ({ row }) => <span className="max-w-36">{formatCurrency(row.getValue('amount'))}</span>,
+        cell: ({ row }) => <span>{formatCurrency(row.getValue('amount'))}</span>,
         enableSorting: false,
         enableHiding: false,
     },
@@ -47,7 +51,7 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'bank_code',
         accessorKey: 'bank_code',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Kode & Nama Bank" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_code')}</span>,
+        cell: ({ row }) => <span>{row.getValue('bank_code')}</span>,
         enableSorting: false,
         enableHiding: false,
     },
@@ -55,7 +59,7 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'bank_account_number',
         accessorKey: 'bank_account_number',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nomor Rekening" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_account_number')}</span>,
+        cell: ({ row }) => <span>{row.getValue('bank_account_number')}</span>,
         enableSorting: false,
         enableHiding: false,
     },
@@ -63,7 +67,7 @@ export const columns: ColumnDef<Withdraw>[] = [
         id: 'bank_account_name',
         accessorKey: 'bank_account_name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Pemilik Rekening" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('bank_account_name')}</span>,
+        cell: ({ row }) => <span>{row.getValue('bank_account_name')}</span>,
         enableSorting: false,
         enableHiding: false,
     },
