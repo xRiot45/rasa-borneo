@@ -185,7 +185,7 @@ export default function FormPage({ coupon }: Props) {
                         {/* Jumlah Diskon */}
                         <div className="grid gap-1">
                             <Label htmlFor="discount">
-                                Jumlah Discount <strong className="text-red-500">*</strong>
+                                Jumlah Diskon <strong className="text-red-500">*</strong>
                             </Label>
                             <Input
                                 id="discount"

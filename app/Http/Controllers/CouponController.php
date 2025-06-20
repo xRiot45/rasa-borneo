@@ -19,7 +19,7 @@ class CouponController extends Controller
         $merchant = Merchant::where('user_id', $user->id)->first();
         $merchantId = $merchant->id;
 
-        $coupons = Coupon::withTrashed()->where('merchant_id', $merchantId)->get();
+        $coupons = Coupon::withTrashed()->where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
         return Inertia::render('merchant/promotion-management/coupons/index', [
             'data' => $coupons,
         ]);
@@ -38,8 +38,8 @@ class CouponController extends Controller
 
         $validated = $request->validated();
 
-        $validated['start_date'] = Carbon::parse($validated['start_date'])->startOfDay();
-        $validated['end_date'] = Carbon::parse($validated['end_date'])->endOfDay();
+        $validated['start_date'] = Carbon::parse($validated['start_date'])->setTimezone('Asia/Jakarta')->toDateString();
+        $validated['end_date'] = Carbon::parse($validated['end_date'])->setTimezone('Asia/Jakarta')->toDateString();
 
         Coupon::create(array_merge($validated, [
             'merchant_id' => $merchantId,
