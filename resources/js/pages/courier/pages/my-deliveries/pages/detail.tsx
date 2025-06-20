@@ -42,8 +42,8 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
     const merchant = transaction.merchant;
     const items = transaction.transaction_items;
 
-    const latitude = merchant?.store_profile?.latitude ? parseFloat(merchant?.store_profile?.latitude) : 0;
-    const longitude = merchant?.store_profile?.longitude ? parseFloat(merchant?.store_profile?.longitude) : 0;
+    const latitude = Number(merchant?.store_profile?.latitude) || 0;
+    const longitude = Number(merchant?.store_profile?.longitude) || 0;
 
     const handleFileChange = (file: File | null) => {
         setData('proof_of_delivery', file);

@@ -4,7 +4,7 @@ import OrderStatusBadge from '@/components/order-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { OrderStatusEnum } from '@/enums/order-status';
@@ -22,9 +22,13 @@ interface Props {
 }
 
 export default function OrderRequestPage({ orders }: Props) {
+    console.log(orders);
     const [showDialogAcceptedOrder, setShowDialogAcceptedOrder] = useState<boolean>(false);
     const [showDialogRejectedOrder, setShowDialogRejectedOrder] = useState<boolean>(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);
+
+    const latitude = Number(orders[0]?.merchant?.store_profile?.latitude) || 0;
+    const longitude = Number(orders[0]?.merchant?.store_profile?.longitude) || 0;
 
     const handleConfirmAcceptedOrder = (transactionId: number) => {
         setSelectedTransactionId(transactionId);
@@ -137,12 +141,33 @@ export default function OrderRequestPage({ orders }: Props) {
                                                     <h3 className="text-md font-bold">{order.merchant.business_name}</h3>
                                                     <p className="text-muted-foreground text-sm">{order?.merchant?.business_category?.name}</p>
                                                     <p className="text-muted-foreground text-sm">{order?.merchant?.business_address}</p>{' '}
-                                                    {/* <- Tambahkan ini */}
                                                     <Badge className="mt-1 rounded-sm">{order.transaction_items.length} Pesanan</Badge>
                                                 </div>
                                             </div>
 
                                             <div className="flex flex-col gap-2 space-y-1 sm:mt-2 sm:flex-col sm:items-end">
+                                                <Dialog>
+                                                    <DialogTrigger className="w-full">
+                                                        <Button variant="default" className="flex cursor-pointer items-start text-sm">
+                                                            Lihat Lokasi Toko <Icon icon="mdi:map-marker" className="mr-1 h-4 w-4" />
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="sm:max-w-4xl">
+                                                        <DialogHeader className="text-start">
+                                                            <DialogTitle>Lokasi Toko</DialogTitle>
+                                                            <DialogDescription>{order?.merchant?.business_address}</DialogDescription>
+                                                        </DialogHeader>
+
+                                                        <div className="h-[500px] w-full">
+                                                            <iframe
+                                                                width="100%"
+                                                                height="100%"
+                                                                title="Peta Lokasi"
+                                                                src={`https://www.openstreetmap.org/export/embed.html?bbox=${longitude - 0.005}%2C${latitude - 0.005}%2C${longitude + 0.005}%2C${latitude + 0.005}&layer=mapnik&marker=${latitude}%2C${longitude}`}
+                                                            ></iframe>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
                                                 <p className="mt-1 text-sm font-medium">{formatDate(order.checked_out_at ?? '')}</p>
                                                 <OrderStatusBadge status={order.latest_order_status.status as OrderStatusEnum} />
                                             </div>
