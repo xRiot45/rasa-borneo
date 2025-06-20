@@ -260,7 +260,7 @@ class TransactionController extends Controller
             ],
             'customer_details' => $customerDetails,
             'item_details' => $itemDetails,
-            'notification_url' =>  url('/api/midtrans/notification'),
+            'notification_url' => url('/api/midtrans/notification'),
             'callbacks' => [
                 'finish' => route('transaction.success', ['transactionCode' => $transaction->transaction_code]),
                 'pending' => route('transaction.pending', ['transactionCode' => $transaction->transaction_code]),
@@ -328,10 +328,7 @@ class TransactionController extends Controller
 
             $merchant = $transaction->merchant;
             if ($merchant) {
-                $wallet = MerchantWallet::firstOrCreate(
-                    ['merchant_id' => $merchant->id],
-                    ['balance' => 0]
-                );
+                $wallet = MerchantWallet::firstOrCreate(['merchant_id' => $merchant->id], ['balance' => 0]);
 
                 $merchantAmount = $transaction->subtotal_transaction_item - $transaction->discount_total;
 
@@ -350,25 +347,13 @@ class TransactionController extends Controller
     public function transactionSuccess(string $transactionCode): InertiaResponse|RedirectResponse
     {
         $transaction = Transaction::where('transaction_code', $transactionCode)->first();
-        if (!$transaction || $transaction->payment_status !== PaymentStatusEnum::PAID) {
+
+        if (!$transaction || ($transaction->payment_status !== PaymentStatusEnum::PENDING && $transaction->payment_status !== PaymentStatusEnum::PAID)) {
             return redirect('/')->with('error', 'Transaksi tidak ditemukan atau status tidak valid.');
         }
 
         return Inertia::render('customer/pages/transaction/success', [
             'message' => 'Pembayaran berhasil! Terima kasih telah memesan.',
-            'transaction' => $transaction,
-        ]);
-    }
-
-    public function transactionPending(string $transactionCode): InertiaResponse|RedirectResponse
-    {
-        $transaction = Transaction::where('transaction_code', $transactionCode)->first();
-        if (!$transaction || $transaction->payment_status !== PaymentStatusEnum::PENDING) {
-            return redirect('/')->with('error', 'Transaksi tidak ditemukan atau status tidak valid.');
-        }
-
-        return Inertia::render('customer/pages/transaction/pending', [
-            'message' => 'Pembayaran pending.',
             'transaction' => $transaction,
         ]);
     }

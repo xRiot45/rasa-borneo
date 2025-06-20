@@ -46,3 +46,7 @@ export interface User {
     roles: string[];
     [key: string]: unknown;
 }
+
+export interface FlashMessage {
+    message?: string;
+}

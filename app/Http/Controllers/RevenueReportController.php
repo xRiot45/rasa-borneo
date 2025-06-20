@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
-use App\Exports\RevenueReportExport;
+use App\Enums\ReportTypeEnum;
 use App\Exports\RevenueReportExportAll;
 use App\Exports\RevenueReportExportByDate;
 use App\Models\Merchant;
-use App\Models\Order;
 use App\Models\RevenueReport;
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -56,6 +57,71 @@ class RevenueReportController extends Controller
         ]);
     }
 
+    public function generateTodayReport(): RedirectResponse
+    {
+        $startOfDay = Carbon::today(config('app.timezone'))->startOfDay()->timezone('Asia/Jakarta');
+        $endOfDay = Carbon::today(config('app.timezone'))->endOfDay()->timezone('Asia/Jakarta');
+
+        $transactions = Transaction::whereBetween('checked_out_at', [$startOfDay, $endOfDay])
+            ->where('payment_status', PaymentStatusEnum::PAID)
+            ->whereHas('orderStatus', function ($query) {
+                $query->where('status', OrderStatusEnum::COMPLETED);
+            })
+            ->get();
+
+        if ($transactions->isEmpty()) {
+            return redirect()->route('merchant.revenue-report.indexMerchant')
+                ->with('message', 'Tidak ada transaksi hari ini. Laporan harian tidak dibuat.');
+        }
+
+        $groupedByMerchant = $transactions->groupBy('merchant_id');
+
+        $createdReports = 0;
+        $skippedReports = 0;
+
+        foreach ($groupedByMerchant as $merchantId => $merchantTransactions) {
+            $existingReport = RevenueReport::where('merchant_id', $merchantId)
+                ->where('report_date', $startOfDay->toDateString())
+                ->where('report_type', ReportTypeEnum::DAILY)
+                ->exists();
+
+            if ($existingReport) {
+                $skippedReports++;
+                continue;
+            }
+
+            $totalTransactions = $merchantTransactions->count();
+            $totalRevenue = $merchantTransactions->reduce(function ($carry, $transaction) {
+                $deliveryFee = $transaction->delivery_fee ?? 0;
+                $serviceFee = $transaction->application_service_fee ?? 0;
+                return $carry + ($transaction->final_total - $deliveryFee - $serviceFee);
+            }, 0);
+
+            RevenueReport::create([
+                'merchant_id' => $merchantId,
+                'report_date' => $startOfDay->toDateString(),
+                'report_type' => ReportTypeEnum::DAILY,
+                'total_transaction' => $totalTransactions,
+                'total_revenue' => $totalRevenue,
+            ]);
+
+            $createdReports++;
+        }
+
+        // Tambahkan logika pesan
+        if ($createdReports === 0 && $skippedReports > 0) {
+            $message = 'Laporan Hari Ini Sudah Dibuat.';
+        } elseif ($createdReports > 0) {
+            $message = "Laporan harian berhasil dibuat. {$createdReports} dibuat, {$skippedReports} dilewati.";
+        } else {
+            $message = 'Tidak ada transaksi hari ini.';
+        }
+
+        return redirect()->route('merchant.revenue-report.indexMerchant')
+            ->with('message', $message);
+    }
+
+
     public function detailReport($reportDate): InertiaResponse
     {
         $user = Auth::user();
@@ -68,11 +134,10 @@ class RevenueReportController extends Controller
             abort(404);
         }
 
-        // Hitung range UTC dari report date lokal
-        $startOfDay = Carbon::parse($reportDate, config('app.timezone'))->startOfDay()->timezone('UTC');
-        $endOfDay = Carbon::parse($reportDate, config('app.timezone'))->endOfDay()->timezone('UTC');
+        $startOfDay = Carbon::parse($reportDate, config('app.timezone'))->startOfDay()->timezone('Asia/Jakarta');
+        $endOfDay = Carbon::parse($reportDate, config('app.timezone'))->endOfDay()->timezone('Asia/Jakarta');
 
-        $transactions = Transaction::with(['latestOrderStatus']) // ← tambahkan eager loading
+        $transactions = Transaction::with(['latestOrderStatus'])
             ->where('merchant_id', $merchantId)
             ->whereBetween('checked_out_at', [$startOfDay, $endOfDay])
             ->where('payment_status', PaymentStatusEnum::PAID)
@@ -94,6 +159,6 @@ class RevenueReportController extends Controller
 
     public function exportAll(): BinaryFileResponse
     {
-        return Excel::download(new RevenueReportExportAll(), "Semua Laporan Pendapatan.csv");
+        return Excel::download(new RevenueReportExportAll(), 'Semua Laporan Pendapatan.csv');
     }
 }

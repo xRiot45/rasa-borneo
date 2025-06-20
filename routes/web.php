@@ -420,6 +420,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->controller(RevenueReportController::class)
             ->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.revenue-report.indexMerchant');
+                Route::post('/generate-today-report', 'generateTodayReport')->name('merchant.revenue-report.generateTodayReport');
                 Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.revenue-report.detailReport');
                 Route::get('/export/all', 'exportAll')->name('merchant.revenue-report.exportAll');
                 Route::get('/export/{reportDate}', 'exportByDate')->name('merchant.revenue-report.exportByDate');
