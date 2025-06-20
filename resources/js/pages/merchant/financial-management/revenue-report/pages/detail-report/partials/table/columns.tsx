@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
+import { cn } from '@/lib/utils';
 import { Transaction } from '@/models/transactions';
 import { formatDateTimeIndo } from '@/utils/format-date-time';
 import { orderStatusMap } from '@/utils/order-status-map';
@@ -14,7 +15,10 @@ export const columns: ColumnDef<Transaction>[] = [
         id: 'no',
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
-        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -22,7 +26,7 @@ export const columns: ColumnDef<Transaction>[] = [
         id: 'transaction_code',
         accessorKey: 'transaction_code',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Kode Transaksi" />,
-        cell: ({ row }) => <span className="text-primary text-sm">{row.getValue('transaction_code')}</span>,
+        cell: ({ row }) => <span>{row.getValue('transaction_code')}</span>,
         enableSorting: true,
         enableHiding: true,
     },

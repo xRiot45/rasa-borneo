@@ -141,4 +141,10 @@ class ProfitReportController extends Controller
     {
         return Excel::download(new ProfitReportExport(), 'Laporan Laba.xlsx');
     }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        ProfitReport::where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Laporan berhasil dihapus.');
+    }
 }

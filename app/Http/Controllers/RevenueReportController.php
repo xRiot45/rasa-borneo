@@ -161,4 +161,10 @@ class RevenueReportController extends Controller
     {
         return Excel::download(new RevenueReportExportAll(), 'Semua Laporan Pendapatan.csv');
     }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        RevenueReport::where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Laporan berhasil dihapus.');
+    }
 }

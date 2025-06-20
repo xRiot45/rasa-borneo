@@ -424,6 +424,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/detail/{reportDate}', 'detailReport')->name('merchant.revenue-report.detailReport');
                 Route::get('/export/all', 'exportAll')->name('merchant.revenue-report.exportAll');
                 Route::get('/export/{reportDate}', 'exportByDate')->name('merchant.revenue-report.exportByDate');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.revenue-report.destroy');
             });
 
         // Expense Report
@@ -461,6 +462,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::post('/create', 'store')->name('merchant.profit-report.store');
                 Route::get('/show/{id}', 'show')->name('merchant.profit-report.show');
                 Route::get('/export', 'export')->name('merchant.profit-report.export');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.profit-report.destroy');
             });
     });
 
