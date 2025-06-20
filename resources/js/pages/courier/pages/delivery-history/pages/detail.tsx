@@ -119,7 +119,7 @@ export default function DeliveryHistoryDetail({ data }: Props) {
                             <h2 className="text-lg font-semibold">Bukti Pengantaran</h2>
                             {data?.proof_of_delivery ? (
                                 <div className="flex flex-col gap-2">
-                                    <img src={data?.proof_of_delivery} alt="Bukti Pengantaran" className="w-full  rounded-md border object-cover" />
+                                    <img src={data?.proof_of_delivery} alt="Bukti Pengantaran" className="w-full rounded-md border object-cover" />
                                 </div>
                             ) : (
                                 <p className="text-muted-foreground text-sm italic">Belum ada bukti pengantaran.</p>
