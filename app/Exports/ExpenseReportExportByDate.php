@@ -21,7 +21,6 @@ class ExpenseReportExportByDate implements FromArray
         $user = Auth::user();
         $merchantId = $user->merchant->id;
 
-        // Ambil data ExpenseReport berdasarkan merchant dan report_date
         $report = ExpenseReport::where('merchant_id', $merchantId)
             ->where('report_date', $reportDate)
             ->first();
@@ -32,7 +31,6 @@ class ExpenseReportExportByDate implements FromArray
             'Total Pengeluaran' => $report->total_expense ?? 0,
         ];
 
-        // Ambil item-item pengeluaran untuk laporan tersebut
         $this->expenseReportItems = ExpenseReportItem::with('expenseReportCategory')
             ->where('expense_report_id', $report->id ?? 0)
             ->orderBy('created_at')
@@ -43,13 +41,12 @@ class ExpenseReportExportByDate implements FromArray
     {
         $rows = [];
 
-        // Format tanggal laporan
         $formattedDate = Carbon::parse($this->summaryData['Tanggal Laporan'])->format('d-m-Y');
 
         // Judul laporan
         $rows[] = ['Laporan Pengeluaran - ' . $formattedDate];
         $rows[] = ['Deskripsi', $this->summaryData['Deskripsi Pengeluaran']];
-        $rows[] = []; // spasi kosong
+        $rows[] = [];
 
         // Header item pengeluaran
         $rows[] = ['No', 'Nama Pengeluaran', 'Kategori', 'Deskripsi', 'Jumlah Pengeluaran'];
@@ -65,9 +62,8 @@ class ExpenseReportExportByDate implements FromArray
             ];
         }
 
-        $rows[] = []; // spasi kosong sebelum total
+        $rows[] = [];
 
-        // Total pengeluaran
         $rows[] = ['Total Pengeluaran', 'Rp. ' . number_format($this->summaryData['Total Pengeluaran'], 0, ',', '.')];
 
         return $rows;
