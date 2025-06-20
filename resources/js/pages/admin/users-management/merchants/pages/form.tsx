@@ -116,7 +116,6 @@ export default function FormPage({ merchant }: Props) {
                     });
                 },
                 onError: (error) => {
-                    console.log(error);
                     Object.keys(error).forEach((key) => {
                         toast.error('Error', {
                             description: error[key],
@@ -141,7 +140,6 @@ export default function FormPage({ merchant }: Props) {
                     });
                 },
                 onError: (error) => {
-                    console.log(error);
                     Object.keys(error).forEach((key) => {
                         toast.error('Error', {
                             description: error[key],

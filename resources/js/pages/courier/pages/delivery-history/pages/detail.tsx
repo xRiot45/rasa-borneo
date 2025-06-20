@@ -18,7 +18,6 @@ interface Props {
 }
 
 export default function DeliveryHistoryDetail({ data }: Props) {
-    console.log(data);
     const transaction = data.transaction;
     const merchant = transaction.merchant;
     const items = transaction.transaction_items;

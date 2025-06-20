@@ -73,6 +73,7 @@ export default function OrderDetailPage({ order }: Props) {
         delivery_fee,
         checked_out_at,
         order_status,
+        courier_assignment,
     } = order;
 
     const contentRef = useRef<HTMLDivElement>(null);
@@ -273,34 +274,83 @@ export default function OrderDetailPage({ order }: Props) {
                                 </Card>
 
                                 {order_type === OrderTypeEnum.DELIVERY && (
-                                    <Card className="print p-4 shadow-none">
-                                        <CardContent className="space-y-4 p-4">
-                                            <h2 className="text-lg font-semibold">Informasi Pengiriman</h2>
+                                    <>
+                                        {/* Informasi Pengiriman */}
+                                        <Card className="print p-4 shadow-none">
+                                            <CardContent className="space-y-4 p-4">
+                                                <h2 className="text-lg font-semibold">Informasi Pengiriman</h2>
 
-                                            <div className="grid gap-4 md:grid-cols-2">
-                                                <div className="space-y-4">
-                                                    <p className="capitalize">
-                                                        <strong>Nama Penerima :</strong> {recipient_name || '-'}
-                                                    </p>
-                                                    <p className="capitalize">
-                                                        <strong>No. HP Penerima :</strong> {recipient_phone_number || '-'}
-                                                    </p>
-                                                    <p>
-                                                        <strong>Alamat Email Penerima :</strong> {recipient_email || '-'}
-                                                    </p>
-                                                </div>
+                                                <div className="grid gap-4 md:grid-cols-2">
+                                                    <div className="space-y-4">
+                                                        <p className="capitalize">
+                                                            <strong>Nama Penerima :</strong> {recipient_name || '-'}
+                                                        </p>
+                                                        <p className="capitalize">
+                                                            <strong>No. HP Penerima :</strong> {recipient_phone_number || '-'}
+                                                        </p>
+                                                        <p>
+                                                            <strong>Alamat Email Penerima :</strong> {recipient_email || '-'}
+                                                        </p>
+                                                    </div>
 
-                                                <div className="space-y-4">
-                                                    <p className="capitalize">
-                                                        <strong>Alamat Penerima :</strong> {recipient_address || '-'}
-                                                    </p>
-                                                    <p className="capitalize">
-                                                        <strong>Label Alamat Penerima :</strong> {recipient_address_label || '-'}
-                                                    </p>
+                                                    <div className="space-y-4">
+                                                        <p className="capitalize">
+                                                            <strong>Alamat Penerima :</strong> {recipient_address || '-'}
+                                                        </p>
+                                                        <p className="capitalize">
+                                                            <strong>Label Alamat Penerima :</strong> {recipient_address_label || '-'}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
+                                            </CardContent>
+                                        </Card>
+
+                                        {/* Informasi Kurir */}
+                                        <Card className="p-4 shadow-none">
+                                            <CardContent className="space-y-4 p-4">
+                                                <h2 className="text-lg font-semibold">Informasi Kurir</h2>
+
+                                                <div className="grid gap-4 md:grid-cols-2">
+                                                    <div className="space-y-4">
+                                                        <p className="capitalize">
+                                                            <strong>Nama Kurir :</strong> {courier_assignment?.courier?.user?.full_name || '-'}
+                                                        </p>
+                                                        <p className="capitalize">
+                                                            <strong>No. HP Kurir :</strong> {courier_assignment?.courier?.user?.phone_number || '-'}
+                                                        </p>
+                                                        <p>
+                                                            <strong>Alamat Email Kurir :</strong> {courier_assignment?.courier?.user?.email || '-'}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="space-y-4">
+                                                        <p className="capitalize">
+                                                            <strong>Tipe Kendaraan :</strong> {courier_assignment?.courier?.vehicle_type || '-'}
+                                                        </p>
+                                                        <p className="capitalize">
+                                                            <strong>Plat Nomor Kendaraan :</strong>{' '}
+                                                            {courier_assignment?.courier?.license_plate || '-'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                            {/* Bukti Pengantaran */}
+                                            <CardContent className="space-y-4 p-6">
+                                                <h2 className="text-lg font-semibold">Bukti Pengantaran</h2>
+                                                {courier_assignment?.proof_of_delivery ? (
+                                                    <div className="flex flex-col gap-2">
+                                                        <img
+                                                            src={courier_assignment?.proof_of_delivery}
+                                                            alt="Bukti Pengantaran"
+                                                            className="w-1/2 rounded-md border object-cover"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-muted-foreground text-sm italic">Belum ada bukti pengantaran.</p>
+                                                )}
+                                            </CardContent>
+                                        </Card>
+                                    </>
                                 )}
 
                                 <Card className="print p-4 shadow-none">

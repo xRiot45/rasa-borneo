@@ -134,8 +134,14 @@ class OrderController extends Controller
     public function showOrderDetailMerchant(string $transactionCode): InertiaResponse
     {
         $order = Order::where('transaction_code', $transactionCode)
-            ->with(['transactionItems', 'customer', 'orderStatus'])
+            ->with([
+                'transactionItems',
+                'customer',
+                'orderStatus',
+                'courierAssignment.courier.user',
+            ])
             ->firstOrFail();
+
 
         return Inertia::render('merchant/order-management/shared/order-detail/index', [
             'order' => $order,

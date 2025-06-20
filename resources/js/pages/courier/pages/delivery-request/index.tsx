@@ -22,7 +22,6 @@ interface Props {
 }
 
 export default function OrderRequestPage({ orders }: Props) {
-    console.log(orders);
     const [showDialogAcceptedOrder, setShowDialogAcceptedOrder] = useState<boolean>(false);
     const [showDialogRejectedOrder, setShowDialogRejectedOrder] = useState<boolean>(false);
     const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);

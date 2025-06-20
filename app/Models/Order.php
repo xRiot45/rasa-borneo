@@ -23,4 +23,9 @@ class Order extends Transaction
     {
         return $this->hasOne(OrderStatus::class, 'transaction_id')->latestOfMany();
     }
+
+    public function courierAssignment(): HasOne
+    {
+        return $this->hasOne(CourierAssignment::class, 'transaction_id', 'id');
+    }
 }
