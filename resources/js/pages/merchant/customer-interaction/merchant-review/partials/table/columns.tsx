@@ -11,7 +11,10 @@ export const columns: ColumnDef<MerchantReview>[] = [
         id: 'no',
         accessorKey: 'no',
         header: ({ column }) => <DataTableColumnHeader column={column} title="No" />,
-        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
