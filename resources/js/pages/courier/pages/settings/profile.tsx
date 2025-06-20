@@ -73,6 +73,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Input
                                 id="email"
                                 type="email"
+                                readOnly
                                 className={cn('mt-2 rounded-lg py-6 shadow-none', errors.email && 'border border-red-500')}
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
