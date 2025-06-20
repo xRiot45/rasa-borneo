@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { ExpenseReportCategory } from '@/models/financial-management/expense-report';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -9,7 +10,10 @@ export const columns: ColumnDef<ExpenseReportCategory>[] = [
         id: 'no',
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
-        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -17,7 +21,7 @@ export const columns: ColumnDef<ExpenseReportCategory>[] = [
         id: 'name',
         accessorKey: 'name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Kategori Laporan Pengeluaran" />,
-        cell: ({ row }) => <span className="max-w-36">{row.getValue('name')}</span>,
+        cell: ({ row }) => <span>{row.getValue('name')}</span>,
         enableHiding: false,
         enableSorting: false,
     },
@@ -25,7 +29,7 @@ export const columns: ColumnDef<ExpenseReportCategory>[] = [
         id: 'created_at',
         accessorKey: 'created_at',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Dibuat Pada" />,
-        cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('created_at'))}</span>,
+        cell: ({ row }) => <span>{formatDate(row.getValue('created_at'))}</span>,
         enableHiding: true,
         enableSorting: true,
     },
@@ -33,7 +37,7 @@ export const columns: ColumnDef<ExpenseReportCategory>[] = [
         id: 'updated_at',
         accessorKey: 'updated_at',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Diubah Pada" />,
-        cell: ({ row }) => <span className="max-w-36">{formatDate(row.getValue('updated_at'))}</span>,
+        cell: ({ row }) => <span>{formatDate(row.getValue('updated_at'))}</span>,
         enableHiding: true,
         enableSorting: true,
     },
