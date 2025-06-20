@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import CourierLayout from '@/layouts/courier/layout';
-import { MyDeliveries } from '@/models/courier-assignment';
+import { DeliveryHistory } from '@/models/courier-assignment';
 import { formatCurrency } from '@/utils/format-currency';
 import { orderStatusMap } from '@/utils/order-status-map';
 import { Icon } from '@iconify/react';
@@ -14,16 +14,17 @@ import { Head } from '@inertiajs/react';
 import { StickyNote } from 'lucide-react';
 
 interface Props {
-    data: MyDeliveries;
+    data: DeliveryHistory;
 }
 
 export default function DeliveryHistoryDetail({ data }: Props) {
+    console.log(data);
     const transaction = data.transaction;
     const merchant = transaction.merchant;
     const items = transaction.transaction_items;
 
-    const latitude = merchant?.store_profile?.latitude ? parseFloat(merchant?.store_profile?.latitude) : 0;
-    const longitude = merchant?.store_profile?.longitude ? parseFloat(merchant?.store_profile?.longitude) : 0;
+    const latitude = Number(merchant?.store_profile?.latitude) || 0;
+    const longitude = Number(merchant?.store_profile?.longitude) || 0;
 
     return (
         <>
@@ -111,6 +112,20 @@ export default function DeliveryHistoryDetail({ data }: Props) {
                             </CardContent>
                         </Card>
                     </div>
+
+                    {/* Bukti Pengantaran */}
+                    <Card className="mt-4 shadow-none">
+                        <CardContent className="space-y-4 p-6">
+                            <h2 className="text-lg font-semibold">Bukti Pengantaran</h2>
+                            {data?.proof_of_delivery ? (
+                                <div className="flex flex-col gap-2">
+                                    <img src={data?.proof_of_delivery} alt="Bukti Pengantaran" className="w-full  rounded-md border object-cover" />
+                                </div>
+                            ) : (
+                                <p className="text-muted-foreground text-sm italic">Belum ada bukti pengantaran.</p>
+                            )}
+                        </CardContent>
+                    </Card>
 
                     {/* Menu Pesanan */}
                     <Card className="mt-4 shadow-none">
