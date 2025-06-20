@@ -503,7 +503,7 @@ export default function OrderDetailPage({ order }: Props) {
                             )}
 
                             {payment_status === PaymentStatusEnum.PENDING && (
-                                <div className="mt-4 md:col-span-1">
+                                <div className="mt-6 md:col-span-1">
                                     <Card className="w-full px-4 py-8 shadow-none">
                                         <CardHeader>
                                             <CardTitle className="text-lg">Status Pembayaran</CardTitle>

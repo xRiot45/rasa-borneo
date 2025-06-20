@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
+import { PaymentStatusEnum } from '@/enums/payment-status';
 import CourierLayout from '@/layouts/courier/layout';
 import { MyDeliveries } from '@/models/courier-assignment';
 import { formatCurrency } from '@/utils/format-currency';
@@ -242,9 +243,18 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                                     <span>Metode Pembayaran</span>
                                     <Badge
                                         variant="default"
-                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === transaction?.payment_method ? 'text-gren-600 border-green-600 bg-green-100' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
+                                        className={`rounded-sm font-bold text-white capitalize ${PaymentMethodEnum.CASH === transaction?.payment_method ? 'border-green-600 bg-green-100 text-green-600' : 'border-blue-600 bg-blue-100 text-blue-600'}`}
                                     >
                                         {transaction?.payment_method}
+                                    </Badge>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Status Pembayaran</span>
+                                    <Badge
+                                        variant="default"
+                                        className={`rounded-sm font-bold text-white capitalize ${PaymentStatusEnum.PENDING === transaction?.payment_status ? 'border-yellow-600 bg-yellow-100 text-yellow-600' : 'border-green-600 bg-green-100 text-green-600'}`}
+                                    >
+                                        {transaction?.payment_status}
                                     </Badge>
                                 </div>
                                 <div className="flex justify-between">
@@ -275,27 +285,29 @@ export default function MyDeliveriesDetailPage({ data }: Props) {
                         </CardContent>
                     </Card>
 
-                    {data?.transaction?.latest_order_status?.status !== OrderStatusEnum.COMPLETED && (
-                        <div className="mt-6 flex items-center justify-end">
-                            {data?.transaction?.latest_order_status?.status === OrderStatusEnum.READY_FOR_DELIVERY ? (
-                                <Button
-                                    className="w-full cursor-pointer py-6 sm:w-auto"
-                                    onClick={() => setShowDialogConfirmOrderCompleteDelivery(true)}
-                                >
-                                    Selesaikan Pesanan
-                                    <Icon icon={'fluent-mdl2:completed-solid'} className="text-background" />
-                                </Button>
-                            ) : (
-                                <Button
-                                    className="w-full cursor-pointer py-6 sm:w-auto"
-                                    onClick={() => setShowDialogConfirmOrderReadyToDelivery(true)}
-                                >
-                                    Pesanan Siap Diantar
-                                    <Icon icon={'grommet-icons:deliver'} className="text-background" />
-                                </Button>
-                            )}
-                        </div>
-                    )}
+                    <div className="mt-4 flex justify-end gap-2">
+                        {data?.transaction?.latest_order_status?.status !== OrderStatusEnum.COMPLETED && (
+                            <div className="flex items-center justify-end">
+                                {data?.transaction?.latest_order_status?.status === OrderStatusEnum.READY_FOR_DELIVERY ? (
+                                    <Button
+                                        className="w-full cursor-pointer py-5 sm:w-auto"
+                                        onClick={() => setShowDialogConfirmOrderCompleteDelivery(true)}
+                                    >
+                                        Selesaikan Pesanan
+                                        <Icon icon={'fluent-mdl2:completed-solid'} className="text-background" />
+                                    </Button>
+                                ) : data?.transaction?.latest_order_status?.status === OrderStatusEnum.PROCESSING ? (
+                                    <Button
+                                        className="w-full cursor-pointer py-5 sm:w-auto"
+                                        onClick={() => setShowDialogConfirmOrderReadyToDelivery(true)}
+                                    >
+                                        Pesanan Siap Diantar
+                                        <Icon icon={'grommet-icons:deliver'} className="text-background" />
+                                    </Button>
+                                ) : null}
+                            </div>
+                        )}
+                    </div>
 
                     {/* Dialog konfirmasi Pesanan Siap Diantar */}
                     <Dialog open={showDialogConfirmOrderReadyToDelivery} onOpenChange={setShowDialogConfirmOrderReadyToDelivery}>

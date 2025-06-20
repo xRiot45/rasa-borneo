@@ -388,7 +388,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/', 'incomingOrderMerchant')->name('merchant.incoming-order.index');
                 Route::put('/update-status/{transactionCode}', 'updateOrderStatus')->name('merchant.incoming-order.updateOrderStatus');
                 Route::get('/check-status-cashless/{transactionCode}', 'checkPaymentStatusCashless')->name('merchant.order.checkPaymentStatusCashless');
-                Route::put('/check-status-cash/{transactionCode}', 'confirmPaymentCash')->name('merchant.order.confirmPaymentCash');
+                Route::put('/confirm-payment-cash/{transactionCode}', 'confirmPaymentCash')->name('merchant.order.confirmPaymentCash');
             });
 
         // Order History
@@ -593,6 +593,7 @@ Route::middleware(['auth', 'verified', 'role:courier'])->group(function () {
     Route::get('/courier/my-deliveries/{transactionCode}', [CourierAssigmentController::class, 'myDeliveriesDetail'])->name('courier.myDeliveriesDetail');
     Route::post('/courier/my-deliveries/{transactionCode}/ready-to-delivery', [CourierAssigmentController::class, 'orderReadyToDelivery'])->name('courier.orderReadyToDelivery');
     Route::post('/courier/my-deliveries/{transactionCode}/order-delivery-completed', [CourierAssigmentController::class, 'orderCompleteDelivery'])->name('courier.orderCompleteDelivery');
+    Route::put('/confirm-payment-cash/{transactionCode}', [OrderController::class, 'confirmPaymentCash'])->name('courier.order.confirmPaymentCash');
 
     // Delivery History
     Route::get('/courier/delivery-history', [CourierAssigmentController::class, 'deliveryHistory'])->name('courier.deliveryHistory');
