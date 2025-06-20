@@ -27,7 +27,7 @@ class ProfitReportController extends Controller
 
         $profitReports = ProfitReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
         return Inertia::render('merchant/financial-management/profit-report/index', [
-            'profitReports' => $profitReports
+            'profitReports' => $profitReports,
         ]);
     }
 
@@ -36,12 +36,10 @@ class ProfitReportController extends Controller
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->firstOrFail();
 
-        $profitReport = ProfitReport::where('merchant_id', $merchant->id)
-            ->where('id', $id)
-            ->firstOrFail();
+        $profitReport = ProfitReport::where('merchant_id', $merchant->id)->where('id', $id)->firstOrFail();
 
-        $startDate = Carbon::parse($profitReport->start_date)->startOfDay();
-        $endDate = Carbon::parse($profitReport->end_date)->endOfDay();
+        $startDate = Carbon::parse($profitReport->start_date)->startOfDay()->startOfDay()->timezone('Asia/Jakarta');
+        $endDate = Carbon::parse($profitReport->end_date)->endOfDay()->startOfDay()->timezone('Asia/Jakarta');
 
         $revenueReports = RevenueReport::where('merchant_id', $merchant->id)
             ->whereBetween('report_date', [$startDate, $endDate])
@@ -53,10 +51,9 @@ class ProfitReportController extends Controller
             ->get()
             ->groupBy(fn($report) => Carbon::parse($report->report_date)->toDateString());
 
-
         // Loop dari tanggal start ke end
         $reportDetails = [];
-        $period = Carbon::parse($startDate)->daysUntil(Carbon::parse($endDate)->addDay());
+        $period = Carbon::parse($startDate)->daysUntil(Carbon::parse($endDate));
         foreach ($period as $date) {
             $formattedDate = $date->toDateString();
 
@@ -94,8 +91,8 @@ class ProfitReportController extends Controller
             }
 
             // Parsing tanggal dengan timezone aplikasi
-            $startDate = Carbon::createFromFormat('Y-m-d', $startDateInput, config('app.timezone'))->startOfDay();
-            $endDate = Carbon::createFromFormat('Y-m-d', $endDateInput, config('app.timezone'))->endOfDay();
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDateInput, config('app.timezone'))->startOfDay()->startOfDay()->timezone('Asia/Jakarta');
+            $endDate = Carbon::createFromFormat('Y-m-d', $endDateInput, config('app.timezone'))->endOfDay()->startOfDay()->timezone('Asia/Jakarta');
         } else {
             [$startDate, $endDate] = match ($reportType) {
                 ReportTypeEnum::DAILY => [now()->startOfDay(), now()->endOfDay()],

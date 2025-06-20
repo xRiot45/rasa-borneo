@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { ReportTypeEnum } from '@/enums/report-type';
+import { cn } from '@/lib/utils';
 import { ProfitReport } from '@/models/financial-management/profit-report';
 import { formatCurrency } from '@/utils/format-currency';
 import { reportTypeColorMap } from '@/utils/report-type-color-map';
@@ -13,7 +14,10 @@ export const columns: ColumnDef<ProfitReport>[] = [
         id: 'no',
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
-        cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        cell: ({ row }) => <span>{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
