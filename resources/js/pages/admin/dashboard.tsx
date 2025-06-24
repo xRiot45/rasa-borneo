@@ -34,6 +34,9 @@ interface Props {
     transactionByPaymentMethod: {
         [key: string]: number;
     };
+    transactionByPaymentStatus: {
+        [key: string]: number;
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -53,6 +56,7 @@ export default function DashboardPage(props: Props) {
         topRatedMenus,
         transactionsByOrderType,
         transactionByPaymentMethod,
+        transactionByPaymentStatus,
     } = props;
 
     return (
@@ -60,40 +64,80 @@ export default function DashboardPage(props: Props) {
             <Head title="Dashboard Admin" />
             <AdminLayout breadcrumbs={breadcrumbs}>
                 <main className="p-4">
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        <CardSummaryStatistics
-                            data={totalUsers}
-                            title="Total User"
-                            subtitle="User"
-                            description="Total user yang terdaftar di aplikasi"
-                            icon="mdi:account-outline"
-                        />
+                    {/* Statistik Umum */}
+                    <div className="rounded-xl border p-4">
+                        <h2 className="text-md mb-4 font-semibold">Statistik Umum</h2>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            <CardSummaryStatistics
+                                data={totalUsers}
+                                title="Total User"
+                                subtitle="User"
+                                description="Total user yang terdaftar di aplikasi"
+                                icon="mdi:account-outline"
+                            />
 
-                        <CardSummaryStatistics
-                            data={totalMerchants}
-                            title="Total Merchant"
-                            subtitle="Merchant"
-                            description="Total merchant yang terdaftar di aplikasi"
-                            icon="mdi:store-outline"
-                        />
+                            <CardSummaryStatistics
+                                data={totalMerchants}
+                                title="Total Merchant"
+                                subtitle="Merchant"
+                                description="Total merchant yang terdaftar di aplikasi"
+                                icon="mdi:store-outline"
+                            />
 
-                        <CardSummaryStatistics
-                            data={totalCustomers}
-                            title="Total Customer"
-                            subtitle="Customer"
-                            description="Total customer yang terdaftar di aplikasi"
-                            icon="mdi:account-outline"
-                        />
+                            <CardSummaryStatistics
+                                data={totalCustomers}
+                                title="Total Customer"
+                                subtitle="Customer"
+                                description="Total customer yang terdaftar di aplikasi"
+                                icon="mdi:account-outline"
+                            />
 
-                        <CardSummaryStatistics
-                            data={totalCouriers}
-                            title="Total Kurir"
-                            subtitle="Kurir"
-                            description="Total kurir yang terdaftar di aplikasi"
-                            icon="mdi:truck-delivery-outline"
-                        />
+                            <CardSummaryStatistics
+                                data={totalCouriers}
+                                title="Total Kurir"
+                                subtitle="Kurir"
+                                description="Total kurir yang terdaftar di aplikasi"
+                                icon="mdi:truck-delivery-outline"
+                            />
+                        </div>
                     </div>
 
+                    {/* Statistik Transaksi */}
+                    <div className="mt-4 rounded-xl border p-4">
+                        <h2 className="text-md mb-4 font-semibold">Statistik Transaksi</h2>
+                        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            <CardSummaryStatistics
+                                data={transactionByPaymentStatus['menunggu'] || 0}
+                                title="Transaksi Menunggu"
+                                subtitle="Menunggu"
+                                description="Jumlah transaksi yang menunggu pembayaran"
+                                icon="mdi:clock-outline"
+                            />
+                            <CardSummaryStatistics
+                                data={transactionByPaymentStatus['dibayar'] || 0}
+                                title="Transaksi Dibayar"
+                                subtitle="Dibayar"
+                                description="Jumlah transaksi yang sudah dibayar"
+                                icon="mdi:check-circle-outline"
+                            />
+                            <CardSummaryStatistics
+                                data={transactionByPaymentStatus['gagal'] || 0}
+                                title="Transaksi Gagal"
+                                subtitle="Gagal"
+                                description="Jumlah transaksi yang gagal"
+                                icon="mdi:close-circle-outline"
+                            />
+                            <CardSummaryStatistics
+                                data={transactionByPaymentStatus['dibatalkan'] || 0}
+                                title="Transaksi Dibatalkan"
+                                subtitle="Dibatalkan"
+                                description="Jumlah transaksi yang dibatalkan"
+                                icon="mdi:cancel"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Grafik */}
                     <div className="grid gap-4 py-4 sm:grid-cols-2">
                         <div className="rounded-xl border p-4">
                             <div className="mx-auto h-96 w-96">
@@ -108,10 +152,11 @@ export default function DashboardPage(props: Props) {
                         </div>
                     </div>
 
+                    {/* Top Rated */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div>
                             <ScrollArea className="bg-background h-[600px] rounded-xl border p-6">
-                                <h2 className="text-md mb-4 font-semibold text-gray-900 dark:text-white">Merchant dengan rating tertinggi</h2>
+                                <h2 className="text-md mb-4 font-semibold">Merchant dengan rating tertinggi</h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     {topRatedMerchants.map((item, index) => {
                                         const merchant = item.merchant;
@@ -151,7 +196,7 @@ export default function DashboardPage(props: Props) {
                         </div>
                         <div>
                             <ScrollArea className="bg-background h-[600px] rounded-xl border p-6">
-                                <h2 className="text-md mb-4 font-semibold text-gray-900 dark:text-white">Menu dengan rating tertinggi</h2>
+                                <h2 className="text-md mb-4 font-semibold">Menu dengan rating tertinggi</h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     {topRatedMenus?.map((item, index) => {
                                         const menu = item.menu_item;

@@ -48,6 +48,8 @@ class DashboardController extends Controller
 
         $transactionByPaymentMethod = Transaction::selectRaw('payment_method, COUNT(*) as total')->groupBy('payment_method')->pluck('total', 'payment_method');
 
+        $transactionByPaymentStatus = Transaction::selectRaw('payment_status, COUNT(*) as total')->groupBy('payment_status')->pluck('total', 'payment_status');
+
         return Inertia::render('admin/dashboard', [
             'totalUsers' => $totalUsers,
             'totalMerchants' => $totalMerchant,
@@ -56,7 +58,8 @@ class DashboardController extends Controller
             'topRatedMerchants' => $topRatedMerchants,
             'topRatedMenus' => $topRatedMenus,
             'transactionsByOrderType' => $transactionsByOrderType,
-            'transactionByPaymentMethod' => $transactionByPaymentMethod
+            'transactionByPaymentMethod' => $transactionByPaymentMethod,
+            'transactionByPaymentStatus' => $transactionByPaymentStatus
         ]);
     }
 
