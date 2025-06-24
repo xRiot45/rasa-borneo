@@ -9,7 +9,7 @@ interface Props {
     };
 }
 
-const OrderTypePieChart: React.FC<Props> = ({ data }) => {
+const PaymentMethodPieChart: React.FC<Props> = ({ data }) => {
     const labels = Object.keys(data)?.map((label) =>
         label
             .toLowerCase()
@@ -25,7 +25,7 @@ const OrderTypePieChart: React.FC<Props> = ({ data }) => {
             {
                 label: 'Jumlah Transaksi',
                 data: values,
-                backgroundColor: ['#4ade80', '#60a5fa', '#facc15', '#f87171'],
+                backgroundColor: ['#4ade80', '#60a5fa'],
                 borderColor: '#ffffff',
                 borderWidth: 2,
             },
@@ -40,7 +40,7 @@ const OrderTypePieChart: React.FC<Props> = ({ data }) => {
             },
             title: {
                 display: true,
-                text: 'Transaksi Berdasarkan Jenis Order',
+                text: 'Transaksi Berdasarkan Metode Pembayaran',
                 font: {
                     size: 16,
                 },
@@ -51,4 +51,4 @@ const OrderTypePieChart: React.FC<Props> = ({ data }) => {
     return <Pie data={chartData} options={options} />;
 };
 
-export default OrderTypePieChart;
+export default PaymentMethodPieChart;

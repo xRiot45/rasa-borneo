@@ -9,6 +9,7 @@ import { Merchant } from '@/models/merchant';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import OrderTypePieChart from './components/order-type-pie-chart';
+import PaymentMethodPieChart from './components/payment-method-pie-chart';
 
 interface Props {
     totalUsers: number;
@@ -30,6 +31,9 @@ interface Props {
     transactionsByOrderType: {
         [key: string]: number;
     };
+    transactionByPaymentMethod: {
+        [key: string]: number;
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -40,7 +44,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DashboardPage(props: Props) {
-    const { totalUsers, totalMerchants, totalCustomers, totalCouriers, topRatedMerchants, topRatedMenus, transactionsByOrderType } = props;
+    const {
+        totalUsers,
+        totalMerchants,
+        totalCustomers,
+        totalCouriers,
+        topRatedMerchants,
+        topRatedMenus,
+        transactionsByOrderType,
+        transactionByPaymentMethod,
+    } = props;
 
     return (
         <>
@@ -81,7 +94,7 @@ export default function DashboardPage(props: Props) {
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 py-4">
+                    <div className="grid gap-4 py-4 sm:grid-cols-2">
                         <div className="rounded-xl border p-4">
                             <div className="mx-auto h-96 w-96">
                                 <OrderTypePieChart data={transactionsByOrderType} />
@@ -90,16 +103,15 @@ export default function DashboardPage(props: Props) {
 
                         <div className="rounded-xl border p-4">
                             <div className="mx-auto h-96 w-96">
-                                <OrderTypePieChart data={transactionsByOrderType} />
+                                <PaymentMethodPieChart data={transactionByPaymentMethod} />
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="mt-10">
-                            <h2 className="text-md mb-4 font-semibold text-gray-900 dark:text-white">Merchant dengan rating tertinggi</h2>
-
-                            <ScrollArea className="bg-background h-[600px] rounded-xl border p-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <ScrollArea className="bg-background h-[600px] rounded-xl border p-6">
+                                <h2 className="text-md mb-4 font-semibold text-gray-900 dark:text-white">Merchant dengan rating tertinggi</h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     {topRatedMerchants.map((item, index) => {
                                         const merchant = item.merchant;
@@ -137,10 +149,9 @@ export default function DashboardPage(props: Props) {
                                 </div>
                             </ScrollArea>
                         </div>
-                        <div className="mt-10">
-                            <h2 className="text-md mb-4 font-semibold text-gray-900 dark:text-white">Menu dengan rating tertinggi</h2>
-
-                            <ScrollArea className="bg-background h-[600px] rounded-xl border p-4">
+                        <div>
+                            <ScrollArea className="bg-background h-[600px] rounded-xl border p-6">
+                                <h2 className="text-md mb-4 font-semibold text-gray-900 dark:text-white">Menu dengan rating tertinggi</h2>
                                 <div className="grid grid-cols-1 gap-6">
                                     {topRatedMenus?.map((item, index) => {
                                         const menu = item.menu_item;
