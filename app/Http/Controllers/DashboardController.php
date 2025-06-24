@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Courier;
 use App\Models\Customer;
+use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\MerchantReview;
 use App\Models\User;
@@ -24,7 +25,23 @@ class DashboardController extends Controller
             ->groupBy('merchant_id')
             ->orderByDesc('avg_rating')
             ->with('merchant.businessCategory', 'merchant.storeProfile')
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $item->avg_rating = (float) $item->avg_rating;
+                return $item;
+            });
+
+        $topRatedMenus = MenuItemReview::select('menu_item_id')
+            ->selectRaw('AVG(rating) as avg_rating')
+            ->selectRaw('COUNT(*) as review_count')
+            ->groupBy('menu_item_id')
+            ->orderByDesc('avg_rating')
+            ->with('menuItem.menuCategory')
+            ->get()
+            ->map(function ($item) {
+                $item->avg_rating = (float) $item->avg_rating;
+                return $item;
+            });
 
 
         return Inertia::render('admin/dashboard', [
@@ -32,7 +49,8 @@ class DashboardController extends Controller
             'totalMerchants' => $totalMerchant,
             'totalCustomers' => $totalCustomer,
             'totalCouriers' => $totalCourier,
-            'topRatedMerchants' => $topRatedMerchants
+            'topRatedMerchants' => $topRatedMerchants,
+            'topRatedMenus' => $topRatedMenus
         ]);
     }
 
