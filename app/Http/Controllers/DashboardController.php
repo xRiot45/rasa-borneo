@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\MerchantReview;
+use App\Models\Transaction;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +18,7 @@ class DashboardController extends Controller
     {
         $totalUsers = User::count();
         $totalMerchant = Merchant::count();
-        $totalCustomer =  Customer::count();
+        $totalCustomer = Customer::count();
         $totalCourier = Courier::count();
         $topRatedMerchants = MerchantReview::select('merchant_id')
             ->selectRaw('AVG(rating) as avg_rating')
@@ -43,6 +44,7 @@ class DashboardController extends Controller
                 return $item;
             });
 
+        $transactionsByOrderType = Transaction::selectRaw('order_type, COUNT(*) as total')->groupBy('order_type')->pluck('total', 'order_type');
 
         return Inertia::render('admin/dashboard', [
             'totalUsers' => $totalUsers,
@@ -50,7 +52,8 @@ class DashboardController extends Controller
             'totalCustomers' => $totalCustomer,
             'totalCouriers' => $totalCourier,
             'topRatedMerchants' => $topRatedMerchants,
-            'topRatedMenus' => $topRatedMenus
+            'topRatedMenus' => $topRatedMenus,
+            'transactionsByOrderType' => $transactionsByOrderType,
         ]);
     }
 

@@ -8,6 +8,7 @@ import { MenuItem } from '@/models/menu-item';
 import { Merchant } from '@/models/merchant';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
+import OrderTypePieChart from './components/order-type-pie-chart';
 
 interface Props {
     totalUsers: number;
@@ -26,6 +27,9 @@ interface Props {
         review_count: number;
         menu_item: MenuItem;
     }[];
+    transactionsByOrderType: {
+        [key: string]: number;
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,8 +40,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DashboardPage(props: Props) {
-    const { totalUsers, totalMerchants, totalCustomers, totalCouriers, topRatedMerchants, topRatedMenus } = props;
-    console.log(topRatedMenus);
+    const { totalUsers, totalMerchants, totalCustomers, totalCouriers, topRatedMerchants, topRatedMenus, transactionsByOrderType } = props;
 
     return (
         <>
@@ -76,6 +79,20 @@ export default function DashboardPage(props: Props) {
                             description="Total kurir yang terdaftar di aplikasi"
                             icon="mdi:truck-delivery-outline"
                         />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 py-4">
+                        <div className="rounded-xl border p-4">
+                            <div className="mx-auto h-96 w-96">
+                                <OrderTypePieChart data={transactionsByOrderType} />
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl border p-4">
+                            <div className="mx-auto h-96 w-96">
+                                <OrderTypePieChart data={transactionsByOrderType} />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
