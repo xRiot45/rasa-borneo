@@ -70,10 +70,11 @@ class DashboardController extends Controller
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->firstOrFail();
 
-
         $totalMenu = MenuItem::where('merchant_id', $merchant->id)->count();
+        $totalMenuRecommended = MenuItem::where('merchant_id', $merchant->id)->where('is_recommended', true)->count();
         return Inertia::render('merchant/dashboard', [
-            'totalMenu' => $totalMenu
+            'totalMenu' => $totalMenu,
+            'totalMenuRecommended' => $totalMenuRecommended
         ]);
     }
 }
