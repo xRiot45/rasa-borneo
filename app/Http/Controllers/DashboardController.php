@@ -78,12 +78,17 @@ class DashboardController extends Controller
 
         $totalTransactionByPaymentStatus = Transaction::where('merchant_id', $merchant->id)->selectRaw('payment_status, COUNT(*) as total')->groupBy('payment_status')->pluck('total', 'payment_status');
 
+        $totalTransactionsByOrderType = Transaction::where('merchant_id', $merchant->id)->selectRaw('order_type, COUNT(*) as total')->groupBy('order_type')->pluck('total', 'order_type');
+
+
+
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
             'totalMenuRecommended' => $totalMenuRecommended,
             'totalCouponActive' => $totalCouponActive,
             'totalTransactions' => $totalTransactions,
             'totalTransactionByPaymentStatus' => $totalTransactionByPaymentStatus,
+            'totalTransactionsByOrderType' => $totalTransactionsByOrderType
         ]);
     }
 }

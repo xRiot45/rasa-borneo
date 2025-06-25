@@ -2,6 +2,7 @@ import CardSummaryStatistics from '@/components/card-summary-statistic';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
+import OrderTypePieChart from './components/order-type-pie-chart';
 
 interface Props {
     totalMenu: number;
@@ -9,6 +10,9 @@ interface Props {
     totalCouponActive: number;
     totalTransactions: number;
     totalTransactionByPaymentStatus: {
+        [key: string]: number;
+    };
+    totalTransactionsByOrderType: {
         [key: string]: number;
     };
 }
@@ -21,7 +25,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DashboardPage(props: Props) {
-    const { totalMenu, totalMenuRecommended, totalCouponActive, totalTransactions, totalTransactionByPaymentStatus } = props;
+    const { totalMenu, totalMenuRecommended, totalCouponActive, totalTransactions, totalTransactionByPaymentStatus, totalTransactionsByOrderType } =
+        props;
 
     return (
         <>
@@ -99,6 +104,21 @@ export default function DashboardPage(props: Props) {
                                 icon="mdi:cancel"
                             />
                         </div>
+                    </div>
+
+                    {/* Grafik */}
+                    <div className="grid gap-4 py-4 sm:grid-cols-2">
+                        <div className="rounded-xl border p-4">
+                            <div className="mx-auto h-96 w-96">
+                                <OrderTypePieChart data={totalTransactionsByOrderType} />
+                            </div>
+                        </div>
+
+                        {/* <div className="rounded-xl border p-4">
+                            <div className="mx-auto h-96 w-96">
+                                <PaymentMethodPieChart data={transactionByPaymentMethod} />
+                            </div>
+                        </div> */}
                     </div>
                 </main>
             </MerchantLayout>
