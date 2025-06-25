@@ -3,6 +3,7 @@ import MerchantLayout from '@/layouts/merchant/layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import OrderTypePieChart from './components/order-type-pie-chart';
+import PaymentMethodPieChart from './components/payment-method-pie-chart';
 
 interface Props {
     totalMenu: number;
@@ -15,6 +16,9 @@ interface Props {
     totalTransactionsByOrderType: {
         [key: string]: number;
     };
+    totalTransactionByPaymentMethod: {
+        [key: string]: number;
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -25,8 +29,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DashboardPage(props: Props) {
-    const { totalMenu, totalMenuRecommended, totalCouponActive, totalTransactions, totalTransactionByPaymentStatus, totalTransactionsByOrderType } =
-        props;
+    const {
+        totalMenu,
+        totalMenuRecommended,
+        totalCouponActive,
+        totalTransactions,
+        totalTransactionByPaymentStatus,
+        totalTransactionsByOrderType,
+        totalTransactionByPaymentMethod,
+    } = props;
 
     return (
         <>
@@ -114,11 +125,11 @@ export default function DashboardPage(props: Props) {
                             </div>
                         </div>
 
-                        {/* <div className="rounded-xl border p-4">
+                        <div className="rounded-xl border p-4">
                             <div className="mx-auto h-96 w-96">
-                                <PaymentMethodPieChart data={transactionByPaymentMethod} />
+                                <PaymentMethodPieChart data={totalTransactionByPaymentMethod} />
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </main>
             </MerchantLayout>
