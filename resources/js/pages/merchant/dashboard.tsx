@@ -7,6 +7,7 @@ interface Props {
     totalMenu: number;
     totalMenuRecommended: number;
     totalCouponActive: number;
+    totalTransactions: number;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -17,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DashboardPage(props: Props) {
-    const { totalMenu, totalMenuRecommended, totalCouponActive } = props;
+    const { totalMenu, totalMenuRecommended, totalCouponActive, totalTransactions } = props;
 
     return (
         <>
@@ -50,6 +51,14 @@ export default function DashboardPage(props: Props) {
                                 subtitle="Kupon"
                                 description="Total kupon yang aktif di aplikasi"
                                 icon="mdi:coupon"
+                            />
+
+                            <CardSummaryStatistics
+                                data={totalTransactions}
+                                title="Total Transaksi"
+                                subtitle="Transaksi"
+                                description="Total semua transaksi di aplikasi"
+                                icon="mdi:currency-usd"
                             />
                         </div>
                     </div>

@@ -74,10 +74,12 @@ class DashboardController extends Controller
         $totalMenu = MenuItem::where('merchant_id', $merchant->id)->count();
         $totalMenuRecommended = MenuItem::where('merchant_id', $merchant->id)->where('is_recommended', true)->count();
         $totalCouponActive = Coupon::where('merchant_id', $merchant->id)->where('is_active', true)->count();
+        $totalTransactions = Transaction::where('merchant_id', $merchant->id)->count();
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
             'totalMenuRecommended' => $totalMenuRecommended,
-            'totalCouponActive' => $totalCouponActive
+            'totalCouponActive' => $totalCouponActive,
+            'totalTransactions' => $totalTransactions
         ]);
     }
 }
