@@ -17,7 +17,7 @@ const CardSummaryStatistics: React.FC<CardSummaryStatisticsProps> = ({ data, tit
                 <Icon icon={icon} className="h-5 w-5 text-black dark:text-white" />
             </CardHeader>
             <CardContent>
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-xl font-bold">
                     {data} {subtitle}
                 </h1>
                 <p className="text-muted-foreground mt-1 text-xs">{description}</p>

@@ -6,6 +6,7 @@ import { Head } from '@inertiajs/react';
 interface Props {
     totalMenu: number;
     totalMenuRecommended: number;
+    totalCouponActive: number;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -16,8 +17,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DashboardPage(props: Props) {
-    const { totalMenu, totalMenuRecommended } = props;
-    console.log(totalMenu);
+    const { totalMenu, totalMenuRecommended, totalCouponActive } = props;
+
     return (
         <>
             <Head title="Dashboard Merchant" />
@@ -41,6 +42,14 @@ export default function DashboardPage(props: Props) {
                                 subtitle="Menu"
                                 description="Total menu yang direkomendasikan di aplikasi"
                                 icon="material-symbols:recommend"
+                            />
+
+                            <CardSummaryStatistics
+                                data={totalCouponActive}
+                                title="Total Kupon Aktif"
+                                subtitle="Kupon"
+                                description="Total kupon yang aktif di aplikasi"
+                                icon="mdi:coupon"
                             />
                         </div>
                     </div>
