@@ -77,10 +77,23 @@ class DashboardController extends Controller
         $totalTransactions = Transaction::where('merchant_id', $merchant->id)->count();
 
         $totalTransactionByPaymentStatus = Transaction::where('merchant_id', $merchant->id)->selectRaw('payment_status, COUNT(*) as total')->groupBy('payment_status')->pluck('total', 'payment_status');
-
         $totalTransactionsByOrderType = Transaction::where('merchant_id', $merchant->id)->selectRaw('order_type, COUNT(*) as total')->groupBy('order_type')->pluck('total', 'order_type');
-
         $totalTransactionByPaymentMethod = Transaction::where('merchant_id', $merchant->id)->selectRaw('payment_method, COUNT(*) as total')->groupBy('payment_method')->pluck('total', 'payment_method');
+
+        $topRatedMenus = MenuItemReview::select('menu_item_id')
+            ->whereHas('menuItem', function ($query) use ($merchant) {
+                $query->where('merchant_id', $merchant->id);
+            })
+            ->selectRaw('AVG(rating) as avg_rating')
+            ->selectRaw('COUNT(*) as review_count')
+            ->groupBy('menu_item_id')
+            ->orderByDesc('avg_rating')
+            ->with('menuItem.menuCategory')
+            ->get()
+            ->map(function ($item) {
+                $item->avg_rating = (float) $item->avg_rating;
+                return $item;
+            });
 
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
@@ -89,7 +102,8 @@ class DashboardController extends Controller
             'totalTransactions' => $totalTransactions,
             'totalTransactionByPaymentStatus' => $totalTransactionByPaymentStatus,
             'totalTransactionsByOrderType' => $totalTransactionsByOrderType,
-            'totalTransactionByPaymentMethod' => $totalTransactionByPaymentMethod
+            'totalTransactionByPaymentMethod' => $totalTransactionByPaymentMethod,
+            'topRatedMenus' => $topRatedMenus,
         ]);
     }
 }

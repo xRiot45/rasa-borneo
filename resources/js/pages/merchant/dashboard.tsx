@@ -1,6 +1,12 @@
 import CardSummaryStatistics from '@/components/card-summary-statistic';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import MerchantLayout from '@/layouts/merchant/layout';
+import { MenuItem } from '@/models/menu-item';
 import { BreadcrumbItem } from '@/types';
+import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import OrderTypePieChart from './components/order-type-pie-chart';
 import PaymentMethodPieChart from './components/payment-method-pie-chart';
@@ -19,6 +25,12 @@ interface Props {
     totalTransactionByPaymentMethod: {
         [key: string]: number;
     };
+    topRatedMenus: {
+        menu_item_id: number;
+        avg_rating: number;
+        review_count: number;
+        menu_item: MenuItem;
+    }[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -37,6 +49,7 @@ export default function DashboardPage(props: Props) {
         totalTransactionByPaymentStatus,
         totalTransactionsByOrderType,
         totalTransactionByPaymentMethod,
+        topRatedMenus,
     } = props;
 
     return (
@@ -129,6 +142,84 @@ export default function DashboardPage(props: Props) {
                             <div className="mx-auto h-96 w-96">
                                 <PaymentMethodPieChart data={totalTransactionByPaymentMethod} />
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Top Rated */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        {/* <div>
+                            <ScrollArea className="bg-background h-[600px] rounded-xl border p-6">
+                                <h2 className="text-md mb-4 font-semibold">Merchant dengan rating tertinggi</h2>
+                                <div className="grid grid-cols-1 gap-6">
+                                    {topRatedMerchants.map((item, index) => {
+                                        const merchant = item.merchant;
+                                        const storeProfile = merchant?.store_profile;
+                                        const category = merchant?.business_category;
+
+                                        return (
+                                            <Card key={index} className="rounded-2xl py-4 shadow-none">
+                                                <CardHeader className="flex flex-row items-center gap-4">
+                                                    <Avatar className="h-16 w-16">
+                                                        <AvatarImage src={`${storeProfile?.logo_photo}`} alt={merchant?.business_name} />
+                                                        <AvatarFallback>{merchant?.business_name?.charAt(0)}</AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <CardTitle className="text-lg">{merchant?.business_name ?? 'Unknown'}</CardTitle>
+                                                        <p className="text-muted-foreground text-sm">
+                                                            {category?.name ?? 'Kategori tidak diketahui'}
+                                                        </p>
+                                                    </div>
+                                                </CardHeader>
+                                                <CardContent className="pt-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <Badge
+                                                            variant="outline"
+                                                            className="rounded-sm border-yellow-400 bg-yellow-100 text-yellow-600 dark:bg-yellow-900/20"
+                                                        >
+                                                            ⭐ {Number(item.avg_rating).toFixed(2)}
+                                                        </Badge>
+                                                        <p className="text-muted-foreground text-sm">{item.review_count} ulasan</p>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
+                            </ScrollArea>
+                        </div> */}
+                        <div>
+                            <ScrollArea className="bg-background h-[600px] rounded-xl border p-6">
+                                <h2 className="text-md mb-4 font-semibold">Menu dengan rating tertinggi</h2>
+                                <div className="grid grid-cols-1 gap-6">
+                                    {topRatedMenus?.map((item, index) => {
+                                        const menu = item.menu_item;
+                                        return (
+                                            <Card key={index} className="rounded-2xl py-4 shadow-none">
+                                                <CardHeader className="flex flex-row items-center gap-4">
+                                                    <Avatar className="h-15 w-16 object-cover">
+                                                        <AvatarImage src={`${menu?.image_url}`} alt={menu?.name} />
+                                                        <AvatarFallback>{menu?.name?.charAt(0)}</AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <CardTitle className="text-md">{menu?.name ?? 'Unknown'}</CardTitle>
+                                                        <p className="text-muted-foreground text-sm">
+                                                            {menu?.menu_category?.name ?? 'Kategori tidak diketahui'}
+                                                        </p>
+                                                    </div>
+                                                </CardHeader>
+                                                <CardContent className="pt-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <Badge variant="outline" className="rounded-sm border-green-400 bg-green-100 text-green-600">
+                                                            <Icon icon="material-symbols:star" /> {Number(item.avg_rating).toFixed(2)}
+                                                        </Badge>
+                                                        <p className="text-muted-foreground text-sm">{item.review_count} ulasan</p>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
+                            </ScrollArea>
                         </div>
                     </div>
                 </main>
