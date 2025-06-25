@@ -10,6 +10,7 @@ interface Props {
 }
 
 const OrderTypePieChart: React.FC<Props> = ({ data }) => {
+    const isDarkMode = document.documentElement.classList.contains('dark');
     const labels = Object.keys(data)?.map((label) =>
         label
             .toLowerCase()
@@ -37,10 +38,14 @@ const OrderTypePieChart: React.FC<Props> = ({ data }) => {
         plugins: {
             legend: {
                 position: 'bottom' as const,
+                labels: {
+                    color: isDarkMode ? '#ffffff' : '#000000',
+                },
             },
             title: {
                 display: true,
-                text: 'Transaksi Berdasarkan Jenis Order',
+                color: isDarkMode ? '#ffffff' : '#000000',
+                text: 'Total Transaksi Berdasarkan Jenis Order',
                 font: {
                     size: 16,
                 },

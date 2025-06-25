@@ -7,6 +7,7 @@ import AdminLayout from '@/layouts/admin/layout';
 import { MenuItem } from '@/models/menu-item';
 import { Merchant } from '@/models/merchant';
 import { BreadcrumbItem } from '@/types';
+import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import OrderTypePieChart from './components/order-type-pie-chart';
 import PaymentMethodPieChart from './components/payment-method-pie-chart';
@@ -179,11 +180,8 @@ export default function DashboardPage(props: Props) {
                                                 </CardHeader>
                                                 <CardContent className="pt-2">
                                                     <div className="flex items-center justify-between">
-                                                        <Badge
-                                                            variant="outline"
-                                                            className="rounded-sm border-yellow-400 bg-yellow-100 text-yellow-600 dark:bg-yellow-900/20"
-                                                        >
-                                                            ⭐ {Number(item.avg_rating).toFixed(2)}
+                                                        <Badge variant="outline" className="rounded-sm border-green-400 bg-green-100 text-green-600">
+                                                            <Icon icon="material-symbols:star" /> {Number(item.avg_rating).toFixed(2)}
                                                         </Badge>
                                                         <p className="text-muted-foreground text-sm">{item.review_count} ulasan</p>
                                                     </div>
@@ -216,11 +214,8 @@ export default function DashboardPage(props: Props) {
                                                 </CardHeader>
                                                 <CardContent className="pt-2">
                                                     <div className="flex items-center justify-between">
-                                                        <Badge
-                                                            variant="outline"
-                                                            className="rounded-sm border-yellow-400 bg-yellow-100 text-yellow-600 dark:bg-yellow-900/20"
-                                                        >
-                                                            ⭐ {Number(item.avg_rating).toFixed(2)}
+                                                        <Badge variant="outline" className="rounded-sm border-green-400 bg-green-100 text-green-600">
+                                                            <Icon icon="material-symbols:star" /> {Number(item.avg_rating).toFixed(2)}
                                                         </Badge>
                                                         <p className="text-muted-foreground text-sm">{item.review_count} ulasan</p>
                                                     </div>
