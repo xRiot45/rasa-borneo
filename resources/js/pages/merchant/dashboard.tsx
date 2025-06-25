@@ -10,6 +10,7 @@ import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import OrderTypePieChart from './components/order-type-pie-chart';
 import PaymentMethodPieChart from './components/payment-method-pie-chart';
+import RevenueChart from './components/revenue-bar-chart';
 
 interface Props {
     totalMenu: number;
@@ -36,6 +37,10 @@ interface Props {
         total_quantity: number;
         menu_item: MenuItem;
     }[];
+    revenueCharts: {
+        report_date: string;
+        total_revenue: number;
+    }[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -56,6 +61,7 @@ export default function DashboardPage(props: Props) {
         totalTransactionByPaymentMethod,
         topRatedMenus,
         topSellingMenus,
+        revenueCharts,
     } = props;
 
     return (
@@ -134,6 +140,12 @@ export default function DashboardPage(props: Props) {
                                 icon="mdi:cancel"
                             />
                         </div>
+                    </div>
+
+                    {/* Chart */}
+                    <div className="mt-4 rounded-xl border p-4">
+                        <h2 className="text-md mb-4 font-semibold">Grafik Pendapatan</h2>
+                        <RevenueChart data={revenueCharts} />
                     </div>
 
                     {/* Grafik */}

@@ -9,6 +9,7 @@ use App\Models\MenuItem;
 use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\MerchantReview;
+use App\Models\RevenueReport;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\User;
@@ -109,6 +110,8 @@ class DashboardController extends Controller
                 return $item;
             });
 
+        $revenueCharts = RevenueReport::where('merchant_id', $merchant->id)->orderBy('report_date')->get();
+
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
             'totalMenuRecommended' => $totalMenuRecommended,
@@ -119,6 +122,7 @@ class DashboardController extends Controller
             'totalTransactionByPaymentMethod' => $totalTransactionByPaymentMethod,
             'topRatedMenus' => $topRatedMenus,
             'topSellingMenus' => $topSellingMenus,
+            'revenueCharts' => $revenueCharts,
         ]);
     }
 }
