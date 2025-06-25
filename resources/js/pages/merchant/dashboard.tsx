@@ -10,7 +10,8 @@ import { Icon } from '@iconify/react';
 import { Head } from '@inertiajs/react';
 import OrderTypePieChart from './components/order-type-pie-chart';
 import PaymentMethodPieChart from './components/payment-method-pie-chart';
-import RevenueChart from './components/revenue-bar-chart';
+import ProfitChart from './components/profit-bar-chart';
+import RevenueChart from './components/revenue-line-chart';
 
 interface Props {
     totalMenu: number;
@@ -41,6 +42,12 @@ interface Props {
         report_date: string;
         total_revenue: number;
     }[];
+    profitCharts: {
+        report_date: string;
+        total_revenue: number;
+        total_expense: number;
+        net_profit: number;
+    }[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -62,7 +69,10 @@ export default function DashboardPage(props: Props) {
         topRatedMenus,
         topSellingMenus,
         revenueCharts,
+        profitCharts,
     } = props;
+
+    console.log(profitCharts);
 
     return (
         <>
@@ -142,10 +152,15 @@ export default function DashboardPage(props: Props) {
                         </div>
                     </div>
 
-                    {/* Chart */}
+                    {/* Revenue Chart */}
                     <div className="mt-4 rounded-xl border p-4">
                         <h2 className="text-md mb-4 font-semibold">Grafik Pendapatan</h2>
                         <RevenueChart data={revenueCharts} />
+                    </div>
+
+                    <div className="mt-4 rounded-xl border p-4">
+                        <h2 className="text-md mb-4 font-semibold">Grafik Laba</h2>
+                        <ProfitChart data={profitCharts} />
                     </div>
 
                     {/* Grafik */}

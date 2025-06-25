@@ -9,10 +9,12 @@ use App\Models\MenuItem;
 use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\MerchantReview;
+use App\Models\ProfitReport;
 use App\Models\RevenueReport;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -111,6 +113,19 @@ class DashboardController extends Controller
             });
 
         $revenueCharts = RevenueReport::where('merchant_id', $merchant->id)->orderBy('report_date')->get();
+        $profitReports = ProfitReport::where('merchant_id', $merchant->id)
+            ->orderBy('start_date') // atau 'report_date'
+            ->get(['start_date', 'total_revenue', 'total_expense', 'gross_profit', 'net_profit']);
+
+        $chartData = $profitReports->map(function ($report) {
+            return [
+                'report_date' => $report->start_date->format('M Y'),
+                'total_revenue' => (float) $report->total_revenue,
+                'total_expense' => (float) $report->total_expense,
+                'gross_profit' => (float) $report->gross_profit,
+                'net_profit' => (float) $report->net_profit,
+            ];
+        });
 
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
@@ -123,6 +138,7 @@ class DashboardController extends Controller
             'topRatedMenus' => $topRatedMenus,
             'topSellingMenus' => $topSellingMenus,
             'revenueCharts' => $revenueCharts,
+            'profitCharts' => $chartData,
         ]);
     }
 }
