@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Courier;
 use App\Models\Customer;
+use App\Models\MenuItem;
 use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\MerchantReview;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -65,6 +67,13 @@ class DashboardController extends Controller
 
     public function index_merchant(): Response
     {
-        return Inertia::render('merchant/dashboard');
+        $user = Auth::user();
+        $merchant = Merchant::where('user_id', $user->id)->firstOrFail();
+
+
+        $totalMenu = MenuItem::where('merchant_id', $merchant->id)->count();
+        return Inertia::render('merchant/dashboard', [
+            'totalMenu' => $totalMenu
+        ]);
     }
 }
