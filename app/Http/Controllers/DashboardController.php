@@ -62,7 +62,7 @@ class DashboardController extends Controller
             'topRatedMenus' => $topRatedMenus,
             'transactionsByOrderType' => $transactionsByOrderType,
             'transactionByPaymentMethod' => $transactionByPaymentMethod,
-            'transactionByPaymentStatus' => $transactionByPaymentStatus
+            'transactionByPaymentStatus' => $transactionByPaymentStatus,
         ]);
     }
 
@@ -75,11 +75,15 @@ class DashboardController extends Controller
         $totalMenuRecommended = MenuItem::where('merchant_id', $merchant->id)->where('is_recommended', true)->count();
         $totalCouponActive = Coupon::where('merchant_id', $merchant->id)->where('is_active', true)->count();
         $totalTransactions = Transaction::where('merchant_id', $merchant->id)->count();
+
+        $totalTransactionByPaymentStatus = Transaction::where('merchant_id', $merchant->id)->selectRaw('payment_status, COUNT(*) as total')->groupBy('payment_status')->pluck('total', 'payment_status');
+
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
             'totalMenuRecommended' => $totalMenuRecommended,
             'totalCouponActive' => $totalCouponActive,
-            'totalTransactions' => $totalTransactions
+            'totalTransactions' => $totalTransactions,
+            'totalTransactionByPaymentStatus' => $totalTransactionByPaymentStatus,
         ]);
     }
 }
