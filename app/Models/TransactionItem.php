@@ -21,6 +21,11 @@ class TransactionItem extends Model
         'subtotal'
     ];
 
+    public function menuItem(): BelongsTo
+    {
+        return $this->belongsTo(MenuItem::class);
+    }
+
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);

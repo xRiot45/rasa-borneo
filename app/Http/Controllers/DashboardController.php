@@ -10,6 +10,7 @@ use App\Models\MenuItemReview;
 use App\Models\Merchant;
 use App\Models\MerchantReview;
 use App\Models\Transaction;
+use App\Models\TransactionItem;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -95,6 +96,19 @@ class DashboardController extends Controller
                 return $item;
             });
 
+        $topSellingMenus = TransactionItem::selectRaw('menu_item_id, SUM(quantity) as total_quantity')
+            ->whereHas('transaction', function ($query) use ($merchant) {
+                $query->where('merchant_id', $merchant->id);
+            })
+            ->groupBy('menu_item_id')
+            ->orderByDesc('total_quantity')
+            ->with('menuItem.menuCategory')
+            ->get()
+            ->map(function ($item) {
+                $item->total_quantity = (int) $item->total_quantity;
+                return $item;
+            });
+
         return Inertia::render('merchant/dashboard', [
             'totalMenu' => $totalMenu,
             'totalMenuRecommended' => $totalMenuRecommended,
@@ -104,6 +118,7 @@ class DashboardController extends Controller
             'totalTransactionsByOrderType' => $totalTransactionsByOrderType,
             'totalTransactionByPaymentMethod' => $totalTransactionByPaymentMethod,
             'topRatedMenus' => $topRatedMenus,
+            'topSellingMenus' => $topSellingMenus,
         ]);
     }
 }

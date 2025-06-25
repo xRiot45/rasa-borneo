@@ -80,4 +80,9 @@ class MenuItem extends Model
     {
         return $this->hasMany(MenuItemReview::class);
     }
+
+    public function transactionItems(): HasMany
+    {
+        return $this->hasMany(TransactionItem::class);
+    }
 }
