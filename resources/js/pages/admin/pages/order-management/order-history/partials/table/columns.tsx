@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { OrderStatusEnum } from '@/enums/order-status';
 import { PaymentMethodEnum } from '@/enums/payment-method';
 import { PaymentStatusEnum } from '@/enums/payment-status';
+import { cn } from '@/lib/utils';
 import { Order } from '@/models/order';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatDateTimeIndo } from '@/utils/format-date-time';
@@ -17,6 +18,9 @@ export const columns: ColumnDef<Order>[] = [
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
