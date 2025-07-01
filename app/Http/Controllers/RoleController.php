@@ -20,7 +20,7 @@ class RoleController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('admin/pages/access-control-management/roles/pages/create');
+        return Inertia::render('admin/pages/access-control-management/roles/pages/form');
     }
 
     public function store(RoleRequest $request): RedirectResponse
@@ -36,7 +36,7 @@ class RoleController extends Controller
     public function edit(int $id): Response
     {
         $role = Role::findOrFail($id);
-        return Inertia::render('admin/pages/access-control-management/roles/pages/edit', [
+        return Inertia::render('admin/pages/access-control-management/roles/pages/form', [
             'role' => $role,
         ]);
     }
