@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\CourierRegisterRequest;
-use App\Http\Requests\CourierRequest;
 use App\Http\Requests\UpdateCourierRequest;
 use App\Mail\CourierRegisteredMail;
 use App\Models\Courier;
@@ -24,7 +23,7 @@ class CourierController extends Controller
     public function indexAdmin(): InertiaResponse
     {
         $couriers = Courier::withTrashed()->with('user')->get();
-        return Inertia::render('admin/users-management/couriers/index', [
+        return Inertia::render('admin/pages/users-management/couriers/index', [
             'couriers' => $couriers,
         ]);
     }
@@ -35,23 +34,18 @@ class CourierController extends Controller
         $courier = Courier::where('user_id', $user->id)->firstOrFail();
         $courierId = $courier->id;
 
-        // Ambil saldo dari tabel courier_wallets berdasarkan courier_id
         $wallet = CourierWallet::where('courier_id', $courierId)->first();
 
-        // Waktu untuk filter
         $today = Carbon::today();
-        $startOfWeek = Carbon::now()->startOfWeek(); // Mulai minggu (Senin)
+        $startOfWeek = Carbon::now()->startOfWeek();
         $startOfMonth = Carbon::now()->startOfMonth();
 
-        // Pendapatan Harian
         $dailyEarnings = CourierWalletHistory::where('courier_id', $courierId)->whereDate('earned_at', $today)->sum('amount');
 
-        // Pendapatan Mingguan
         $weeklyEarnings = CourierWalletHistory::where('courier_id', $courierId)
             ->whereBetween('earned_at', [$startOfWeek, Carbon::now()])
             ->sum('amount');
 
-        // Pendapatan Bulanan
         $monthlyEarnings = CourierWalletHistory::where('courier_id', $courierId)
             ->whereBetween('earned_at', [$startOfMonth, Carbon::now()])
             ->sum('amount');
@@ -71,7 +65,7 @@ class CourierController extends Controller
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('admin/users-management/couriers/pages/form');
+        return Inertia::render('admin/pages/users-management/couriers/pages/form');
     }
 
     public function store(CourierRegisterRequest $request): RedirectResponse
@@ -130,7 +124,7 @@ class CourierController extends Controller
     {
         $courier = Courier::withTrashed()->findOrFail($id);
         $courier->load('user');
-        return Inertia::render('admin/users-management/couriers/pages/form', [
+        return Inertia::render('admin/pages/users-management/couriers/pages/form', [
             'courier' => $courier,
         ]);
     }
@@ -190,7 +184,7 @@ class CourierController extends Controller
         $courier = Courier::withTrashed()->findOrFail($id);
         $courier->load('user');
 
-        return Inertia::render('admin/users-management/couriers/pages/show', [
+        return Inertia::render('admin/pages/users-management/couriers/pages/show', [
             'data' => $courier,
         ]);
     }
