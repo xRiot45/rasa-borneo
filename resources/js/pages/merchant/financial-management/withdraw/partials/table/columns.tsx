@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { WithdrawStatusEnum } from '@/enums/withdraw-status';
+import { cn } from '@/lib/utils';
 import { Withdraw } from '@/models/financial-management/withdraw';
 import { formatCurrency } from '@/utils/format-currency';
 import { withdrawStatusColorMap } from '@/utils/withdraw-status-color';
@@ -16,6 +17,9 @@ export const columns: ColumnDef<Withdraw>[] = [
         accessorKey: 'no',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">No</span>,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
+        meta: {
+            className: cn('p-4 ps-8'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
