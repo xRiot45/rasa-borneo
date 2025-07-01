@@ -19,14 +19,14 @@ class CustomerController extends Controller
 
     {
         $customers = Customer::withTrashed()->with('user')->get();
-        return Inertia::render('admin/users-management/customers/index', [
+        return Inertia::render('admin/pages/users-management/customers/index', [
             'data' => $customers,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('admin/users-management/customers/pages/form');
+        return Inertia::render('admin/pages/users-management/customers/pages/form');
     }
 
     public function store(CustomerRegisterRequest $request): RedirectResponse
@@ -73,7 +73,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::withTrashed()->findOrFail($id);
         $customer->load('user');
-        return Inertia::render('admin/users-management/customers/pages/form', [
+        return Inertia::render('admin/pages/users-management/customers/pages/form', [
             'customer' => $customer,
         ]);
     }
@@ -123,7 +123,7 @@ class CustomerController extends Controller
 
     {
         $customer->load('user');
-        return Inertia::render('admin/users-management/customers/pages/show', [
+        return Inertia::render('admin/pages/users-management/customers/pages/show', [
             'data' => $customer,
         ]);
     }
