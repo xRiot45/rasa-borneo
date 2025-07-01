@@ -58,7 +58,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return Inertia::render('admin/order-management/incoming-orders/index', [
+        return Inertia::render('admin/pages/order-management/incoming-orders/index', [
             'dineInOrders' => $dineInOrders,
             'takeAwayOrders' => $takeAwayOrders,
             'deliveryOrders' => $deliveryOrders,
@@ -126,7 +126,7 @@ class OrderController extends Controller
             ->with(['transactionItems', 'customer', 'orderStatus'])
             ->firstOrFail();
 
-        return Inertia::render('admin/order-management/shared/order-detail/index', [
+        return Inertia::render('admin/pages/order-management/shared/order-detail/index', [
             'order' => $order,
         ]);
     }
@@ -272,7 +272,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return Inertia::render('admin/order-management/order-history/index', [
+        return Inertia::render('admin/pages/order-management/order-history/index', [
             'orders' => $orders,
         ]);
     }
