@@ -28,7 +28,7 @@ class UserController extends Controller
                 ];
             });
 
-        return Inertia::render('admin/users-management/all-users/index', [
+        return Inertia::render('admin/pages/users-management/all-users/index', [
             'data' => $users,
         ]);
     }
