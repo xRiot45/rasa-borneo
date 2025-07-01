@@ -14,14 +14,14 @@ class AdminController extends Controller
     public function index(): InertiaResponse
     {
         $admins = User::role('admin')->withTrashed()->get();
-        return Inertia::render('admin/users-management/admins/index', [
+        return Inertia::render('admin/pages/users-management/admins/index', [
             'admins' => $admins,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('admin/users-management/admins/pages/form');
+        return Inertia::render('admin/pages/users-management/admins/pages/form');
     }
 
     public function store(Request $request): RedirectResponse
@@ -45,7 +45,7 @@ class AdminController extends Controller
     public function edit(int $id): InertiaResponse
     {
         $admin = User::find($id);
-        return Inertia::render('admin/users-management/admins/pages/form', [
+        return Inertia::render('admin/pages/users-management/admins/pages/form', [
             'admin' => $admin,
         ]);
     }
