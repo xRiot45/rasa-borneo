@@ -22,7 +22,7 @@ class MerchantController extends Controller
     public function index(): InertiaResponse
     {
         $merchants = Merchant::withTrashed()->with('businessCategory')->orderBy('created_at', 'desc')->get();
-        return Inertia::render('admin/users-management/merchants/index', [
+        return Inertia::render('admin/pages/users-management/merchants/index', [
             'data' => $merchants,
         ]);
     }
@@ -48,7 +48,7 @@ class MerchantController extends Controller
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('admin/users-management/merchants/pages/form');
+        return Inertia::render('admin/pages/users-management/merchants/pages/form');
     }
 
     public function store(MerchantRegisterRequest $request): RedirectResponse
@@ -114,7 +114,7 @@ class MerchantController extends Controller
     {
         $merchant = Merchant::withTrashed()->findOrFail($id);
         $merchant->load('user');
-        return Inertia::render('admin/users-management/merchants/pages/form', [
+        return Inertia::render('admin/pages/users-management/merchants/pages/form', [
             'merchant' => $merchant,
         ]);
     }
@@ -180,7 +180,7 @@ class MerchantController extends Controller
         $merchant = Merchant::withTrashed()->findOrFail($id);
 
         $merchant->load('businessCategory', 'user');
-        return Inertia::render('admin/users-management/merchants/pages/show', [
+        return Inertia::render('admin/pages/users-management/merchants/pages/show', [
             'data' => $merchant,
         ]);
     }
