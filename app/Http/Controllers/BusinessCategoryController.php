@@ -13,14 +13,14 @@ class BusinessCategoryController extends Controller
     public function index(): Response
     {
         $businessCategory = BusinessCategory::withTrashed()->get();
-        return Inertia::render('admin/master-data/business-category/index', [
+        return Inertia::render('admin/pages/master-data/business-category/index', [
             'data' => $businessCategory
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('admin/master-data/business-category/pages/create');
+        return Inertia::render('admin/pages/master-data/business-category/pages/form');
     }
 
     public function store(BusinessCategoryRequest $request): RedirectResponse
@@ -34,7 +34,7 @@ class BusinessCategoryController extends Controller
     public function edit(int $businessCategoryId): Response
     {
         $businesCategory = BusinessCategory::findOrFail($businessCategoryId);
-        return Inertia::render('admin/master-data/business-category/pages/edit', [
+        return Inertia::render('admin/pages/master-data/business-category/pages/form', [
             'data' => $businesCategory
         ]);
     }

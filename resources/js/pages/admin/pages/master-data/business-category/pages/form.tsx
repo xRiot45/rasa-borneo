@@ -22,54 +22,83 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/admin/master-data/business-categories',
     },
     {
-        title: 'Edit Kategori Bisnis',
-        href: '/admin/master-data/business-categories/edit',
+        title: 'Form Kategori Bisnis',
+        href: '#',
     },
 ];
 
-export default function EditPage({ data }: { data: BusinessCategory }) {
+export default function FormPage({ data }: { data: BusinessCategory }) {
+    const isEdit = !!data?.id;
     const {
         data: formData,
         setData,
         put,
+        post,
         processing,
         errors,
         reset,
     } = useForm<Required<BusinessCategoryForm>>({
-        name: data?.name,
+        name: isEdit ? data?.name : '',
     });
 
-    const submit: FormEventHandler<HTMLFormElement> = (e) => {
+    const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
-        put(route('admin.business-category.update', { id: data?.id }), {
-            onSuccess: () => {
-                reset('name');
-                toast.success('Success', {
-                    description: 'Kategori Bisnis Berhasil Diedit!',
-                    action: {
-                        label: 'Tutup',
-                        onClick: () => toast.dismiss(),
-                    },
-                });
-            },
-            onError: (error) => {
-                Object.keys(error).forEach((key) => {
-                    toast.error('Error', {
-                        description: error[key],
+
+        if (isEdit) {
+            put(route('admin.business-category.update', { id: data?.id }), {
+                onSuccess: () => {
+                    reset('name');
+                    toast.success('Success', {
+                        description: 'Kategori Bisnis Berhasil Diedit!',
                         action: {
                             label: 'Tutup',
                             onClick: () => toast.dismiss(),
                         },
                     });
-                });
-            },
-        });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        } else {
+            post(route('admin.business-category.store'), {
+                onSuccess: () => {
+                    reset('name');
+                    toast.success('Success', {
+                        description: 'Role Berhasil Ditambahkan!',
+                        action: {
+                            label: 'Tutup',
+                            onClick: () => toast.dismiss(),
+                        },
+                    });
+                },
+                onError: (error) => {
+                    Object.keys(error).forEach((key) => {
+                        toast.error('Error', {
+                            description: error[key],
+                            action: {
+                                label: 'Tutup',
+                                onClick: () => toast.dismiss(),
+                            },
+                        });
+                    });
+                },
+            });
+        }
     };
 
     return (
         <AdminLayout breadcrumbs={breadcrumbs}>
-            <Head title="Edit Kategori Bisnis" />
-            <form onSubmit={submit} className="p-4">
+            <Head title={isEdit ? 'Edit Kategori Bisnis' : 'Tambah Kategori Bisnis'} />
+            <form onSubmit={handleSubmit} className="p-4">
                 <Label htmlFor="name">Nama Kategori Bisnis</Label>
                 <Input
                     id="name"
@@ -92,7 +121,7 @@ export default function EditPage({ data }: { data: BusinessCategory }) {
                     </Link>
                     <Button type="submit" tabIndex={4} disabled={processing} className="cursor-pointer">
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Edit Data <Icon icon="heroicons:check" />
+                        {isEdit ? 'Simpan Perubahan' : 'Tambah Kategori Bisnis'} <Icon icon={isEdit ? 'material-symbols:edit' : 'heroicons:plus'} />
                     </Button>
                 </div>
             </form>
