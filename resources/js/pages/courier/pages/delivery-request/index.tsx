@@ -14,7 +14,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { formatDate } from '@/utils/format-date';
 import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -28,6 +28,14 @@ export default function OrderRequestPage({ orders }: Props) {
 
     const latitude = Number(orders[0]?.merchant?.store_profile?.latitude) || 0;
     const longitude = Number(orders[0]?.merchant?.store_profile?.longitude) || 0;
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            router.reload({ only: ['orders'] });
+        }, 5000); // Refresh setiap 5 detik
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     const handleConfirmAcceptedOrder = (transactionId: number) => {
         setSelectedTransactionId(transactionId);

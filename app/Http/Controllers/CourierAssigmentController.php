@@ -16,6 +16,7 @@ use App\Models\OrderStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -47,7 +48,9 @@ class CourierAssigmentController extends Controller
 
         $courierId = $courier->id;
 
-        $assignedTransactionIds = CourierAssignment::pluck('transaction_id')->toArray();
+        $assignedTransactionIds = CourierAssignment::where('status', CourierAssignmentStatusEnum::ACCEPTED)
+            ->pluck('transaction_id')
+            ->toArray();
         $rejectedTransactionIds = CourierAssignmentRejection::where('courier_id', $courierId)->pluck('transaction_id')->toArray();
 
         $orders = Order::where('order_type', OrderTypeEnum::DELIVERY)
@@ -70,27 +73,37 @@ class CourierAssigmentController extends Controller
         $user = Auth::user();
         $courier = Courier::where('user_id', $user->id)->first();
 
-        // Cek apakah kurir sedang online
         if (!$courier->is_online) {
             return back()->with('error', 'Kamu harus online untuk menerima tugas.');
         }
 
         $courierId = $courier->id;
         $transactionId = $request->transaction_id;
-        $alreadyAssigned = CourierAssignment::where('transaction_id', $transactionId)->exists();
 
-        if ($alreadyAssigned) {
-            return back()->with('error', 'Tugas ini sudah diambil kurir lain.');
+        try {
+            DB::beginTransaction();
+
+            $alreadyAssigned = CourierAssignment::where('transaction_id', $transactionId)->lockForUpdate()->exists();
+
+            if ($alreadyAssigned) {
+                DB::rollBack();
+                return back()->with('error', 'Tugas ini sudah diambil kurir lain.');
+            }
+
+            CourierAssignment::create([
+                'courier_id' => $courierId,
+                'transaction_id' => $transactionId,
+                'status' => CourierAssignmentStatusEnum::ACCEPTED,
+                'accepted_at' => now(),
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Tugas berhasil diambil.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan saat mengambil tugas.');
         }
-
-        CourierAssignment::create([
-            'courier_id' => $courierId,
-            'transaction_id' => $transactionId,
-            'status' => CourierAssignmentStatusEnum::ACCEPTED,
-            'accepted_at' => now(),
-        ]);
-
-        return back()->with('success', 'Tugas berhasil diambil.');
     }
 
     public function rejectedRequest(Request $request): RedirectResponse
