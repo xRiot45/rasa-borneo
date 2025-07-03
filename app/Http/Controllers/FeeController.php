@@ -13,7 +13,7 @@ class FeeController extends Controller
     public function indexAdmin(): InertiaResponse
     {
         $fees = Fee::all();
-        return Inertia::render('admin/settings/fee/index', [
+        return Inertia::render('admin/pages/settings/fee/index', [
             'fees' => $fees
         ]);
     }

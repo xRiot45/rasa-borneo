@@ -265,7 +265,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
     // Appearance
     Route::get('/admin/settings/appearance', function () {
-        return Inertia::render('admin/settings/appearance');
+        return Inertia::render('admin/pages/settings/appearance');
     })->name('appearance');
 });
 

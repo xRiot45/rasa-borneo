@@ -17,7 +17,7 @@ class AdminProfileController extends Controller
 {
     public function edit(Request $request): InertiaResponse
     {
-        return Inertia::render('admin/settings/profile', [
+        return Inertia::render('admin/pages/settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);

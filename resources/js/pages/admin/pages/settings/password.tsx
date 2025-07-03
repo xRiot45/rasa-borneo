@@ -19,7 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Password',
-        href: '/admin/settings/password',
+        href: '#',
     },
 ];
 

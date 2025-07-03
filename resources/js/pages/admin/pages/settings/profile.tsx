@@ -30,7 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Profile',
-        href: '/admin/settings/profile',
+        href: '#',
     },
 ];
 

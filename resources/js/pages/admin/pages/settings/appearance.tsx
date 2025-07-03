@@ -11,7 +11,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Tampilan Web',
-        href: '/admin/settings/appearance',
+        href: '#',
     },
 ];
 
