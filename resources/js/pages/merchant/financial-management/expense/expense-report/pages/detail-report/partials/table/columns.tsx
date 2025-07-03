@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { ExpenseReportItem } from '@/models/financial-management/expense-report';
 import { formatCurrency } from '@/utils/format-currency';
 import { ColumnDef } from '@tanstack/react-table';
@@ -10,7 +11,7 @@ export const columns: ColumnDef<ExpenseReportItem>[] = [
         header: ({ column }) => <DataTableColumnHeader column={column} title="No" />,
         cell: ({ row }) => <span className="text-sm">{row.index + 1}</span>,
         meta: {
-            className: 'py-3',
+            className: cn('p-4 ps-8'),
         },
         enableSorting: false,
         enableHiding: false,

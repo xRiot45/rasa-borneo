@@ -95,14 +95,19 @@ const mainNavItems: NavGroup[] = [
                 icon: 'mdi:chart-bar',
             },
             {
-                title: 'Laporan Pengeluaran',
+                title: 'Pengeluaran',
                 icon: 'mdi:cash-remove',
                 href: '#',
                 submenu: [
                     {
-                        title: 'Daftar Laporan',
+                        title: 'Laporan Pengeluaran',
                         href: '/merchant/financial-management/expense-report',
                         icon: 'mdi:file-document-outline',
+                    },
+                    {
+                        title: 'Tambah Pengeluaran',
+                        href: '/merchant/financial-management/expense-report/create',
+                        icon: 'mdi:plus',
                     },
                     {
                         title: 'Kategori Pengeluaran',
