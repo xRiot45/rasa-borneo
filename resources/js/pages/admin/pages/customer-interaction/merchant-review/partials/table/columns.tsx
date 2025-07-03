@@ -1,35 +1,19 @@
-import { MenuReview } from '@/models/merchant/customer_interaction';
+import { cn } from '@/lib/utils';
+import { MerchantReview } from '@/models/merchant/customer_interaction';
 import { formatDate } from '@/utils/format-date';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { Star } from 'lucide-react';
 import { DataTableColumnHeader } from './components/data-table-column-header';
 import { DataTableRowActions } from './components/data-table-row-actions';
 
-export const columns: ColumnDef<MenuReview>[] = [
+export const columns: ColumnDef<MerchantReview>[] = [
     {
         id: 'no',
         accessorKey: 'no',
         header: ({ column }) => <DataTableColumnHeader column={column} title="No" />,
         cell: ({ row }) => <span className="text-sm text-gray-600 dark:text-gray-200">{row.index + 1}</span>,
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        id: 'menu',
-        accessorKey: 'menu',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Menu" />,
-        cell: ({ row }) => {
-            const menu = row.original.menu_item;
-            const category = menu.menu_category;
-            return (
-                <div className="flex items-center gap-3">
-                    <img src={`${menu.image_url}`} alt={menu.name} className="h-16 w-16 rounded-md object-cover" />
-                    <div>
-                        <div className="font-medium">{menu.name}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">{category.name}</div>
-                    </div>
-                </div>
-            );
+        meta: {
+            className: cn('p-4 ps-8'),
         },
         enableSorting: false,
         enableHiding: false,
@@ -52,10 +36,13 @@ export const columns: ColumnDef<MenuReview>[] = [
         enableHiding: false,
     },
     {
-        id: 'business_name',
-        accessorKey: 'business_name',
+        id: 'merchant.business_name',
+        accessorKey: 'merchant.business_name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Nama Merchant" />,
-        cell: ({ row }) => <span className="text-sm">{row.original.menu_item.merchant.business_name}</span>,
+        cell: ({ row }) => <span className="text-sm">{row.original.merchant.business_name}</span>,
+        meta: {
+            className: cn('break-words whitespace-normal'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -64,6 +51,9 @@ export const columns: ColumnDef<MenuReview>[] = [
         accessorKey: 'comment',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Komentar" />,
         cell: ({ row }) => <span className="text-sm">{row.original.comment}</span>,
+        meta: {
+            className: cn('w-72 break-words whitespace-normal'),
+        },
         enableSorting: false,
         enableHiding: false,
     },
@@ -95,7 +85,7 @@ export const columns: ColumnDef<MenuReview>[] = [
         id: 'actions',
         accessorKey: 'actions',
         header: () => <span className="text-md font-medium text-gray-900 dark:text-gray-200">Aksi</span>,
-        cell: ({ row }) => <DataTableRowActions row={row as Row<MenuReview>} />,
+        cell: ({ row }) => <DataTableRowActions row={row as Row<MerchantReview>} />,
         enableHiding: false,
     },
 ];

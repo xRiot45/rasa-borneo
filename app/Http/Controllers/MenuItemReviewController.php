@@ -75,7 +75,7 @@ class MenuItemReviewController extends Controller
         $menuReviews = MenuItemReview::with('customer.user', 'menuItem.menuCategory', 'menuItem.merchant')
             ->get();
 
-        return Inertia::render('admin/customer-interaction/menu-review/index', [
+        return Inertia::render('admin/pages/customer-interaction/menu-review/index', [
             'menuReviews' => $menuReviews
         ]);
     }

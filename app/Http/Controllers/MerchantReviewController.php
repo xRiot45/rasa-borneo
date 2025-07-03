@@ -52,7 +52,7 @@ class MerchantReviewController extends Controller
         $merchantReviews = MerchantReview::with('customer.user', 'merchant.user')
             ->get();
 
-        return Inertia::render('admin/customer-interaction/merchant-review/index', [
+        return Inertia::render('admin/pages/customer-interaction/merchant-review/index', [
             'merchantReviews' => $merchantReviews
         ]);
     }
