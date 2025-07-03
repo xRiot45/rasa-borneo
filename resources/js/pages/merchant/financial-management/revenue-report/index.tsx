@@ -4,7 +4,6 @@ import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { BreadcrumbItem } from '@/types';
 import { formatCurrency } from '@/utils/format-currency';
 import { Head } from '@inertiajs/react';
-import ButtonPartials from './partials/buttons';
 import RevenueReportTable from './partials/table';
 import { columns } from './partials/table/columns';
 
@@ -16,10 +15,6 @@ interface Props {
     todayTransactions: number;
     todayRevenue: number;
     todayAverageRevenuePerTransaction: number;
-    revenueByDate: {
-        report_date: string;
-        total_revenue: number;
-    }[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -51,13 +46,7 @@ export default function RevenueReportPage({
                         <h2 className="text-2xl font-black tracking-tight text-gray-700 dark:text-gray-200">Laporan Pendapatan</h2>
                         <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola laporan pendapatan toko anda</p>
                     </div>
-                    <ButtonPartials />
                 </div>
-
-                {/* <div className="p-4">
-                    <h3 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Tren Pendapatan per Tanggal</h3>
-                    <RevenueTrendChart data={revenueByDate} />
-                </div> */}
 
                 <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
                     <CardSummaryStatistics

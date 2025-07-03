@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import MerchantLayout from '@/layouts/merchant/layout';
-import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { Transaction } from '@/models/transactions';
 import { BreadcrumbItem } from '@/types';
 import { Icon } from '@iconify/react';
@@ -9,7 +8,7 @@ import DetailRevenueReportTable from './partials/table';
 import { columns } from './partials/table/columns';
 
 interface DetailRevenueReportPageProps {
-    report: RevenueReport;
+    reportDate: string;
     transactions: Transaction[];
 }
 
@@ -28,7 +27,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function DetailRevenueReportPage({ report, transactions }: DetailRevenueReportPageProps) {
+export default function DetailRevenueReportPage({ reportDate, transactions }: DetailRevenueReportPageProps) {
+    console.log(reportDate);
     return (
         <>
             <Head title="Detail Laporan Pemasukan" />
@@ -42,7 +42,7 @@ export default function DetailRevenueReportPage({ report, transactions }: Detail
                         <div>
                             <h2 className="text-2xl font-black tracking-tight">Detail Laporan Pendapatan</h2>
                             <p className="text-muted-foreground mt-1.5 text-[14px]">
-                                Tanggal Laporan Pemasukan : <strong className="italic">{report.report_date}</strong>
+                                Tanggal Laporan Pemasukan : <strong className="italic">{reportDate}</strong>
                             </p>
                         </div>
                     </div>

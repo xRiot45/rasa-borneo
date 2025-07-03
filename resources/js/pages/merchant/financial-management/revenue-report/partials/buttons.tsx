@@ -1,44 +1,27 @@
 import { Button } from '@/components/ui/button';
-import { FlashMessage } from '@/types';
 import { Icon } from '@iconify/react';
-import { router, usePage } from '@inertiajs/react';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+import { Table } from '@tanstack/react-table';
+import { format } from 'date-fns';
 
-export default function ButtonPartials() {
-    const { flash } = usePage().props as unknown as { flash: FlashMessage };
+interface ButtonPartialsProps<TData> {
+    table: Table<TData>;
+}
 
-    useEffect(() => {
-        if (flash?.message) {
-            toast.success('Success', {
-                description: flash.message,
-                action: {
-                    label: 'Tutup',
-                    onClick: () => toast.dismiss(),
-                },
-            });
-        }
-    }, [flash]);
+interface DateFilterValue {
+    from?: Date;
+    to?: Date;
+}
 
-    const handleGenerateTodayReport = () => {
-        router.post(
-            route('merchant.revenue-report.generateTodayReport'),
-            {},
-            {
-                onError: (errors) => {
-                    Object.keys(errors).forEach((key) => {
-                        toast.error('Error', {
-                            description: errors[key],
-                            action: {
-                                label: 'Tutup',
-                                onClick: () => toast.dismiss(),
-                            },
-                        });
-                    });
-                },
-            },
-        );
-    };
+export default function ButtonPartials<TData>({ table }: ButtonPartialsProps<TData>) {
+    const filters = table.getState().columnFilters;
+    const dateFilter = filters.find((f) => f.id === 'report_date') as { id: string; value: DateFilterValue };
+    const from = dateFilter?.value?.from ? format(dateFilter.value.from, 'yyyy-MM-dd') : null;
+    const to = dateFilter?.value?.to ? format(dateFilter.value.to, 'yyyy-MM-dd') : null;
+
+    const exportUrl = new URL(route('merchant.revenue-report.export'));
+
+    if (from) exportUrl.searchParams.append('from', from);
+    if (to) exportUrl.searchParams.append('to', to);
 
     return (
         <div className="flex gap-2">
@@ -46,11 +29,7 @@ export default function ButtonPartials() {
                 <span>Refresh Halaman</span>
                 <Icon icon={'material-symbols:refresh'} className="text-background" />
             </Button>
-            <Button onClick={handleGenerateTodayReport} className="hover: cursor-pointer bg-blue-600 hover:bg-blue-700">
-                <span>Buat Laporan Harian</span>
-                <Icon icon={'streamline:medical-files-report-history-remix'} className="text-background" />
-            </Button>
-            <a href={route('merchant.revenue-report.exportAll')}>
+            <a href={exportUrl.toString()}>
                 <Button className="cursor-pointer bg-green-600 hover:bg-green-700">
                     <span>Export Ke CSV</span>
                     <Icon icon={'teenyicons:csv-solid'} className="text-background" />

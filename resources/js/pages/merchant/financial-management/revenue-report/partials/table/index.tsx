@@ -15,6 +15,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import ButtonPartials from '../buttons';
 import { DataTablePagination } from './components/data-table-pagination';
 import { DataTableToolbar } from './components/data-table-toolbar';
 
@@ -49,7 +50,10 @@ export default function RevenueReportTable({ columns, data }: DataTableProps<Rev
     return (
         <>
             <div className="space-y-4">
-                <DataTableToolbar table={table} />
+                <div className="flex items-center justify-between">
+                    <DataTableToolbar table={table} />
+                    <ButtonPartials table={table} />
+                </div>
                 <div className="grid grid-cols-1 rounded-md border">
                     <Table>
                         <TableHeader>
