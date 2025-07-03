@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\PaymentMethodEnum;
-use App\Enums\PaymentStatusEnum;
 use App\Enums\WithdrawStatusEnum;
 use App\Http\Requests\WithdrawRequest;
 use App\Mail\CourierWithdrawalProofMail;
@@ -12,7 +10,6 @@ use App\Models\Courier;
 use App\Models\CourierWallet;
 use App\Models\Merchant;
 use App\Models\MerchantWallet;
-use App\Models\Transaction;
 use App\Models\Withdraw;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,7 +45,7 @@ class WithdrawController extends Controller
 
         $withdrawalCouriers = Withdraw::with('courier.user')->whereNotNull('courier_id')->orderBy('created_at', 'desc')->get();
 
-        return Inertia::render('admin/financial-management/withdraw/index', [
+        return Inertia::render('admin/pages/financial-management/withdraw/index', [
             'withdrawalMerchants' => $withdrawalMerchants,
             'withdrawalCouriers' => $withdrawalCouriers,
         ]);
