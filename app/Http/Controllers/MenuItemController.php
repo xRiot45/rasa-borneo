@@ -21,7 +21,7 @@ class MenuItemController extends Controller
         $merchantId = $authenticatedUser->merchant->id;
 
         $menuItems = MenuItem::withTrashed()->where('merchant_id', $merchantId)->with('menuCategory')->orderBy('created_at', 'desc')->get();
-        return Inertia::render('merchant/menu-management/menu-items/index', [
+        return Inertia::render('merchant/pages/menu-management/menu-items/index', [
             'data' => $menuItems,
         ]);
     }
@@ -57,7 +57,7 @@ class MenuItemController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('merchant/menu-management/menu-items/pages/form');
+        return Inertia::render('merchant/pages/menu-management/menu-items/pages/form');
     }
 
     public function store(MenuItemRequest $request): RedirectResponse
@@ -94,7 +94,7 @@ class MenuItemController extends Controller
     public function edit(int $id): Response
     {
         $menuItem = MenuItem::findOrFail($id);
-        return Inertia::render('merchant/menu-management/menu-items/pages/form', [
+        return Inertia::render('merchant/pages/menu-management/menu-items/pages/form', [
             'menuItem' => $menuItem,
         ]);
     }

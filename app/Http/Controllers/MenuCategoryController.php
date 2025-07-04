@@ -20,14 +20,14 @@ class MenuCategoryController extends Controller
         $merchantId = $user->merchant->id;
 
         $menuCategories = MenuCategory::withTrashed()->where('merchant_id', $merchantId)->get();
-        return Inertia::render('merchant/menu-management/menu-categories/index', [
+        return Inertia::render('merchant/pages/menu-management/menu-categories/index', [
             'data' => $menuCategories,
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('merchant/menu-management/menu-categories/pages/form');
+        return Inertia::render('merchant/pages/menu-management/menu-categories/pages/form');
     }
 
     public function store(MenuCategoryRequest $request): RedirectResponse
@@ -54,7 +54,7 @@ class MenuCategoryController extends Controller
     public function edit(int $id): Response
     {
         $menuCategory = MenuCategory::findOrFail($id);
-        return Inertia::render('merchant/menu-management/menu-categories/pages/form', [
+        return Inertia::render('merchant/pages/menu-management/menu-categories/pages/form', [
             'menuCategory' => $menuCategory,
         ]);
     }
