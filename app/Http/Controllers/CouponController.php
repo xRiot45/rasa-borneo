@@ -20,14 +20,14 @@ class CouponController extends Controller
         $merchantId = $merchant->id;
 
         $coupons = Coupon::withTrashed()->where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
-        return Inertia::render('merchant/promotion-management/coupons/index', [
+        return Inertia::render('merchant/pages/promotion-management/coupons/index', [
             'data' => $coupons,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('merchant/promotion-management/coupons/pages/form');
+        return Inertia::render('merchant/pages/promotion-management/coupons/pages/form');
     }
 
     public function store(CouponRequest $request): RedirectResponse
@@ -52,7 +52,7 @@ class CouponController extends Controller
     public function edit(int $id): InertiaResponse
     {
         $coupon = Coupon::findOrFail($id);
-        return Inertia::render('merchant/promotion-management/coupons/pages/form', [
+        return Inertia::render('merchant/pages/promotion-management/coupons/pages/form', [
             'coupon' => $coupon,
         ]);
     }
