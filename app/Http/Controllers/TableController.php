@@ -20,14 +20,14 @@ class TableController extends Controller
         $merchantId = $merchant->id;
 
         $tables = Table::withTrashed()->where('merchant_id', $merchantId)->get();
-        return Inertia::render('merchant/store-management/table/index', [
+        return Inertia::render('merchant/pages/store-management/table/index', [
             'data' => $tables,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('merchant/store-management/table/pages/form');
+        return Inertia::render('merchant/pages/store-management/table/pages/form');
     }
 
     public function store(TableRequest $request): RedirectResponse
@@ -46,7 +46,7 @@ class TableController extends Controller
     public function edit(int $id): InertiaResponse
     {
         $table = Table::findOrFail($id);
-        return Inertia::render('merchant/store-management/table/pages/form', [
+        return Inertia::render('merchant/pages/store-management/table/pages/form', [
             'table' => $table,
         ]);
     }

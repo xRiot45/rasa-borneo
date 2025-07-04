@@ -18,14 +18,14 @@ class StoreProfileController extends Controller
         $merchantId = $authenticatedUser->merchant->id;
 
         $storeProfile = StoreProfile::where('merchant_id', $merchantId)->with('merchant')->first();
-        return Inertia::render('merchant/store-management/store-profile/index', [
+        return Inertia::render('merchant/pages/store-management/store-profile/index', [
             'storeProfile' => $storeProfile,
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('merchant/store-management/store-profile/pages/form');
+        return Inertia::render('merchant/pages/store-management/store-profile/pages/form');
     }
 
     public function store(StoreProfileRequest $request): RedirectResponse
@@ -73,7 +73,7 @@ class StoreProfileController extends Controller
         $storeProfile->latitude = (string) $storeProfile->latitude;
         $storeProfile->longitude = (string) $storeProfile->longitude;
 
-        return Inertia::render('merchant/store-management/store-profile/pages/form', [
+        return Inertia::render('merchant/pages/store-management/store-profile/pages/form', [
             'storeProfile' => $storeProfile,
         ]);
     }

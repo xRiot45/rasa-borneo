@@ -18,7 +18,7 @@ class QrCodeController extends Controller
         $baseUrl = config('app.url');
         $merchantUrl = $baseUrl . '/merchant/show/' . $merchant->slug;
 
-        return Inertia::render('merchant/store-management/qr-code/index', [
+        return Inertia::render('merchant/pages/store-management/qr-code/index', [
             'slug' => $merchant->slug,
             'merchantUrl' => $merchantUrl
         ]);

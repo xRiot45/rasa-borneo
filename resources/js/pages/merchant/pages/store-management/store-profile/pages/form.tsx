@@ -26,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Profile Toko',
-        href: '/merchant/store-management/store-profile',
+        href: '#',
     },
     {
         title: 'Form Profile Toko',

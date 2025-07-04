@@ -19,7 +19,7 @@ class StoreOperatingHourController extends Controller
 
         $hours = StoreOperatingHour::where('merchant_id', $merchantId)->get();
 
-        return Inertia::render('merchant/store-management/store-operating-hour/index', [
+        return Inertia::render('merchant/pages/store-management/store-operating-hour/index', [
             'data' => $hours,
         ]);
     }
@@ -30,7 +30,7 @@ class StoreOperatingHourController extends Controller
         $merchantId = $authenticatedUser->merchant->id;
 
         $hours = StoreOperatingHour::where('merchant_id', $merchantId)->get();
-        return Inertia::render('merchant/store-management/store-operating-hour/pages/store-or-update', [
+        return Inertia::render('merchant/pages/store-management/store-operating-hour/pages/store-or-update', [
             'data' => $hours,
         ]);
     }

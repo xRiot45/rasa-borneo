@@ -18,14 +18,14 @@ class StoreGalleryController extends Controller
         $merchantId = $authenticatedUser->merchant->id;
 
         $storeGalleries = StoreGallery::withTrashed()->where('merchant_id', $merchantId)->get();
-        return Inertia::render('merchant/store-management/store-gallery/index', [
+        return Inertia::render('merchant/pages/store-management/store-gallery/index', [
             'data' => $storeGalleries,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('merchant/store-management/store-gallery/pages/form');
+        return Inertia::render('merchant/pages/store-management/store-gallery/pages/form');
     }
 
     public function store(StoreGalleryRequest $request): RedirectResponse
@@ -81,7 +81,7 @@ class StoreGalleryController extends Controller
     public function edit(int $id): InertiaResponse
     {
         $storeGallery = StoreGallery::findOrFail($id);
-        return Inertia::render('merchant/store-management/store-gallery/pages/form', [
+        return Inertia::render('merchant/pages/store-management/store-gallery/pages/form', [
             'storeGallery' => $storeGallery,
         ]);
     }
