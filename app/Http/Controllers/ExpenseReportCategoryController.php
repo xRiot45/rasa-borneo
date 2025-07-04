@@ -20,14 +20,14 @@ class ExpenseReportCategoryController extends Controller
 
         $expenseReportCategories = ExpenseReportCategory::where('merchant_id', $merchantId)->get();
 
-        return Inertia::render('merchant/financial-management/expense/expense-report-category/index', [
+        return Inertia::render('merchant/pages/financial-management/expense/expense-report-category/index', [
             'data' => $expenseReportCategories,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        return Inertia::render('merchant/financial-management/expense/expense-report-category/pages/form');
+        return Inertia::render('merchant/pages/financial-management/expense/expense-report-category/pages/form');
     }
 
     public function store(ExpenseReportCategoryRequest $request): RedirectResponse
@@ -50,7 +50,7 @@ class ExpenseReportCategoryController extends Controller
     public function edit(int $id): InertiaResponse
     {
         $expenseReportCategory = ExpenseReportCategory::find($id);
-        return Inertia::render('merchant/financial-management/expense/expense-report-category/pages/form', [
+        return Inertia::render('merchant/pages/financial-management/expense/expense-report-category/pages/form', [
             'expenseReportCategory' => $expenseReportCategory,
         ]);
     }

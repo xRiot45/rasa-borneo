@@ -51,7 +51,7 @@ class RevenueReportController extends Controller
         $todayRevenue = $todayReport['total_revenue'] ?? 0;
         $todayAverageRevenuePerTransaction = $todayTransactions > 0 ? $todayRevenue / $todayTransactions : 0;
 
-        return Inertia::render('merchant/financial-management/revenue-report/index', [
+        return Inertia::render('merchant/pages/financial-management/revenue-report/index', [
             'data' => $revenueReports,
             'totalTransactions' => $totalTransactions,
             'totalRevenue' => $totalRevenue,
@@ -84,7 +84,7 @@ class RevenueReportController extends Controller
         $totalRevenue = $transactions->sum('final_total');
         $averageRevenue = $totalTransactions > 0 ? $totalRevenue / $totalTransactions : 0;
 
-        return Inertia::render('merchant/financial-management/revenue-report/pages/detail-report/index', [
+        return Inertia::render('merchant/pages/financial-management/revenue-report/pages/detail-report/index', [
             'reportDate' => $reportDate,
             'totalTransactions' => $totalTransactions,
             'totalRevenue' => $totalRevenue,

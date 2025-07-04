@@ -15,7 +15,8 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import ButtonPartials from '../buttons';
+
+import ButtonCSV from '../buttons-csv';
 import { DataTablePagination } from './components/data-table-pagination';
 import { DataTableToolbar } from './components/data-table-toolbar';
 
@@ -52,7 +53,7 @@ export default function RevenueReportTable({ columns, data }: DataTableProps<Rev
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <DataTableToolbar table={table} />
-                    <ButtonPartials table={table} />
+                    <ButtonCSV table={table} />
                 </div>
                 <div className="grid grid-cols-1 rounded-md border">
                     <Table>

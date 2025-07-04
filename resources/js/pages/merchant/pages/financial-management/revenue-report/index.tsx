@@ -4,6 +4,7 @@ import { RevenueReport } from '@/models/financial-management/revenue-report';
 import { BreadcrumbItem } from '@/types';
 import { formatCurrency } from '@/utils/format-currency';
 import { Head } from '@inertiajs/react';
+import ButtonRefresh from './partials/button-refresh';
 import RevenueReportTable from './partials/table';
 import { columns } from './partials/table/columns';
 
@@ -46,6 +47,8 @@ export default function RevenueReportPage({
                         <h2 className="text-2xl font-black tracking-tight text-gray-700 dark:text-gray-200">Laporan Pendapatan</h2>
                         <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola laporan pendapatan toko anda</p>
                     </div>
+
+                    <ButtonRefresh />
                 </div>
 
                 <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -12,7 +12,7 @@ interface DateFilterValue {
     to?: Date;
 }
 
-export default function ButtonPartials<TData>({ table }: ButtonPartialsProps<TData>) {
+export default function ButtonCSV<TData>({ table }: ButtonPartialsProps<TData>) {
     const filters = table.getState().columnFilters;
     const dateFilter = filters.find((f) => f.id === 'report_date') as { id: string; value: DateFilterValue };
     const from = dateFilter?.value?.from ? format(dateFilter.value.from, 'yyyy-MM-dd') : null;
@@ -25,10 +25,6 @@ export default function ButtonPartials<TData>({ table }: ButtonPartialsProps<TDa
 
     return (
         <div className="flex gap-2">
-            <Button onClick={() => window.location.reload()} className="cursor-pointer">
-                <span>Refresh Halaman</span>
-                <Icon icon={'material-symbols:refresh'} className="text-background" />
-            </Button>
             <a href={exportUrl.toString()}>
                 <Button className="cursor-pointer bg-green-600 hover:bg-green-700">
                     <span>Export Ke CSV</span>

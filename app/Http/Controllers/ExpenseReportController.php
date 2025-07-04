@@ -32,7 +32,7 @@ class ExpenseReportController extends Controller
             'lowest_expense' => $expenseReports->min('total_expense'),
             'average_expense' => $expenseReports->avg('total_expense'),
         ];
-        return Inertia::render('merchant/financial-management/expense/expense-report/index', [
+        return Inertia::render('merchant/pages/financial-management/expense/expense-report/index', [
             'expenseReports' => $expenseReports,
             'expenseSummary' => $expenseSummary,
         ]);
@@ -41,7 +41,7 @@ class ExpenseReportController extends Controller
     public function detailReport(string $reportDate): InertiaResponse
     {
         $expenseReport = ExpenseReport::with('expenseReportItems', 'expenseReportItems.expenseReportCategory')->where('report_date', $reportDate)->first();
-        return Inertia::render('merchant/financial-management/expense/expense-report/pages/detail-report/index', [
+        return Inertia::render('merchant/pages/financial-management/expense/expense-report/pages/detail-report/index', [
             'expenseReport' => $expenseReport,
         ]);
     }
@@ -53,7 +53,7 @@ class ExpenseReportController extends Controller
         $merchantId = $merchant->id;
 
         $expenseReportCategories = ExpenseReportCategory::where('merchant_id', $merchantId)->get();
-        return Inertia::render('merchant/financial-management/expense/form-expense/index', [
+        return Inertia::render('merchant/pages/financial-management/expense/form-expense/index', [
             'expenseReportCategories' => $expenseReportCategories,
         ]);
     }
@@ -95,7 +95,7 @@ class ExpenseReportController extends Controller
 
         $expenseReportCategories = ExpenseReportCategory::where('merchant_id', $merchantId)->get();
         $expenseReport = ExpenseReport::with('expenseReportItems', 'expenseReportItems.expenseReportCategory')->where('merchant_id', $merchantId)->where('id', $id)->first();
-        return Inertia::render('merchant/financial-management/expense/form-expense/index', [
+        return Inertia::render('merchant/pages/financial-management/expense/form-expense/index', [
             'expenseReportCategories' => $expenseReportCategories,
             'expenseReport' => $expenseReport,
         ]);

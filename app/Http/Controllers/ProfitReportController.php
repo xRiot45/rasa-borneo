@@ -26,7 +26,7 @@ class ProfitReportController extends Controller
         $merchantId = $merchant->id;
 
         $profitReports = ProfitReport::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
-        return Inertia::render('merchant/financial-management/profit-report/index', [
+        return Inertia::render('merchant/pages/financial-management/profit-report/index', [
             'profitReports' => $profitReports,
         ]);
     }
@@ -68,7 +68,7 @@ class ProfitReportController extends Controller
             ];
         }
 
-        return Inertia::render('merchant/financial-management/profit-report/pages/detail-report/index', [
+        return Inertia::render('merchant/pages/financial-management/profit-report/pages/detail-report/index', [
             'profitReport' => $profitReport,
             'reportDetails' => $reportDetails,
         ]);

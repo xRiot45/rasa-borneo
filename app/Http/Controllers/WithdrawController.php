@@ -32,7 +32,7 @@ class WithdrawController extends Controller
         $withdraws = Withdraw::where('merchant_id', $merchantId)->orderBy('created_at', 'desc')->get();
         $totalWithdrawn = Withdraw::where('merchant_id', $merchantId)->sum('amount');
 
-        return Inertia::render('merchant/financial-management/withdraw/index', [
+        return Inertia::render('merchant/pages/financial-management/withdraw/index', [
             'data' => $withdraws,
             'balances' => $balances,
             'total_withdrawn' => $totalWithdrawn,
@@ -56,7 +56,7 @@ class WithdrawController extends Controller
         $user = Auth::user();
         $merchantBank = Merchant::where('user_id', $user->id)->select('bank_code', 'bank_account_number', 'bank_account_name')->first();
 
-        return Inertia::render('merchant/financial-management/withdraw/pages/form', [
+        return Inertia::render('merchant/pages/financial-management/withdraw/pages/form', [
             'merchantBank' => $merchantBank,
         ]);
     }
