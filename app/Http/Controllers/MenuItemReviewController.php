@@ -65,7 +65,7 @@ class MenuItemReviewController extends Controller
             ->get();
 
 
-        return Inertia::render('merchant/customer-interaction/menu-review/index', [
+        return Inertia::render('merchant/pages/customer-interaction/menu-review/index', [
             'menuReviews' => $menuReviews
         ]);
     }

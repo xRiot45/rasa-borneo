@@ -42,7 +42,7 @@ class MerchantReviewController extends Controller
             ->where('merchant_id', $merchant->id)
             ->get();
 
-        return Inertia::render('merchant/customer-interaction/merchant-review/index', [
+        return Inertia::render('merchant/pages/customer-interaction/merchant-review/index', [
             'merchantReviews' => $merchantReviews
         ]);
     }
