@@ -16,7 +16,7 @@ class MerchantProfileController extends Controller
 {
     public function edit(Request $request): InertiaResponse
     {
-        return Inertia::render('merchant/settings/profile', [
+        return Inertia::render('merchant/pages/settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);

@@ -15,7 +15,7 @@ class MerchantPasswordController extends Controller
 {
     public function edit(Request $request): InertiaResponse
     {
-        return Inertia::render('merchant/settings/password', [
+        return Inertia::render('merchant/pages/settings/password', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);

@@ -492,7 +492,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
 
         // Appearance
         Route::get('/appearance', function () {
-            return Inertia::render('merchant/settings/appearance');
+            return Inertia::render('merchant/pages/settings/appearance');
         })->name('appearance');
 
         // Password
