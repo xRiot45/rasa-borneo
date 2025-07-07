@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentStatusEnum;
-use App\Models\RevenueReport;
 use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -23,19 +22,11 @@ class RevenueReportExportByDate implements FromArray
         $user = Auth::user();
         $merchantId = $user->merchant->id;
 
-        // Summary Data
-        $report = RevenueReport::where('merchant_id', $merchantId)->where('report_date', $reportDate)->first();
-
-        $this->summaryData = [
-            'Tanggal Laporan' => $reportDate,
-            'Total Transaksi Yang Berhasil' => $report->total_transaction ?? 0,
-            'Total Pendapatan' => $report->total_revenue ?? 0,
-        ];
-
-        // Detail Transaksi
+        // Rentang waktu berdasarkan zona waktu lokal
         $startOfDay = Carbon::parse($reportDate, config('app.timezone'))->startOfDay()->timezone('UTC');
         $endOfDay = Carbon::parse($reportDate, config('app.timezone'))->endOfDay()->timezone('UTC');
 
+        // Ambil transaksi yang sesuai
         $this->transactions = Transaction::with(['latestOrderStatus'])
             ->where('merchant_id', $merchantId)
             ->whereBetween('checked_out_at', [$startOfDay, $endOfDay])
@@ -43,35 +34,48 @@ class RevenueReportExportByDate implements FromArray
             ->whereHas('orderStatus', function ($query) {
                 $query->where('status', OrderStatusEnum::COMPLETED);
             })
+            ->orderBy('checked_out_at', 'asc')
             ->get();
+
+        // Buat ringkasan
+        $this->summaryData = [
+            'Tanggal Laporan' => $reportDate,
+            'Total Transaksi Yang Berhasil' => $this->transactions->count(),
+            'Total Pendapatan' => $this->transactions->sum('final_total'),
+        ];
     }
 
     public function array(): array
     {
         $rows = [];
 
-        // Format tanggal laporan dengan Carbon
         $formattedDate = Carbon::parse($this->summaryData['Tanggal Laporan'])->format('d-m-Y');
 
-        // Baris judul utama
+        // Judul
         $rows[] = ['Laporan Pendapatan - ' . $formattedDate];
-        $rows[] = []; // spasi kosong
+        $rows[] = [];
 
-        // Ringkasan laporan
+        // Ringkasan
         $rows[] = ['Total Transaksi Yang Berhasil', $this->summaryData['Total Transaksi Yang Berhasil'] . ' Transaksi'];
-        $rows[] = []; // spasi kosong
+        $rows[] = [];
 
-        // Header data transaksi
+        // Header tabel transaksi
         $rows[] = ['No', 'Kode Transaksi', 'Tanggal & Waktu Pemesanan', 'Metode Pemesanan', 'Metode Pembayaran', 'Status Pembayaran', 'Status Pesanan'];
 
         // Data transaksi
         foreach ($this->transactions as $index => $trx) {
-            $rows[] = [$index + 1, $trx->transaction_code, $trx->checked_out_at->timezone(config('app.timezone'))->format('Y-m-d H:i:s'), $trx->order_type->value ?? '-', $trx->payment_method->value ?? '-', $trx->payment_status->value, $trx->latestOrderStatus->status ?? 'N/A'];
+            $rows[] = [
+                $index + 1,
+                $trx->transaction_code,
+                $trx->checked_out_at->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s'),
+                $trx->order_type->value ?? '-',
+                $trx->payment_method->value ?? '-',
+                $trx->payment_status->value ?? '-',
+                $trx->latestOrderStatus->status ?? 'N/A'
+            ];
         }
 
-        $rows[] = []; // spasi kosong sebelum total pendapatan
-
-        // Total pendapatan
+        $rows[] = [];
         $rows[] = ['Total Pendapatan', 'Rp. ' . number_format($this->summaryData['Total Pendapatan'], 0, ',', '.')];
 
         return $rows;

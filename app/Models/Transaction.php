@@ -6,6 +6,7 @@ use App\Enums\OrderLocationEnum;
 use App\Enums\OrderTypeEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -71,16 +72,14 @@ class Transaction extends Model
         'checked_out_at',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'order_type' => OrderTypeEnum::class,
-            'order_location' => OrderLocationEnum::class,
-            'payment_method' => PaymentMethodEnum::class,
-            'payment_status' => PaymentStatusEnum::class,
-            'checked_out_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'order_type' => OrderTypeEnum::class,
+        'order_location' => OrderLocationEnum::class,
+        'payment_method' => PaymentMethodEnum::class,
+        'payment_status' => PaymentStatusEnum::class,
+        'checked_out_at' => 'datetime',
+    ];
+
 
     public static function boot(): void
     {
