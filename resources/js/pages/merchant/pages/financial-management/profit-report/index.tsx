@@ -6,7 +6,6 @@ import { ReportTypeEnum } from '@/enums/report-type';
 import MerchantLayout from '@/layouts/merchant/layout';
 import { ProfitReport } from '@/models/financial-management/profit-report';
 import { BreadcrumbItem } from '@/types';
-import { Icon } from '@iconify/react';
 import { Head, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
@@ -128,13 +127,6 @@ export default function ProfitReportPage({ profitReports }: Props) {
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
-
-                            <a href={route('merchant.profit-report.export')} className="w-full sm:w-auto">
-                                <Button className="w-full bg-green-600 hover:bg-green-700 sm:w-auto">
-                                    <span>Export Ke CSV</span>
-                                    <Icon icon={'teenyicons:csv-solid'} className="text-background" />
-                                </Button>
-                            </a>
                         </div>
                     </div>
 

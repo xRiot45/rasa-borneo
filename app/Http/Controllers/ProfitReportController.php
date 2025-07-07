@@ -134,10 +134,14 @@ class ProfitReportController extends Controller
         return redirect()->back()->with('success', 'Laporan berhasil dibuat.');
     }
 
-    public function export(): BinaryFileResponse
+    public function exportProfitReport(Request $request)
     {
-        return Excel::download(new ProfitReportExport(), 'Laporan Laba.xlsx');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        return Excel::download(new ProfitReportExport($startDate, $endDate), 'Laporan Laba.csv');
     }
+
 
     public function destroy(int $id): RedirectResponse
     {

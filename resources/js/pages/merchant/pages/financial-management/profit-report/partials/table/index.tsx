@@ -15,6 +15,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import ButtonCSV from '../button-csv';
 import { DataTablePagination } from './components/data-table-pagination';
 import { DataTableToolbar } from './components/data-table-toolbar';
 
@@ -49,7 +50,10 @@ export default function ProfitReportTable({ columns, data }: DataTableProps<Prof
     return (
         <>
             <div className="space-y-4">
-                <DataTableToolbar table={table} />
+                <div className="flex items-center justify-between">
+                    <DataTableToolbar table={table} />
+                    <ButtonCSV table={table} />
+                </div>
                 <div className="grid grid-cols-1 rounded-md border">
                     <Table>
                         <TableHeader>

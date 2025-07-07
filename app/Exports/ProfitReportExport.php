@@ -12,15 +12,24 @@ class ProfitReportExport implements FromArray, WithHeadings
 {
     protected $reports;
 
-    public function __construct()
+    public function __construct($start_date = null, $end_date = null)
     {
         $merchantId = Auth::user()->merchant->id;
 
-        // Ambil semua laporan laba milik merchant
-        $this->reports = ProfitReport::where('merchant_id', $merchantId)
-            ->orderByDesc('start_date')
-            ->get();
+        $query = ProfitReport::where('merchant_id', $merchantId)
+            ->orderByDesc('start_date');
+
+        if ($start_date) {
+            $query->whereDate('start_date', '>=', Carbon::parse($start_date));
+        }
+
+        if ($end_date) {
+            $query->whereDate('end_date', '<=', Carbon::parse($end_date));
+        }
+
+        $this->reports = $query->get();
     }
+
 
     public function array(): array
     {
