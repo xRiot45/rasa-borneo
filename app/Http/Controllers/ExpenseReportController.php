@@ -11,6 +11,7 @@ use App\Models\ExpenseReportCategory;
 use App\Models\Merchant;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -143,11 +144,12 @@ class ExpenseReportController extends Controller
         return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Dihapus');
     }
 
-    public function export(): BinaryFileResponse
+    public function exportExpenseReport(Request $request): BinaryFileResponse
     {
-        $user = Auth::user();
-        $merchant = Merchant::where('user_id', $user->id)->first();
-        return Excel::download(new ExpenseReportExport($merchant->id), 'Semua Laporan Pengeluaran.csv');
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        return Excel::download(new ExpenseReportExport($from, $to), 'Laporan Pengeluaran.csv');
     }
 
     public function exportByDate(string $reportDate): BinaryFileResponse

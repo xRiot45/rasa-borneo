@@ -5,20 +5,35 @@ namespace App\Exports;
 use App\Models\ExpenseReport;
 use App\Models\ExpenseReportItem;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromArray;
 
 class ExpenseReportExport implements FromArray
 {
     protected $reportGroups = [];
 
-    public function __construct($merchantId)
+    public function __construct($from = null, $to = null)
     {
-        $expenseReports = ExpenseReport::where('merchant_id', $merchantId)
-            ->orderBy('report_date', 'asc')
-            ->get();
+        $user = Auth::user();
+        $merchantId = $user->merchant->id;
+
+        $query = ExpenseReport::where('merchant_id', $merchantId)
+            ->orderBy('report_date', 'asc');
+
+        // Terapkan filter tanggal jika diberikan
+        if ($from) {
+            $query->whereDate('report_date', '>=', Carbon::parse($from));
+        }
+
+        if ($to) {
+            $query->whereDate('report_date', '<=', Carbon::parse($to));
+        }
+
+        $expenseReports = $query->get();
 
         foreach ($expenseReports as $expenseReport) {
             $reportDate = Carbon::parse($expenseReport->report_date)->format('d-m-Y');
+
             $summaryData = [
                 'Tanggal Laporan' => $reportDate,
                 'Deskripsi Pengeluaran' => $expenseReport->description,
@@ -46,19 +61,16 @@ class ExpenseReportExport implements FromArray
             $summary = $group['summary'];
             $items = $group['items'];
 
-            // Tambahkan pemisah jika tanggal berubah
             if ($lastDate !== null && $summary['Tanggal Laporan'] !== $lastDate) {
-                $rows[] = [' ']; // Baris kosong sebagai pemisah
+                $rows[] = [' '];
                 $rows[] = [' '];
             }
             $lastDate = $summary['Tanggal Laporan'];
 
-            // Header laporan
             $rows[] = ['Laporan Pengeluaran - ' . $summary['Tanggal Laporan']];
             $rows[] = ['Deskripsi', $summary['Deskripsi Pengeluaran']];
-            $rows[] = []; // Spacer
+            $rows[] = [];
 
-            // Header detail item
             $rows[] = ['No', 'Nama Pengeluaran', 'Kategori', 'Deskripsi', 'Jumlah Pengeluaran'];
 
             foreach ($items as $index => $item) {
@@ -71,10 +83,9 @@ class ExpenseReportExport implements FromArray
                 ];
             }
 
-            // Spacer dan total pengeluaran di akhir
             $rows[] = [''];
             $rows[] = ['Total Pengeluaran', 'Rp. ' . number_format($summary['Total Pengeluaran'], 0, ',', '.')];
-            $rows[] = []; // Spacer setelah total
+            $rows[] = [];
         }
 
         return $rows;

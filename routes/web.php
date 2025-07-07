@@ -436,7 +436,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
                 Route::get('/edit/{id}', 'edit')->name('merchant.expense-report.edit');
                 Route::put('/edit/{id}', 'update')->name('merchant.expense-report.update');
                 Route::delete('/destroy/{id}', 'destroy')->name('merchant.expense-report.destroy');
-                Route::get('/export/all', 'export')->name('merchant.expense-report.export');
+                Route::get('/export/all', 'exportExpenseReport')->name('merchant.expense-report.export');
                 Route::get('/export/{reportDate}', 'exportByDate')->name(name: 'merchant.expense-report.exportByDate');
             });
 

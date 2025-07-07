@@ -4,7 +4,7 @@ import { ExpenseReport, ExpenseSummary } from '@/models/financial-management/exp
 import { BreadcrumbItem } from '@/types';
 import { formatCurrency } from '@/utils/format-currency';
 import { Head } from '@inertiajs/react';
-import ButtonPartials from './partials/buttons';
+import ButtonRefresh from './partials/button-refresh';
 import ExpenseReportTable from './partials/table';
 import { columns } from './partials/table/columns';
 
@@ -34,7 +34,7 @@ export default function ExpenseReportPage({ expenseReports, expenseSummary }: Pr
                         <h2 className="text-2xl font-black tracking-tight">Daftar Laporan Pengeluaran</h2>
                         <p className="text-muted-foreground mt-1.5 text-[14px]">Kelola data semua laporan pengeluaran anda</p>
                     </div>
-                    <ButtonPartials />
+                    <ButtonRefresh />
                 </div>
 
                 <div>
