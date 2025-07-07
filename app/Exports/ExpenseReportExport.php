@@ -7,7 +7,7 @@ use App\Models\ExpenseReportItem;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromArray;
 
-class ExpenseReportExportAll implements FromArray
+class ExpenseReportExport implements FromArray
 {
     protected $reportGroups = [];
 

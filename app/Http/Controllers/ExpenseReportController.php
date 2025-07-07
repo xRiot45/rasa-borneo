@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExpenseReportExport;
 use App\Exports\ExpenseReportExportAll;
 use App\Exports\ExpenseReportExportByDate;
 use App\Http\Requests\ExpenseReportRequest;
@@ -142,11 +143,11 @@ class ExpenseReportController extends Controller
         return redirect()->route('merchant.expense-report.indexMerchant')->with('success', 'Laporan Pengeluaran Berhasil Dihapus');
     }
 
-    public function exportAll(): BinaryFileResponse
+    public function export(): BinaryFileResponse
     {
         $user = Auth::user();
         $merchant = Merchant::where('user_id', $user->id)->first();
-        return Excel::download(new ExpenseReportExportAll($merchant->id), 'Semua Laporan Pengeluaran.csv');
+        return Excel::download(new ExpenseReportExport($merchant->id), 'Semua Laporan Pengeluaran.csv');
     }
 
     public function exportByDate(string $reportDate): BinaryFileResponse
