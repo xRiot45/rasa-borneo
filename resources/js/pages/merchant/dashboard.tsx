@@ -39,7 +39,7 @@ interface Props {
         menu_item: MenuItem;
     }[];
     revenueCharts: {
-        report_date: string;
+        month: string;
         total_revenue: number;
     }[];
     profitCharts: {
@@ -72,7 +72,7 @@ export default function DashboardPage(props: Props) {
         profitCharts,
     } = props;
 
-    console.log(profitCharts);
+    console.log('Revenue Chart', revenueCharts);
 
     return (
         <>

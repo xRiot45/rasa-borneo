@@ -6,14 +6,14 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 
 interface Props {
     data: {
-        report_date: string;
+        month: string;
         total_revenue: number;
     }[];
 }
 
 const RevenueChart: React.FC<Props> = ({ data }) => {
     const chartData = {
-        labels: data.map((item) => item.report_date),
+        labels: data.map((item) => item.month),
         datasets: [
             {
                 label: 'Laporan Pendapatan',

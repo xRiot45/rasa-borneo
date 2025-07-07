@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentStatusEnum;
 use App\Models\Coupon;
 use App\Models\Courier;
 use App\Models\Customer;
@@ -112,9 +113,28 @@ class DashboardController extends Controller
                 return $item;
             });
 
-        $revenueCharts = RevenueReport::where('merchant_id', $merchant->id)->orderBy('report_date')->get();
+        // $revenueCharts = RevenueReport::where('merchant_id', $merchant->id)->orderBy('report_date')->get();
+        $revenueCharts = Transaction::where('merchant_id', $merchant->id)
+            ->whereNotNull('checked_out_at')
+            ->where('payment_status', PaymentStatusEnum::PAID)
+            ->selectRaw(
+                "
+            DATE_FORMAT(checked_out_at, '%Y-%m') as month,
+            SUM(final_total) as total_revenue
+        ",
+            )
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'month' => Carbon::createFromFormat('Y-m', $item->month)->translatedFormat('M Y'),
+                    'total_revenue' => (float) $item->total_revenue,
+                ];
+            });
+
         $profitReports = ProfitReport::where('merchant_id', $merchant->id)
-            ->orderBy('start_date') // atau 'report_date'
+            ->orderBy('start_date')
             ->get(['start_date', 'total_revenue', 'total_expense', 'gross_profit', 'net_profit']);
 
         $chartData = $profitReports->map(function ($report) {
