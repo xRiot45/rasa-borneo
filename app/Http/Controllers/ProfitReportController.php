@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentStatusEnum;
 use App\Enums\ReportTypeEnum;
 use App\Exports\ProfitReportExport;
 use App\Models\ExpenseReport;
 use App\Models\Merchant;
 use App\Models\ProfitReport;
-use App\Models\RevenueReport;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,26 +39,29 @@ class ProfitReportController extends Controller
 
         $profitReport = ProfitReport::where('merchant_id', $merchant->id)->where('id', $id)->firstOrFail();
 
-        $startDate = Carbon::parse($profitReport->start_date)->startOfDay()->startOfDay()->timezone('Asia/Jakarta');
-        $endDate = Carbon::parse($profitReport->end_date)->endOfDay()->startOfDay()->timezone('Asia/Jakarta');
+        $startDate = Carbon::parse($profitReport->start_date)->startOfDay()->timezone('Asia/Jakarta');
+        $endDate = Carbon::parse($profitReport->end_date)->endOfDay()->timezone('Asia/Jakarta');
 
-        $revenueReports = RevenueReport::where('merchant_id', $merchant->id)
-            ->whereBetween('report_date', [$startDate, $endDate])
+        $transactions = Transaction::where('merchant_id', $merchant->id)
+            ->whereNotNull('checked_out_at')
+            ->whereBetween('checked_out_at', [$startDate, $endDate])
+            ->where('payment_status', PaymentStatusEnum::PAID)
             ->get()
-            ->keyBy(fn($report) => Carbon::parse($report->report_date)->toDateString());
+            ->groupBy(fn($transaction) => Carbon::parse($transaction->checked_out_at)->toDateString());
 
         $expenseReports = ExpenseReport::where('merchant_id', $merchant->id)
             ->whereBetween('report_date', [$startDate, $endDate])
             ->get()
             ->groupBy(fn($report) => Carbon::parse($report->report_date)->toDateString());
 
-        // Loop dari tanggal start ke end
         $reportDetails = [];
         $period = Carbon::parse($startDate)->daysUntil(Carbon::parse($endDate));
         foreach ($period as $date) {
             $formattedDate = $date->toDateString();
 
-            $revenue = $revenueReports[$formattedDate]->total_revenue ?? 0;
+            $dailyTransactions = $transactions[$formattedDate] ?? collect();
+            $revenue = $dailyTransactions->sum('final_total');
+
             $expenseGroup = $expenseReports[$formattedDate] ?? collect();
             $expenseTotal = $expenseGroup->sum('total_expense');
 
@@ -111,9 +115,11 @@ class ProfitReportController extends Controller
             return redirect()->back()->with('warning', 'Laporan sudah ada untuk periode ini.');
         }
 
-        $totalRevenue = RevenueReport::where('merchant_id', $merchantId)
-            ->whereBetween('report_date', [$startDateUtc, $endDateUtc])
-            ->sum('total_revenue');
+        $totalRevenue = Transaction::where('merchant_id', $merchantId)
+            ->whereNotNull('checked_out_at')
+            ->whereBetween('checked_out_at', [$startDateUtc, $endDateUtc])
+            ->where('payment_status', PaymentStatusEnum::PAID)
+            ->sum('final_total');
 
         $totalExpense = ExpenseReport::where('merchant_id', $merchantId)
             ->whereBetween('report_date', [$startDateUtc, $endDateUtc])
