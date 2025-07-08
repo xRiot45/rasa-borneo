@@ -131,6 +131,16 @@ export default function LoginPage({ status, canResetPassword }: Props) {
                         {!processing && <Icon icon="mdi:login" className="h-4 w-4" />}
                         Log in
                     </Button>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="flex w-full items-center justify-center gap-2 border py-6"
+                        onClick={() => (window.location.href = route('google.redirect'))}
+                    >
+                        <Icon icon="flat-color-icons:google" className="h-5 w-5" />
+                        Login dengan Google
+                    </Button>
                 </div>
 
                 <div className="text-muted-foreground text-center text-sm">

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -52,6 +53,10 @@ Route::bind('merchant', function ($slug) {
 Route::get('/', function () {
     return Inertia::render('customer/index');
 })->name('home');
+
+// Login With Google
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 // ADMIN ROUTES
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
