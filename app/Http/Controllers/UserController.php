@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
 class UserController extends Controller
 {
-    public function index(): InertiaResponse
+    public function indexAdmin(): InertiaResponse
     {
         $users = User::with('roles')
             ->get()

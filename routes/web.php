@@ -125,7 +125,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::prefix('/all-users')
             ->controller(UserController::class)
             ->group(function () {
-                Route::get('/', 'index')->name('admin.index');
+                Route::get('/', 'indexAdmin')->name('admin.index');
             });
 
         // Admin
