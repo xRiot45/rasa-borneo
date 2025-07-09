@@ -108,7 +108,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::prefix('/business-categories')
             ->controller(BusinessCategoryController::class)
             ->group(function () {
-                Route::get('/', 'index')->name('admin.business-category.index');
+                Route::get('/', 'indexAdmin')->name('admin.business-category.index');
                 Route::get('/create', 'create')->name('admin.business-category.create');
                 Route::post('/create', 'store')->name('admin.business-category.store');
                 Route::get('/edit/{id}', 'edit')->name('admin.business-category.edit');

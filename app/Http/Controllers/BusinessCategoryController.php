@@ -10,7 +10,7 @@ use Inertia\Response;
 
 class BusinessCategoryController extends Controller
 {
-    public function index(): Response
+    public function indexAdmin(): Response
     {
         $businessCategory = BusinessCategory::withTrashed()->get();
         return Inertia::render('admin/pages/master-data/business-category/index', [
