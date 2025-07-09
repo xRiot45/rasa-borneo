@@ -15,21 +15,21 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                     placeholder="Cari nama lengkap kurir..."
                     value={(table.getColumn('user.full_name')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('user.full_name')?.setFilterValue(event.target.value)}
-                    className="h-8 w-full sm:w-[150px] lg:w-[250px]"
+                    className="h-10 w-full shadow-none sm:w-[150px] lg:w-[250px]"
                 />
 
                 <Input
                     placeholder="Cari email kurir..."
                     value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
-                    className="h-8 w-full sm:w-[150px] lg:w-[250px]"
+                    className="h-10 w-full shadow-none sm:w-[150px] lg:w-[250px]"
                 />
 
                 <Input
                     placeholder="Cari nomor telepon kurir..."
                     value={(table.getColumn('user.phone_number')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('user.phone_number')?.setFilterValue(event.target.value)}
-                    className="h-8 w-full sm:w-[150px] lg:w-[250px]"
+                    className="h-10 w-full shadow-none sm:w-[150px] lg:w-[250px]"
                 />
 
                 <div className="flex gap-x-2">

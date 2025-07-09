@@ -44,7 +44,7 @@ export function CourierStatusFilter<TData>({ column, title = 'Status Verifikasi'
     return (
         <Popover>
             <PopoverTrigger>
-                <Button variant="outline" size="sm" className="h-9 w-auto border-dashed">
+                <Button variant="outline" size="sm" className="h-10 w-auto border-dashed">
                     <PlusCircledIcon className="h-4 w-4" />
                     {title}
                     {selectedValues.size > 0 && (
