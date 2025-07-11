@@ -13,7 +13,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                     placeholder="Cari kode transaksi..."
                     value={(table.getColumn('transaction_code')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('transaction_code')?.setFilterValue(event.target.value)}
-                    className="h-8 w-[150px] lg:w-[250px]"
+                    className="h-10 w-full shadow-none sm:w-[150px] lg:w-[250px]"
                 />
                 {isFiltered && (
                     <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 cursor-pointer px-2 lg:px-3">
