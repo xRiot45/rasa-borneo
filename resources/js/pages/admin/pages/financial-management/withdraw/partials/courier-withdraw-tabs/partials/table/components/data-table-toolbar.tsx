@@ -15,7 +15,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                     placeholder="Cari kode penarikan..."
                     value={(table.getColumn('withdraw_code')?.getFilterValue() as string) ?? ''}
                     onChange={(event) => table.getColumn('withdraw_code')?.setFilterValue(event.target.value)}
-                    className="h-8 w-[150px] lg:w-[250px]"
+                    className="h-10 w-full shadow-none sm:w-[150px] lg:w-[250px]"
                 />
                 <div className="flex gap-x-2">
                     {table.getColumn('status') && (
