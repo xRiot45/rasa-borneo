@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Coupon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schedule;
 
 class DeactivateExpiredCoupons extends Command
 {
