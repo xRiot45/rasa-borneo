@@ -14,7 +14,7 @@ use Inertia\Response as InertiaResponse;
 
 class CartController extends Controller
 {
-    public function index_customer(): RedirectResponse|InertiaResponse
+    public function indexCustomer(): RedirectResponse|InertiaResponse
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();

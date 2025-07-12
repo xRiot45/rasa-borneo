@@ -519,7 +519,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/merchant/show/{merchant}', [MerchantController::class, 'showForCustomer'])->name('merchant.show');
 
     // Cart
-    Route::get('/cart', [CartController::class, 'index_customer'])->name('cart');
+    Route::get('/cart', [CartController::class, 'indexCustomer'])->name('cart');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
     Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clearCart');
     Route::patch('/cart/note/{id}', [CartController::class, 'addedNote'])->name('cart.addedNote');
