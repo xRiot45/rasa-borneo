@@ -6,11 +6,11 @@ use App\Http\Requests\BusinessCategoryRequest;
 use App\Models\BusinessCategory;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
 class BusinessCategoryController extends Controller
 {
-    public function indexAdmin(): Response
+    public function indexAdmin(): InertiaResponse
     {
         $businessCategory = BusinessCategory::withTrashed()->get();
         return Inertia::render('admin/pages/master-data/business-category/index', [
@@ -18,7 +18,7 @@ class BusinessCategoryController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(): InertiaResponse
     {
         return Inertia::render('admin/pages/master-data/business-category/pages/form');
     }
@@ -31,7 +31,7 @@ class BusinessCategoryController extends Controller
             ->with(['success' => 'Kategori bisnis berhasil ditambahkan']);
     }
 
-    public function edit(int $businessCategoryId): Response
+    public function edit(int $businessCategoryId): InertiaResponse
     {
         $businesCategory = BusinessCategory::findOrFail($businessCategoryId);
         return Inertia::render('admin/pages/master-data/business-category/pages/form', [
