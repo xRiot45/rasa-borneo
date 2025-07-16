@@ -1,6 +1,7 @@
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { OrderTypeEnum } from '@/enums/order-type';
@@ -21,9 +22,22 @@ interface Props {
     coupons: Coupon[];
     handleSelectCoupon: (value: string) => void;
     selectedCouponId: number | null;
+    finalTotal: number;
 }
 
-const OrderDetailsForm: React.FC<Props> = ({ formData, errors, setData, transaction, tables, coupons, handleSelectCoupon, selectedCouponId }) => {
+const OrderDetailsForm: React.FC<Props> = ({
+    formData,
+    errors,
+    setData,
+    transaction,
+    tables,
+    coupons,
+    handleSelectCoupon,
+    selectedCouponId,
+    finalTotal,
+}) => {
+    const cashOptions = [50000, 100000, 200000, 500000, 1000000];
+
     return (
         <>
             <div className="space-y-4">
@@ -127,13 +141,18 @@ const OrderDetailsForm: React.FC<Props> = ({ formData, errors, setData, transact
                         <Label>
                             Jumlah Uang yang Ingin Anda Bayarkan <strong className="text-red-500">*</strong>
                         </Label>
-                        <Input
-                            type="number"
-                            placeholder="Jumlah Uang Diterima"
-                            value={formData.cash_received_amount}
-                            onChange={(e) => setData('cash_received_amount', parseInt(e.target.value))}
-                            className={cn(`w-full border py-6 shadow-none ${errors.cash_received_amount && 'border-red-500'}`)}
-                        />
+                        <RadioGroup
+                            value={formData.cash_received_amount?.toString() ?? ''}
+                            onValueChange={(value) => setData('cash_received_amount', parseInt(value))}
+                            className={cn('mb-4 grid grid-cols-2 gap-6', errors.cash_received_amount && 'rounded border border-red-500 p-3')}
+                        >
+                            {[...cashOptions, finalTotal].map((amount, index) => (
+                                <div key={index} className="mt-2 flex items-center space-x-2">
+                                    <RadioGroupItem value={amount.toString()} id={`cash-${amount}`} className="cursor-pointer" />
+                                    <Label htmlFor={`cash-${amount}`}>Rp {amount.toLocaleString('id-ID')}</Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
                         <InputError message={errors.cash_received_amount} />
                     </div>
                 )}

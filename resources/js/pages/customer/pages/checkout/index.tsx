@@ -277,6 +277,7 @@ export default function CheckoutPage({ transaction, coupons, tables, fees, custo
                                 coupons={coupons}
                                 handleSelectCoupon={handleSelectCoupon}
                                 selectedCouponId={selectedCouponId}
+                                finalTotal={finalTotal}
                             />
 
                             <Separator />
