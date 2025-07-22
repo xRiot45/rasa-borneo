@@ -11,7 +11,7 @@ const bottomNavItems = [
     },
     {
         title: 'Penjual',
-        href: '/merchants',
+        href: '/merchant',
         icon: 'material-symbols:storefront',
     },
     {
