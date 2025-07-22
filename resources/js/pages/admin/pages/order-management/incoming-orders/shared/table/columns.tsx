@@ -79,8 +79,8 @@ export const columns: ColumnDef<Order>[] = [
                     : 'bg-blue-100 text-blue-600 border-blue-600 font-bold';
 
             return (
-                <Badge variant="outline" className={`${color} rounded-sm`}>
-                    {String(method).toUpperCase()}
+                <Badge variant="outline" className={`${color} rounded-sm capitalize`}>
+                    {String(method)}
                 </Badge>
             );
         },
