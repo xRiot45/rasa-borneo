@@ -74,7 +74,9 @@ export const columns: ColumnDef<Order>[] = [
         cell: ({ row }) => {
             const method = row.getValue('payment_method');
             const color =
-                method === PaymentMethodEnum.CASH ? 'bg-green-600 text-white border-none font-bold' : 'bg-blue-600 text-white border-none font-bold';
+                method === PaymentMethodEnum.CASH
+                    ? 'bg-green-100 text-green-600 border-green-600  font-bold'
+                    : 'bg-blue-100 text-blue-600 border-blue-600 font-bold';
 
             return (
                 <Badge variant="outline" className={`${color} rounded-sm`}>
