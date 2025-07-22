@@ -144,7 +144,7 @@ export default function LoginPage({ status, canResetPassword }: Props) {
                 </div>
 
                 <div className="text-muted-foreground text-center text-sm">
-                    Sudah memiliki akun?{' '}
+                    Belum memiliki akun?{' '}
                     <TextLink href={route('register')} tabIndex={5}>
                         Register
                     </TextLink>
