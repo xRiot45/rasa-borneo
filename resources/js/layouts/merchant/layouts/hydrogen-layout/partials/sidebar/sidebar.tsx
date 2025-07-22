@@ -23,6 +23,7 @@ import mainNavItems from './main-nav-items';
 
 function SidebarGroupContent({ item }: { item: NavItem }) {
     const [isOpen, setIsOpen] = useState(false);
+    const page = usePage();
 
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -40,7 +41,10 @@ function SidebarGroupContent({ item }: { item: NavItem }) {
                     <Link
                         key={subItem.href}
                         href={subItem.href as string}
-                        className="flex items-center gap-x-2 rounded-md px-4 py-3 text-sm font-light text-black hover:bg-gray-100 dark:text-white dark:hover:bg-[#2a2a2a]"
+                        className={cn(
+                            'flex items-center gap-x-2 rounded-md px-4 py-3 text-sm font-light hover:bg-gray-100 dark:hover:bg-[#2a2a2a]',
+                            page.url === subItem.href ? 'bg-black text-white dark:bg-white/10' : 'text-black dark:text-white',
+                        )}
                     >
                         <span className="h-1 w-1 flex-shrink-0 rounded-full bg-gray-500" />
                         <span className="truncate">{subItem.title}</span>
@@ -58,7 +62,11 @@ function NavMain({ items = [] }: { items: NavItem[] }) {
             <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild isActive={item.href === page.url} className="px-4 py-6">
+                        <SidebarMenuButton
+                            asChild
+                            isActive={page.url === item.href}
+                            className={cn('px-4 py-6', page.url === item.href && 'bg-black text-white dark:bg-white/10')}
+                        >
                             <Link href={item.href!} prefetch className="flex min-w-0 items-center gap-x-3">
                                 <Icon icon={item.icon} />
                                 <span className="truncate">{item.title}</span>
@@ -78,7 +86,7 @@ export function HydrogenSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild size="lg">
-                            <Link href="/admin/dashboard" prefetch>
+                            <Link href="/merchant/dashboard" prefetch>
                                 <Logo />
                             </Link>
                         </SidebarMenuButton>
