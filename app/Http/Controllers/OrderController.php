@@ -190,7 +190,7 @@ class OrderController extends Controller
             'status' => $newStatus,
         ]);
 
-        return redirect()->route('merchant.incoming-order.index')->with('success', 'Status berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui');
     }
 
     public function checkPaymentStatusCashless(string $transactionCode)
