@@ -67,6 +67,7 @@
         "dayjs": "^1.11.13",
         "embla-carousel-autoplay": "^8.6.0",
         "embla-carousel-react": "^8.6.0",
+        "framer-motion": "^12.23.12",
         "globals": "^15.14.0",
         "laravel-vite-plugin": "^1.0",
         "leaflet": "^1.9.4",
