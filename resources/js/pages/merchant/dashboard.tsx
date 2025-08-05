@@ -72,7 +72,6 @@ export default function DashboardPage(props: Props) {
         profitCharts,
     } = props;
 
-
     return (
         <>
             <Head title="Dashboard Merchant" />
