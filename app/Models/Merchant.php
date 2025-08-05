@@ -40,6 +40,8 @@ class Merchant extends Model
 
         // Informasi Verifikasi
         'is_verified',
+
+        'slug'
     ];
 
     protected $dates = ['deleted_at'];
