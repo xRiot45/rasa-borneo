@@ -72,7 +72,6 @@ export default function DashboardPage(props: Props) {
         profitCharts,
     } = props;
 
-    console.log('Revenue Chart', revenueCharts);
 
     return (
         <>

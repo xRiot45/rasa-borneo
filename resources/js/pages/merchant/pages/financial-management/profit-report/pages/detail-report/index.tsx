@@ -28,7 +28,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ShowProfitReportPage({ profitReport, reportDetails }: Props) {
-    console.log(reportDetails);
     return (
         <>
             <Head title="Detail Laporan Laba" />

@@ -28,7 +28,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DetailRevenueReportPage({ reportDate, transactions }: DetailRevenueReportPageProps) {
-    console.log(reportDate);
     return (
         <>
             <Head title="Detail Laporan Pemasukan" />
