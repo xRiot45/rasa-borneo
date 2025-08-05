@@ -184,7 +184,7 @@ export default function FormPage({ menuItem }: { menuItem: MenuItem }) {
                             </Label>
                             <Select
                                 onValueChange={(value) => setData('menu_category_id', parseInt(value))}
-                                value={isEdit ? String(data.menu_category_id) : ''}
+                                value={data.menu_category_id ? String(data.menu_category_id) : ''} // <-- FIXED
                             >
                                 <SelectTrigger
                                     className={cn('mt-2 w-full rounded-lg py-6 shadow-none', errors.menu_category_id && 'border border-red-500')}
@@ -192,13 +192,20 @@ export default function FormPage({ menuItem }: { menuItem: MenuItem }) {
                                     <SelectValue placeholder="Pilih Kategori Menu" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {menuCategoriesMerchant.map((item: MenuCategory) => (
-                                        <SelectItem key={item.id} value={String(item.id)} className="cursor-pointer p-3 capitalize">
-                                            {item.name}
+                                    {menuCategoriesMerchant && menuCategoriesMerchant.length > 0 ? (
+                                        menuCategoriesMerchant.map((item: MenuCategory) => (
+                                            <SelectItem key={item.id} value={String(item.id)} className="cursor-pointer p-3 capitalize">
+                                                {item.name}
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value="0" disabled>
+                                            Tidak ada kategori
                                         </SelectItem>
-                                    ))}
+                                    )}
                                 </SelectContent>
                             </Select>
+
                             <InputError message={errors.menu_category_id} className="mt-2" />
                         </div>
 
