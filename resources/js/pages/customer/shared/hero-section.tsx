@@ -34,16 +34,13 @@ export default function HeroSection() {
                 {/* Tombol CTA */}
                 <div className="mt-6 flex justify-center gap-4">
                     <Link href="/merchant">
-                        <Button className="rounded-md bg-white px-6 py-5 text-sm font-medium text-black transition-transform hover:scale-105 hover:bg-gray-200">
+                        <Button className="cursor-pointer rounded-md bg-white px-6 py-5 text-sm font-medium text-black transition-transform hover:scale-105 hover:bg-gray-200">
                             <Icon icon="mingcute:shop-line" className="mr-2 text-xl" />
                             Jelajahi Merchant
                         </Button>
                     </Link>
                     <Link href="/menu">
-                        <Button
-                            variant="outline"
-                            className="cursor-pointer rounded-md border-white px-6 py-5 text-sm font-medium text-black transition-transform hover:scale-105 hover:bg-white hover:text-black"
-                        >
+                        <Button className="cursor-pointer rounded-md bg-white px-6 py-5 text-sm font-medium text-black transition-transform hover:scale-105 hover:bg-gray-200">
                             Lihat Menu
                             <Icon icon="icon-park-outline:arrow-right" className="ml-2 text-xl" />
                         </Button>
