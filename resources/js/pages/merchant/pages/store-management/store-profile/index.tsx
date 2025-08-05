@@ -27,8 +27,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function StoreProfile({ storeProfile }: StoreProfileProps) {
     const storeProfileExist = storeProfile;
 
-    const latitude = storeProfile?.latitude ? parseFloat(storeProfile.latitude) : 0;
-    const longitude = storeProfile?.longitude ? parseFloat(storeProfile.longitude) : 0;
+    const latitude = storeProfile?.latitude ? parseFloat(String(storeProfile.latitude)) : 0;
+    const longitude = storeProfile?.longitude ? parseFloat(String(storeProfile.longitude)) : 0;
 
     const isValidLogoPhoto = typeof storeProfile?.logo_photo === 'string' && storeProfile.logo_photo.trim() !== '';
 
@@ -50,13 +50,13 @@ export default function StoreProfile({ storeProfile }: StoreProfileProps) {
                         {storeProfileExist ? (
                             <Link href={route('merchant.store-profile.edit', storeProfile.id)}>
                                 <Button className="cursor-pointer">
-                                    <span>Edit Profile</span> <Icon icon={'heroicons:pencil'} className="text-background" />
+                                    <span>Edit Profile Toko Anda</span> <Icon icon={'heroicons:pencil'} className="text-background" />
                                 </Button>
                             </Link>
                         ) : (
                             <Link href={route('merchant.store-profile.create')}>
                                 <Button className="cursor-pointer">
-                                    <span>Tambah Profile</span> <Icon icon={'heroicons:plus'} className="text-background" />
+                                    <span>Buat Profile Toko Anda</span> <Icon icon={'heroicons:plus'} className="text-background" />
                                 </Button>
                             </Link>
                         )}
