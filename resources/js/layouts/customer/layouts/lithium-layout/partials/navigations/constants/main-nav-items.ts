@@ -16,11 +16,6 @@ const mainNavItems: NavItem[] = [
         href: '/merchant',
         icon: 'material-symbols:storefront',
     },
-    // {
-    //     title: 'Promo',
-    //     href: '/promo',
-    //     icon: 'bxs:offer',
-    // },
 ];
 
 export default mainNavItems;
