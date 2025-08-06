@@ -6,16 +6,14 @@ use App\Enums\GenderEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Models\Courier;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
-class CourierSeeder extends Seeder
+class CourierUserSeeder extends Seeder
 {
     public function run()
     {
-        // Pastikan role 'courier' sudah ada
         $courierRole = Role::firstOrCreate(['name' => 'courier']);
 
         $couriersData = [
@@ -112,7 +110,6 @@ class CourierSeeder extends Seeder
         ];
 
         foreach ($couriersData as $data) {
-            // Buat user dulu
             $user = User::create([
                 'full_name' => $data['full_name'],
                 'email' => $data['email'],
@@ -121,10 +118,8 @@ class CourierSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
 
-            // Assign role courier ke user
             $user->assignRole($courierRole);
 
-            // Buat courier terkait
             Courier::create([
                 'user_id' => $user->id,
                 'vehicle_type' => $data['vehicle_type'],
