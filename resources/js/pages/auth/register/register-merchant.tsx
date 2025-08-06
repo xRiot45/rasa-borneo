@@ -173,7 +173,7 @@ export default function RegisterMerchantPage() {
     };
 
     return (
-        <AuthLayout title="Daftar Sebagai Penjual" description="Silahkan isi data usaha anda untuk melanjutkan dan menjual produk anda secara online">
+        <AuthLayout title="Daftar Sebagai Merchant" description="Silahkan isi data usaha anda untuk melanjutkan dan menjual produk anda secara online">
             <Head title="Register" />
             {/* Step Indicator */}
             <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
