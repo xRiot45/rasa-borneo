@@ -11,11 +11,9 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $roles = [
-            'admin' => Role::where('name', 'admin')->first(),
-        ];
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
-        foreach ($roles as $roleName => $role) {
+        foreach ($adminRole as $roleName => $role) {
             if (!$role) {
                 $this->command->error("Role '{$roleName}' is missing. Please run RoleSeeder first.");
                 return;
@@ -36,11 +34,11 @@ class AdminUserSeeder extends Seeder
                 'full_name' => $userData['full_name'],
                 'email' => $userData['email'],
                 'email_verified_at' => now(),
-                'password' => Hash::make('12345678'),
+                'password' => Hash::make('password123'),
                 'phone_number' => $userData['phone'],
             ]);
 
-            $user->assignRole($roles[$userData['role']]);
+            $user->assignRole($adminRole[$userData['role']]);
         }
     }
 }
