@@ -7,15 +7,12 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
-class UserSeeder extends Seeder
+class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
         $roles = [
             'admin' => Role::where('name', 'admin')->first(),
-            'merchant' => Role::where('name', 'merchant')->first(),
-            'customer' => Role::where('name', 'customer')->first(),
-            'courier' => Role::where('name', 'courier')->first(),
         ];
 
         foreach ($roles as $roleName => $role) {
