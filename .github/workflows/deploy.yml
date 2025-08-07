@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production # INI PENTING agar bisa akses environment secrets
+    environment: production # Penting untuk akses Environment Secrets
 
     steps:
       - name: 🚀 Deploy via SSH
@@ -19,7 +19,11 @@ jobs:
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: 22
           script: |
+            echo "📁 Navigating to project directory..."
             cd /var/www/rasa-borneo
+
+            echo "🔐 Marking directory as safe for Git..."
+            git config --global --add safe.directory /var/www/rasa-borneo
 
             echo "🔄 Resetting local changes..."
             git reset --hard
@@ -27,6 +31,10 @@ jobs:
 
             echo "📥 Pulling latest code from master branch..."
             git pull origin master
+
+            echo "🧩 Fixing ownership and permissions..."
+            sudo chown -R $USER:$USER /var/www/rasa-borneo
+            sudo chmod -R 755 /var/www/rasa-borneo
 
             echo "📦 Installing backend dependencies (Laravel)..."
             composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -38,6 +46,12 @@ jobs:
             php artisan view:cache
 
             echo "📦 Installing frontend dependencies (React + Inertia)..."
+            if ! command -v npm &> /dev/null; then
+              echo "⚠️ npm not found. Installing Node.js + npm..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt install -y nodejs
+            fi
+
             npm install
 
             echo "⚙️ Building frontend assets..."
