@@ -46,12 +46,6 @@ jobs:
             php artisan view:cache
 
             echo "📦 Installing frontend dependencies (React + Inertia)..."
-            if ! command -v npm &> /dev/null; then
-              echo "⚠️ npm not found. Installing Node.js + npm..."
-              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              sudo apt install -y nodejs
-            fi
-
             npm install
 
             echo "⚙️ Building frontend assets..."
