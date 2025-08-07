@@ -3,30 +3,45 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master
+      - master # Akan jalan setiap ada push ke branch master
 
 jobs:
   deploy:
+    name: Deploy to VPS via SSH
     runs-on: ubuntu-latest
-    environment: production
+
     steps:
-      - name: Deploy via SSH
+      - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_PRIVATE_KEY }}
-          port: 2222
+          host: ${{ secrets.VPS_HOST }} # IP atau domain VPS
+          username: ${{ secrets.VPS_USER }} # Nama user (contoh: root atau rasaborneo)
+          key: ${{ secrets.VPS_PRIVATE_KEY }} # Kunci privat SSH (bukan password)
+          port: 22
           script: |
+            echo "📁 Navigating to project directory..."
             cd /var/www/rasa-borneo
 
-            echo "📥 Pulling latest code..."
+            echo "🔄 Resetting local changes..."
+            git reset --hard
+            git clean -fd
+
+            echo "📥 Pulling latest code from master branch..."
             git pull origin master
 
-            echo "📦 Installing frontend dependencies..."
+            echo "📦 Installing backend dependencies (Laravel)..."
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            echo "🔧 Running Laravel optimizations..."
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "📦 Installing frontend dependencies (React + Inertia)..."
             npm install
 
-            echo "⚙️ Building frontend (React + Inertia)..."
+            echo "⚙️ Building frontend assets..."
             npm run build
 
-            echo "✅ Done pulling and building!"
+            echo "✅ Deployment finished successfully!"
