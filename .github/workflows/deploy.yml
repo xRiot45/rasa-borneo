@@ -3,23 +3,21 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master # Akan jalan setiap ada push ke branch master
+      - master
 
 jobs:
   deploy:
-    name: Deploy to VPS via SSH
     runs-on: ubuntu-latest
 
     steps:
       - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.VPS_HOST }} # IP atau domain VPS
-          username: ${{ secrets.VPS_USER }} # Nama user (contoh: root atau rasaborneo)
-          key: ${{ secrets.VPS_PRIVATE_KEY }} # Kunci privat SSH (bukan password)
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "📁 Navigating to project directory..."
             cd /var/www/rasa-borneo
 
             echo "🔄 Resetting local changes..."
