@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production # INI PENTING agar bisa akses environment secrets
 
     steps:
       - name: 🚀 Deploy via SSH
