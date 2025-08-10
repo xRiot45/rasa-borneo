@@ -23,8 +23,8 @@ class RevenueReportExportByDate implements FromArray
         $merchantId = $user->merchant->id;
 
         // Rentang waktu berdasarkan zona waktu lokal
-        $startOfDay = Carbon::parse($reportDate, config('app.timezone'))->startOfDay()->timezone('UTC');
-        $endOfDay = Carbon::parse($reportDate, config('app.timezone'))->endOfDay()->timezone('UTC');
+        $startOfDay = Carbon::parse($reportDate, config('app.timezone'))->startOfDay();
+        $endOfDay   = Carbon::parse($reportDate, config('app.timezone'))->endOfDay();
 
         // Ambil transaksi yang sesuai
         $this->transactions = Transaction::with(['latestOrderStatus'])

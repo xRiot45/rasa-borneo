@@ -13,11 +13,9 @@ class AdminUserSeeder extends Seeder
     {
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
-        foreach ($adminRole as $roleName => $role) {
-            if (!$role) {
-                $this->command->error("Role '{$roleName}' is missing. Please run RoleSeeder first.");
-                return;
-            }
+        if (!$adminRole) {
+            $this->command->error("Role 'admin' is missing. Please run RoleSeeder first.");
+            return;
         }
 
         $users = [
@@ -30,15 +28,18 @@ class AdminUserSeeder extends Seeder
         ];
 
         foreach ($users as $userData) {
-            $user = User::create([
-                'full_name' => $userData['full_name'],
-                'email' => $userData['email'],
-                'email_verified_at' => now(),
-                'password' => Hash::make('password123'),
-                'phone_number' => $userData['phone'],
-            ]);
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'full_name' => $userData['full_name'],
+                    'email_verified_at' => now(),
+                    'password' => Hash::make('password123'),
+                    'phone_number' => $userData['phone'],
+                ]
+            );
 
-            $user->assignRole($adminRole[$userData['role']]);
+            // Fix bagian ini
+            $user->assignRole($userData['role']);
         }
     }
 }

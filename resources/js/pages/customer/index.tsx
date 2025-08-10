@@ -1,3 +1,4 @@
+import EmptyData from '@/components/empty-img';
 import { Button } from '@/components/ui/button';
 import CustomerLayout from '@/layouts/customer/layout';
 import { BusinessCategory } from '@/models/business-category';
@@ -35,7 +36,11 @@ export default function HomePage() {
                         </Link>
                     </div>
 
-                    <CardMerchantCategories data={businessCategories.slice(0, 6)} />
+                    {businessCategories.length > 0 ? (
+                        <CardMerchantCategories data={businessCategories.slice(0, 6)} />
+                    ) : (
+                        <EmptyData title="Belum ada kategori" description="Belum ada kategori yang tersedia" />
+                    )}
                 </section>
 
                 {/* Recommended Menu Items Section */}
@@ -53,7 +58,11 @@ export default function HomePage() {
                         </Link>
                     </div>
 
-                    <CardMenuItem data={menuItemsRecommended.slice(0, 6)} />
+                    {menuItemsRecommended.length > 0 ? (
+                        <CardMenuItem data={menuItemsRecommended.slice(0, 6)} />
+                    ) : (
+                        <EmptyData title="Belum ada menu" description="Belum ada menu yang direkomendasikan" />
+                    )}
                 </section>
 
                 {/* Merchant Section */}
@@ -72,7 +81,11 @@ export default function HomePage() {
                         </Link>
                     </div>
 
-                    <CardMerchant data={merchants.slice(0, 6)} />
+                    {merchants.length > 0 ? (
+                        <CardMerchant data={merchants.slice(0, 6)} />
+                    ) : (
+                        <EmptyData title="Belum ada merchant" description="Belum ada merchant yang tersedia" />
+                    )}
                 </section>
             </CustomerLayout>
         </>
