@@ -230,7 +230,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
             ->controller(MenuItemReviewController::class)
             ->group(function () {
                 Route::get('/', 'indexAdmin')->name('merchant.menu-review.indexAdmin');
-                Route::delete('/destroy/{id}', 'destroy')->name('merchant.menu-review.destroy');
+                Route::delete('/destroy/{id}', 'destroy')->name('admin.merchant.menu-review.destroy');
             });
 
         // Merchant Review
@@ -476,7 +476,7 @@ Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
             ->controller(MenuItemReviewController::class)
             ->group(function () {
                 Route::get('/', 'indexMerchant')->name('merchant.menu-review.indexMerchant');
-                Route::delete('/destroy/{id}', 'destroy')->name('merchant.menu-review.destroy');
+                Route::delete('/destroy/{id}', 'destroy')->name('merchant.merchant.menu-review.destroy');
             });
 
         // Merchant Review
