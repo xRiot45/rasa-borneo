@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: production # Optional: Define the environment for deployment
 
     steps:
       - name: 🚀 Deploy via SSH
