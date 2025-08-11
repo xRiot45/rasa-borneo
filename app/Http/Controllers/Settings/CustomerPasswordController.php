@@ -23,15 +23,24 @@ class CustomerPasswordController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
+        $user = $request->user();
 
-        $request->user()->update([
+        if ($user->password) {
+            $validated = $request->validate([
+                'current_password' => ['required', 'current_password'],
+                'password' => ['required', Password::defaults(), 'confirmed'],
+            ]);
+        } else {
+            $validated = $request->validate([
+                'password' => ['required', Password::defaults(), 'confirmed'],
+            ]);
+        }
+
+        // Update password
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back();
+        return back()->with('status', 'Password berhasil diperbarui.');
     }
 }
