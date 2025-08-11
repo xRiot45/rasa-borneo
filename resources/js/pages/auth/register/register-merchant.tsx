@@ -148,7 +148,7 @@ export default function RegisterMerchantPage() {
         post(route('register.merchant.store'), {
             onSuccess: () => {
                 toast.success('Success', {
-                    description: 'Register Berhasil!',
+                    description: 'Register Berhasil!, silahkan tunggu verifikasi dari tim kami.',
                     action: {
                         label: 'Tutup',
                         onClick: () => toast.dismiss(),
