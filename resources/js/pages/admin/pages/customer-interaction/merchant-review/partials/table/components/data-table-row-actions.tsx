@@ -20,7 +20,7 @@ import { toast } from 'sonner';
 
 export function DataTableRowActions({ row }: { row: Row<MerchantReview> }) {
     const handleDestroy = (id: number) => {
-        router.delete(route('merchant.merchant-review.destroy', { id }), {
+        router.delete(route('admin.merchant-review.destroy', { id }), {
             onSuccess: () => {
                 toast.success('Success', {
                     description: 'Review merchant berhasil dihapus.',

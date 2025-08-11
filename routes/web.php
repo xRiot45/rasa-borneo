@@ -229,16 +229,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::prefix('/menu-review')
             ->controller(MenuItemReviewController::class)
             ->group(function () {
-                Route::get('/', 'indexAdmin')->name('merchant.menu-review.indexAdmin');
-                Route::delete('/destroy/{id}', 'destroy')->name('admin.merchant.menu-review.destroy');
+                Route::get('/', 'indexAdmin')->name('admin.menu-review.indexAdmin');
+                Route::delete('/destroy/{id}', 'destroy')->name('admin.menu-review.destroy');
             });
 
         // Merchant Review
         Route::prefix('/merchant-review')
             ->controller(MerchantReviewController::class)
             ->group(function () {
-                Route::get('/', 'indexAdmin')->name('merchant.merchant-review.indexAdmin');
-                Route::delete('/destroy/{id}', 'destroy')->name('merchant.merchant-review.destroy');
+                Route::get('/', 'indexAdmin')->name('admin.merchant-review.indexAdmin');
+                Route::delete('/destroy/{id}', 'destroy')->name('admin.merchant-review.destroy');
             });
     });
 
