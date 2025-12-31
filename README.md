@@ -5,7 +5,7 @@
 
 > **Platform web yang menghubungkan berbagai merchant kuliner lokal dengan pelanggan melalui sistem pemesanan terpusat, fitur kasir, dan integrasi QR Code.**
 
-[**🌐 Live Demo**](https://rasaborneo.com) | [**📄 Baca Laporan TA**](https://repository.bsi.ac.id/repo/files/458671/download/Laporan-Tugas-Akhir-RANCANG-BANGUN-PLATFORM-PEMESANAN-MAKANAN-MULTI-MERCHANT-(RasaBorneo)-BERBASIS-WEB-(REVISI).pdf) | [**💼 LinkedIn Saya**](www.linkedin.com/in/thomasalberto)
+[**🌐 Live Demo**](https://rasaborneo.com) | [**📄 Baca Laporan TA**](https://repository.bsi.ac.id/repo/files/458671/download/Laporan-Tugas-Akhir-RANCANG-BANGUN-PLATFORM-PEMESANAN-MAKANAN-MULTI-MERCHANT-(RasaBorneo)-BERBASIS-WEB-(REVISI).pdf) | [**💼 LinkedIn Saya**](www.linkedin.com/thomasalberto)
 
 ---
 
@@ -30,19 +30,19 @@ Project ini merupakan **Tugas Akhir** untuk Universitas Bina Sarana Informatika 
 
 ### 1. User/Customer Interface
 Tampilan beranda yang *user-friendly* mirip aplikasi food delivery modern, memudahkan pencarian menu dan merchant.
-* ![Halaman Beranda](https://github.com/xRiot45/rasa-borneo/blob/master/Beranda.png?raw=true)
+* ![Halaman Beranda](https://raw.githubusercontent.com/xRiot45/rasa-borneo/refs/heads/master/Beranda.png)
 
 ### 2. Dashboard Kasir & Scan QR
 Memungkinkan kasir memvalidasi pesanan yang masuk baik dari web maupun scan QR di meja.
-* ![Dashboard Kasir](link-gambar-kasir-anda.png)
+* ![Dashboard Kasir](https://github.com/xRiot45/rasa-borneo/blob/master/Dashboard%20Merchant.png?raw=true)
 
 ### 3. Manajemen Menu (Merchant)
 Merchant dapat mengatur ketersediaan menu, harga, dan foto produk secara mandiri.
-* ![Halaman Menu](link-gambar-menu-anda.png)
+* ![Halaman Menu](https://github.com/xRiot45/rasa-borneo/blob/master/Daftar%20Menu.png?raw=true)
 
 ### 4. Admin Utama (Super Admin)
 Pusat kontrol untuk memantau seluruh merchant, user, dan transaksi yang berjalan di platform RasaBorneo.
-* ![Admin Dashboard](link-gambar-admin-anda.png)
+* ![Admin Dashboard](https://github.com/xRiot45/rasa-borneo/blob/master/Dashboard%20admin.png?raw=true)
 
 ---
 
