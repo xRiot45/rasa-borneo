@@ -1,11 +1,11 @@
-# 🍱 RasaBorneo - Platform Pemesanan Makanan Multi-Merchant
+# RasaBorneo - Platform Pemesanan Makanan Multi-Merchant
 
 ![Status](https://img.shields.io/badge/Status-Completed-success) ![Type](https://img.shields.io/badge/Type-Final%20Year%20Project-blue) ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Tech](https://img.shields.io/badge/Stack-PHP%20%7C%20Laravel%20%7C%20MySQL-red) 
 
 > **Platform web yang menghubungkan berbagai merchant kuliner lokal dengan pelanggan melalui sistem pemesanan terpusat, fitur kasir, dan integrasi QR Code.**
 
-[**🌐 Live Demo**](https://rasaborneo.com) | [**📄 Baca Laporan TA**](https://repository.bsi.ac.id/repo/files/458671/download/Laporan-Tugas-Akhir-RANCANG-BANGUN-PLATFORM-PEMESANAN-MAKANAN-MULTI-MERCHANT-(RasaBorneo)-BERBASIS-WEB-(REVISI).pdf) | [**💼 LinkedIn Saya**](www.linkedin.com/thomasalberto)
+[**🌐 Live Demo**](https://rasaborneo.com) | [**📄 Baca Laporan TA**](https://repository.bsi.ac.id/repo/files/458671/download/Laporan-Tugas-Akhir-RANCANG-BANGUN-PLATFORM-PEMESANAN-MAKANAN-MULTI-MERCHANT-(RasaBorneo)-BERBASIS-WEB-(REVISI).pdf) | [**💼 LinkedIn Saya**](www.linkedin.com/in/thomasalberto)
 
 ---
 
@@ -65,7 +65,7 @@ Untuk memastikan integritas data antar merchant, sistem ini menggunakan relasi d
 <details>
 <summary><b>Klik untuk melihat Struktur Database (ERD)</b></summary>
 
-![Entity Relationship Diagram](link-gambar-erd-anda.png)
+![Entity Relationship Diagram](https://github.com/xRiot45/rasa-borneo/blob/master/Rasa%20Borneo-Page-1.webp?raw=true)
 
 </details>
 
@@ -77,7 +77,7 @@ Ikuti langkah ini untuk menjalankan RasaBorneo di komputer lokal Anda:
 1.  **Clone Repository**
     ```bash
     git clone [https://github.com/xRiot45/rasa-borneo.git](https://github.com/xRiot45/rasa-borneo.git)
-    cd rasaborneo
+    cd rasa-borneo
     ```
 
 2.  **Setup Database**
@@ -85,16 +85,14 @@ Ikuti langkah ini untuk menjalankan RasaBorneo di komputer lokal Anda:
     * Import file `database.sql` yang ada di folder `/database`.
 
 3.  **Konfigurasi Environment**
-    * Sesuaikan koneksi database di file konfigurasi (misal `.env` atau `koneksi.php`).
+    * Sesuaikan koneksi database di file konfigurasi `.env`
 
 4.  **Jalankan Project**
-    * Jika menggunakan PHP Native/CI: Pindahkan folder ke `htdocs` dan buka `localhost/rasaborneo`.
-    * Jika menggunakan Laravel:
-        ```bash
-        composer install
-        php artisan key:generate
-        php artisan serve
-        ```
+   ```bash
+   composer install
+   php artisan key:generate
+   php artisan serve
+   ```
 
 ---
 
@@ -102,8 +100,8 @@ Ikuti langkah ini untuk menjalankan RasaBorneo di komputer lokal Anda:
 Selama pengembangan RasaBorneo, terdapat beberapa tantangan teknis yang berhasil diselesaikan:
 
 * **Logic Multi-Merchant:** Mengatur agar data pesanan Merchant A tidak terlihat oleh Merchant B. *Solusi: Implementasi foreign key yang ketat pada setiap query transaksi.*
-* **Integrasi QR Code:** Menghasilkan QR Code unik untuk setiap meja/transaksi. *Solusi: Menggunakan library [Nama Library] untuk generate string unik.*
-* **Manajemen Session:** Menangani session untuk 3 role berbeda (Admin, Merchant, User) dalam satu browser.
+* **Integrasi QR Code:** Menghasilkan QR Code unik untuk setiap merchant.
+* **Manajemen Session:** Menangani session untuk 3 role berbeda (Admin, Merchant, Customer, Courier) dalam satu browser.
 
 ---
 
@@ -111,7 +109,7 @@ Selama pengembangan RasaBorneo, terdapat beberapa tantangan teknis yang berhasil
 **Thomas Alberto**
 * 🎓 Sistem Informasi - Universitas Bina Sarana Informatika (UBSI) Pontianak
 * 📧 thomasalberto456@gmail.com
-* 🔗 [LinkedIn](www.linkedin.com/in/thomasalberto) | [GitHub](https://github.com/xRiot45/)
+* 🔗 [LinkedIn](www.linkedin.com/in/thomasalberto) | [GitHub](https://github.com/xRiot45)
 
 ---
 *Project ini didedikasikan sebagai syarat kelulusan Diploma Tiga (D3) tahun 2025.*
