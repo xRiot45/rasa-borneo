@@ -30,7 +30,7 @@ Project ini merupakan **Tugas Akhir** untuk Universitas Bina Sarana Informatika 
 
 ### 1. User/Customer Interface
 Tampilan beranda yang *user-friendly* mirip aplikasi food delivery modern, memudahkan pencarian menu dan merchant.
-* ![Halaman Beranda](link-gambar-beranda-anda.png)
+* ![Halaman Beranda](https://github.com/xRiot45/rasa-borneo/blob/master/Beranda.png?raw=true)
 
 ### 2. Dashboard Kasir & Scan QR
 Memungkinkan kasir memvalidasi pesanan yang masuk baik dari web maupun scan QR di meja.
